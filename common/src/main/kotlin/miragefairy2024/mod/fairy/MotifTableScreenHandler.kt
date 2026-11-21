@@ -9,16 +9,17 @@ import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.views.ItemView
+import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
-import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.StackView
-import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.YListView
-import miragefairy2024.mod.recipeviewer.views.YScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.maxContentSizeX
 import miragefairy2024.mod.recipeviewer.views.minContentSizeX
@@ -34,6 +35,7 @@ import miragefairy2024.util.register
 import miragefairy2024.util.registerViewScreen
 import miragefairy2024.util.string
 import miragefairy2024.util.text
+import miragefairy2024.util.times
 import miragefairy2024.util.toIdentifier
 import mirrg.kotlin.hydrogen.formatAs
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
@@ -83,13 +85,14 @@ fun initMotifTableScreenHandler() {
 }
 
 class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifChance>) : AbstractContainerMenu(motifTableScreenHandlerType(), syncId), ViewProviderMenu {
-    override fun stillValid(player: Player) = true
-    override fun quickMoveStack(player: Player, slot: Int) = EMPTY_ITEM_STACK
 
     override fun createView(title: Component, playerInventoryTitle: Component): View {
+        val panelTexture = "textures/gui/" * MirageFairy2024.identifier("panel") * ".png"
+        val panelMargin = 7
+
         fun textView(text: Component, width: Int, alignment: Alignment) = View {
-            view += TextView(text).configure {
-                view.sizingX = Sizing.FILL
+            view += MultiLineTextView().configure {
+                view.text.value = text
                 view.alignmentX = alignment
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
@@ -97,27 +100,23 @@ class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifC
         }
 
         return View {
-            view += XListView().configure {
-                view.sizingX = Sizing.FILL
+            view += StackView().configure { // 外枠なのだ～🌱
                 view.sizingY = Sizing.FILL
 
-                view += SpaceView().configure { position.weight = 1.0 }
-                view += StackView().configure { // 外枠なのだ～🌱
+                view += NinePatchImageView(panelTexture, 16, 16, 5, 5, 5, 5, 5, 5, false, false)
+                view += XListView().configure {
                     view.sizingY = Sizing.FILL
+                    val scrollView = YScrollContainerView().configure {
+                        view.sizingX = Sizing.WRAP
 
-                    view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/panel.png"), 16, 16, 5, 5, 5, 5, 5, 5, false, false)
-
-                    // スクロールパネルなのだ～🌱
-                    view += YScrollView().configure {
                         view += YListView().configure {
                             chanceTable.forEach { chance ->
                                 view += XListView().configure {
                                     view += ItemView(chance.showingItemStack).configure {
                                         position.alignmentY = Alignment.CENTER
+                                        view.showDecorations = false
                                     }
-
                                     view += XSpaceView(3)
-
                                     view += textView(chance.showingItemStack.hoverName, 150, Alignment.START).configure {
                                         position.alignmentY = Alignment.CENTER
                                     }
@@ -130,11 +129,18 @@ class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifC
                                 }.tooltip { _, _ -> clientProxy!!.getItemTooltip(chance.showingItemStack) }
                             }
                         }.margin(0, 3, 0, 0)
-                    }.margin(7)
-                }
-                view += SpaceView().configure { position.weight = 1.0 }
-            }.margin(4)
+                    }
+                    view += scrollView
+                    val scrollbarView = YScrollbarView().configure {
+                        view.scrollbarThickness = 18
+                    }
+                    view += scrollbarView
+                    connectScrollbar(scrollView.view, scrollbarView.view)
+                }.margin(panelMargin)
+            }.margin(0, 4)
         }
     }
 
+    override fun stillValid(player: Player) = true
+    override fun quickMoveStack(player: Player, slot: Int) = EMPTY_ITEM_STACK
 }

@@ -17,12 +17,10 @@ import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
-import miragefairy2024.mod.recipeviewer.views.XScrollView
+import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
-import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
-import miragefairy2024.mod.recipeviewer.views.YScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YScrollbarView
-import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.fire
 import miragefairy2024.util.observeAndInitialize
@@ -60,53 +58,33 @@ private infix fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidge
 
 context(ModContext)
 fun initVanillaViewPlacers() {
-    fun placeScrollView(context: VanillaViewPlacerContext, widget: VanillaScrollViewWidget): ViewController {
+    fun placeScrollContainerView(context: VanillaViewPlacerContext, widget: VanillaScrollContainerViewWidget): ViewController {
         val controller = context place widget
+        // 子の差し替えだけで全長が変わった場合も、描画前に寸法を通知するのだ～🌱
+        val boundsRemover = context.onBeforeRender.register(widget::updateScrollBounds)
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {
                 controller.setOffset(offset)
             }
 
             override fun detach() {
+                boundsRemover.remove()
                 widget.detach()
                 controller.detach()
             }
 
             override fun dispose() {
+                boundsRemover.remove()
                 widget.dispose()
                 controller.dispose()
             }
         }
     }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XScrollView, bounds ->
-        placeScrollView(context, VanillaXScrollViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XScrollContainerView, bounds ->
+        placeScrollContainerView(context, VanillaXScrollContainerViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
     }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YScrollView, bounds ->
-        placeScrollView(context, VanillaYScrollViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
-    }
-    fun placeSimpleScrollView(context: VanillaViewPlacerContext, widget: VanillaSimpleScrollViewWidget): ViewController {
-        val controller = context place widget
-        return object : ViewController {
-            override fun setOffset(offset: IntPoint) {
-                controller.setOffset(offset)
-            }
-
-            override fun detach() {
-                widget.detach()
-                controller.detach()
-            }
-
-            override fun dispose() {
-                widget.dispose()
-                controller.dispose()
-            }
-        }
-    }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XSimpleScrollView, bounds ->
-        placeSimpleScrollView(context, VanillaXSimpleScrollViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
-    }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YSimpleScrollView, bounds ->
-        placeSimpleScrollView(context, VanillaYSimpleScrollViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YScrollContainerView, bounds ->
+        placeScrollContainerView(context, VanillaYScrollContainerViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
     }
     fun placeScrollbarView(context: VanillaViewPlacerContext, widget: VanillaScrollbarViewWidget): ViewController {
         val controller = context place widget

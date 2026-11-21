@@ -11,6 +11,7 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewTexture
+import miragefairy2024.mod.recipeviewer.views.AlignView
 import miragefairy2024.mod.recipeviewer.views.DynamicView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
@@ -22,9 +23,11 @@ import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.YListView
-import miragefairy2024.mod.recipeviewer.views.YScrollView
+import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.maxContentSizeX
 import miragefairy2024.mod.recipeviewer.views.maxContentSizeY
@@ -44,6 +47,7 @@ import miragefairy2024.util.register
 import miragefairy2024.util.registerViewScreen
 import miragefairy2024.util.style
 import miragefairy2024.util.text
+import miragefairy2024.util.times
 import mirrg.kotlin.hydrogen.formatAs
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
 import net.minecraft.core.BlockPos
@@ -89,98 +93,111 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
 
     override fun createView(title: Component, playerInventoryTitle: Component): View {
         val level: Level = playerInventory.player.level()
-        val blockEntity = level.getMagicPlantBlockEntity(blockPos)
-        val traitConditionContext = TraitConditionContext(level, blockPos, blockEntity)
+        val panelTexture = "textures/gui/" * MirageFairy2024.identifier("panel") * ".png"
+        val scrollbarColor = 0xA0FFFFFF.toInt()
 
-        fun traitCardView(traitStack: TraitStack) = View {
-            view += YListView().configure {
-                view.sizingX = Sizing.FILL
-                view.sizingY = Sizing.FILL
+        fun createTraitCardView(traitStack: TraitStack): View {
+            val trait = traitStack.trait
+            val context = TraitConditionContext(level, blockPos, level.getMagicPlantBlockEntity(blockPos))
+            val conditionFactors = trait.conditions.map { it.getFactor(context) }
+            val totalConditionFactor = conditionFactors.fold(1.0) { a, b -> a * b }
 
-                // 特性名なのだ～🌱
-                view += MultiLineTextView().configure {
-                    view.text.value = text { traitStack.trait.getName().style(traitStack.trait.style) }
-                    view.alignmentX = Alignment.CENTER
-                    view.shadow = false
-                }
-
-                view += YSpaceView(5)
-
-                // 特性アイコン行なのだ～🌱
-                view += XListView().configure {
+            return View {
+                view += YListView().configure {
                     view.sizingX = Sizing.FILL
+                    view.sizingY = Sizing.FILL
 
-                    // 条件リストなのだ～🌱
-                    view += YListView().configure {
-                        position.weight = 1.0
-                        position.ignoreLayoutX = true
-                        view.sizingX = Sizing.FILL
-                        view.sizingY = Sizing.FILL
-
-                        view += SpaceView().configure { position.weight = 1.0 }
-                        traitStack.trait.conditions.forEach { condition ->
-                            val factor = condition.getFactor(traitConditionContext)
-                            view += TextView(text { condition.emoji + " "() + (factor * 100.0 formatAs "%.1f%%")() }).configure {
-                                view.shadow = false
-                            }.tooltip(condition.name)
-                        }
-                    }
-
-                    // 特性アイコンなのだ～🌱
-                    view += ImageView(ViewTexture(traitStack.trait.texture, IntPoint(32, 32)))
-
-                    // 効果リストなのだ～🌱
-                    view += YListView().configure {
-                        position.weight = 1.0
-                        position.ignoreLayoutX = true
-                        view.sizingX = Sizing.FILL
-                        view.sizingY = Sizing.FILL
-
-                        view += SpaceView().configure { position.weight = 1.0 }
-                        val totalConditionFactor = traitStack.trait.conditions
-                            .map { it.getFactor(traitConditionContext) }
-                            .fold(1.0) { a, b -> a * b }
-                        traitStack.trait.traitEffectKeyEntries.forEach { entry ->
-                            fun <T : Any> effectView(traitEffectKey: TraitEffectKey<T>, traitEffectFactor: Double) = View {
-                                val value = traitEffectKey.getValue(traitEffectFactor * getTraitPower(traitStack.level) * totalConditionFactor)
-                                view += TextView(text { traitEffectKey.renderValue(value) + " "() + traitEffectKey.emoji.style(traitEffectKey.style) }).configure {
-                                    view.shadow = false
-                                }.tooltip(traitEffectKey.name)
-                            }
-                            view += effectView(entry.traitEffectKey, entry.factor).configure {
-                                position.alignmentX = Alignment.END
-                            }
-                        }
-                    }
-                }.minContentSizeY(32).maxContentSizeY(32)
-
-                view += YSpaceView(5)
-
-                // 本文なのだ～🌱
-                view += YScrollView().configure {
-                    position.weight = 1.0
-                    view.scrollbarColor = 0xA0FFFFFF.toInt()
-
+                    // 特性名なのだ～🌱
                     view += MultiLineTextView().configure {
-                        view.text.value = text { traitStack.trait.text }
+                        view.text.value = trait.getName().style(trait.style)
+                        view.alignmentX = Alignment.CENTER
                         view.shadow = false
+                    }
+
+                    view += YSpaceView(5)
+
+                    // 特性アイコンと条件・効果なのだ～🌱
+                    view += XListView().configure {
+                        view.sizingX = Sizing.FILL
+                        view.sizingY = Sizing.FILL
+
+                        view += YListView().configure {
+                            position.weight = 1.0
+                            position.ignoreLayoutX = true
+                            view.sizingX = Sizing.FILL
+                            view.sizingY = Sizing.FILL
+
+                            view += SpaceView().configure { position.weight = 1.0 }
+                            trait.conditions.forEachIndexed { index, condition ->
+                                view += TextView(text { condition.emoji + " "() + (conditionFactors[index] * 100.0 formatAs "%.1f%%")() }).configure {
+                                    view.shadow = false
+                                }.tooltip(condition.name)
+                            }
+                        }
+
+                        view += ImageView(ViewTexture(trait.texture, IntPoint(32, 32)))
+
+                        view += YListView().configure {
+                            position.weight = 1.0
+                            position.ignoreLayoutX = true
+                            view.sizingX = Sizing.FILL
+                            view.sizingY = Sizing.FILL
+
+                            view += SpaceView().configure { position.weight = 1.0 }
+                            trait.traitEffectKeyEntries.forEach { entry ->
+                                fun <T : Any> createEffectText(key: TraitEffectKey<T>): Component {
+                                    val value = key.getValue(entry.factor * getTraitPower(traitStack.level) * totalConditionFactor)
+                                    return text { key.renderValue(value) + " "() + key.emoji.style(key.style) }
+                                }
+
+                                view += TextView(createEffectText(entry.traitEffectKey)).configure {
+                                    position.alignmentX = Alignment.END
+                                    view.shadow = false
+                                }.tooltip(entry.traitEffectKey.name)
+                            }
+                        }
+                    }.minContentSizeY(32).maxContentSizeY(32)
+
+                    view += YSpaceView(5)
+
+                    // バーを本文に重ね、従来の折り返し幅を維持するのだ～🌱
+                    view += StackView().configure {
+                        position.weight = 1.0
+                        view.sizingX = Sizing.FILL
+                        view.sizingY = Sizing.FILL
+
+                        val scrollView = YScrollContainerView().configure {
+                            view += MultiLineTextView().configure {
+                                view.text.value = trait.text
+                                view.shadow = false
+                            }
+                        }
+                        view += scrollView
+                        val scrollbarView = YScrollbarView()
+                        scrollbarView.scrollbarColor = scrollbarColor
+                        view += AlignView().configure {
+                            view.alignmentX = Alignment.END
+                            view += scrollbarView
+                        }
+                        connectScrollbar(scrollView.view, scrollbarView)
                     }
                 }
             }
         }
 
-        val traitStack = traitStacks.traitStackList.firstOrNull()
-        val cardContent = DynamicView(if (traitStack == null) SpaceView() else traitCardView(traitStack))
+        val traitStackList = traitStacks.traitStackList
+        val firstTraitStack = traitStackList.firstOrNull()
+        val cardContent = DynamicView(if (firstTraitStack != null) createTraitCardView(firstTraitStack) else SpaceView())
+        val traitListContext = TraitConditionContext(level, blockPos, level.getMagicPlantBlockEntity(blockPos))
 
         return View {
             view += StackView().configure { // 外枠なのだ～🌱
-                view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/panel.png"), 16, 16, 5, 5, 5, 5, 5, 5, false, false)
+                view += NinePatchImageView(panelTexture, 16, 16, 5, 5, 5, 5, 5, 5, false, false)
                 view += YListView().configure { // 内枠なのだ～🌱
                     view.sizingX = Sizing.FILL
 
-                    // タイトルなのだ～🌱
                     view += MultiLineTextView().configure {
-                        view.text.value = text { traitListScreenTranslation() }
+                        view.text.value = title
                         view.alignmentX = Alignment.CENTER
                         view.color = ColorPair.DARK_GRAY
                         view.shadow = false
@@ -191,48 +208,61 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                     // 選択中の特性なのだ～🌱
                     view += StackView().configure {
                         view.sizingX = Sizing.FILL
+                        view.sizingY = Sizing.FILL
 
                         view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22, true, true)
                         view += cardContent.configure().margin(5)
-                    }.minContentSizeY(108).maxContentSizeY(108)
+                    }.minContentSizeY(18 * 6).maxContentSizeY(18 * 6)
 
                     view += YSpaceView(4)
 
                     // 特性リストなのだ～🌱
                     view += StackView().configure {
                         view.sizingX = Sizing.FILL
+                        view.sizingY = Sizing.FILL
 
                         view += TooltipBackgroundView()
-                        view += YScrollView().configure {
-                            view.scrollbarColor = 0xA0FFFFFF.toInt()
+                        view += XListView().configure {
+                            view.sizingX = Sizing.FILL
+                            view.sizingY = Sizing.FILL
 
-                            view += YListView().configure {
-                                view.sizingX = Sizing.FILL
+                            val scrollView = YScrollContainerView().configure {
+                                position.weight = 1.0
 
-                                traitStacks.traitStackList.forEach { traitStack ->
-                                    val totalConditionFactor = traitStack.trait.conditions
-                                        .map { it.getFactor(traitConditionContext) }
-                                        .fold(1.0) { a, b -> a * b }
-                                    view += MultiLineTextView().configure {
-                                        view.text.value = text {
-                                            val texts = mutableListOf<Component>()
-                                            val styleFunction: (Component) -> Component = { if (totalConditionFactor == 0.0) it.darkGray else it.style(traitStack.trait.style) }
-                                            texts += styleFunction(traitStack.trait.getName())
-                                            texts += styleFunction(traitStack.level.toString(2)())
-                                            if (traitStack.trait.conditions.isNotEmpty()) texts += traitStack.trait.conditions.map { it.emoji }.join() + " →"()
-                                            if (traitStack.trait.traitEffectKeyEntries.isNotEmpty()) texts += traitStack.trait.traitEffectKeyEntries.map { it.traitEffectKey.emoji.style(it.traitEffectKey.style) }.join()
-                                            texts.join(" "())
+                                view += YListView().configure {
+                                    view.sizingX = Sizing.FILL
+
+                                    traitStackList.forEach { traitStack ->
+                                        val trait = traitStack.trait
+                                        val totalConditionFactor = trait.conditions.fold(1.0) { factor, condition -> factor * condition.getFactor(traitListContext) }
+
+                                        view += MultiLineTextView().configure {
+                                            view.text.value = text {
+                                                val texts = mutableListOf<Component>()
+                                                val styleFunction: (Component) -> Component = { if (totalConditionFactor == 0.0) it.darkGray else it.style(trait.style) }
+                                                texts += styleFunction(trait.getName())
+                                                texts += styleFunction(traitStack.level.toString(2)())
+                                                if (trait.conditions.isNotEmpty()) texts += trait.conditions.map { it.emoji }.join() + " →"()
+                                                if (trait.traitEffectKeyEntries.isNotEmpty()) texts += trait.traitEffectKeyEntries.map { it.traitEffectKey.emoji.style(it.traitEffectKey.style) }.join()
+                                                texts.join(" "())
+                                            }
+                                            view.shadow = false
+                                        }.onClick {
+                                            cardContent.content.value = createTraitCardView(traitStack)
+                                            true
                                         }
-                                        view.shadow = false
-                                    }.onClick {
-                                        cardContent.content.value = traitCardView(traitStack)
-                                        true
                                     }
                                 }
                             }
+                            view += scrollView
+                            val scrollbarView = YScrollbarView().configure {
+                                view.scrollbarColor = scrollbarColor
+                            }
+                            view += scrollbarView
+                            connectScrollbar(scrollView.view, scrollbarView.view)
                         }.margin(4)
-                    }.minContentSizeY(72).maxContentSizeY(72)
-                }.minContentSizeX(162).maxContentSizeX(162).margin(7)
+                    }.minContentSizeY(18 * 4).maxContentSizeY(18 * 4)
+                }.minContentSizeX(18 * 9).maxContentSizeX(18 * 9).margin(7)
             }
         }
     }

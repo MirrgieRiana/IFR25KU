@@ -12,6 +12,59 @@ import org.lwjgl.glfw.GLFW
 
 class VanillaScrollbarViewWidgetTest {
     @Test
+    fun `View の指定位置を直接読み操作結果と再配置後の位置を保持するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            GuiTestEnvironment().use { environment ->
+                val view = if (horizontal) XScrollbarView() else YScrollbarView()
+                val scrollOffsetValue = view.scrollOffset
+                view.contentLength = 300
+                view.viewportLength = 100
+                val bounds = if (horizontal) IntRectangle(10, 200, 100, 5) else IntRectangle(200, 20, 5, 100)
+
+                fun attach() = if (horizontal) VanillaXScrollbarViewWidget(view as XScrollbarView, bounds) else VanillaYScrollbarViewWidget(view as YScrollbarView, bounds)
+
+                scrollOffsetValue.value = 50.25
+                val firstWidget = attach()
+                try {
+                    Assertions.assertTrue(scrollOffsetValue.toList().isEmpty())
+                    firstWidget.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertEquals(if (horizontal) IntRectangle(27, 200, 33, 5) else IntRectangle(200, 37, 5, 33), environment.fills.last())
+                    scrollOffsetValue.value = 150.75
+                    firstWidget.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertEquals(if (horizontal) IntRectangle(61, 200, 33, 5) else IntRectangle(200, 71, 5, 33), environment.fills.last())
+                    Assertions.assertTrue(firstWidget.mouseScrolled(if (horizontal) 50.0 else 202.0, if (horizontal) 202.0 else 50.0, 0.0, -0.25))
+                    Assertions.assertEquals(154.5, scrollOffsetValue.value)
+                    firstWidget.isFocused = true
+                    Assertions.assertTrue(firstWidget.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
+                    Assertions.assertEquals(0.0, scrollOffsetValue.value)
+                    Assertions.assertTrue(firstWidget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
+                    Assertions.assertEquals(200.0, scrollOffsetValue.value)
+                } finally {
+                    firstWidget.dispose()
+                }
+                Assertions.assertTrue(scrollOffsetValue.toList().isEmpty())
+
+                view.contentLength = 150
+                val secondWidget = attach()
+                try {
+                    Assertions.assertEquals(200.0, scrollOffsetValue.value)
+                    Assertions.assertTrue(scrollOffsetValue.toList().isEmpty())
+                    secondWidget.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertEquals(if (horizontal) IntRectangle(77, 200, 33, 5) else IntRectangle(200, 87, 5, 33), environment.fills.last())
+                    scrollOffsetValue.value = -25.75
+                    secondWidget.render(environment.graphics, 50, 50, 0.0F)
+                    Assertions.assertEquals(-25.75, scrollOffsetValue.value)
+                    Assertions.assertEquals(if (horizontal) IntRectangle(10, 200, 57, 5) else IntRectangle(200, 20, 5, 57), environment.fills.last())
+                } finally {
+                    secondWidget.dispose()
+                }
+                Assertions.assertEquals(-25.75, scrollOffsetValue.value)
+                Assertions.assertTrue(scrollOffsetValue.toList().isEmpty())
+            }
+        }
+    }
+
+    @Test
     fun `設定した太さと異なる実寸法でもその矩形で描画とクリックを扱うのだ`() {
         listOf(false, true).forEach { horizontal ->
             listOf(0, 5, 200).forEach { thickness ->
@@ -111,6 +164,37 @@ class VanillaScrollbarViewWidgetTest {
     }
 
     @Test
+    fun `範囲外からドラッグして切り返してもつまみが逆方向に動かないのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            GuiTestEnvironment().use { environment ->
+                val view = if (horizontal) XScrollbarView() else YScrollbarView()
+                view.contentLength = 200
+                view.viewportLength = 100
+                val bounds = if (horizontal) IntRectangle(10, 200, 100, 5) else IntRectangle(200, 20, 5, 100)
+                val widget = if (horizontal) VanillaXScrollbarViewWidget(view as XScrollbarView, bounds) else VanillaYScrollbarViewWidget(view as YScrollbarView, bounds)
+                widget.isFocused = true
+                Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
+                view.contentLength = 150
+
+                val mouseX = if (horizontal) 85.0 else 202.0
+                val mouseY = if (horizontal) 202.0 else 95.0
+                val deltaX = if (horizontal) 1.0 else 0.0
+                val deltaY = if (horizontal) 0.0 else 1.0
+                Assertions.assertTrue(widget.mouseClicked(mouseX, mouseY, 0))
+                Assertions.assertTrue(widget.mouseDragged(mouseX - 10 * deltaX, mouseY - 10 * deltaY, 0, -10 * deltaX, -10 * deltaY))
+                widget.render(environment.graphics, 50, 50, 0.0F)
+                val expectedThumb = if (horizontal) IntRectangle(54, 200, 56, 5) else IntRectangle(200, 64, 5, 56)
+                Assertions.assertEquals(expectedThumb, environment.fills.last())
+
+                Assertions.assertTrue(widget.mouseDragged(mouseX - 9 * deltaX, mouseY - 9 * deltaY, 0, deltaX, deltaY))
+                widget.render(environment.graphics, 50, 50, 0.0F)
+                Assertions.assertEquals(expectedThumb, environment.fills.last())
+                widget.dispose()
+            }
+        }
+    }
+
+    @Test
     fun `表示領域と異なる長さのバーでページ移動と両端へのドラッグを扱うのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use { environment ->
@@ -128,12 +212,14 @@ class VanillaScrollbarViewWidgetTest {
                 Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_PAGE_UP, 0, 0))
                 widget.render(environment.graphics, 50, 50, 0.0F)
                 Assertions.assertEquals(if (horizontal) IntRectangle(10, 200, 67, 5) else IntRectangle(200, 20, 5, 67), environment.fills.last())
-                Assertions.assertTrue(widget.mouseClicked(if (horizontal) 80.0 else 202.0, if (horizontal) 202.0 else 90.0, 0))
+                val mouseX = if (horizontal) 80.0 else 202.0
+                val mouseY = if (horizontal) 202.0 else 90.0
+                Assertions.assertTrue(widget.mouseClicked(mouseX, mouseY, 0))
                 Assertions.assertTrue(widget.hasMouseCapture(0))
-                Assertions.assertTrue(widget.mouseDragged(500.0, 500.0, 0, 0.0, 0.0))
+                Assertions.assertTrue(widget.mouseDragged(500.0, 500.0, 0, 500.0 - mouseX, 500.0 - mouseY))
                 widget.render(environment.graphics, 50, 50, 0.0F)
                 Assertions.assertEquals(if (horizontal) IntRectangle(143, 200, 67, 5) else IntRectangle(200, 153, 5, 67), environment.fills.last())
-                Assertions.assertTrue(widget.mouseDragged(-100.0, -100.0, 0, 0.0, 0.0))
+                Assertions.assertTrue(widget.mouseDragged(-100.0, -100.0, 0, -600.0, -600.0))
                 widget.render(environment.graphics, 50, 50, 0.0F)
                 Assertions.assertEquals(if (horizontal) IntRectangle(10, 200, 67, 5) else IntRectangle(200, 20, 5, 67), environment.fills.last())
                 Assertions.assertTrue(widget.mouseReleased(-100.0, -100.0, 0))
@@ -152,15 +238,17 @@ class VanillaScrollbarViewWidgetTest {
                 view.viewportLength = 100
                 val bounds = if (horizontal) IntRectangle(10, 200, 100, 5) else IntRectangle(200, 20, 5, 100)
                 val widget = if (horizontal) VanillaXScrollbarViewWidget(view as XScrollbarView, bounds) else VanillaYScrollbarViewWidget(view as YScrollbarView, bounds)
-                Assertions.assertTrue(widget.mouseClicked(if (horizontal) 15.0 else 202.0, if (horizontal) 202.0 else 25.0, 0))
+                val mouseX = if (horizontal) 15.0 else 202.0
+                val mouseY = if (horizontal) 202.0 else 25.0
+                Assertions.assertTrue(widget.mouseClicked(mouseX, mouseY, 0))
                 widget.setSize(if (horizontal) 100 else 0, if (horizontal) 0 else 100)
-                Assertions.assertTrue(widget.mouseDragged(500.0, 500.0, 0, 0.0, 0.0))
+                Assertions.assertTrue(widget.mouseDragged(500.0, 500.0, 0, 500.0 - mouseX, 500.0 - mouseY))
                 Assertions.assertTrue(widget.hasMouseCapture(0))
                 widget.setSize(if (horizontal) 100 else 5, if (horizontal) 5 else 100)
                 widget.render(environment.graphics, 50, 50, 0.0F)
                 Assertions.assertEquals(if (horizontal) IntRectangle(77, 200, 33, 5) else IntRectangle(200, 87, 5, 33), environment.fills.last())
                 widget.setSize(100, 100)
-                Assertions.assertTrue(widget.mouseDragged(-100.0, -100.0, 0, 0.0, 0.0))
+                Assertions.assertTrue(widget.mouseDragged(-100.0, -100.0, 0, -600.0, -600.0))
                 widget.setSize(if (horizontal) 100 else 5, if (horizontal) 5 else 100)
                 widget.render(environment.graphics, 50, 50, 0.0F)
                 Assertions.assertEquals(if (horizontal) IntRectangle(77, 200, 33, 5) else IntRectangle(200, 87, 5, 33), environment.fills.last())
@@ -183,6 +271,7 @@ class VanillaScrollbarViewWidgetTest {
             Assertions.assertFalse(widget.mouseClicked(50.0, 50.0, 0))
             Assertions.assertFalse(widget.mouseClicked(202.0, 25.0, 1))
             Assertions.assertTrue(widget.mouseClicked(202.0, 110.0, 0))
+            Assertions.assertEquals(200.0, view.scrollOffset.value)
             widget.render(environment.graphics, 202, 25, 0.0F)
             Assertions.assertEquals(IntRectangle(200, 87, 5, 33), environment.fills.last())
             Assertions.assertTrue(widget.mouseReleased(202.0, 110.0, 0))
@@ -190,9 +279,11 @@ class VanillaScrollbarViewWidgetTest {
             widget.isFocused = true
             Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
             Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_DOWN, 0, 0))
+            Assertions.assertEquals(15.0, view.scrollOffset.value)
             widget.render(environment.graphics, 202, 25, 0.0F)
             Assertions.assertEquals(IntRectangle(200, 25, 5, 33), environment.fills.last())
             Assertions.assertTrue(widget.mouseScrolled(202.0, 25.0, 0.0, -1.0))
+            Assertions.assertEquals(30.0, view.scrollOffset.value)
             widget.render(environment.graphics, 202, 25, 0.0F)
             Assertions.assertEquals(IntRectangle(200, 30, 5, 33), environment.fills.last())
             Assertions.assertTrue(widget.mouseClicked(202.0, 40.0, 0))

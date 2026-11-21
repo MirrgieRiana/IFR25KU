@@ -10,9 +10,11 @@ import miragefairy2024.mod.recipeviewer.views.ItemView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
+import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
-import miragefairy2024.mod.recipeviewer.views.YScrollView
-import miragefairy2024.util.ObservableValue
+import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
+import miragefairy2024.util.empty
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.atLeast
@@ -30,7 +32,14 @@ import org.junit.jupiter.api.TestInstance
 
 private val TOOLTIP_VIEWER_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
     override fun calculateTextWidth(text: FormattedText) = text.string.length * 6
-    override fun calculateTextWidth(text: FormattedCharSequence) = throw UnsupportedOperationException()
+    override fun calculateTextWidth(text: FormattedCharSequence): Int {
+        var width = 0
+        text.accept { _, _, _ ->
+            width += 6
+            true
+        }
+        return width
+    }
     override fun getTextHeight() = 9
 
     override fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence> {
@@ -42,7 +51,7 @@ private fun TooltipViewerViewWrapper.place(placements: MutableList<Pair<Placeabl
     fun place(view: PlaceableView, bounds: IntRectangle): ViewController {
         val placement = Pair(view, bounds)
         placements += placement
-        val controller = if (view is YScrollView) view.childView.attachTo(bounds.offset, ::place) else ViewController.NONE
+        val controller = if (view is YScrollContainerView) view.childView.attachTo(bounds.offset, ::place) else ViewController.NONE
         return object : ViewController by controller {
             override fun detach() {
                 controller.detach()
@@ -66,7 +75,7 @@ class TooltipViewerViewWrapperTest {
     fun `空のアイテムを除外しスロットとツールチップを同じ順序で配置するのだ`() {
         val first: ItemStack = ItemStack(Items.STONE, 64)
         val second: ItemStack = ItemStack(Items.DIRT, 12)
-        val view = TooltipViewerViewWrapper(listOf(ItemStack.EMPTY, first, ItemStack.EMPTY, second), ObservableValue(""), ObservableValue(0.0)) {
+        val view = TooltipViewerViewWrapper(listOf(ItemStack.EMPTY, first, ItemStack.EMPTY, second)) {
             listOf(text { it.count.toString()() })
         }
         view.view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
@@ -85,10 +94,8 @@ class TooltipViewerViewWrapperTest {
     }
 
     @Test
-    fun `フィルタを変更すると入力欄とスクロール位置を保持したまま行と間隔を更新するのだ`() {
-        val filter = ObservableValue("")
-        val scrollOffsetY = ObservableValue(0.0)
-        val view = TooltipViewerViewWrapper(listOf(ItemStack(Items.STONE)), filter, scrollOffsetY) {
+    fun `フィルタを変更すると入力欄を維持しながら行と間隔を更新するのだ`() {
+        val view = TooltipViewerViewWrapper(listOf(ItemStack(Items.STONE))) {
             listOf("title", "first", "second", "third").map { text { it() } }
         }
         view.view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
@@ -96,7 +103,8 @@ class TooltipViewerViewWrapperTest {
         val controller = view.place(placements)
         try {
             val field = placements.mapNotNull { it.first as? TextFieldView }.single()
-            val scrollView = placements.mapNotNull { it.first as? YScrollView }.single()
+            val scrollView = placements.mapNotNull { it.first as? YScrollContainerView }.single()
+            val scrollbarView = placements.mapNotNull { it.first as? YScrollbarView }.single()
             listOf(
                 "0,1,3" to listOf("title", "first", "third"),
                 "1,3" to listOf("first", "third"),
@@ -106,12 +114,13 @@ class TooltipViewerViewWrapperTest {
             ).forEach { (value, expected) ->
                 scrollView.scrollOffsetY.value += 10.5
                 val scrollOffset = scrollView.scrollOffsetY.value
-                Assertions.assertEquals(scrollOffset, scrollOffsetY.value)
+                Assertions.assertEquals(scrollOffset, scrollbarView.scrollOffset.value)
                 field.text.value = value
-                Assertions.assertEquals(value, filter.value)
                 Assertions.assertSame(field, placements.mapNotNull { it.first as? TextFieldView }.single())
-                Assertions.assertSame(scrollView, placements.mapNotNull { it.first as? YScrollView }.single())
-                Assertions.assertEquals(scrollOffset, scrollView.scrollOffsetY.value)
+                Assertions.assertSame(scrollView, placements.mapNotNull { it.first as? YScrollContainerView }.single())
+                Assertions.assertEquals(0.0, scrollView.scrollOffsetY.value)
+                scrollbarView.scrollOffset.value += 0.25
+                Assertions.assertEquals(scrollbarView.scrollOffset.value, scrollView.scrollOffsetY.value)
                 val lines = placements.filter { it.first is MultiLineTextView }
                 Assertions.assertEquals(expected, lines.map { (it.first as MultiLineTextView).text.value.string })
                 if (value == "0,1,3") {
@@ -130,9 +139,58 @@ class TooltipViewerViewWrapperTest {
     }
 
     @Test
+    fun `絞り込み後に範囲内の位置を保ち短くなった一覧を表示領域に戻すのだ`() {
+        val view = TooltipViewerViewWrapper(listOf(ItemStack(Items.STONE))) {
+            listOf(text { "title"() }, text { "long".repeat(500)() }, text { "mid".repeat(300)() })
+        }
+        view.view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
+        val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
+        val controller = view.place(placements)
+        try {
+            val field = placements.mapNotNull { it.first as? TextFieldView }.single()
+            val scroll = placements.mapNotNull { it.first as? YScrollContainerView }.single()
+            val scrollbar = placements.mapNotNull { it.first as? YScrollbarView }.single()
+            Assertions.assertTrue(scrollbar.contentLength > scrollbar.viewportLength)
+            scroll.scrollOffsetY.value = 300.0
+            field.text.value = "1"
+            Assertions.assertEquals(300.0, scroll.scrollOffsetY.value)
+            Assertions.assertEquals(300.0, scrollbar.scrollOffset.value)
+            field.text.value = "2"
+            Assertions.assertEquals(107.0, scroll.scrollOffsetY.value)
+            Assertions.assertEquals(107.0, scrollbar.scrollOffset.value)
+            field.text.value = "0"
+            Assertions.assertTrue(scrollbar.contentLength <= scrollbar.viewportLength)
+            Assertions.assertEquals(0.0, scroll.scrollOffsetY.value)
+            Assertions.assertEquals(0.0, scrollbar.scrollOffset.value)
+        } finally {
+            controller.dispose()
+            controller.detach()
+        }
+    }
+
+    @Test
+    fun `ゼロ文字の行にも通常の文字行と同じ高さを割り当てるのだ`() {
+        val view = TooltipViewerViewWrapper(listOf(ItemStack(Items.STONE))) {
+            listOf(text { "title"() }, text { empty() }, text { "tail"() })
+        }
+        view.view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
+        val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
+        val controller = view.place(placements)
+        try {
+            val lines = placements.filter { it.first is MultiLineTextView }
+            val emptyLine = placements.single { it.first is TextView }.second
+            Assertions.assertEquals(lines[0].second.sizeY, emptyLine.sizeY)
+            Assertions.assertEquals(12, emptyLine.y - lines[0].second.y)
+            Assertions.assertEquals(10, lines[1].second.y - emptyLine.y)
+        } finally {
+            controller.dispose()
+            controller.detach()
+        }
+    }
+
+    @Test
     fun `長文を背景の内側で折り返し画面の高さを超えた内容をスクロールするのだ`() {
-        val filter = ObservableValue("1")
-        val view = TooltipViewerViewWrapper(listOf(ItemStack(Items.STONE)), filter, ObservableValue(0.0)) {
+        val view = TooltipViewerViewWrapper(listOf(ItemStack(Items.STONE))) {
             listOf(text { "title"() }, text { "long".repeat(200)() })
         }
         listOf(IntPoint(400, 240), IntPoint(320, 180)).forEach { size ->
@@ -142,12 +200,14 @@ class TooltipViewerViewWrapperTest {
             try {
                 val panel = placements.single { it.first is NinePatchImageView }
                 Assertions.assertEquals(IntRectangle((size.x - 254) / 2, 4, 254, size.y - 8), panel.second)
-                val field = placements.single { it.first is TextFieldView }
-                Assertions.assertEquals("1", (field.first as TextFieldView).text.value)
-                val scroll = placements.single { it.first is YScrollView }
-                val scrollView = scroll.first as YScrollView
-                Assertions.assertEquals(IntRectangle((size.x - 240) / 2, 33, 240, size.y - 44), scroll.second)
-                Assertions.assertEquals(5, scrollView.scrollbarThickness)
+                val field = placements.mapNotNull { it.first as? TextFieldView }.single()
+                field.text.value = "1"
+                val scroll = placements.single { it.first is YScrollContainerView }
+                val scrollView = scroll.first as YScrollContainerView
+                Assertions.assertEquals(IntRectangle((size.x - 240) / 2, 33, 235, size.y - 44), scroll.second)
+                val scrollbar = placements.single { it.first is YScrollbarView }
+                Assertions.assertEquals(IntRectangle((size.x - 240) / 2 + 235, 33, 5, size.y - 44), scrollbar.second)
+                Assertions.assertEquals(5, (scrollbar.first as YScrollbarView).scrollbarThickness)
                 Assertions.assertTrue(scrollView.childView.evaluateActualSizeY() > scroll.second.sizeY)
                 val line = placements.single { it.first is MultiLineTextView }
                 Assertions.assertEquals(205, line.second.sizeX)
@@ -161,7 +221,7 @@ class TooltipViewerViewWrapperTest {
 
     @Test
     fun `アイテムがなくても検索欄と固定幅のパネルを配置するのだ`() {
-        val view = TooltipViewerViewWrapper(emptyList(), ObservableValue(""), ObservableValue(0.0)) { throw AssertionError("No item tooltip should be requested") }
+        val view = TooltipViewerViewWrapper(emptyList()) { throw AssertionError("No item tooltip should be requested") }
         view.view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
         val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
         val controller = view.place(placements)

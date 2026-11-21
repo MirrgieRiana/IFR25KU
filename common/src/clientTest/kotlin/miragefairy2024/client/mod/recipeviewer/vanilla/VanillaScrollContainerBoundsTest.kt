@@ -8,10 +8,13 @@ import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.ScrollBounds
-import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
-import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
+import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
+import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
+import miragefairy2024.util.EventRegistry
+import miragefairy2024.util.Remover
 import miragefairy2024.util.register
+import net.minecraft.client.gui.components.AbstractWidget
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -19,7 +22,7 @@ import org.mockito.Mockito
 private class BoundsTestView : FixedWidgetView(IntPoint(300, 300))
 
 private class BoundsTestFixture(private val horizontal: Boolean, layoutLength: Int) {
-    val view = if (horizontal) XSimpleScrollView() else YSimpleScrollView()
+    val view = if (horizontal) XScrollContainerView() else YScrollContainerView()
     private val context: VanillaViewPlacerContext = Mockito.mock(VanillaViewPlacerContext::class.java)
     private val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
 
@@ -30,13 +33,69 @@ private class BoundsTestFixture(private val horizontal: Boolean, layoutLength: I
         registry.register { _, _: BoundsTestView, _ -> ViewController.NONE }
     }
 
-    fun createWidget(length: Int): VanillaSimpleScrollViewWidget {
+    fun createWidget(length: Int): VanillaScrollContainerViewWidget {
         val bounds = if (horizontal) IntRectangle(10, 20, length, 100) else IntRectangle(10, 20, 100, length)
-        return if (horizontal) VanillaXSimpleScrollViewWidget(view as XSimpleScrollView, bounds, context, registry) else VanillaYSimpleScrollViewWidget(view as YSimpleScrollView, bounds, context, registry)
+        return if (horizontal) VanillaXScrollContainerViewWidget(view as XScrollContainerView, bounds, context, registry) else VanillaYScrollContainerViewWidget(view as YScrollContainerView, bounds, context, registry)
     }
 }
 
-class VanillaSimpleScrollBoundsTest {
+class VanillaScrollContainerBoundsTest {
+    @Test
+    fun `入れ子のスクロール領域でスロットのクリップ矩形を交差させるのだ`() {
+        GuiTestEnvironment().use {
+            val contexts = mutableListOf<VanillaViewPlacerContext>()
+            val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
+            registry.register { context, _: BoundsTestView, _ ->
+                contexts += context
+                ViewController.NONE
+            }
+            val placements = mutableMapOf<Int, () -> IntRectangle?>()
+            val remover = Remover { }
+            val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+                override val origin = IntPoint(5, 10)
+                override val canPlaceMenuSlots = true
+                override val onBeforeRender = EventRegistry<() -> Unit>()
+                override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("No widget should be registered")
+                override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("No widget should be registered")
+                override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover {
+                    placements[slotId] = clipBounds
+                    return remover
+                }
+            }
+            fun createWidget(bounds: IntRectangle, context: VanillaViewPlacerContext): VanillaYScrollContainerViewWidget {
+                val view = YScrollContainerView()
+                view += BoundsTestView()
+                view.initSizeCalculation(Mockito.mock(RenderingProxy::class.java), { bounds.sizeX }, { bounds.sizeY })
+                return VanillaYScrollContainerViewWidget(view, bounds, context, registry)
+            }
+            val outer = createWidget(IntRectangle(10, 20, 80, 60), context)
+            val inner = createWidget(IntRectangle(40, 5, 100, 80), contexts.single())
+            try {
+                val childContext = contexts.last()
+                val slotId = 3
+                var childClipBounds: IntRectangle? = null
+                Assertions.assertFalse(childContext.canPlaceMenuSlots)
+                Assertions.assertSame(remover, childContext.registerMenuSlotPlacement(slotId) { childClipBounds })
+                val clipBounds = placements.getValue(slotId)
+                Assertions.assertEquals(IntRectangle(40, 20, 50, 60), clipBounds())
+
+                childClipBounds = IntRectangle(45, 30, 10, 10)
+                Assertions.assertEquals(IntRectangle(45, 30, 10, 10), clipBounds())
+
+                outer.setSize(40, 15)
+                Assertions.assertEquals(IntRectangle(45, 30, 5, 5), clipBounds())
+
+                inner.setPosition(60, 5)
+                Assertions.assertEquals(IntRectangle(60, 30, 0, 5), clipBounds())
+            } finally {
+                inner.dispose()
+                inner.detach()
+                outer.dispose()
+                outer.detach()
+            }
+        }
+    }
+
     @Test
     fun `バニラの実際の寸法を生成時と非表示中のサイズ変更時に通知するのだ`() {
         listOf(false, true).forEach { horizontal ->

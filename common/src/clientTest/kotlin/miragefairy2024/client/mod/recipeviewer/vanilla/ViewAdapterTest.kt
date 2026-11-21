@@ -145,6 +145,7 @@ private class AdapterFixture(vararg views: TestView) {
                 adapter.removeWidget(widget)
             }
         }
+        override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
     }
     val adapter = ViewAdapter(host)
 
@@ -290,6 +291,7 @@ class ViewAdapterTest {
                 return Remover { renderableWidgets.remove(widget) }
             }
             override fun addRenderableOnly(widget: AbstractWidget) = addRenderableWidget(widget)
+            override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
         })
         adapter.init()
         assertEquals(IntPoint(300, 80), size)
@@ -308,6 +310,38 @@ class ViewAdapterTest {
         adapter.removed()
         assertEquals(2, disposals)
         assertThrows(IllegalStateException::class.java) { adapter.setOffset(IntPoint.ZERO) }
+    }
+
+    @Test
+    fun `配置コンテキストからホストへスロット番号と矩形取得関数を中継するのだ`() {
+        val contexts = mutableListOf<VanillaViewPlacerContext>()
+        val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
+        registry.register(TestView::class.java) { context, _, _ ->
+            contexts += context
+            object : ViewController {
+                override fun setOffset(offset: IntPoint) = Unit
+                override fun detach() = Unit
+            }
+        }
+        val host: ViewAdapterHost = Mockito.mock(ViewAdapterHost::class.java)
+        Mockito.`when`(host.getRenderingProxy()).thenReturn(ADAPTER_RENDERING_PROXY)
+        Mockito.`when`(host.getViewPlacerRegistry()).thenReturn(registry)
+        Mockito.`when`(host.createRootView()).thenReturn(TestView(false))
+        Mockito.`when`(host.getUiOffset()).thenReturn(IntPoint.ZERO)
+        Mockito.`when`(host.canPlaceMenuSlots()).thenReturn(true)
+        val slotId = 3
+        val clipBounds = { IntRectangle(10, 20, 30, 40) }
+        val remover = Remover { }
+        Mockito.`when`(host.registerMenuSlotPlacement(slotId, clipBounds)).thenReturn(remover)
+        val adapter = ViewAdapter(host)
+        adapter.init()
+        try {
+            Assertions.assertTrue(contexts.single().canPlaceMenuSlots)
+            Assertions.assertSame(remover, contexts.single().registerMenuSlotPlacement(slotId, clipBounds))
+            Mockito.verify(host).registerMenuSlotPlacement(slotId, clipBounds)
+        } finally {
+            adapter.removed()
+        }
     }
 
     @Test

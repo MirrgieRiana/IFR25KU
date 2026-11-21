@@ -6,13 +6,18 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
+import miragefairy2024.mod.recipeviewer.view.intersect
 import miragefairy2024.mod.recipeviewer.views.ScrollBounds
-import miragefairy2024.mod.recipeviewer.views.SimpleScrollView
-import miragefairy2024.mod.recipeviewer.views.XSimpleScrollView
-import miragefairy2024.mod.recipeviewer.views.YSimpleScrollView
+import miragefairy2024.mod.recipeviewer.views.ScrollContainerView
+import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
+import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
+import miragefairy2024.util.EventRegistry
+import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
+import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
+import miragefairy2024.util.observeAndInitialize
 import miragefairy2024.util.text
 import miragefairy2024.util.translate
 import mirrg.kotlin.helium.atLeast
@@ -35,8 +40,9 @@ import java.util.Optional
 import kotlin.math.roundToInt
 
 /** 子 Widget の描画・入力・フォーカス・読み上げを中継するスクロール領域なのだ～🌱 */
-abstract class VanillaSimpleScrollViewWidget(
-    protected val view: SimpleScrollView,
+abstract class VanillaScrollContainerViewWidget(
+    protected val view: ScrollContainerView,
+    private val scrollOffsetValue: ObservableValue<Double>,
     bounds: IntRectangle,
     context: VanillaViewPlacerContext,
     registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
@@ -80,6 +86,7 @@ abstract class VanillaSimpleScrollViewWidget(
     // ライフサイクルなのだ～🌱
 
     private var disposed = false
+    private val onClosed = EventRegistry<() -> Unit>()
 
     fun dispose() {
         disposed = true
@@ -87,6 +94,7 @@ abstract class VanillaSimpleScrollViewWidget(
         pressedWidgetRegistrations.clear()
         focused = null
         focusedSelf = false
+        onClosed.fire()
         childController.dispose()
     }
 
@@ -100,20 +108,18 @@ abstract class VanillaSimpleScrollViewWidget(
     protected abstract val viewportLength: Int
     protected abstract fun evaluateContentLength(): Int
 
-    private var scrollOffset = 0.0
-
     private fun evaluateMaxScrollOffset() = evaluateContentLength() - viewportLength atLeast 0
 
     protected abstract fun getChildOffset(scrollOffset: Int): IntPoint
 
     private fun updateScroll(offset: Double): Boolean {
-        if (offset == scrollOffset) return false
-        scrollOffset = offset
-        childController.setOffset(getChildOffset(scrollOffset.roundToInt()))
-        return true
+        val old = scrollOffsetValue.value
+        scrollOffsetValue.value = offset
+        return scrollOffsetValue.value != old
     }
 
     private fun scrollBy(delta: Double): Boolean {
+        val scrollOffset = scrollOffsetValue.value
         val maxScrollOffset = evaluateMaxScrollOffset().toDouble()
         // 範囲外から戻る途中も、入力の移動量で少しずつ戻れるようにするのだ～🌱
         return when {
@@ -123,7 +129,7 @@ abstract class VanillaSimpleScrollViewWidget(
         }
     }
 
-    private fun updateScrollBounds() {
+    fun updateScrollBounds() {
         if (!disposed) view.scrollBounds.value = ScrollBounds(evaluateContentLength() atLeast 0, viewportLength atLeast 0)
     }
 
@@ -144,7 +150,7 @@ abstract class VanillaSimpleScrollViewWidget(
 
     override fun setPosition(x: Int, y: Int) {
         super.setPosition(x, y)
-        childController.setOffset(getChildOffset(scrollOffset.roundToInt()))
+        childController.setOffset(getChildOffset(scrollOffsetValue.value.roundToInt()))
     }
 
 
@@ -300,26 +306,26 @@ abstract class VanillaSimpleScrollViewWidget(
                     path.applyFocus(focused)
                     // 子のフォーカスが変わったら、適宜それを収めるようにスクロールするのだ～🌱
                     if (focused) {
-                        val actualFocused = this@VanillaSimpleScrollViewWidget.focused?.getActualFocused { true } ?: return
+                        val actualFocused = this@VanillaScrollContainerViewWidget.focused?.getActualFocused { true } ?: return
                         val rectangle = actualFocused.rectangle
                         if (rectangle.width() <= 0 || rectangle.height() <= 0) return
-                        updateScroll(scrollOffset + getScrollOffsetDeltaOnFocus(rectangle))
+                        updateScroll(scrollOffsetValue.value + getScrollOffsetDeltaOnFocus(rectangle))
                     }
                 }
             }
         } else {
             // スクロールの余地がなく、かつ現在位置が初期位置の場合は、移動の操作が不可能なので、自身をフォーカスしないのだ～🌱
-            if (evaluateMaxScrollOffset() <= 0 && scrollOffset == 0.0) return null
+            if (evaluateMaxScrollOffset() <= 0 && scrollOffsetValue.value == 0.0) return null
             // 既にフォーカスされている場合は、次のフォーカス先に選ばないのだ～🌱
             if (isFocused) return null
             // 自身を次のフォーカス先にするのだ～🌱
             return object : ComponentPath {
-                override fun component() = this@VanillaSimpleScrollViewWidget
+                override fun component() = this@VanillaScrollContainerViewWidget
 
                 override fun applyFocus(focused: Boolean) {
                     // その経路の適用時に、以前の子の参照を解除するのだ～🌱
-                    if (focused) this@VanillaSimpleScrollViewWidget.focused = null
-                    this@VanillaSimpleScrollViewWidget.isFocused = focused
+                    if (focused) this@VanillaScrollContainerViewWidget.focused = null
+                    this@VanillaScrollContainerViewWidget.isFocused = focused
                 }
             }
         }
@@ -414,22 +420,38 @@ abstract class VanillaSimpleScrollViewWidget(
             override val canPlaceMenuSlots = false
             override fun addRenderableWidget(widget: AbstractWidget) = register(widget, true)
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false)
+            override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover {
+                return context.registerMenuSlotPlacement(slotId) {
+                    val viewportBounds = IntRectangle(x, y, width atLeast 0, height atLeast 0)
+                    val childClipBounds = clipBounds()
+                    if (childClipBounds == null) viewportBounds else viewportBounds.intersect(childClipBounds)
+                }
+            }
         }
         updateScrollBounds()
-        childController = view.childView.attachTo(IntPoint(x, y)) { childView, childBounds ->
+        val initialScrollOffset = scrollOffsetValue.value.roundToInt()
+        childController = view.childView.attachTo(getChildOffset(initialScrollOffset)) { childView, childBounds ->
             registry.place(childContext, childView, childBounds)
+        }
+        scrollOffsetValue.observeAndInitialize(onClosed) { old, new ->
+            if (disposed) return@observeAndInitialize
+            val scrollOffset = scrollOffsetValue.value.roundToInt()
+            // attachTo 内で scrollOffsetValue が書き替えられた場合にも発火するのだ～🌱
+            if (scrollOffset == initialScrollOffset && old == new) return@observeAndInitialize
+            childController.setOffset(getChildOffset(scrollOffset))
         }
     }
 
 }
 
-class VanillaXSimpleScrollViewWidget(
-    view: XSimpleScrollView,
+class VanillaXScrollContainerViewWidget(
+    view: XScrollContainerView,
     bounds: IntRectangle,
     context: VanillaViewPlacerContext,
     registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
-) : VanillaSimpleScrollViewWidget(
+) : VanillaScrollContainerViewWidget(
     view,
+    view.scrollOffsetX,
     bounds,
     context,
     registry,
@@ -461,13 +483,14 @@ class VanillaXSimpleScrollViewWidget(
 
 }
 
-class VanillaYSimpleScrollViewWidget(
-    view: YSimpleScrollView,
+class VanillaYScrollContainerViewWidget(
+    view: YScrollContainerView,
     bounds: IntRectangle,
     context: VanillaViewPlacerContext,
     registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
-) : VanillaSimpleScrollViewWidget(
+) : VanillaScrollContainerViewWidget(
     view,
+    view.scrollOffsetY,
     bounds,
     context,
     registry,
