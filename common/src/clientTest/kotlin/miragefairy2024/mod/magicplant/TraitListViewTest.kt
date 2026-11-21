@@ -72,7 +72,7 @@ class TraitListViewTest {
     }
 
     @Test
-    fun `行の選択でカードだけを差し替え一覧のスクロール位置を保つのだ`() {
+    fun `左クリックだけでカードを切り替え一覧のスクロール位置を保つのだ`() {
         val player: Player = Mockito.mock(Player::class.java)
         val level: Level = Mockito.mock(Level::class.java)
         Mockito.`when`(player.level()).thenReturn(level)
@@ -119,7 +119,11 @@ class TraitListViewTest {
             listScrollbarView.scrollOffset.value = 30.0
             val row = placements.keys.filterIsInstance<ClickableView>()[1]
             val rowBounds = placements.getValue(row)
-            Assertions.assertTrue(ClickableViewRenderer.mouseClicked(row, Slot(Unit), rowBounds, rowBounds.x, rowBounds.y, 1))
+            Assertions.assertFalse(ClickableViewRenderer.mouseClicked(row, Slot(Unit), rowBounds, rowBounds.x, rowBounds.y, 1))
+            Assertions.assertFalse(ClickableViewRenderer.mouseClicked(row, Slot(Unit), rowBounds, rowBounds.x, rowBounds.y, 2))
+            Assertions.assertEquals(traits[0].texture, placements.keys.filterIsInstance<ImageView>().single().texture.id)
+
+            Assertions.assertTrue(ClickableViewRenderer.mouseClicked(row, Slot(Unit), rowBounds, rowBounds.x, rowBounds.y, 0))
 
             Assertions.assertEquals(traits[1].texture, placements.keys.filterIsInstance<ImageView>().single().texture.id)
             Assertions.assertFalse(placements.containsKey(bodyScrollView))

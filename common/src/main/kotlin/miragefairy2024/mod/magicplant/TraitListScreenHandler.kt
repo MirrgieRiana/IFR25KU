@@ -248,7 +248,6 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                                             }
                                             view.shadow = false
                                         }.wrapClickable {
-                                            view.mouseButton = null
                                             view.playClickSound = false
                                             view.onClick.register {
                                                 cardContent.content.value = createTraitCardView(traitStack)
