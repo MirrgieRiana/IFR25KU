@@ -217,6 +217,7 @@ fun initIfrEncyclopedia() {
     }
 
     IfrEncyclopediaRecipeViewerCategoryCard.init()
+    initIfrEncyclopediaPageScreen()
 }
 
 val onOpenIfrEncyclopediaPageScreen = EventRegistry<(IfrEncyclopediaEntryCard) -> Boolean>()
