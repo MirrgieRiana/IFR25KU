@@ -192,10 +192,10 @@ class VanillaViewPlacersTest {
     }
 
     @Test
-    fun `親で Slot を配置できても縦横スクロールと入れ子の内側では拒否するのだ`() {
+    fun `親がスロット配置を許可しない場合は縦横スクロールと入れ子の内側でも拒否するのだ`() {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint.ZERO
-            override val canPlaceMenuSlots = true
+            override val canPlaceMenuSlots = false
             override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("Placement must fail before widget registration")
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Placement must fail before widget registration")
