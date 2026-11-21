@@ -1,6 +1,5 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
-import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.math.Axis
 import miragefairy2024.client.util.stack
@@ -99,16 +98,11 @@ class VanillaXInventoryScrollbarViewWidget(
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         if (scrollbarThickness < 2 || scrollbarLength < 2) return
-        RenderSystem.enableBlend()
-        try {
-            val pose: PoseStack = guiGraphics.pose()
-            pose.stack {
-                pose.translate(x.toFloat(), (y + height).toFloat(), 0F)
-                pose.mulPose(Axis.ZN.rotationDegrees(90F))
-                renderVerticalScrollbar(guiGraphics, 0, 0)
-            }
-        } finally {
-            RenderSystem.disableBlend()
+        val pose: PoseStack = guiGraphics.pose()
+        pose.stack {
+            pose.translate(x.toFloat(), (y + height).toFloat(), 0F)
+            pose.mulPose(Axis.ZN.rotationDegrees(90F))
+            renderVerticalScrollbar(guiGraphics, 0, 0)
         }
     }
 
@@ -139,12 +133,7 @@ class VanillaYInventoryScrollbarViewWidget(
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         if (scrollbarThickness < 2 || scrollbarLength < 2) return
-        RenderSystem.enableBlend()
-        try {
-            renderVerticalScrollbar(guiGraphics, x, y)
-        } finally {
-            RenderSystem.disableBlend()
-        }
+        renderVerticalScrollbar(guiGraphics, x, y)
     }
 
 }
