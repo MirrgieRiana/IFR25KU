@@ -86,7 +86,7 @@ fun initVanillaViewPlacers() {
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YScrollContainerView, bounds ->
         placeScrollContainerView(context, VanillaYScrollContainerViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
     }
-    fun placeScrollbarView(context: VanillaViewPlacerContext, widget: VanillaScrollbarViewWidget): ViewController {
+    fun placeScrollbarView(context: VanillaViewPlacerContext, widget: VanillaFlatScrollbarViewWidget): ViewController {
         val controller = context place widget
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {
