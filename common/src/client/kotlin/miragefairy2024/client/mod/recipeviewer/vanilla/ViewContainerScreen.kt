@@ -5,9 +5,8 @@ import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.contains
 import miragefairy2024.mod.recipeviewer.view.intersect
-import miragefairy2024.mod.recipeviewer.view.x2
-import miragefairy2024.mod.recipeviewer.view.y2
 import miragefairy2024.util.Remover
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
@@ -144,7 +143,7 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
     }
 
     private fun isSlotVisibleAt(slot: Slot, clipBounds: IntRectangle, mouseX: Double, mouseY: Double): Boolean {
-        if (mouseX < clipBounds.x || mouseX >= clipBounds.x2 || mouseY < clipBounds.y || mouseY >= clipBounds.y2) return false
+        if (!clipBounds.contains(mouseX, mouseY)) return false
         // バニラの当たり判定の余白がクリップに触れていても、描画が全く見えないスロットは対象にしないのだ～🌱
         val slotBounds = IntRectangle(leftPos + slot.x, topPos + slot.y, 16, 16)
         val visibleBounds = slotBounds.intersect(clipBounds)
