@@ -39,7 +39,7 @@ class VanillaXScrollbarViewWidget(
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
 
     // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
-    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
+    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int, scrollable: Boolean) {
         guiGraphics.fill(
             x + start,
             y,
@@ -75,7 +75,7 @@ class VanillaYScrollbarViewWidget(
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
 
     // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
-    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int) {
+    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int, scrollable: Boolean) {
         guiGraphics.fill(
             x,
             y + start,

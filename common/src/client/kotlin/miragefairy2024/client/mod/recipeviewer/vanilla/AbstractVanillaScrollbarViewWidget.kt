@@ -86,14 +86,14 @@ abstract class AbstractVanillaScrollbarViewWidget<V : AbstractScrollbarView>(
 
     protected abstract fun shouldRenderScrollbar(scrollable: Boolean): Boolean
 
-    protected abstract fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int)
+    protected abstract fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int, scrollable: Boolean)
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         // スクロールバーの描画なのだ～🌱
         val range = evaluateScrollRange()
         val scrollable = range.start < range.endInclusive
         if (!shouldRenderScrollbar(scrollable)) return
-        renderScrollbar(guiGraphics, evaluateThumbPosition().roundToInt(), evaluateThumbLength())
+        renderScrollbar(guiGraphics, evaluateThumbPosition().roundToInt(), evaluateThumbLength(), scrollable)
     }
 
     protected abstract fun getMousePosition(mouseX: Double, mouseY: Double): Double
