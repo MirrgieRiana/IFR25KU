@@ -8,8 +8,8 @@ import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.views.FixedView
+import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
-import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import org.junit.jupiter.api.Assertions
@@ -38,15 +38,15 @@ class VanillaScrollConnectionTest {
             val context = Mockito.mock(VanillaViewPlacerContext::class.java)
             val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
             val scroll = VanillaYScrollContainerViewWidget(scrollView, IntRectangle(10, 20, 100, 100), context, registry)
-            val barView = YScrollbarView()
-            val bar = VanillaYScrollbarViewWidget(barView, IntRectangle(250, 20, 5, 100))
+            val barView = YFlatScrollbarView()
+            val bar = VanillaYFlatScrollbarViewWidget(barView, IntRectangle(250, 20, 5, 100))
             try {
                 Assertions.assertTrue(scroll.mouseScrolled(50.0, 50.0, 0.0, -1.0))
                 val connection = connectScrollbar(scrollView, barView)
                 try {
-                    Assertions.assertEquals(15.0, barView.scrollOffsetY.value)
+                    Assertions.assertEquals(15.0, barView.scrollOffset.value)
 
-                    barView.scrollOffsetY.value = 120.5
+                    barView.scrollOffset.value = 120.5
                     scroll.setSize(100, 200)
                     Assertions.assertEquals(IntPoint(10, -101), childOffset)
                     Assertions.assertFalse(scroll.mouseScrolled(50.0, 50.0, 0.0, -1.0))
@@ -67,14 +67,14 @@ class VanillaScrollConnectionTest {
                     scrollView.scrollOffsetY.value = 55.25
                     connection.remove()
                     Assertions.assertEquals(55.25, scrollView.scrollOffsetY.value)
-                    Assertions.assertEquals(55.25, barView.scrollOffsetY.value)
+                    Assertions.assertEquals(55.25, barView.scrollOffset.value)
                     Assertions.assertTrue(scroll.mouseScrolled(50.0, 50.0, 0.0, -1.0))
                     Assertions.assertTrue(bar.mouseScrolled(252.0, 50.0, 0.0, 1.0))
                     Assertions.assertEquals(IntPoint(10, -50), childOffset)
                     bar.render(environment.graphics, 0, 0, 0.0F)
                     Assertions.assertEquals(IntRectangle(250, 33, 5, 67), environment.fills.last())
                     Assertions.assertEquals(70.25, scrollView.scrollOffsetY.value)
-                    Assertions.assertEquals(40.25, barView.scrollOffsetY.value)
+                    Assertions.assertEquals(40.25, barView.scrollOffset.value)
                 } finally {
                     connection.remove()
                 }

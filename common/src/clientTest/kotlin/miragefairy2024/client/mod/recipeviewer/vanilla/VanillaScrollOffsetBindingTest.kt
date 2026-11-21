@@ -7,10 +7,10 @@ import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
+import miragefairy2024.mod.recipeviewer.views.XFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
-import miragefairy2024.mod.recipeviewer.views.XScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
-import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import net.minecraft.client.gui.components.AbstractWidget
 import org.junit.jupiter.api.Assertions
@@ -68,12 +68,12 @@ class VanillaScrollOffsetBindingTest {
                     second.dispose()
                     second.detach()
                 }
-                val bar = if (horizontal) XScrollbarView() else YScrollbarView()
-                val barOffset = if (horizontal) (bar as XScrollbarView).scrollOffsetX else (bar as YScrollbarView).scrollOffsetY
+                val bar = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
+                val barOffset = bar.scrollOffset
                 bar.contentLength = 300
                 bar.viewportLength = 100
                 barOffset.value = 999.75
-                val scrollbar = if (horizontal) VanillaXScrollbarViewWidget(bar as XScrollbarView, IntRectangle(10, 200, 100, 5)) else VanillaYScrollbarViewWidget(bar as YScrollbarView, IntRectangle(200, 20, 5, 100))
+                val scrollbar = if (horizontal) VanillaXFlatScrollbarViewWidget(bar as XFlatScrollbarView, IntRectangle(10, 200, 100, 5)) else VanillaYFlatScrollbarViewWidget(bar as YFlatScrollbarView, IntRectangle(200, 20, 5, 100))
                 try {
                     scrollbar.render(environment.graphics, 50, 50, 0.0F)
                     Assertions.assertEquals(if (horizontal) IntRectangle(101, 200, 9, 5) else IntRectangle(200, 111, 5, 9), environment.fills.last())

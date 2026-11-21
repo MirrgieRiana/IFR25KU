@@ -29,12 +29,6 @@ object MultiLineTextViewRenderer : ViewRenderer<MultiLineTextView, Unit> {
                 view.shadow,
             )
         }
-        if (isHovered) {
-            val tooltip = view.tooltip
-            if (tooltip != null && tooltip.isNotEmpty()) {
-                Minecraft.getInstance().screen?.setTooltipForNextRenderPass(tooltip.map { it.visualOrderText })
-            }
-        }
     }
 
 }
