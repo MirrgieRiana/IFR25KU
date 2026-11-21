@@ -69,7 +69,7 @@ class VanillaScrollOffsetBindingTest {
                     second.detach()
                 }
                 val bar = if (horizontal) XScrollbarView() else YScrollbarView()
-                val barOffset = if (horizontal) (bar as XScrollbarView).scrollOffsetX else (bar as YScrollbarView).scrollOffsetY
+                val barOffset = bar.scrollOffset
                 bar.contentLength = 300
                 bar.viewportLength = 100
                 barOffset.value = 999.75

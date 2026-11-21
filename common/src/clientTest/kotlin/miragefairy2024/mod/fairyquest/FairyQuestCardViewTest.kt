@@ -89,8 +89,8 @@ class FairyQuestCardViewTest {
         Assertions.assertEquals(scrollBounds.sizeY, scrollbar.viewportLength)
         Assertions.assertEquals(scroll.childView.evaluateActualSizeY(), scrollbar.contentLength)
         scroll.scrollOffsetY.value = 15.0
-        Assertions.assertEquals(15.0, scrollbar.scrollOffsetY.value)
-        scrollbar.scrollOffsetY.value = 30.0
+        Assertions.assertEquals(15.0, scrollbar.scrollOffset.value)
+        scrollbar.scrollOffset.value = 30.0
         Assertions.assertEquals(30.0, scroll.scrollOffsetY.value)
         val messageTextBounds = mutableListOf<IntRectangle>()
         scroll.childView.attachTo(IntPoint.ZERO) { view, bounds ->
