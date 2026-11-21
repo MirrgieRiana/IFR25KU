@@ -7,7 +7,7 @@ import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import net.minecraft.client.gui.GuiGraphics
 import org.lwjgl.glfw.GLFW
 
-abstract class VanillaScrollbarViewWidget(view: ScrollbarView, bounds: IntRectangle) : AbstractVanillaScrollbarViewWidget(view, bounds)
+abstract class VanillaScrollbarViewWidget(view: ScrollbarView, bounds: IntRectangle) : AbstractVanillaScrollbarViewWidget<ScrollbarView>(view, bounds)
 
 class VanillaXScrollbarViewWidget(
     view: XScrollbarView,
