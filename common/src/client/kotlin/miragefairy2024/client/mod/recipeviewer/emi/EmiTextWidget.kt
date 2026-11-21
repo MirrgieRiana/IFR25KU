@@ -10,7 +10,6 @@ import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.util.toEmiBounds
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 
 class EmiTextWidget(private val offset: IntPoint, private val view: TextView) : Widget() {
 
@@ -51,7 +50,5 @@ class EmiTextWidget(private val offset: IntPoint, private val view: TextView) : 
             )
         }
     }
-
-    override fun getTooltip(mouseX: Int, mouseY: Int) = view.tooltip?.let { tooltip -> tooltip.map { ClientTooltipComponent.create(it.visualOrderText) } } ?: listOf()
 
 }
