@@ -30,7 +30,7 @@ object ElevatedSpawnerFeatureCard {
     val feature = ElevatedSpawnerFeature(NoneFeatureConfiguration.CODEC)
     val placedFeatureKey = Registries.PLACED_FEATURE with identifier
 
-    context(ModContext)
+    context(_: ModContext)
     fun init() {
         Registration(BuiltInRegistries.FEATURE, identifier) { feature }.register()
         feature.generator(identifier) {

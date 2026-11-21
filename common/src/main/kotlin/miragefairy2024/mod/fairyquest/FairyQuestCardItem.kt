@@ -73,7 +73,7 @@ object FairyQuestCardCard {
 
 private val fairyQuestCardFairyQuestTranslation = Translation({ FairyQuestCardCard.item().descriptionId + ".format" }, "“%s”", "『%s』")
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyQuestCardItem() {
     FairyQuestCardCard.let { card ->
         card.item.register()

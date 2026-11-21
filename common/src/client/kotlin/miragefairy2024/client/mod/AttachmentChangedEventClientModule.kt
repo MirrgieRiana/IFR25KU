@@ -6,7 +6,7 @@ import miragefairy2024.mod.AttachmentChangedEventChannel
 import miragefairy2024.util.fire
 import miragefairy2024.util.registerClientPacketReceiver
 
-context(ModContext)
+context(_: ModContext)
 fun initAttachmentChangedEventClientModule() {
     AttachmentChangedEventChannel.registerClientPacketReceiver { packet ->
         AttachmentChangedEvent.eventRegistry.fire { it(packet) }

@@ -93,7 +93,7 @@ object AuraReflectorFurnaceCard : SimpleMachineCard<AuraReflectorFurnaceBlock, A
         type = AdvancementCardType.NORMAL,
     )
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 
@@ -113,7 +113,7 @@ object AuraReflectorFurnaceCard : SimpleMachineCard<AuraReflectorFurnaceBlock, A
         } on MaterialCard.XARPITE.item
     }
 
-    context(ModContext)
+    context(_: ModContext)
     override fun registerBlockStateGeneration() {
         block.registerVariantsBlockStateGeneration {
             normal("block/" * block().getIdentifier())

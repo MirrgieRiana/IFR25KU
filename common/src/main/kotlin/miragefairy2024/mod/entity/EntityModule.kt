@@ -2,7 +2,7 @@ package miragefairy2024.mod.entity
 
 import miragefairy2024.ModContext
 
-context(ModContext)
+context(_: ModContext)
 fun initEntityModule() {
     AntimatterBoltCard.init()
     ChaosCubeCard.init()

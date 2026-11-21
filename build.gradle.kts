@@ -109,7 +109,7 @@ subprojects.filter { it.name in listOf("common", "fabric", "neoforge") }.f {
         tasks.withType<KotlinJvmCompile>().configureEach {
             compilerOptions {
                 jvmTarget.set(JvmTarget.JVM_21)
-                freeCompilerArgs.add("-Xcontext-receivers")
+                freeCompilerArgs.add("-Xcontext-parameters")
             }
         }
 

@@ -280,7 +280,7 @@ abstract class TreeBlockCard(val configuration: TreeBlockConfiguration) {
     open suspend fun createItem(block: Block, properties: Item.Properties) = BlockItem(block, properties)
     val item = Registration(BuiltInRegistries.ITEM, identifier) { createItem(block.await(), Item.Properties()) }
 
-    context(ModContext)
+    context(_: ModContext)
     open fun init() {
 
         // 登録
@@ -311,7 +311,7 @@ fun createBaseWoodSetting(sound: Boolean = true): BlockBehaviour.Properties = Bl
     .let { if (sound) it.sound(SoundType.WOOD) else it }
     .ignitedByLava()
 
-context(ModContext)
+context(_: ModContext)
 fun initTreeBlocks() {
     TreeBlockCard.entries.forEach { card ->
         card.init()

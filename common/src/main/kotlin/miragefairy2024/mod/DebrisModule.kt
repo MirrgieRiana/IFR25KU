@@ -101,7 +101,7 @@ enum class DebrisCard(
     }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initDebrisModule() {
     DebrisRecipeViewerCategoryCard.init()
 

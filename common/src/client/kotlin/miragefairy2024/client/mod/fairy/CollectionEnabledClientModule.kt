@@ -20,7 +20,7 @@ val toggleCollectionEnabledKeyMappingCard = KeyMappingCard(
     SetCollectionEnabledChannel.sendToServer(!player.collectionEnabled.getOrDefault())
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initCollectionEnabledClientModule() {
     toggleCollectionEnabledKeyMappingCard.init()
 }

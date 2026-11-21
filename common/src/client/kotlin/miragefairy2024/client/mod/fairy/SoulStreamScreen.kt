@@ -108,7 +108,7 @@ val BUTTON_14_BACKGROUND = WidgetSprites(
     MirageFairy2024.identifier("button_14/background_focused"),
 )
 
-context(ModContext)
+context(_: ModContext)
 fun initSoulStreamClientModule() {
 
     // GUI登録

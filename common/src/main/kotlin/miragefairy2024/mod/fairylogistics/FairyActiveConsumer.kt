@@ -80,7 +80,7 @@ object FairyActiveConsumerCard : FairyLogisticsCard<FairyActiveConsumerBlock, Fa
     val FILTER_SLOT = SLOTS.last()
     val CONTAINER_SLOTS = SLOTS.filter { it != FILTER_SLOT }
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 

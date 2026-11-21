@@ -59,7 +59,7 @@ val placeItemKeyMappingCard = KeyMappingCard(
     }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initPlacedItemClientModule() {
     placeItemKeyMappingCard.init()
 }

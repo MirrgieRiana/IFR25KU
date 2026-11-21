@@ -73,7 +73,7 @@ object WeatheredAncientRemnantsCard {
         type = AdvancementCardType.TOAST_AND_JEWELS,
     )
 
-    context(ModContext)
+    context(_: ModContext)
     fun init() {
 
         translation.enJa()

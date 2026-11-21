@@ -140,7 +140,7 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
             }.build()).build()
     }
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 

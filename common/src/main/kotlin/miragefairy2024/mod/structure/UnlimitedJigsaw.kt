@@ -27,7 +27,7 @@ import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure
 import net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings
 import java.util.Optional
 
-context(ModContext)
+context(_: ModContext)
 fun initUnlimitedJigsaw() {
     UnlimitedJigsawCard.let { card ->
         Registration(BuiltInRegistries.STRUCTURE_TYPE, card.identifier) { card.structureType }.register()

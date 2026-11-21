@@ -81,7 +81,7 @@ enum class FoodIngredientCategoryCard(path: String, enName: String, jaName: Stri
     override val text get() = text { translation() }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initFoodIngredientsModule() {
     FoodIngredientCategoryCard.entries.forEach { card ->
         card.translation.enJa()

@@ -64,7 +64,7 @@ val RARITY_DATA_COMPONENT_TYPE: DataComponentType<Int> = DataComponentType.build
     .networkSynchronized(ByteBufCodecs.VAR_INT)
     .build()
 
-context(ModContext)
+context(_: ModContext)
 fun initMagicPlantModule() {
 
     Registration(BuiltInRegistries.DATA_COMPONENT_TYPE, MirageFairy2024.identifier("trait_stacks")) { TRAIT_STACKS_DATA_COMPONENT_TYPE }.register()

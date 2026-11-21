@@ -140,7 +140,7 @@ enum class BagCard(
 }
 
 
-context(ModContext)
+context(_: ModContext)
 fun initBagModule() {
     BagCard.BAG_ITEM_TAG.enJa(EnJa("Bag", "カバン"))
 
