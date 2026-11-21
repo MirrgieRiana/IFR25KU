@@ -17,10 +17,10 @@ import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
+import miragefairy2024.mod.recipeviewer.views.XFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
-import miragefairy2024.mod.recipeviewer.views.XScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
-import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.fire
 import miragefairy2024.util.observeAndInitialize
@@ -103,10 +103,10 @@ fun initVanillaViewPlacers() {
             }
         }
     }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XScrollbarView, bounds ->
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XFlatScrollbarView, bounds ->
         placeScrollbarView(context, VanillaXScrollbarViewWidget(view, bounds))
     }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YScrollbarView, bounds ->
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YFlatScrollbarView, bounds ->
         placeScrollbarView(context, VanillaYScrollbarViewWidget(view, bounds))
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: MenuSlotView, bounds ->

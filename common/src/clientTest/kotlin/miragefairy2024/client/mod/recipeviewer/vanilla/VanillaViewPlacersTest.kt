@@ -19,12 +19,12 @@ import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
+import miragefairy2024.mod.recipeviewer.views.XFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
-import miragefairy2024.mod.recipeviewer.views.XScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
-import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EventRegistry
@@ -341,7 +341,7 @@ class VanillaViewPlacersTest {
                 override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Scrollbars must accept input")
                 override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
             }
-            val view = if (horizontal) XScrollbarView() else YScrollbarView()
+            val view = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
             view.contentLength = 300
             view.viewportLength = 100
             view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
@@ -383,12 +383,12 @@ class VanillaViewPlacersTest {
                     }
                     val leaf = PlacerTestView()
                     val scroll = if (horizontal) XScrollContainerView() else YScrollContainerView()
-                    val bar = if (horizontal) XScrollbarView() else YScrollbarView()
+                    val bar = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
                     val scrollOffset = if (horizontal) (scroll as XScrollContainerView).scrollOffsetX else (scroll as YScrollContainerView).scrollOffsetY
                     val barOffset = bar.scrollOffset
                     scrollOffset.value = 25.25
                     scroll += leaf
-                    val connection = if (horizontal) connectScrollbar(scroll as XScrollContainerView, bar as XScrollbarView) else connectScrollbar(scroll as YScrollContainerView, bar as YScrollbarView)
+                    val connection = if (horizontal) connectScrollbar(scroll as XScrollContainerView, bar as XFlatScrollbarView) else connectScrollbar(scroll as YScrollContainerView, bar as YFlatScrollbarView)
                     val root = if (overlay) {
                         StackView().also {
                             it.sizingX = Sizing.FILL
@@ -471,12 +471,12 @@ class VanillaViewPlacersTest {
                 val leaf = PlacerTestView()
                 val content = DynamicView(leaf)
                 val scroll = if (horizontal) XScrollContainerView() else YScrollContainerView()
-                val bar = if (horizontal) XScrollbarView() else YScrollbarView()
+                val bar = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
                 val scrollOffset = if (horizontal) (scroll as XScrollContainerView).scrollOffsetX else (scroll as YScrollContainerView).scrollOffsetY
                 val barOffset = bar.scrollOffset
                 scroll += content
                 scrollOffset.value = 75.25
-                val connection = if (horizontal) connectScrollbar(scroll as XScrollContainerView, bar as XScrollbarView) else connectScrollbar(scroll as YScrollContainerView, bar as YScrollbarView)
+                val connection = if (horizontal) connectScrollbar(scroll as XScrollContainerView, bar as XFlatScrollbarView) else connectScrollbar(scroll as YScrollContainerView, bar as YFlatScrollbarView)
                 scroll.initSizeCalculation(PLACER_RENDERING_PROXY, { 50 }, { 50 })
                 val controller = scroll.attachTo(context.origin) { view, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds) }
                 val widget = widgets.single() as VanillaScrollContainerViewWidget
