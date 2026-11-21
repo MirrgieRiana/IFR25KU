@@ -60,14 +60,14 @@ infix fun Holder<ConfiguredFeature<*, *>>.with(placementModifiers: List<Placemen
 
 // Init
 
-context(bootstrapContext: BootstrapContext<*>)
+context(context: BootstrapContext<*>)
 operator fun <T> ResourceKey<Registry<T>>.get(key: ResourceKey<T>): Holder<T> {
-    return bootstrapContext.lookup(this).getOrThrow(key)
+    return context.lookup(this).getOrThrow(key)
 }
 
-context(bootstrapContext: BootstrapContext<*>)
+context(context: BootstrapContext<*>)
 operator fun <T> ResourceKey<Registry<T>>.get(key: TagKey<T>): HolderSet.Named<T> {
-    return bootstrapContext.lookup(this).getOrThrow(key)
+    return context.lookup(this).getOrThrow(key)
 }
 
 context(_: ModContext)
@@ -98,41 +98,41 @@ fun <C : FeatureConfiguration> Feature<C>.generator(identifier: ResourceLocation
     block(FeatureGenerationScope(this, identifier))
 }
 
-context(_: ModContext, featureGenerationScope: FeatureGenerationScope<C>)
+context(_: ModContext, scope: FeatureGenerationScope<C>)
 fun <C : FeatureConfiguration> registerConfiguredFeature(suffix: String? = null, configurationCreator: () -> C): ResourceKey<ConfiguredFeature<*, *>> {
-    val actualIdentifier = featureGenerationScope.identifier * (if (suffix != null) "_$suffix" else "")
+    val actualIdentifier = scope.identifier * (if (suffix != null) "_$suffix" else "")
     return registerDynamicGeneration(Registries.CONFIGURED_FEATURE, actualIdentifier) {
-        featureGenerationScope.feature with configurationCreator()
+        scope.feature with configurationCreator()
     }
 }
 
-context(_: ModContext, featureGenerationScope: FeatureGenerationScope<C>)
+context(_: ModContext, scope: FeatureGenerationScope<C>)
 fun <C : FeatureConfiguration> registerConfiguredFeature(configuredFeatureKey: ResourceKey<ConfiguredFeature<*, *>>, configurationCreator: () -> C): ResourceKey<ConfiguredFeature<*, *>> {
     registerDynamicGeneration(configuredFeatureKey) {
-        featureGenerationScope.feature with configurationCreator()
+        scope.feature with configurationCreator()
     }
     return configuredFeatureKey
 }
 
-context(_: ModContext, featureGenerationScope: FeatureGenerationScope<C>)
+context(_: ModContext, scope: FeatureGenerationScope<C>)
 fun <C : FeatureConfiguration> ResourceKey<ConfiguredFeature<*, *>>.generator(block: ConfiguredFeatureGenerationScope<C>.() -> Unit) {
-    block(ConfiguredFeatureGenerationScope(this, featureGenerationScope.identifier))
+    block(ConfiguredFeatureGenerationScope(this, scope.identifier))
 }
 
-context(_: ModContext, configuredFeatureGenerationScope: ConfiguredFeatureGenerationScope<C>)
+context(_: ModContext, scope: ConfiguredFeatureGenerationScope<C>)
 fun <C : FeatureConfiguration> registerPlacedFeature(suffix: String? = null, placementModifierCreator: PlacementModifiersScope.() -> List<PlacementModifier>): ResourceKey<PlacedFeature> {
-    val actualIdentifier = configuredFeatureGenerationScope.identifier * (if (suffix != null) "_$suffix" else "")
+    val actualIdentifier = scope.identifier * (if (suffix != null) "_$suffix" else "")
     return registerDynamicGeneration(Registries.PLACED_FEATURE, actualIdentifier) {
         val placementModifiers = placementModifiers { placementModifierCreator() }
-        Registries.CONFIGURED_FEATURE[configuredFeatureGenerationScope.configuredFeatureKey] with placementModifiers
+        Registries.CONFIGURED_FEATURE[scope.configuredFeatureKey] with placementModifiers
     }
 }
 
-context(_: ModContext, configuredFeatureGenerationScope: ConfiguredFeatureGenerationScope<C>)
+context(_: ModContext, scope: ConfiguredFeatureGenerationScope<C>)
 fun <C : FeatureConfiguration> registerPlacedFeature(placedFeatureKey: ResourceKey<PlacedFeature>, placementModifierCreator: PlacementModifiersScope.() -> List<PlacementModifier>): ResourceKey<PlacedFeature> {
     registerDynamicGeneration(placedFeatureKey) {
         val placementModifiers = placementModifiers { placementModifierCreator() }
-        Registries.CONFIGURED_FEATURE[configuredFeatureGenerationScope.configuredFeatureKey] with placementModifiers
+        Registries.CONFIGURED_FEATURE[scope.configuredFeatureKey] with placementModifiers
     }
     return placedFeatureKey
 }
