@@ -194,9 +194,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                             position.alignmentY = Alignment.END
                             // TODO 項目数が増えたら省略
                             // TODO クリックで大きな表を表示
-                        }.tooltip(
-                            listOf(text { DEFAULT_TRAIT_TRANSLATION().gold }) + defaultTraitProducerMagicPlants.map { text { it.second.toString(2)() + " "() + it.first.block().name } },
-                        )
+                        }.tooltip(listOf(text { DEFAULT_TRAIT_TRANSLATION().gold }) + defaultTraitProducerMagicPlants.map { text { it.second.toString(2)() + " "() + it.first.block().name } })
 
                     }
 
@@ -263,9 +261,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                             position.alignmentY = Alignment.END
                             // TODO 項目数が増えたら省略
                             // TODO クリックで大きな表を表示
-                        }.tooltip(
-                            listOf(text { RANDOM_TRAIT_TRANSLATION().gold }) + randomTraitProducerMagicPlants.map { text { (it.second * 100.0 formatAs "%.0f%%")() + " "() + it.first.block().name } },
-                        )
+                        }.tooltip(listOf(text { RANDOM_TRAIT_TRANSLATION().gold }) + randomTraitProducerMagicPlants.map { text { (it.second * 100.0 formatAs "%.0f%%")() + " "() + it.first.block().name } })
 
                         view += XSpaceView(2)
 
