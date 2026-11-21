@@ -7,12 +7,12 @@ import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import net.minecraft.client.gui.GuiGraphics
 import org.lwjgl.glfw.GLFW
 
-abstract class VanillaScrollbarViewWidget(view: FlatScrollbarView, bounds: IntRectangle) : AbstractVanillaScrollbarViewWidget<FlatScrollbarView>(view, bounds)
+abstract class VanillaFlatScrollbarViewWidget(view: FlatScrollbarView, bounds: IntRectangle) : AbstractVanillaScrollbarViewWidget<FlatScrollbarView>(view, bounds)
 
-class VanillaXScrollbarViewWidget(
+class VanillaXFlatScrollbarViewWidget(
     view: XFlatScrollbarView,
     bounds: IntRectangle,
-) : VanillaScrollbarViewWidget(
+) : VanillaFlatScrollbarViewWidget(
     view,
     bounds,
 ) {
@@ -47,10 +47,10 @@ class VanillaXScrollbarViewWidget(
 
 }
 
-class VanillaYScrollbarViewWidget(
+class VanillaYFlatScrollbarViewWidget(
     view: YFlatScrollbarView,
     bounds: IntRectangle,
-) : VanillaScrollbarViewWidget(
+) : VanillaFlatScrollbarViewWidget(
     view,
     bounds,
 ) {
