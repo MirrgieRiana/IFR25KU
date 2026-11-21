@@ -22,6 +22,9 @@ import mirrg.kotlin.helium.Slot
 import mirrg.kotlin.helium.atLeast
 import net.fabricmc.fabric.mixin.registry.sync.RegistriesAccessor
 import net.minecraft.SharedConstants
+import net.minecraft.client.Minecraft
+import net.minecraft.client.resources.sounds.SoundInstance
+import net.minecraft.client.sounds.SoundManager
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Holder
 import net.minecraft.core.MappedRegistry
@@ -119,11 +122,19 @@ class TraitListViewTest {
             listScrollbarView.scrollOffset.value = 30.0
             val row = placements.keys.filterIsInstance<ClickableView>()[1]
             val rowBounds = placements.getValue(row)
-            Assertions.assertFalse(ClickableViewRenderer.mouseClicked(row, Slot(Unit), rowBounds, rowBounds.x, rowBounds.y, 1))
-            Assertions.assertFalse(ClickableViewRenderer.mouseClicked(row, Slot(Unit), rowBounds, rowBounds.x, rowBounds.y, 2))
-            Assertions.assertEquals(traits[0].texture, placements.keys.filterIsInstance<ImageView>().single().texture.id)
+            val minecraft: Minecraft = Mockito.mock(Minecraft::class.java)
+            val soundManager: SoundManager = Mockito.mock(SoundManager::class.java)
+            Mockito.`when`(minecraft.soundManager).thenReturn(soundManager)
+            Mockito.mockStatic(Minecraft::class.java).use { mock ->
+                mock.`when`<Minecraft> { Minecraft.getInstance() }.thenReturn(minecraft)
+                Assertions.assertFalse(ClickableViewRenderer.mouseClicked(row, Slot(Unit), rowBounds, rowBounds.x, rowBounds.y, 1))
+                Assertions.assertFalse(ClickableViewRenderer.mouseClicked(row, Slot(Unit), rowBounds, rowBounds.x, rowBounds.y, 2))
+                Assertions.assertEquals(traits[0].texture, placements.keys.filterIsInstance<ImageView>().single().texture.id)
+                Mockito.verifyNoInteractions(soundManager)
 
-            Assertions.assertTrue(ClickableViewRenderer.mouseClicked(row, Slot(Unit), rowBounds, rowBounds.x, rowBounds.y, 0))
+                Assertions.assertTrue(ClickableViewRenderer.mouseClicked(row, Slot(Unit), rowBounds, rowBounds.x, rowBounds.y, 0))
+                Mockito.verify(soundManager).play(Mockito.any(SoundInstance::class.java))
+            }
 
             Assertions.assertEquals(traits[1].texture, placements.keys.filterIsInstance<ImageView>().single().texture.id)
             Assertions.assertFalse(placements.containsKey(bodyScrollView))

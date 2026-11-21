@@ -14,8 +14,6 @@ class ClickableView : WrapperView(), PlaceableView {
     val onClick = EventRegistry<() -> Boolean>()
     var hoverOverlayColor = 0x80FFFFFF.toInt()
 
-    var playClickSound = true
-
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
         return super.attachTo(offset, viewPlacer) + viewPlacer.place(this, offset.sized(evaluateActualSize()))
     }

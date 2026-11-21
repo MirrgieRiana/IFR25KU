@@ -33,9 +33,9 @@ import miragefairy2024.mod.recipeviewer.views.maxContentSizeX
 import miragefairy2024.mod.recipeviewer.views.maxContentSizeY
 import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.minContentSizeY
+import miragefairy2024.mod.recipeviewer.views.onClick
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.mod.recipeviewer.views.tooltip
-import miragefairy2024.mod.recipeviewer.views.wrapClickable
 import miragefairy2024.util.Registration
 import miragefairy2024.util.Translation
 import miragefairy2024.util.darkGray
@@ -247,12 +247,9 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                                                 texts.join(" "())
                                             }
                                             view.shadow = false
-                                        }.wrapClickable {
-                                            view.playClickSound = false
-                                            view.onClick.register {
-                                                cardContent.content.value = createTraitCardView(traitStack)
-                                                true
-                                            }
+                                        }.onClick {
+                                            cardContent.content.value = createTraitCardView(traitStack)
+                                            true
                                         }
                                     }
                                 }

@@ -25,7 +25,7 @@ object ClickableViewRenderer : ViewRenderer<ClickableView, Unit> {
         if (button != 0) return false
         view.onClick.fire {
             if (it()) {
-                if (view.playClickSound) Minecraft.getInstance().soundManager.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F))
+                Minecraft.getInstance().soundManager.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F))
                 return true
             }
         }
