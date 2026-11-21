@@ -14,6 +14,10 @@ class ClickableView : WrapperView(), PlaceableView {
     val onClick = EventRegistry<() -> Boolean>()
     var hoverOverlayColor = 0x80FFFFFF.toInt()
 
+    /** `null` の場合は、すべてのマウスボタンでクリックを受け付けるのだ～🌱 */
+    var mouseButton: Int? = 0
+    var playClickSound = true
+
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
         return super.attachTo(offset, viewPlacer) + viewPlacer.place(this, offset.sized(evaluateActualSize()))
     }

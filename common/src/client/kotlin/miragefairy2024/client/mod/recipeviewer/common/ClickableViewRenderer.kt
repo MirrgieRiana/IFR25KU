@@ -22,10 +22,11 @@ object ClickableViewRenderer : ViewRenderer<ClickableView, Unit> {
     override fun isFocusable(view: ClickableView, state: Slot<Unit>) = true
 
     override fun mouseClicked(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int): Boolean {
-        if (button != 0) return false
+        val mouseButton = view.mouseButton
+        if (mouseButton != null && button != mouseButton) return false
         view.onClick.fire {
             if (it()) {
-                Minecraft.getInstance().soundManager.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F))
+                if (view.playClickSound) Minecraft.getInstance().soundManager.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F))
                 return true
             }
         }
