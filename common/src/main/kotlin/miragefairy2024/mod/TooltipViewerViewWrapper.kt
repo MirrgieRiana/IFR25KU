@@ -117,6 +117,7 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, tooltipProvider: (It
             }
         }
 
+        // YListView は配置時に各行の位置を確定するため、行の高さの変化を後続行の位置に反映するには一覧全体の再配置が必要なのだ～🌱
         val contentView = DynamicView(createContentView(""))
 
         view += AlignView().configure {
