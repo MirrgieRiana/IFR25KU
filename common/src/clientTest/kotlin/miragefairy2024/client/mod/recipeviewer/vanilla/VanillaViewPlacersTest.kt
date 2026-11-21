@@ -4,6 +4,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.SlotPositionSetter
 import miragefairy2024.client.util.ViewToast
 import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewController
@@ -18,14 +19,14 @@ import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
+import miragefairy2024.mod.recipeviewer.views.XFlatScrollbarView
+import miragefairy2024.mod.recipeviewer.views.XInventoryScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
-import miragefairy2024.mod.recipeviewer.views.XScrollbarView
-import miragefairy2024.mod.recipeviewer.views.XVanillaScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YInventoryScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
-import miragefairy2024.mod.recipeviewer.views.YScrollbarView
-import miragefairy2024.mod.recipeviewer.views.YVanillaScrollbarView
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EventRegistry
@@ -45,6 +46,7 @@ import net.minecraft.client.gui.components.toasts.ToastComponent
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
+import net.minecraft.world.Container
 import net.minecraft.world.inventory.Slot
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
@@ -104,6 +106,7 @@ class VanillaViewPlacersTest {
             override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget) = Remover.NONE
             override fun addRenderableOnly(widget: AbstractWidget) = Remover.NONE
+            override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
         }
         val scrollContent = YListView()
         scrollContent += PlacerTestView()
@@ -131,6 +134,7 @@ class VanillaViewPlacersTest {
             override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("No widget should be registered")
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("No widget should be registered")
+            override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
         }
         val slot = Slot(null, 0, 11, 22)
         val view = MenuSlotView(slot)
@@ -145,27 +149,48 @@ class VanillaViewPlacersTest {
     }
 
     @Test
-    fun `配置を許可するコンテキストでは Slot の初期配置と移動を中継するのだ`() {
+    fun `動的な Slot の初期配置と移動と差し替えを中継するのだ`() {
+        val placements = mutableSetOf<Int>()
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint(5, 10)
             override val canPlaceMenuSlots = true
             override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("Slots must not register widgets")
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Slots must not register widgets")
+            override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover {
+                Assertions.assertNull(clipBounds())
+                Assertions.assertTrue(placements.add(slotId))
+                return Remover { Assertions.assertTrue(placements.remove(slotId)) }
+            }
         }
         val positions = mutableListOf<IntPoint>()
-        val slot: Slot = object : Slot(null, 0, 0, 0), SlotPositionSetter {
+        val slot: Slot = object : Slot(Mockito.mock(Container::class.java), 0, 0, 0), SlotPositionSetter {
             override fun `mirageFairy2024$setPosition`(x: Int, y: Int) {
                 positions += IntPoint(x, y)
             }
         }
-        val view = MenuSlotView(slot)
+        slot.index = 7
+        val menuSlotView = MenuSlotView(slot)
+        val view = DynamicView(menuSlotView)
         view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
         val controller = view.attachTo(IntPoint(20, 30)) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
-        controller.setOffset(IntPoint(35, 50))
+        try {
+            Assertions.assertEquals(setOf(7), placements)
+            controller.setOffset(IntPoint(35, 50))
+            Assertions.assertEquals(setOf(7), placements)
+            Assertions.assertEquals(listOf(IntPoint(16, 21), IntPoint(31, 41)), positions)
 
-        Assertions.assertEquals(listOf(IntPoint(16, 21), IntPoint(31, 41)), positions)
-        controller.dispose()
+            view.content.value = SpaceView()
+            Assertions.assertTrue(placements.isEmpty())
+
+            view.content.value = menuSlotView
+            Assertions.assertEquals(setOf(7), placements)
+            Assertions.assertEquals(listOf(IntPoint(16, 21), IntPoint(31, 41), IntPoint(31, 41)), positions)
+        } finally {
+            controller.dispose()
+            controller.detach()
+        }
+        Assertions.assertTrue(placements.isEmpty())
     }
 
     @Test
@@ -176,6 +201,7 @@ class VanillaViewPlacersTest {
             override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("Placement must fail before widget registration")
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Placement must fail before widget registration")
+            override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
         }
         listOf(false, true).forEach { horizontal ->
             listOf(false, true).forEach { nested ->
@@ -214,6 +240,7 @@ class VanillaViewPlacersTest {
                 return Remover { widgets.remove(widget) }
             }
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Buttons must accept input")
+            override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
         }
         var presses = 0
         val view = TextButtonView(IntPoint(80, 20)).also { it.message = text { "back"() } }
@@ -250,6 +277,7 @@ class VanillaViewPlacersTest {
                 return Remover { widgets.remove(widget) }
             }
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Buttons must accept input")
+            override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
         }
         val initialMessage = text { "initial"() }
         val view = TextButtonView(IntPoint(80, 20)).also { it.message = initialMessage }
@@ -295,6 +323,7 @@ class VanillaViewPlacersTest {
                     return Remover { screenWidgets.remove(widget) }
                 }
                 override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Scroll containers must accept input")
+                override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
             }
             val leaf = PlacerTestView()
             val view = if (horizontal) XScrollContainerView() else YScrollContainerView()
@@ -334,15 +363,16 @@ class VanillaViewPlacersTest {
                     return Remover { widgets.remove(widget) }
                 }
                 override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Scrollbars must accept input")
+                override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
             }
-            val view = if (horizontal) XScrollbarView() else YScrollbarView()
+            val view = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
             view.contentLength = 300
             view.viewportLength = 100
             view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
             val controller = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
-            val widget = widgets.single() as VanillaScrollbarViewWidget
+            val widget = widgets.single() as VanillaFlatScrollbarViewWidget
             try {
-                Assertions.assertEquals(if (horizontal) VanillaXScrollbarViewWidget::class.java else VanillaYScrollbarViewWidget::class.java, widget.javaClass)
+                Assertions.assertEquals(if (horizontal) VanillaXFlatScrollbarViewWidget::class.java else VanillaYFlatScrollbarViewWidget::class.java, widget.javaClass)
                 Assertions.assertEquals(if (horizontal) IntPoint(100, 5) else IntPoint(5, 100), IntPoint(widget.width, widget.height))
                 controller.setOffset(IntPoint(40, 60))
                 Assertions.assertEquals(IntPoint(40, 60), IntPoint(widget.x, widget.y))
@@ -359,7 +389,7 @@ class VanillaViewPlacersTest {
     }
 
     @Test
-    fun `本番のバニラスクロールバー登録が配置と解除を中継し再配置で位置を保持するのだ`() {
+    fun `本番のインベントリ風スクロールバー登録が配置と解除を中継し再配置で位置を保持するのだ`() {
         listOf(false, true).forEach { horizontal ->
             val widgets = mutableListOf<AbstractWidget>()
             val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
@@ -371,15 +401,16 @@ class VanillaViewPlacersTest {
                     return Remover { widgets.remove(widget) }
                 }
                 override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Scrollbars must accept input")
+                override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
             }
-            val view = if (horizontal) XVanillaScrollbarView() else YVanillaScrollbarView()
+            val view = if (horizontal) XInventoryScrollbarView() else YInventoryScrollbarView()
             view.contentLength = 300
             view.viewportLength = 100
             view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
             val controller = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
-            val widget = widgets.single() as VanillaVanillaScrollbarViewWidget
+            val widget = widgets.single() as VanillaInventoryScrollbarViewWidget
             try {
-                Assertions.assertEquals(if (horizontal) VanillaXVanillaScrollbarViewWidget::class.java else VanillaYVanillaScrollbarViewWidget::class.java, widget.javaClass)
+                Assertions.assertEquals(if (horizontal) VanillaXInventoryScrollbarViewWidget::class.java else VanillaYInventoryScrollbarViewWidget::class.java, widget.javaClass)
                 Assertions.assertEquals(if (horizontal) IntPoint(100, 18) else IntPoint(18, 100), IntPoint(widget.width, widget.height))
                 controller.setOffset(IntPoint(40, 60))
                 Assertions.assertEquals(IntPoint(40, 60), IntPoint(widget.x, widget.y))
@@ -397,7 +428,7 @@ class VanillaViewPlacersTest {
 
             view.initSizeCalculation(PLACER_RENDERING_PROXY, { 120 }, { 120 })
             val newController = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
-            val newWidget = widgets.single() as VanillaVanillaScrollbarViewWidget
+            val newWidget = widgets.single() as VanillaInventoryScrollbarViewWidget
             try {
                 newWidget.isFocused = true
                 Assertions.assertFalse(newWidget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
@@ -424,15 +455,16 @@ class VanillaViewPlacersTest {
                             return Remover { widgets.remove(widget) }
                         }
                         override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Unexpected render-only widget")
+                        override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
                     }
                     val leaf = PlacerTestView()
                     val scroll = if (horizontal) XScrollContainerView() else YScrollContainerView()
-                    val bar = if (horizontal) XScrollbarView() else YScrollbarView()
+                    val bar = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
                     val scrollOffset = if (horizontal) (scroll as XScrollContainerView).scrollOffsetX else (scroll as YScrollContainerView).scrollOffsetY
-                    val barOffset = if (horizontal) (bar as XScrollbarView).scrollOffsetX else (bar as YScrollbarView).scrollOffsetY
+                    val barOffset = bar.scrollOffset
                     scrollOffset.value = 25.25
                     scroll += leaf
-                    val connection = if (horizontal) connectScrollbar(scroll as XScrollContainerView, bar as XScrollbarView) else connectScrollbar(scroll as YScrollContainerView, bar as YScrollbarView)
+                    val connection = if (horizontal) connectScrollbar(scroll as XScrollContainerView, bar as XFlatScrollbarView) else connectScrollbar(scroll as YScrollContainerView, bar as YFlatScrollbarView)
                     val root = if (overlay) {
                         StackView().also {
                             it.sizingX = Sizing.FILL
@@ -453,7 +485,7 @@ class VanillaViewPlacersTest {
                             root.initSizeCalculation(PLACER_RENDERING_PROXY, { if (horizontal || overlay) 50 else 55 }, { if (horizontal && !overlay) viewportLength + 5 else viewportLength })
                             val controller = root.attachTo(context.origin) { view, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds) }
                             val viewport = widgets.filterIsInstance<VanillaScrollContainerViewWidget>().single()
-                            val scrollbar = widgets.filterIsInstance<VanillaScrollbarViewWidget>().single()
+                            val scrollbar = widgets.filterIsInstance<VanillaFlatScrollbarViewWidget>().single()
                             val child = viewport.children().single() as AbstractWidget
                             try {
                                 Assertions.assertEquals(100, bar.contentLength)
@@ -510,16 +542,17 @@ class VanillaViewPlacersTest {
                         return Remover { widgets.remove(widget) }
                     }
                     override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Unexpected render-only widget")
+                    override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
                 }
                 val leaf = PlacerTestView()
                 val content = DynamicView(leaf)
                 val scroll = if (horizontal) XScrollContainerView() else YScrollContainerView()
-                val bar = if (horizontal) XScrollbarView() else YScrollbarView()
+                val bar = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
                 val scrollOffset = if (horizontal) (scroll as XScrollContainerView).scrollOffsetX else (scroll as YScrollContainerView).scrollOffsetY
-                val barOffset = if (horizontal) (bar as XScrollbarView).scrollOffsetX else (bar as YScrollbarView).scrollOffsetY
+                val barOffset = bar.scrollOffset
                 scroll += content
                 scrollOffset.value = 75.25
-                val connection = if (horizontal) connectScrollbar(scroll as XScrollContainerView, bar as XScrollbarView) else connectScrollbar(scroll as YScrollContainerView, bar as YScrollbarView)
+                val connection = if (horizontal) connectScrollbar(scroll as XScrollContainerView, bar as XFlatScrollbarView) else connectScrollbar(scroll as YScrollContainerView, bar as YFlatScrollbarView)
                 scroll.initSizeCalculation(PLACER_RENDERING_PROXY, { 50 }, { 50 })
                 val controller = scroll.attachTo(context.origin) { view, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds) }
                 val widget = widgets.single() as VanillaScrollContainerViewWidget

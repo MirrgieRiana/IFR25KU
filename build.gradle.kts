@@ -11,9 +11,9 @@ import tools.generateResizedImagesOfAllProjects
 import tools.getAllPngFilesInAllProjects
 
 plugins {
-    id("dev.architectury.loom") version "1.7-SNAPSHOT" apply false
+    id("dev.architectury.loom") version "1.9.436" apply false
     //id("maven-publish")
-    kotlin("jvm") version "2.0.0" apply false
+    kotlin("jvm") version "2.2.21" apply false
     id("architectury-plugin") version "3.4-SNAPSHOT"
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     id("com.modrinth.minotaur") version "2.+"

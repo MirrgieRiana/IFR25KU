@@ -1,0 +1,95 @@
+package miragefairy2024.client.mod.recipeviewer.vanilla
+
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.views.FlatScrollbarView
+import miragefairy2024.mod.recipeviewer.views.XFlatScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
+import net.minecraft.client.gui.GuiGraphics
+import org.lwjgl.glfw.GLFW
+import kotlin.math.roundToInt
+
+abstract class VanillaFlatScrollbarViewWidget(view: FlatScrollbarView, bounds: IntRectangle) : VanillaScrollbarViewWidget<FlatScrollbarView>(view, bounds)
+
+class VanillaXFlatScrollbarViewWidget(
+    view: XFlatScrollbarView,
+    bounds: IntRectangle,
+) : VanillaFlatScrollbarViewWidget(
+    view,
+    bounds,
+) {
+
+    // 領域とサイズなのだ～🌱
+
+    override val scrollbarLength get() = width
+    override val scrollbarThickness get() = height
+
+
+    // スクロール操作なのだ～🌱
+
+    override val backwardKey get() = GLFW.GLFW_KEY_LEFT
+    override val forwardKey get() = GLFW.GLFW_KEY_RIGHT
+
+    override fun getMousePosition(mouseX: Double, mouseY: Double) = mouseX - x
+    override fun getDragAmount(dragX: Double, dragY: Double) = dragX
+
+    // 横方向の入力がない場合は、縦方向のホイール入力で横スクロールするのだ～🌱
+    override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
+
+    // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
+    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+        val range = evaluateScrollRange()
+        if (range.start < range.endInclusive && scrollbarThickness > 0 && scrollbarLength > 0) {
+            val start = evaluateThumbPosition().roundToInt()
+            val length = evaluateThumbLength()
+            guiGraphics.fill(
+                x + start,
+                y,
+                x + start + length,
+                y + height,
+                view.scrollbarColor,
+            )
+        }
+    }
+
+}
+
+class VanillaYFlatScrollbarViewWidget(
+    view: YFlatScrollbarView,
+    bounds: IntRectangle,
+) : VanillaFlatScrollbarViewWidget(
+    view,
+    bounds,
+) {
+
+    // 領域とサイズなのだ～🌱
+
+    override val scrollbarLength get() = height
+    override val scrollbarThickness get() = width
+
+
+    // スクロール操作なのだ～🌱
+
+    override val backwardKey get() = GLFW.GLFW_KEY_UP
+    override val forwardKey get() = GLFW.GLFW_KEY_DOWN
+
+    override fun getMousePosition(mouseX: Double, mouseY: Double) = mouseY - y
+    override fun getDragAmount(dragX: Double, dragY: Double) = dragY
+    override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
+
+    // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
+    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+        val range = evaluateScrollRange()
+        if (range.start < range.endInclusive && scrollbarThickness > 0 && scrollbarLength > 0) {
+            val start = evaluateThumbPosition().roundToInt()
+            val length = evaluateThumbLength()
+            guiGraphics.fill(
+                x,
+                y + start,
+                x + width,
+                y + start + length,
+                view.scrollbarColor,
+            )
+        }
+    }
+
+}

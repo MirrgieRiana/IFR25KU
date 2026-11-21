@@ -5,46 +5,26 @@ import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.math.Axis
 import miragefairy2024.client.util.stack
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import miragefairy2024.mod.recipeviewer.views.VanillaScrollbarView
-import miragefairy2024.mod.recipeviewer.views.XVanillaScrollbarView
-import miragefairy2024.mod.recipeviewer.views.YVanillaScrollbarView
-import miragefairy2024.util.ObservableValue
+import miragefairy2024.mod.recipeviewer.views.InventoryScrollbarView
+import miragefairy2024.mod.recipeviewer.views.XInventoryScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YInventoryScrollbarView
 import mirrg.kotlin.helium.atMost
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.resources.ResourceLocation
+import org.lwjgl.glfw.GLFW
+import kotlin.math.roundToInt
 
 private val CREATIVE_INVENTORY_TEXTURE: ResourceLocation = ResourceLocation.withDefaultNamespace("textures/gui/container/creative_inventory/tab_items.png")
 private val SCROLLER_TEXTURE: ResourceLocation = ResourceLocation.withDefaultNamespace("textures/gui/sprites/container/creative_inventory/scroller.png")
 private val DISABLED_SCROLLER_TEXTURE: ResourceLocation = ResourceLocation.withDefaultNamespace("textures/gui/sprites/container/creative_inventory/scroller_disabled.png")
 
-abstract class VanillaVanillaScrollbarViewWidget(
-    view: VanillaScrollbarView,
-    scrollOffsetValue: ObservableValue<Double>,
-    bounds: IntRectangle,
-    horizontal: Boolean,
-) : AbstractVanillaScrollbarViewWidget(view, scrollOffsetValue, bounds, horizontal) {
+abstract class VanillaInventoryScrollbarViewWidget(view: InventoryScrollbarView, bounds: IntRectangle) : VanillaScrollbarViewWidget<InventoryScrollbarView>(view, bounds) {
 
-    override fun shouldRenderScrollbar(scrollable: Boolean) = scrollbarThickness >= 2 && scrollbarLength >= 2
-
-    override fun renderScrollbar(guiGraphics: GuiGraphics, start: Int, length: Int, scrollable: Boolean) {
-        RenderSystem.enableBlend()
-        try {
-            if (horizontal) {
-                val pose: PoseStack = guiGraphics.pose()
-                pose.stack {
-                    pose.translate(x.toFloat(), (y + height).toFloat(), 0F)
-                    pose.mulPose(Axis.ZN.rotationDegrees(90F))
-                    renderVerticalScrollbar(guiGraphics, 0, 0, start, length, scrollable)
-                }
-            } else {
-                renderVerticalScrollbar(guiGraphics, x, y, start, length, scrollable)
-            }
-        } finally {
-            RenderSystem.disableBlend()
-        }
-    }
-
-    private fun renderVerticalScrollbar(guiGraphics: GuiGraphics, x: Int, y: Int, start: Int, length: Int, scrollable: Boolean) {
+    protected fun renderVerticalScrollbar(guiGraphics: GuiGraphics, x: Int, y: Int) {
+        val range = evaluateScrollRange()
+        val scrollable = range.start < range.endInclusive
+        val start = evaluateThumbPosition().roundToInt()
+        val length = evaluateThumbLength()
 
         // クリエイティブインベントリの背景に含まれる溝は、外周の 1 px を保ったまま伸長するのだ～🌱
         fun blitTrackRow(dy: Int, height: Int, v: Float) {
@@ -92,12 +72,79 @@ abstract class VanillaVanillaScrollbarViewWidget(
 
 }
 
-class VanillaXVanillaScrollbarViewWidget(
-    view: XVanillaScrollbarView,
+class VanillaXInventoryScrollbarViewWidget(
+    view: XInventoryScrollbarView,
     bounds: IntRectangle,
-) : VanillaVanillaScrollbarViewWidget(view, view.scrollOffsetX, bounds, horizontal = true)
+) : VanillaInventoryScrollbarViewWidget(
+    view,
+    bounds,
+) {
 
-class VanillaYVanillaScrollbarViewWidget(
-    view: YVanillaScrollbarView,
+    // 領域とサイズなのだ～🌱
+
+    override val scrollbarLength get() = width
+    override val scrollbarThickness get() = height
+
+
+    // スクロール操作なのだ～🌱
+
+    override val backwardKey get() = GLFW.GLFW_KEY_LEFT
+    override val forwardKey get() = GLFW.GLFW_KEY_RIGHT
+
+    override fun getMousePosition(mouseX: Double, mouseY: Double) = mouseX - x
+    override fun getDragAmount(dragX: Double, dragY: Double) = dragX
+
+    // 横方向の入力がない場合は、縦方向のホイール入力で横スクロールするのだ～🌱
+    override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
+
+    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+        if (scrollbarThickness < 2 || scrollbarLength < 2) return
+        RenderSystem.enableBlend()
+        try {
+            val pose: PoseStack = guiGraphics.pose()
+            pose.stack {
+                pose.translate(x.toFloat(), (y + height).toFloat(), 0F)
+                pose.mulPose(Axis.ZN.rotationDegrees(90F))
+                renderVerticalScrollbar(guiGraphics, 0, 0)
+            }
+        } finally {
+            RenderSystem.disableBlend()
+        }
+    }
+
+}
+
+class VanillaYInventoryScrollbarViewWidget(
+    view: YInventoryScrollbarView,
     bounds: IntRectangle,
-) : VanillaVanillaScrollbarViewWidget(view, view.scrollOffsetY, bounds, horizontal = false)
+) : VanillaInventoryScrollbarViewWidget(
+    view,
+    bounds,
+) {
+
+    // 領域とサイズなのだ～🌱
+
+    override val scrollbarLength get() = height
+    override val scrollbarThickness get() = width
+
+
+    // スクロール操作なのだ～🌱
+
+    override val backwardKey get() = GLFW.GLFW_KEY_UP
+    override val forwardKey get() = GLFW.GLFW_KEY_DOWN
+
+    override fun getMousePosition(mouseX: Double, mouseY: Double) = mouseY - y
+    override fun getDragAmount(dragX: Double, dragY: Double) = dragY
+    override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
+
+    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+        if (scrollbarThickness < 2 || scrollbarLength < 2) return
+        RenderSystem.enableBlend()
+        try {
+            renderVerticalScrollbar(guiGraphics, x, y)
+        } finally {
+            RenderSystem.disableBlend()
+        }
+    }
+
+}

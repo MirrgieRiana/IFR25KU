@@ -1,8 +1,8 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import miragefairy2024.mod.recipeviewer.views.XVanillaScrollbarView
-import miragefairy2024.mod.recipeviewer.views.YVanillaScrollbarView
+import miragefairy2024.mod.recipeviewer.views.XInventoryScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YInventoryScrollbarView
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.resources.ResourceLocation
@@ -50,15 +50,15 @@ private class ScrollbarGraphics : GuiGraphics(Minecraft.getInstance(), null) {
     }
 }
 
-class VanillaVanillaScrollbarViewWidgetTest {
+class VanillaInventoryScrollbarViewWidgetTest {
     @Test
     fun `両軸でバニラの背景とつまみを描きスクロール位置を読み書きするのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use {
-                val view = if (horizontal) XVanillaScrollbarView() else YVanillaScrollbarView()
+                val view = if (horizontal) XInventoryScrollbarView() else YInventoryScrollbarView()
                 val bounds = if (horizontal) IntRectangle(10, 20, 100, 18) else IntRectangle(10, 20, 18, 100)
-                val widget = if (view is XVanillaScrollbarView) VanillaXVanillaScrollbarViewWidget(view, bounds) else VanillaYVanillaScrollbarViewWidget(view as YVanillaScrollbarView, bounds)
-                val scrollOffset = if (view is XVanillaScrollbarView) view.scrollOffsetX else (view as YVanillaScrollbarView).scrollOffsetY
+                val widget = if (view is XInventoryScrollbarView) VanillaXInventoryScrollbarViewWidget(view, bounds) else VanillaYInventoryScrollbarViewWidget(view as YInventoryScrollbarView, bounds)
+                val scrollOffset = view.scrollOffset
                 view.contentLength = 300
                 view.viewportLength = 100
                 val mouseX = if (horizontal) 23.0 else 12.0
@@ -101,9 +101,9 @@ class VanillaVanillaScrollbarViewWidgetTest {
     fun `両軸で空内容では無効なつまみを描き軸長ゼロでは描画しないのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use {
-                val view = if (horizontal) XVanillaScrollbarView() else YVanillaScrollbarView()
+                val view = if (horizontal) XInventoryScrollbarView() else YInventoryScrollbarView()
                 val bounds = if (horizontal) IntRectangle(10, 20, 100, 18) else IntRectangle(10, 20, 18, 100)
-                val widget = if (horizontal) VanillaXVanillaScrollbarViewWidget(view as XVanillaScrollbarView, bounds) else VanillaYVanillaScrollbarViewWidget(view as YVanillaScrollbarView, bounds)
+                val widget = if (horizontal) VanillaXInventoryScrollbarViewWidget(view as XInventoryScrollbarView, bounds) else VanillaYInventoryScrollbarViewWidget(view as YInventoryScrollbarView, bounds)
                 val graphics = ScrollbarGraphics()
                 view.viewportLength = 100
                 widget.render(graphics, 12, 22, 0F)

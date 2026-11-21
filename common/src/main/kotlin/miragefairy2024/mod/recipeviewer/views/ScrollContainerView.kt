@@ -42,8 +42,20 @@ abstract class ScrollContainerView : WrapperView(), PlaceableView {
     protected abstract fun evaluateContentLength(): Int
     protected abstract fun evaluateViewportLength(): Int
 
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
+    /** 寸法計算の初期化後に、現在のスクロール位置を通常範囲へ収めるのだ～🌱 */
+    abstract fun clampScrollOffset()
+
+    protected fun coerceScrollOffset(scrollOffset: Double): Double {
+        val maxScrollOffset = (evaluateContentLength() - evaluateViewportLength() atLeast 0).toDouble()
+        return scrollOffset.coerceIn(0.0, maxScrollOffset)
+    }
+
+    fun updateScrollBounds() {
         scrollBounds.value = ScrollBounds(evaluateContentLength() atLeast 0, evaluateViewportLength() atLeast 0)
+    }
+
+    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
+        updateScrollBounds()
         return viewPlacer.place(this, offset.sized(evaluateActualSize()))
     }
 
@@ -63,6 +75,10 @@ class XScrollContainerView : ScrollContainerView() {
     override fun evaluateContentLength() = childView.evaluateActualSizeX()
     override fun evaluateViewportLength() = evaluateActualSizeX()
 
+    override fun clampScrollOffset() {
+        scrollOffsetX.value = coerceScrollOffset(scrollOffsetX.value)
+    }
+
 }
 
 /** 子 View を Y 軸方向へスクロールするのだ～🌱 */
@@ -79,32 +95,35 @@ class YScrollContainerView : ScrollContainerView() {
     override fun evaluateContentLength() = childView.evaluateActualSizeY()
     override fun evaluateViewportLength() = evaluateActualSizeY()
 
+    override fun clampScrollOffset() {
+        scrollOffsetY.value = coerceScrollOffset(scrollOffsetY.value)
+    }
+
 }
 
 /**
  * X 軸の領域とバーを接続し、その間のコンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
  * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
  */
-fun connectScrollbar(scrollView: XScrollContainerView, scrollbarView: XScrollbarView): Remover {
-    return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetX, scrollbarView.scrollOffsetX)
+fun connectScrollbar(scrollView: XScrollContainerView, scrollbarView: XFlatScrollbarView): Remover {
+    return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetX)
 }
 
 /**
  * Y 軸の領域とバーを接続し、その間のコンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
  * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
  */
-fun connectScrollbar(scrollView: YScrollContainerView, scrollbarView: YScrollbarView): Remover {
-    return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetY, scrollbarView.scrollOffsetY)
+fun connectScrollbar(scrollView: YScrollContainerView, scrollbarView: YFlatScrollbarView): Remover {
+    return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetY)
 }
 
 private fun connectScrollbarImpl(
     scrollView: ScrollContainerView,
-    scrollbarView: ScrollbarView,
+    scrollbarView: FlatScrollbarView,
     scrollViewOffset: ObservableValue<Double>,
-    scrollbarViewOffset: ObservableValue<Double>,
 ): Remover {
     val initialScrollViewOffset = scrollViewOffset.value
-    val initialScrollbarViewOffset = scrollbarViewOffset.value
+    val initialScrollbarViewOffset = scrollbarView.scrollOffset.value
     var remover = Remover.NONE
     val sharedOffset = ObservableValue(initialScrollViewOffset)
 
@@ -125,13 +144,13 @@ private fun connectScrollbarImpl(
         }
     }
     connectOffset(scrollViewOffset)
-    connectOffset(scrollbarViewOffset)
+    connectOffset(scrollbarView.scrollOffset)
 
     try {
         scrollbarView.contentLength = scrollView.scrollBounds.value.contentLength
         scrollbarView.viewportLength = scrollView.scrollBounds.value.viewportLength
         scrollViewOffset.value = sharedOffset.value
-        scrollbarViewOffset.value = sharedOffset.value
+        scrollbarView.scrollOffset.value = sharedOffset.value
     } catch (e: Throwable) {
         remover.remove()
 
@@ -144,7 +163,7 @@ private fun connectScrollbarImpl(
         }
 
         restoreOffset(scrollViewOffset, initialScrollViewOffset)
-        restoreOffset(scrollbarViewOffset, initialScrollbarViewOffset)
+        restoreOffset(scrollbarView.scrollOffset, initialScrollbarViewOffset)
         throw e
     }
     return remover
