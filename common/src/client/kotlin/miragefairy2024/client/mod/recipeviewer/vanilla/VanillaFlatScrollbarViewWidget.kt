@@ -9,7 +9,7 @@ import org.lwjgl.glfw.GLFW
 
 abstract class VanillaFlatScrollbarViewWidget(view: FlatScrollbarView, bounds: IntRectangle) : VanillaScrollbarViewWidget<FlatScrollbarView>(view, bounds)
 
-class VanillaXScrollbarViewWidget(
+class VanillaXFlatScrollbarViewWidget(
     view: XFlatScrollbarView,
     bounds: IntRectangle,
 ) : VanillaFlatScrollbarViewWidget(
@@ -47,7 +47,7 @@ class VanillaXScrollbarViewWidget(
 
 }
 
-class VanillaYScrollbarViewWidget(
+class VanillaYFlatScrollbarViewWidget(
     view: YFlatScrollbarView,
     bounds: IntRectangle,
 ) : VanillaFlatScrollbarViewWidget(

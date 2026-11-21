@@ -9,6 +9,7 @@ import miragefairy2024.client.mod.recipeviewer.common.TooltipViewRenderer
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewController
+import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.ImageView
@@ -104,21 +105,22 @@ fun initVanillaViewPlacers() {
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XFlatScrollbarView, bounds ->
-        placeScrollbarView(context, VanillaXScrollbarViewWidget(view, bounds))
+        placeScrollbarView(context, VanillaXFlatScrollbarViewWidget(view, bounds))
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YFlatScrollbarView, bounds ->
-        placeScrollbarView(context, VanillaYScrollbarViewWidget(view, bounds))
+        placeScrollbarView(context, VanillaYFlatScrollbarViewWidget(view, bounds))
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: MenuSlotView, bounds ->
         if (!context.canPlaceMenuSlots) throw UnsupportedOperationException("MenuSlotView cannot be placed in this context")
-        // バニラはSlotの座標へoriginを描画とホバー判定の際に加算するため、絶対座標を書き込むと二重に加算されるのだ～🌱
-        (view.slot as SlotPositionSetter).`mirageFairy2024$setPosition`(bounds.x - context.origin.x + view.margin.x, bounds.y - context.origin.y + view.margin.y)
+        fun setPosition(offset: IntPoint) {
+            // バニラはSlotの座標へoriginを描画とホバー判定の際に加算するため、絶対座標を書き込むと二重に加算されるのだ～🌱
+            (view.slot as SlotPositionSetter).`mirageFairy2024$setPosition`(offset.x - context.origin.x + view.margin.x, offset.y - context.origin.y + view.margin.y)
+        }
+        setPosition(bounds.offset)
+        val remover = context.registerMenuSlotPlacement(view.slot.index) { null }
         object : ViewController {
-            override fun setOffset(offset: IntPoint) {
-                (view.slot as SlotPositionSetter).`mirageFairy2024$setPosition`(offset.x - context.origin.x + view.margin.x, offset.y - context.origin.y + view.margin.y)
-            }
-
-            override fun detach() = throw UnsupportedOperationException("Cannot detach MenuSlotView from the vanilla screen")
+            override fun setOffset(offset: IntPoint) = setPosition(offset)
+            override fun detach() = remover.remove()
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: BeforeRenderView, _ ->

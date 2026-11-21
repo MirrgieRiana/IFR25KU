@@ -73,7 +73,7 @@ class VanillaScrollOffsetBindingTest {
                 bar.contentLength = 300
                 bar.viewportLength = 100
                 barOffset.value = 999.75
-                val scrollbar = if (horizontal) VanillaXScrollbarViewWidget(bar as XFlatScrollbarView, IntRectangle(10, 200, 100, 5)) else VanillaYScrollbarViewWidget(bar as YFlatScrollbarView, IntRectangle(200, 20, 5, 100))
+                val scrollbar = if (horizontal) VanillaXFlatScrollbarViewWidget(bar as XFlatScrollbarView, IntRectangle(10, 200, 100, 5)) else VanillaYFlatScrollbarViewWidget(bar as YFlatScrollbarView, IntRectangle(200, 20, 5, 100))
                 try {
                     scrollbar.render(environment.graphics, 50, 50, 0.0F)
                     Assertions.assertEquals(if (horizontal) IntRectangle(101, 200, 9, 5) else IntRectangle(200, 111, 5, 9), environment.fills.last())
