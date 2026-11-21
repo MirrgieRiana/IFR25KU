@@ -2,7 +2,7 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.mod.recipeviewer.SCROLL_AREA_TRANSLATION
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import miragefairy2024.mod.recipeviewer.views.ScrollbarView
+import miragefairy2024.mod.recipeviewer.views.FlatScrollbarView
 import miragefairy2024.util.empty
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
@@ -18,7 +18,7 @@ import org.lwjgl.glfw.GLFW
 import kotlin.math.roundToInt
 
 abstract class AbstractVanillaScrollbarViewWidget(
-    protected val view: ScrollbarView,
+    protected val view: FlatScrollbarView,
     bounds: IntRectangle,
 ) :
     AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }), MouseCaptureContainer {
