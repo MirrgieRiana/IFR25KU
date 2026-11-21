@@ -175,28 +175,28 @@ fun createEmptyModel(particleTexture: ResourceLocation): TexturedModel {
 
 // registerModelGeneration
 
-context(ModContext)
+context(_: ModContext)
 fun registerModelGeneration(identifierGetter: () -> ResourceLocation, texturedModelCreator: () -> TexturedModel) = DataGenerationEvents.onGenerateBlockModel {
     val texturedModel = texturedModelCreator()
     texturedModel.template.create(identifierGetter(), texturedModel.mapping, it.modelOutput)
 }
 
-context(ModContext)
+context(_: ModContext)
 @JvmName("registerItemModelGeneration")
 fun (() -> Item).registerModelGeneration(texturedModelCreator: () -> TexturedModel) = registerModelGeneration({ "item/" * this().getIdentifier() }) { texturedModelCreator() }
 
-context(ModContext)
+context(_: ModContext)
 @JvmName("registerItemModelGeneration")
 fun (() -> Item).registerModelGeneration(model: ModelTemplate, textureMappingCreator: () -> TextureMapping = { TextureMapping.layer0(this()) }) = this.registerModelGeneration { model with textureMappingCreator() }
 
-context(ModContext)
+context(_: ModContext)
 @JvmName("registerItemGeneratedModelGeneration")
 fun (() -> Item).registerGeneratedModelGeneration() = this.registerModelGeneration(ModelTemplates.FLAT_ITEM)
 
-context(ModContext)
+context(_: ModContext)
 @JvmName("registerItemBlockGeneratedModelGeneration")
 fun (() -> Item).registerBlockGeneratedModelGeneration(block: () -> Block) = this.registerModelGeneration(ModelTemplates.FLAT_ITEM) { TextureMapping.layer0(block()) }
 
-context(ModContext)
+context(_: ModContext)
 @JvmName("registerBlockModelGeneration")
 fun (() -> Block).registerModelGeneration(texturedModelFactory: TexturedModel.Provider) = registerModelGeneration({ "block/" * this().getIdentifier() }) { texturedModelFactory.get(this()) }

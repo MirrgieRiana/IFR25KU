@@ -41,7 +41,7 @@ class Registration<T : Any, U : T>(val registry: Registry<T>, val identifier: Re
 
 }
 
-context(ModContext)
+context(_: ModContext)
 fun Registration<*, *>.register() {
     RegistryEvents.registrations += this
 }

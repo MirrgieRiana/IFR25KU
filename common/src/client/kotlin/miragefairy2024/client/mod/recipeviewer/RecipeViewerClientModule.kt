@@ -31,7 +31,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
 
-context(ModContext)
+context(_: ModContext)
 fun initRecipeViewerClientModule() {
     if (hasClientRei()) initReiClientSupport()
     if (hasClientRei()) initReiViewPlacers()

@@ -24,7 +24,7 @@ import org.joml.Quaternionf
 import org.joml.Vector3f
 import kotlin.math.roundToInt
 
-context(ModContext)
+context(_: ModContext)
 fun initMagicSquareParticle() {
     MagicSquareParticleChannel.registerClientPacketReceiver { packet ->
         val particleManager = Minecraft.getInstance().particleEngine ?: return@registerClientPacketReceiver

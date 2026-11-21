@@ -86,7 +86,7 @@ object FairyStatueFountainCard {
     )
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyFountainModule() {
     FairyStatueFountainBlock.USAGE_TRANSLATION.enJa()
 

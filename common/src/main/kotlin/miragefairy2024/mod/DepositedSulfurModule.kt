@@ -122,7 +122,7 @@ object SolfataraCard {
 
 val DEPOSITED_SULFUR_FEATURE = DepositedSulfurFeature(NoneFeatureConfiguration.CODEC)
 
-context(ModContext)
+context(_: ModContext)
 fun initDepositedSulfurModule() {
 
     Registration(BuiltInRegistries.BLOCK_TYPE, DepositedSulfurCard.identifier) { DepositedSulfurBlock.CODEC }.register()

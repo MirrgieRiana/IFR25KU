@@ -69,7 +69,7 @@ val fairyQuestCardScreenHandlerType = Registration(BuiltInRegistries.MENU, Mirag
     }, ResourceLocation.STREAM_CODEC)
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyQuestCardScreenHandler() {
     fairyQuestCardScreenHandlerType.register()
     fairyQuestCardScreenHandlerType.registerViewScreen()

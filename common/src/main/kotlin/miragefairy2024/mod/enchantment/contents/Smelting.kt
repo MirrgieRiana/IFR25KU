@@ -10,7 +10,7 @@ import net.minecraft.world.item.crafting.RecipeType
 import net.minecraft.world.item.crafting.SingleRecipeInput
 import net.minecraft.world.item.enchantment.EnchantmentHelper
 
-context(ModContext)
+context(_: ModContext)
 fun initSmelting() {
     BlockCallback.GET_DROPS_BY_ENTITY.register { state, level, _, _, _, tool, drops ->
         val smeltingLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.SMELTING.key], tool)

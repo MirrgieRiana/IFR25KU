@@ -60,7 +60,7 @@ val plasticTreeAdvancement = AdvancementCard(
     type = AdvancementCardType.TOAST_AND_JEWELS,
 )
 
-context(ModContext)
+context(_: ModContext)
 fun initPlasticTree() {
 
     // BlockType

@@ -17,7 +17,7 @@ import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.RenderType
 
-context(ModContext)
+context(_: ModContext)
 fun initMagicPlantClientModule() {
     traitListScreenHandlerType.registerHandledScreen { gui, inventory, title -> TraitListScreen(gui, inventory, title) }
 

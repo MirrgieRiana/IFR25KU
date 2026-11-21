@@ -17,7 +17,7 @@ class TreeTrapdoorBlockCard(configuration: TreeBlockConfiguration, private val p
         .noOcclusion()
         .isValidSpawn(Blocks::never)
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 

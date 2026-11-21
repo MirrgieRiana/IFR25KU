@@ -68,32 +68,32 @@ fun SequenceLootPoolEntry(vararg children: LootPoolEntryContainer.Builder<*>, in
 }
 
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Block).registerLootTableGeneration(initializer: (FabricBlockLootTableProvider, HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateBlockLootTable { it, registries ->
     it.add(this(), initializer(it, registries).setRandomSequence(this().lootTable.location()))
 }
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Block).registerDefaultLootTableGeneration() = this.registerLootTableGeneration { it, _ ->
     it.createSingleItemTable(this())
 }
 
-context(ModContext)
+context(_: ModContext)
 fun registerChestLootTableGeneration(lootTableId: ResourceKey<LootTable>, initializer: (HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateChestLootTable { it, registries ->
     it(lootTableId, initializer(registries).setRandomSequence(lootTableId.location()))
 }
 
-context(ModContext)
+context(_: ModContext)
 fun registerArchaeologyLootTableGeneration(lootTableId: ResourceKey<LootTable>, initializer: (HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateArchaeologyLootTable { it, registries ->
     it(lootTableId, initializer(registries).setRandomSequence(lootTableId.location()))
 }
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> EntityType<*>).registerLootTableGeneration(initializer: (HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateEntityLootTable { it, registries ->
     it(this(), initializer(registries).setRandomSequence(this().defaultLootTable.location()))
 }
 
-context(ModContext)
+context(_: ModContext)
 fun registerAdvancementRewardLootTableGeneration(lootTableId: ResourceKey<LootTable>, initializer: (HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateAdvancementRewardLootTable { it, registries ->
     it(lootTableId, initializer(registries).setRandomSequence(lootTableId.location()))
 }
@@ -104,7 +104,7 @@ enum class FortuneEffect {
     UNIFORM,
 }
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Block).registerOreLootTableGeneration(drop: () -> Item, additionalCount: ClosedFloatingPointRange<Float>? = null, fortuneEffect: FortuneEffect = FortuneEffect.ORE) = this.registerLootTableGeneration { it, registries ->
     it.createSilkTouchDispatchTable(this(), it.applyExplosionDecay(this(), ItemLootPoolEntry(drop()) {
         if (additionalCount != null) apply(SetItemCountFunction.setCount(UniformGenerator.between(additionalCount.start, additionalCount.endInclusive)))

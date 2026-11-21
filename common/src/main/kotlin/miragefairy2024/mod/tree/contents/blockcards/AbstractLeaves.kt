@@ -37,7 +37,7 @@ abstract class AbstractTreeLeavesBlockCard(configuration: TreeBlockConfiguration
         .pushReaction(PushReaction.DESTROY)
         .isRedstoneConductor(Blocks::never)
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 

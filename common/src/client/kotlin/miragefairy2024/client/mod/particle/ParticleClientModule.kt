@@ -12,7 +12,7 @@ import net.minecraft.client.particle.SuspendedTownParticle
 private const val PLASTIC_TREE_SAP_RGB = 0xFF9F32
 private const val HAIMEVISKA_SAP_RGB = 0x80C8EE
 
-context(ModContext)
+context(_: ModContext)
 fun initParticleClientModule() {
     ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.MISSION.particleType, SuspendedTownParticle::HappyVillagerProvider)
     ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.COLLECTING_MAGIC.particleType, FlyTowardsPositionParticle::EnchantProvider)

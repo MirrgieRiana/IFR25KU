@@ -54,5 +54,5 @@ abstract class ParentView<P> : AbstractView() {
 
 class Child<P, V : View>(var position: P, val view: V)
 
-context(Child<*, out ParentView<P>>)
-inline fun <P, V : View> V.configure(block: Child<P, V>.() -> Unit = {}) = Child(this@Child.view.createDefaultPosition(), this).apply { block() }
+context(parent: Child<*, out ParentView<P>>)
+inline fun <P, V : View> V.configure(block: Child<P, V>.() -> Unit = {}) = Child(parent.view.createDefaultPosition(), this).apply { block() }

@@ -58,7 +58,7 @@ object FairyDreamRecipes {
     val ENTITY_TYPE = FairyDreamTable<EntityType<*>>(BuiltInRegistries.ENTITY_TYPE)
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyDreamRecipe() {
     ItemFairyDreamRecipeRecipeViewerCategoryCard.init()
     BlockFairyDreamRecipeRecipeViewerCategoryCard.init()

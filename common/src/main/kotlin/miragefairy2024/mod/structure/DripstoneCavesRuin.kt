@@ -67,7 +67,7 @@ object DripstoneCavesRuinCard {
         type = AdvancementCardType.NORMAL,
     )
 
-    context(ModContext)
+    context(_: ModContext)
     fun init() {
 
         WeatheredAncientRemnantsCard.onMapsTag.generator.registerChild(identifier)
