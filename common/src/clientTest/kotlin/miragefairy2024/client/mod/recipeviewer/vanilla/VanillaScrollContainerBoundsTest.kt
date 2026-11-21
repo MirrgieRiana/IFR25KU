@@ -74,7 +74,7 @@ class VanillaScrollContainerBoundsTest {
                 val childContext = contexts.last()
                 val slotId = 3
                 var childClipBounds: IntRectangle? = null
-                Assertions.assertFalse(childContext.canPlaceMenuSlots)
+                Assertions.assertTrue(childContext.canPlaceMenuSlots)
                 Assertions.assertSame(remover, childContext.registerMenuSlotPlacement(slotId) { childClipBounds })
                 val clipBounds = placements.getValue(slotId)
                 Assertions.assertEquals(IntRectangle(40, 20, 50, 60), clipBounds())
