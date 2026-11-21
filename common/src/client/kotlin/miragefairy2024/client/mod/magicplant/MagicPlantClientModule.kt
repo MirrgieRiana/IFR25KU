@@ -2,7 +2,6 @@ package miragefairy2024.client.mod.magicplant
 
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.RenderingEvent
-import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.client.util.stack
 import miragefairy2024.mod.magicplant.CreativeGeneAmpouleItem
 import miragefairy2024.mod.magicplant.MagicPlantSeedItem
@@ -11,7 +10,6 @@ import miragefairy2024.mod.magicplant.minus
 import miragefairy2024.mod.magicplant.negativeBitCount
 import miragefairy2024.mod.magicplant.positiveBitCount
 import miragefairy2024.mod.magicplant.texture
-import miragefairy2024.mod.magicplant.traitListScreenHandlerType
 import miragefairy2024.util.register
 import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
@@ -19,8 +17,6 @@ import net.minecraft.client.renderer.RenderType
 
 context(_: ModContext)
 fun initMagicPlantClientModule() {
-    traitListScreenHandlerType.registerHandledScreen { gui, inventory, title -> TraitListScreen(gui, inventory, title) }
-
     RenderingEvent.RENDER_ITEM_DECORATIONS.register { graphics, font, stack, x, y, text ->
         if (stack.item !is CreativeGeneAmpouleItem) return@register
 
