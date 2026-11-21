@@ -22,7 +22,7 @@ fun IntRectangle.grow(dx: Int, dy: Int) = this.grow(dx, dx, dy, dy)
 fun IntRectangle.grow(dxMin: Int, dxMax: Int, dyMin: Int, dyMax: Int) = IntRectangle(x - dxMin, y - dyMin, sizeX + dxMin + dxMax, sizeY + dyMin + dyMax)
 operator fun IntRectangle.plus(point: IntPoint) = IntRectangle(x + point.x, y + point.y, sizeX, sizeY)
 operator fun IntRectangle.minus(point: IntPoint) = IntRectangle(x - point.x, y - point.y, sizeX, sizeY)
-fun IntRectangle.contains(x: Int, y: Int) = x >= this.x && x < this.x + this.sizeX && y >= this.y && y < this.y + this.sizeY
+fun IntRectangle.contains(x: Int, y: Int) = x >= this.x1 && x < this.x2 && y >= this.y1 && y < this.y2
 fun IntRectangle.contains(x: Double, y: Double) = x >= this.x1 && x < this.x2 && y >= this.y1 && y < this.y2
 operator fun IntRectangle.contains(point: IntPoint) = this.contains(point.x, point.y)
 
