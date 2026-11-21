@@ -2,9 +2,9 @@ package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.Sizing
 
-abstract class VanillaScrollbarView : AbstractScrollbarView(18)
+abstract class InventoryScrollbarView : AbstractScrollbarView(18)
 
-class XVanillaScrollbarView : VanillaScrollbarView() {
+class XInventoryScrollbarView : InventoryScrollbarView() {
 
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.WRAP
@@ -14,7 +14,7 @@ class XVanillaScrollbarView : VanillaScrollbarView() {
 
 }
 
-class YVanillaScrollbarView : VanillaScrollbarView() {
+class YInventoryScrollbarView : InventoryScrollbarView() {
 
     override var sizingX = Sizing.WRAP
     override var sizingY = Sizing.FILL
