@@ -7,6 +7,7 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.contains
 import miragefairy2024.util.Remover
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.events.GuiEventListener
@@ -152,6 +153,11 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         if (viewAdapter.keyPressed(keyCode, scanCode, modifiers)) return true
+        val minecraft = Minecraft.getInstance()
+        val window = minecraft.window
+        val mouseX = minecraft.mouseHandler.xpos() * window.guiScaledWidth / window.screenWidth
+        val mouseY = minecraft.mouseHandler.ypos() * window.guiScaledHeight / window.screenHeight
+        clearInvalidHoveredSlot(mouseX, mouseY)
         return super.keyPressed(keyCode, scanCode, modifiers)
     }
 
