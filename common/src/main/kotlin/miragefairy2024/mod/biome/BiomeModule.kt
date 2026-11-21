@@ -36,9 +36,9 @@ import kotlin.math.sqrt
 
 val OVERWORLD_BIOME_OVERRIDES = mutableMapOf<ResourceKey<Biome>, ResourceKey<Biome>>()
 
-context(ModContext)
-fun BiomeCard.registerOverworldBiomeOverride(biome: ResourceKey<Biome>) {
-    OVERWORLD_BIOME_OVERRIDES[biome] = this.key
+context(ModContext, BiomeCard)
+fun registerOverworldBiomeOverride(biome: ResourceKey<Biome>) {
+    OVERWORLD_BIOME_OVERRIDES[biome] = this@BiomeCard.key
 }
 
 val OVERWORLD_SURFACE_RULES_CREATORS = mutableListOf<() -> SurfaceRules.RuleSource>()
