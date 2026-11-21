@@ -20,7 +20,10 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
 
     private class SlotPlacement(val clipBounds: () -> IntRectangle?)
 
-    /** 配置解除後も Slot はメニューに残るため、未登録と解除済みを区別して保持するのだ～🌱 */
+    /**
+     * 配置解除後も Slot はメニューに残るため、未登録と解除済みを区別して保持するのだ～🌱
+     * キーが存在して値が `null` の場合、そのスロットは配置解除済みなのだ～🌱
+     */
     private val slotPlacementMap = mutableMapOf<Int, SlotPlacement?>()
 
     private val viewAdapter = ViewAdapter(object : ViewAdapterHost {
