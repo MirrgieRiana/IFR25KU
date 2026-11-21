@@ -1037,7 +1037,7 @@ open class BlockMaterialCard(
 
     val initializers = mutableListOf<(ModContext) -> Unit>()
 
-    context(ModContext)
+    context(modContext: ModContext)
     open fun init() {
 
         block.register()
@@ -1068,7 +1068,7 @@ open class BlockMaterialCard(
         advancement?.init()
 
         initializers.forEach {
-            it(this@ModContext)
+            it(modContext)
         }
 
     }

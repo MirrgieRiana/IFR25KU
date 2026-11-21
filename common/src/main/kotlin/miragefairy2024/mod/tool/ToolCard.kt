@@ -573,7 +573,7 @@ class ToolCard(
 
     val advancement = advancementCreator?.invoke(this, identifier)
 
-    context(ModContext)
+    context(modContext: ModContext)
     fun init() {
         item.register()
 
@@ -590,7 +590,7 @@ class ToolCard(
         if (advancement != null) advancement.init()
 
         configuration.init(this)
-        initializer(this@ModContext, this)
+        initializer(modContext, this)
     }
 }
 
