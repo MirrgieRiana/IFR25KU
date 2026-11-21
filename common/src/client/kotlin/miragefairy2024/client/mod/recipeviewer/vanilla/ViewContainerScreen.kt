@@ -6,7 +6,6 @@ import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.contains
-import miragefairy2024.mod.recipeviewer.view.intersect
 import miragefairy2024.util.Remover
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
@@ -139,22 +138,14 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
     override fun `mirageFairy2024$isHovering`(slot: Slot, mouseX: Double, mouseY: Double, hovering: Boolean): Boolean {
         if (!hovering) return false
         val clipBounds = getSlotClipBounds(slot) ?: return true
-        return isSlotVisibleAt(slot, clipBounds, mouseX, mouseY)
-    }
-
-    private fun isSlotVisibleAt(slot: Slot, clipBounds: IntRectangle, mouseX: Double, mouseY: Double): Boolean {
-        if (!clipBounds.contains(mouseX, mouseY)) return false
-        // バニラの当たり判定の余白がクリップに触れていても、描画が全く見えないスロットは対象にしないのだ～🌱
-        val slotBounds = IntRectangle(leftPos + slot.x, topPos + slot.y, 16, 16)
-        val visibleBounds = slotBounds.intersect(clipBounds)
-        return visibleBounds.sizeX > 0 && visibleBounds.sizeY > 0
+        return clipBounds.contains(mouseX, mouseY)
     }
 
     private fun clearInvalidHoveredSlot(mouseX: Double, mouseY: Double) {
         val slot = hoveredSlot ?: return
         val clipBounds = getSlotClipBounds(slot) ?: return
         // ショートカットは描画時の hoveredSlot を参照するため、スクロール後の位置で再判定するのだ～🌱
-        if (!slot.isActive || !isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY) || !isSlotVisibleAt(slot, clipBounds, mouseX, mouseY)) hoveredSlot = null
+        if (!slot.isActive || !isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY) || !clipBounds.contains(mouseX, mouseY)) hoveredSlot = null
     }
 
     /** 枠の絵はViewのツリーが描くのだ～🌱 */
