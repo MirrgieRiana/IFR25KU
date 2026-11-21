@@ -24,7 +24,7 @@ data class ScrollBounds(val contentLength: Int, val viewportLength: Int) {
  * 子 View を一方向へスクロールするのだ～🌱
  * スクロール方向のコンテンツが占有する最小のサイズは `0` なのだ～🌱
  * スクロール位置はコンテンツ座標で保持し、再配置時にも引き継ぐのだ～🌱
- * バニラでは、親のコンテキストが許可していれば、子孫に [MenuSlotView] を配置できるのだ～🌱
+ * バニラでは、親のコンテキストが許可していれば、子孫に [miragefairy2024.mod.recipeviewer.views.MenuSlotView] を配置できるのだ～🌱
  */
 abstract class ScrollContainerView : WrapperView(), PlaceableView {
 
