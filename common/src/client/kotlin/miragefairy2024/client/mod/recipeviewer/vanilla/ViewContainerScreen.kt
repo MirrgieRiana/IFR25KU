@@ -13,6 +13,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.inventory.AbstractContainerMenu
+import net.minecraft.world.inventory.Slot
 
 /** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
 class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title) where T : AbstractContainerMenu, T : ViewProviderMenu {
@@ -21,6 +22,12 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
 
     /** 配置解除後も Slot はメニューに残るため、未登録と解除済みを区別して保持するのだ～🌱 */
     private val slotPlacementMap = mutableMapOf<Int, SlotPlacement?>()
+
+    private fun getSlotClipBounds(slot: Slot): IntRectangle? {
+        if (slot.index !in slotPlacementMap) return null
+        val placement = slotPlacementMap[slot.index] ?: return IntRectangle.ZERO
+        return placement.clipBounds()
+    }
 
     private val viewAdapter = ViewAdapter(object : ViewAdapterHost {
 
@@ -71,6 +78,8 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
 
     })
 
+    private var slotScissorEnabled = false
+
     override fun init() = viewAdapter.init()
 
     override fun removed() {
@@ -81,8 +90,30 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
 
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         viewAdapter.beforeRender()
-        super.render(guiGraphics, mouseX, mouseY, partialTick)
+        try {
+            super.render(guiGraphics, mouseX, mouseY, partialTick)
+        } finally {
+            disableSlotScissor(guiGraphics)
+        }
         renderTooltip(guiGraphics, mouseX, mouseY)
+    }
+
+    override fun renderSlot(guiGraphics: GuiGraphics, slot: Slot) {
+        disableSlotScissor(guiGraphics)
+        val clipBounds = getSlotClipBounds(slot)
+        if (clipBounds != null) {
+            val (x, y, sizeX, sizeY) = clipBounds
+            guiGraphics.enableScissor(x, y, x + sizeX, y + sizeY)
+            slotScissorEnabled = true
+        }
+        // 親クラスが直後に描くハイライトにも、このスロットのクリップを適用するのだ～🌱
+        super.renderSlot(guiGraphics, slot)
+    }
+
+    private fun disableSlotScissor(guiGraphics: GuiGraphics) {
+        if (!slotScissorEnabled) return
+        slotScissorEnabled = false
+        guiGraphics.disableScissor()
     }
 
     override fun removeWidget(listener: GuiEventListener) {
@@ -120,6 +151,8 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
     override fun renderBg(guiGraphics: GuiGraphics, partialTick: Float, mouseX: Int, mouseY: Int) = Unit
 
     /** 題名とインベントリの名前もViewのツリーが描くのだ～🌱 */
-    override fun renderLabels(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int) = Unit
+    override fun renderLabels(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int) {
+        disableSlotScissor(guiGraphics)
+    }
 
 }
