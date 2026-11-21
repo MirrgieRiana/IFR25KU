@@ -52,12 +52,12 @@ class TraitListViewTest {
     fun initMinecraft() {
         SharedConstants.tryDetectVersion()
         Bootstrap.bootStrap()
-        val menuType = runBlocking { traitListScreenHandlerType.creator() }
-        traitListScreenHandlerType.complete(menuType, Holder.direct(menuType))
         val rootRegistry: MappedRegistry<WritableRegistry<*>> = MappedRegistry(ResourceKey.createRegistryKey(Registries.ROOT_REGISTRY_NAME), Lifecycle.stable(), false)
         // テスト JVM では Fabric の Mixin が適用されないので、アクセサーがテスト用のルートレジストリを返すようにするのだ～🌱
         Mockito.mockStatic(RegistriesAccessor::class.java).use { registries ->
             registries.`when`<WritableRegistry<WritableRegistry<*>>> { RegistriesAccessor.getROOT() }.thenReturn(rootRegistry)
+            val menuType = runBlocking { traitListScreenHandlerType.creator() }
+            traitListScreenHandlerType.complete(menuType, Holder.direct(menuType))
             traitStacks = TraitStacks.of((1..8).map { index ->
                 val trait = object : Trait(Style.EMPTY, text { "message ".repeat(60)() }) {
                     override val conditions = emptyList<TraitCondition>()
