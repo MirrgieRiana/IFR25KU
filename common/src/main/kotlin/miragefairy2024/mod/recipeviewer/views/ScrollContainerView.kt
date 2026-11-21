@@ -42,6 +42,14 @@ abstract class ScrollContainerView : WrapperView(), PlaceableView {
     protected abstract fun evaluateContentLength(): Int
     protected abstract fun evaluateViewportLength(): Int
 
+    /** 寸法計算の初期化後に、現在のスクロール位置を通常範囲へ収めるのだ～🌱 */
+    abstract fun clampScrollOffset()
+
+    protected fun coerceScrollOffset(scrollOffset: Double): Double {
+        val maxScrollOffset = (evaluateContentLength() - evaluateViewportLength() atLeast 0).toDouble()
+        return scrollOffset.coerceIn(0.0, maxScrollOffset)
+    }
+
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
         scrollBounds.value = ScrollBounds(evaluateContentLength() atLeast 0, evaluateViewportLength() atLeast 0)
         return viewPlacer.place(this, offset.sized(evaluateActualSize()))
@@ -63,6 +71,10 @@ class XScrollContainerView : ScrollContainerView() {
     override fun evaluateContentLength() = childView.evaluateActualSizeX()
     override fun evaluateViewportLength() = evaluateActualSizeX()
 
+    override fun clampScrollOffset() {
+        scrollOffsetX.value = coerceScrollOffset(scrollOffsetX.value)
+    }
+
 }
 
 /** 子 View を Y 軸方向へスクロールするのだ～🌱 */
@@ -78,6 +90,10 @@ class YScrollContainerView : ScrollContainerView() {
 
     override fun evaluateContentLength() = childView.evaluateActualSizeY()
     override fun evaluateViewportLength() = evaluateActualSizeY()
+
+    override fun clampScrollOffset() {
+        scrollOffsetY.value = coerceScrollOffset(scrollOffsetY.value)
+    }
 
 }
 

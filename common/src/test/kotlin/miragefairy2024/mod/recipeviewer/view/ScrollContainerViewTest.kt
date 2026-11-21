@@ -2,7 +2,9 @@ package miragefairy2024.mod.recipeviewer.view
 
 import miragefairy2024.mod.recipeviewer.views.AbstractScrollbarView
 import miragefairy2024.mod.recipeviewer.views.AbstractView
+import miragefairy2024.mod.recipeviewer.views.DynamicView
 import miragefairy2024.mod.recipeviewer.views.ScrollBounds
+import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.XScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
@@ -84,6 +86,40 @@ class ScrollContainerViewTest {
                 val expected = if (horizontal) IntPoint(100 max length, 100) else IntPoint(100, 100 max length)
                 Assertions.assertEquals(expected, child.evaluateActualSize())
             }
+        }
+    }
+
+    @Test
+    fun `現在の子と表示領域の寸法からスクロール位置を範囲内に収めるのだ`() {
+        listOf(true, false).forEach { horizontal ->
+            val (view, scrollOffset) = if (horizontal) {
+                val view = XScrollContainerView()
+                Pair(view, view.scrollOffsetX)
+            } else {
+                val view = YScrollContainerView()
+                Pair(view, view.scrollOffsetY)
+            }
+            val child = DynamicView(SpaceView(IntPoint(300, 240)))
+            view += child
+            view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 100 }, { 80 })
+
+            scrollOffset.value = -10.0
+            view.clampScrollOffset()
+            Assertions.assertEquals(0.0, scrollOffset.value)
+
+            scrollOffset.value = 12.5
+            view.clampScrollOffset()
+            Assertions.assertEquals(12.5, scrollOffset.value)
+
+            scrollOffset.value = 150.0
+            child.content.value = SpaceView(IntPoint(140, 110))
+            Assertions.assertEquals(150.0, scrollOffset.value)
+            view.clampScrollOffset()
+            Assertions.assertEquals(if (horizontal) 40.0 else 30.0, scrollOffset.value)
+
+            child.content.value = SpaceView(IntPoint(60, 70))
+            view.clampScrollOffset()
+            Assertions.assertEquals(0.0, scrollOffset.value)
         }
     }
 

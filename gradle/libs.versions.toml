@@ -4,9 +4,9 @@
 minecraft = "1.21.1"
 parchmentMappings = "2024.11.17"
 fabricLoader = "0.16.13"
-fabricKotlin = "1.11.0+kotlin.2.0.0"
-kotlinForForge = "5.4.0"
-kotlinCoroutines = "1.8.1"
+fabricKotlin = "1.13.3+kotlin.2.1.21"
+kotlinForForge = "5.9.0"
+kotlinCoroutines = "1.10.2"
 
 # Dependencies
 fabricApi = "0.115.6+1.21.1"

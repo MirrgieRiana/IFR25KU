@@ -1,8 +1,8 @@
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 
 plugins {
-    kotlin("jvm") version "2.0.0"
-    id("dev.architectury.loom") version "1.7-SNAPSHOT"
+    kotlin("jvm") version "2.1.21"
+    id("dev.architectury.loom") version "1.9.436"
 }
 
 extensions.configure<LoomGradleExtensionAPI> {
