@@ -44,7 +44,7 @@ import net.minecraft.client.gui.components.toasts.ToastComponent
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
-import net.minecraft.world.SimpleContainer
+import net.minecraft.world.Container
 import net.minecraft.world.inventory.Slot
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
@@ -161,7 +161,7 @@ class VanillaViewPlacersTest {
             }
         }
         val positions = mutableListOf<IntPoint>()
-        val slot: Slot = object : Slot(SimpleContainer(1), 0, 0, 0), SlotPositionSetter {
+        val slot: Slot = object : Slot(Mockito.mock(Container::class.java), 0, 0, 0), SlotPositionSetter {
             override fun `mirageFairy2024$setPosition`(x: Int, y: Int) {
                 positions += IntPoint(x, y)
             }
