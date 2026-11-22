@@ -25,32 +25,36 @@ abstract class VanillaInventoryScrollbarViewWidget(view: InventoryScrollbarView,
         val start = evaluateThumbPosition().roundToInt()
         val length = evaluateThumbLength()
 
+        // 背景の描画
         guiGraphics.drawNinePatchImage(
             IntRectangle(x, y, scrollbarThickness, scrollbarLength),
             BACKGROUND_TEXTURE,
             16, 1, 13, 1,
             16, 1, 13, 1,
-            repeatX = false, repeatY = false,
+            false, false,
         )
 
+        // つまみの描画
         val texture = if (scrollable) SCROLLER_TEXTURE else DISABLED_SCROLLER_TEXTURE
         val thumbX = x + 1
         val thumbY = y + start + 1
         val thumbWidth = scrollbarThickness - 2
         val thumbHeight = length - 2
-        if (thumbWidth <= 0 || thumbHeight <= 0) return
-        if (thumbWidth < 4 || thumbHeight < 4) {
+        if (thumbWidth <= 0 || thumbHeight <= 0) {
+            // noop
+        } else if (thumbWidth < 4 || thumbHeight < 4) {
+            // 描画領域が足りない場合にはみ出さないために、つまみの全体を縮小して誤魔化すのだ～🌱
             guiGraphics.blit(texture, thumbX, thumbY, thumbWidth, thumbHeight, 0F, 0F, 15, 15, 16, 16)
-            return
+        } else {
+            guiGraphics.drawNinePatchImage(
+                IntRectangle(thumbX, thumbY, thumbWidth, thumbHeight),
+                texture,
+                16, 2, 11, 2,
+                16, 2, 11, 2,
+                false, true,
+            )
         }
 
-        guiGraphics.drawNinePatchImage(
-            IntRectangle(thumbX, thumbY, thumbWidth, thumbHeight),
-            texture,
-            16, 2, 11, 2,
-            16, 2, 11, 2,
-            repeatX = false, repeatY = true,
-        )
     }
 
 }
