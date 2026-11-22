@@ -20,6 +20,10 @@ abstract class VanillaFlatScrollbarViewWidget(view: FlatScrollbarView, bounds: I
     private var fadeEndTime: Long? = null
 
     override fun onScrollInput() {
+        showThumbAfterScrollInput()
+    }
+
+    fun showThumbAfterScrollInput() {
         fadeEndTime = Util.getMillis() + 1250L
     }
 

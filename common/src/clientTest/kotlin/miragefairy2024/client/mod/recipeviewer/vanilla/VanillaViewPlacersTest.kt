@@ -37,6 +37,7 @@ import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
 import miragefairy2024.util.register
 import miragefairy2024.util.text
+import net.minecraft.Util
 import net.minecraft.client.DeltaTracker
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
@@ -572,6 +573,69 @@ class VanillaViewPlacersTest {
                     connection.remove()
                 }
                 Assertions.assertTrue(context.onBeforeRender.toList().isEmpty())
+            }
+        }
+    }
+
+    @Test
+    fun `領域のスクロール操作で接続先のフラットバーを再表示し破棄時に購読を解除するのだ`() {
+        GuiTestEnvironment().use {
+            Mockito.mockStatic(Util::class.java, Mockito.CALLS_REAL_METHODS).use { clock ->
+                var now = 1000L
+                clock.`when`<Long> { Util.getMillis() }.thenAnswer { now }
+                val widgets = mutableListOf<AbstractWidget>()
+                val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+                    override val origin = IntPoint.ZERO
+                    override val canPlaceMenuSlots = false
+                    override val onBeforeRender = EventRegistry<() -> Unit>()
+                    override fun addRenderableWidget(widget: AbstractWidget): Remover {
+                        widgets += widget
+                        return Remover { widgets.remove(widget) }
+                    }
+                    override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Unexpected render-only widget")
+                    override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
+                }
+                val scrollView = YScrollContainerView()
+                scrollView += SpaceView(IntPoint(100, 300))
+                scrollView.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
+                val scrollbarView = YFlatScrollbarView()
+                scrollbarView.scrollbarColor = 0xA0FFFFFF.toInt()
+                val connection = connectScrollbar(scrollView, scrollbarView)
+                val scrollController = scrollView.attachTo(context.origin) { view, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds) }
+                val scrollbarController = VANILLA_VIEW_PLACER_REGISTRY.place(context, scrollbarView, IntRectangle(200, 20, 5, 100))
+                val scrollWidget = widgets.filterIsInstance<VanillaYScrollContainerViewWidget>().single()
+                val scrollbarWidget = widgets.filterIsInstance<VanillaYFlatScrollbarViewWidget>().single()
+                val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+
+                fun assertColor(at: Long, color: Int, thumbY: Int) {
+                    now = at
+                    Mockito.clearInvocations(graphics)
+                    scrollbarWidget.render(graphics, 50, 25, 0.0F)
+                    Mockito.verify(graphics).fill(200, thumbY, 205, thumbY + 33, color)
+                }
+
+                try {
+                    Assertions.assertEquals(1, scrollbarView.onScrollInput.toList().size)
+                    assertColor(1000L, 0x00FFFFFF, 20)
+                    Assertions.assertFalse(scrollWidget.mouseScrolled(50.0, 25.0, 0.0, 1.0))
+                    assertColor(1500L, scrollbarView.scrollbarColor, 20)
+                    assertColor(1875L, 0x50FFFFFF, 20)
+                    assertColor(2250L, 0x00FFFFFF, 20)
+
+                    scrollWidget.isFocused = true
+                    Assertions.assertTrue(scrollWidget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
+                    assertColor(2250L, scrollbarView.scrollbarColor, 87)
+                    assertColor(3500L, 0x00FFFFFF, 87)
+                    Assertions.assertTrue(scrollWidget.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
+                    assertColor(3500L, scrollbarView.scrollbarColor, 20)
+                } finally {
+                    scrollbarController.dispose()
+                    scrollbarController.detach()
+                    scrollController.dispose()
+                    scrollController.detach()
+                    connection.remove()
+                }
+                Assertions.assertTrue(scrollbarView.onScrollInput.toList().isEmpty())
             }
         }
     }
