@@ -4,11 +4,64 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.FlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
+import miragefairy2024.util.register
+import mirrg.kotlin.helium.atLeast
+import mirrg.kotlin.helium.atMost
+import mirrg.kotlin.hydrogen.alphaOfArgb
+import mirrg.kotlin.hydrogen.argbOf
+import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
 import org.lwjgl.glfw.GLFW
+import kotlin.math.PI
 import kotlin.math.roundToInt
+import kotlin.math.sin
 
-abstract class VanillaFlatScrollbarViewWidget(view: FlatScrollbarView, bounds: IntRectangle) : VanillaScrollbarViewWidget<FlatScrollbarView>(view, bounds)
+abstract class VanillaFlatScrollbarViewWidget(view: FlatScrollbarView, bounds: IntRectangle) : VanillaScrollbarViewWidget<FlatScrollbarView>(view, bounds) {
+
+    private var fadeEndTime: Long? = null
+
+    private val scrollInputRemover = view.onScrollInput.register {
+        fadeEndTime = Util.getMillis() + 1250L
+    }
+
+    override fun dispose() {
+        scrollInputRemover.remove()
+        super.dispose()
+    }
+
+    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+        fun getScrollbarColor(now: Long): Int {
+            val color = view.scrollbarColor
+            val endTime = fadeEndTime
+            val alpha = if (endTime == null) {
+                0
+            } else {
+                // owo と同じく、表示期限までの残り 750 ms で透明にするのだ～🌱
+                val remainingTime = (endTime - now) atLeast 0L atMost 750L
+                val progress = remainingTime / 750.0F
+                val opacity = (sin(progress * PI - PI / 2) * 0.5 + 0.5).toFloat()
+                (opacity * color.alphaOfArgb).toInt()
+            }
+            return argbOf(alpha, color)
+        }
+
+        val range = evaluateScrollRange()
+        if (range.start < range.endInclusive && scrollbarThickness > 0 && scrollbarLength > 0) {
+            val now = Util.getMillis()
+            // 親のクリップで隠れた部分へのホバーを除外し、範囲外に出たドラッグは引き続き扱うのだ～🌱
+            if ((isActive && isHovered) || hasMouseCapture(0)) {
+                fadeEndTime = now + 1500L
+            }
+            val start = evaluateThumbPosition().roundToInt()
+            val length = evaluateThumbLength()
+            val color = getScrollbarColor(now)
+            renderImpl(guiGraphics, start, length, color)
+        }
+    }
+
+    protected abstract fun renderImpl(guiGraphics: GuiGraphics, start: Int, length: Int, color: Int)
+
+}
 
 class VanillaXFlatScrollbarViewWidget(view: XFlatScrollbarView, bounds: IntRectangle) : VanillaFlatScrollbarViewWidget(view, bounds) {
 
@@ -29,20 +82,8 @@ class VanillaXFlatScrollbarViewWidget(view: XFlatScrollbarView, bounds: IntRecta
     // 横方向の入力がない場合は、縦方向のホイール入力で横スクロールするのだ～🌱
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
 
-    // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
-    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        val range = evaluateScrollRange()
-        if (range.start < range.endInclusive && scrollbarThickness > 0 && scrollbarLength > 0) {
-            val start = evaluateThumbPosition().roundToInt()
-            val length = evaluateThumbLength()
-            guiGraphics.fill(
-                x + start,
-                y,
-                x + start + length,
-                y + height,
-                view.scrollbarColor,
-            )
-        }
+    override fun renderImpl(guiGraphics: GuiGraphics, start: Int, length: Int, color: Int) {
+        guiGraphics.fill(x + start, y, x + start + length, y + height, color)
     }
 
 }
@@ -64,20 +105,8 @@ class VanillaYFlatScrollbarViewWidget(view: YFlatScrollbarView, bounds: IntRecta
     override fun getDragAmount(dragX: Double, dragY: Double) = dragY
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
 
-    // TODO 操作やホバーをしていない間はフェードアウトするのだ～🌱
-    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        val range = evaluateScrollRange()
-        if (range.start < range.endInclusive && scrollbarThickness > 0 && scrollbarLength > 0) {
-            val start = evaluateThumbPosition().roundToInt()
-            val length = evaluateThumbLength()
-            guiGraphics.fill(
-                x,
-                y + start,
-                x + width,
-                y + start + length,
-                view.scrollbarColor,
-            )
-        }
+    override fun renderImpl(guiGraphics: GuiGraphics, start: Int, length: Int, color: Int) {
+        guiGraphics.fill(x, y + start, x + width, y + start + length, color)
     }
 
 }

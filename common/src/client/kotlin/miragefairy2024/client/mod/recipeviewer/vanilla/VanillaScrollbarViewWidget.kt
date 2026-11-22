@@ -4,6 +4,7 @@ import miragefairy2024.mod.recipeviewer.SCROLL_AREA_TRANSLATION
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.ScrollbarView
 import miragefairy2024.util.empty
+import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.atLeast
@@ -27,7 +28,7 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
 
     private var disposed = false
 
-    fun dispose() {
+    open fun dispose() {
         disposed = true
         draggingScrollbar = false
         focusedSelf = false
@@ -76,8 +77,6 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
         view.scrollOffset.value = offset.coerceIn(range.start, range.endInclusive)
         return view.scrollOffset.value != old
     }
-
-    protected open fun onScrollInput() = Unit
 
 
     // マウス入力なのだ～🌱
@@ -147,7 +146,7 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
         val amount = getScrollAmount(scrollX, scrollY)
         if (amount == 0.0) return false
         val handled = updateScroll(view.scrollOffset.value - amount * view.scrollStep)
-        onScrollInput()
+        view.onScrollInput.fire()
         return handled
     }
 
@@ -164,7 +163,7 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
 
     override fun nextFocusPath(event: FocusNavigationEvent): ComponentPath? {
 
-        if (!isActive) return null
+        if (!isActive || !view.keyboardFocusable) return null
 
         val range = evaluateScrollRange()
         if (range.start < range.endInclusive && !isFocused) {
@@ -200,7 +199,7 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
             else -> return false
         }
         val handled = updateScroll(offset)
-        onScrollInput()
+        view.onScrollInput.fire()
         return handled
     }
 
