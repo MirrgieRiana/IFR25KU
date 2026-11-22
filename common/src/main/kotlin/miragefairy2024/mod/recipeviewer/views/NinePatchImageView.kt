@@ -25,6 +25,14 @@ class NinePatchImageView(
     val repeatX: Boolean,
     val repeatY: Boolean,
 ) : AbstractView(), PlaceableView {
+    init {
+        require(textureWidth > 0 && textureHeight > 0) { "Texture dimensions must be positive" }
+        require(xStartSize >= 0 && xMiddleSize >= 0 && xEndSize >= 0) { "Horizontal slice dimensions must be non-negative" }
+        require(yStartSize >= 0 && yMiddleSize >= 0 && yEndSize >= 0) { "Vertical slice dimensions must be non-negative" }
+        require(!repeatX || xMiddleSize > 0) { "Horizontal repeat size must be positive" }
+        require(!repeatY || yMiddleSize > 0) { "Vertical repeat size must be positive" }
+    }
+
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.FILL
     override fun evaluateContentSizeXImpl() = 0

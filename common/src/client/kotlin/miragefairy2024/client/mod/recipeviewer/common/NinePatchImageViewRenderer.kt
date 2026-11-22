@@ -33,6 +33,8 @@ object NinePatchImageViewRenderer : ViewRenderer<NinePatchImageView, Unit> {
         val dy1 = bounds.y + sh1
         val dy2 = bounds.y + bounds.sizeY - sh3
         // val dy3 = bounds.y + bounds.sizeY
+        val middleWidth = (bounds.sizeX.toLong() - sw1 - sw3).coerceAtLeast(0L).toInt()
+        val middleHeight = (bounds.sizeY.toLong() - sh1 - sh3).coerceAtLeast(0L).toInt()
 
         // 角
         graphics.blit(view.textureId, dx0, dy0, sx0.toFloat(), sy0.toFloat(), sw1, sh1, sw0, sh0)
@@ -43,53 +45,57 @@ object NinePatchImageViewRenderer : ViewRenderer<NinePatchImageView, Unit> {
         // 上下
         run {
             var dx = dx1
-            while (true) {
-                if (dx >= dx2) break
-                val dw = if (view.repeatX) sw2 atMost dx2 - dx else dx2 - dx
+            var remainingWidth = middleWidth
+            while (remainingWidth > 0) {
+                val dw = if (view.repeatX) sw2 atMost remainingWidth else remainingWidth
                 val sw = if (view.repeatX) dw else sw2
 
                 graphics.blit(view.textureId, dx, dy0, dw, sh1, sx1.toFloat(), sy0.toFloat(), sw, sh1, sw0, sh0)
                 graphics.blit(view.textureId, dx, dy2, dw, sh3, sx1.toFloat(), sy2.toFloat(), sw, sh3, sw0, sh0)
 
                 dx += dw
+                remainingWidth -= dw
             }
         }
 
         // 左右
         run {
             var dy = dy1
-            while (true) {
-                if (dy >= dy2) break
-                val dh = if (view.repeatY) sh2 atMost dy2 - dy else dy2 - dy
+            var remainingHeight = middleHeight
+            while (remainingHeight > 0) {
+                val dh = if (view.repeatY) sh2 atMost remainingHeight else remainingHeight
                 val sh = if (view.repeatY) dh else sh2
 
                 graphics.blit(view.textureId, dx0, dy, sw1, dh, sx0.toFloat(), sy1.toFloat(), sw1, sh, sw0, sh0)
                 graphics.blit(view.textureId, dx2, dy, sw3, dh, sx2.toFloat(), sy1.toFloat(), sw3, sh, sw0, sh0)
 
                 dy += dh
+                remainingHeight -= dh
             }
         }
 
         // 中央
         run {
             var dx = dx1
-            while (true) {
-                if (dx >= dx2) break
-                val dw = if (view.repeatX) sw2 atMost dx2 - dx else dx2 - dx
+            var remainingWidth = middleWidth
+            while (remainingWidth > 0) {
+                val dw = if (view.repeatX) sw2 atMost remainingWidth else remainingWidth
                 val sw = if (view.repeatX) dw else sw2
 
                 var dy = dy1
-                while (true) {
-                    if (dy >= dy2) break
-                    val dh = if (view.repeatY) sh2 atMost dy2 - dy else dy2 - dy
+                var remainingHeight = middleHeight
+                while (remainingHeight > 0) {
+                    val dh = if (view.repeatY) sh2 atMost remainingHeight else remainingHeight
                     val sh = if (view.repeatY) dh else sh2
 
                     graphics.blit(view.textureId, dx, dy, dw, dh, sx1.toFloat(), sy1.toFloat(), sw, sh, sw0, sh0)
 
                     dy += dh
+                    remainingHeight -= dh
                 }
 
                 dx += dw
+                remainingWidth -= dw
             }
         }
 
