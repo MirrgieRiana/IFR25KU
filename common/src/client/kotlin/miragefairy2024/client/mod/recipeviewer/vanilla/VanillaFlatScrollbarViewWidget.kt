@@ -19,12 +19,13 @@ abstract class VanillaFlatScrollbarViewWidget(view: FlatScrollbarView, bounds: I
 
     private var fadeEndTime: Long? = null
 
-    protected fun evaluateScrollbarColor(mouseX: Int, mouseY: Int): Int {
-        val now = Util.getMillis()
+    protected fun updateFadeEndTime(mouseX: Int, mouseY: Int, now: Long) {
         if (isMouseOver(mouseX.toDouble(), mouseY.toDouble()) || hasMouseCapture(0)) {
             fadeEndTime = now + 1500L
         }
+    }
 
+    protected fun getScrollbarColor(now: Long): Int {
         // owo と同じく、表示期限までの残り 750 ms で透明にするのだ～🌱
         val remainingTime = (fadeEndTime?.minus(now) ?: 0L) atLeast 0L atMost 750L
         val progress = remainingTime / 750.0F
@@ -66,12 +67,15 @@ class VanillaXFlatScrollbarViewWidget(
         if (range.start < range.endInclusive && scrollbarThickness > 0 && scrollbarLength > 0) {
             val start = evaluateThumbPosition().roundToInt()
             val length = evaluateThumbLength()
+            val now = Util.getMillis()
+            updateFadeEndTime(mouseX, mouseY, now)
+            val color = getScrollbarColor(now)
             guiGraphics.fill(
                 x + start,
                 y,
                 x + start + length,
                 y + height,
-                evaluateScrollbarColor(mouseX, mouseY),
+                color,
             )
         }
     }
@@ -106,12 +110,15 @@ class VanillaYFlatScrollbarViewWidget(
         if (range.start < range.endInclusive && scrollbarThickness > 0 && scrollbarLength > 0) {
             val start = evaluateThumbPosition().roundToInt()
             val length = evaluateThumbLength()
+            val now = Util.getMillis()
+            updateFadeEndTime(mouseX, mouseY, now)
+            val color = getScrollbarColor(now)
             guiGraphics.fill(
                 x,
                 y + start,
                 x + width,
                 y + start + length,
-                evaluateScrollbarColor(mouseX, mouseY),
+                color,
             )
         }
     }
