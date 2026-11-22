@@ -11,8 +11,8 @@ class MarginView(private val xMin: Int, private val xMax: Int, private val yMin:
     override fun evaluateContentSizeXImpl() = super.evaluateContentSizeXImpl() + xMin + xMax
     override fun evaluateContentSizeYImpl() = super.evaluateContentSizeYImpl() + yMin + yMax
 
-    override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX() - xMin - xMax
-    override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY() - yMin - yMax
+    override fun evaluateChildRegionSizeX(index: Int) = (evaluateActualSizeX().toLong() - xMin - xMax).coerceIn(0L, Int.MAX_VALUE.toLong()).toInt()
+    override fun evaluateChildRegionSizeY(index: Int) = (evaluateActualSizeY().toLong() - yMin - yMax).coerceIn(0L, Int.MAX_VALUE.toLong()).toInt()
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
         val controller = childView.attachTo(offset.offset(xMin, yMin), viewPlacer)
