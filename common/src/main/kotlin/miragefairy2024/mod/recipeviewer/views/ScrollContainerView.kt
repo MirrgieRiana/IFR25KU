@@ -144,8 +144,10 @@ private fun connectScrollbarImpl(
         scrollbarView.contentLength = bounds.contentLength
         scrollbarView.viewportLength = bounds.viewportLength
     }
-    remover += scrollView.onScrollInput.register {
-        scrollbarView.onScrollInput.fire()
+    if (scrollbarView is FlatScrollbarView) {
+        remover += scrollView.onScrollInput.register {
+            scrollbarView.onScrollInput.fire()
+        }
     }
 
     fun connectOffset(offset: ObservableValue<Double>) {
