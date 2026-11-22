@@ -7,7 +7,6 @@ import miragefairy2024.clientProxy
 import miragefairy2024.mod.common.SlotType
 import miragefairy2024.mod.common.guiBackToGameTranslation
 import miragefairy2024.mod.recipeviewer.view.Alignment
-import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.views.AlignView
@@ -71,18 +70,18 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, tit
     val onBack = EventRegistry<() -> Boolean>()
 
     val view = View {
-        val textColor = ColorPair(0xFF493208.toInt(), 0xFF493208.toInt())
-
         view += YListView().configure {
             view.sizingX = Sizing.FILL
             view.sizingY = Sizing.FILL
 
+            // カード部分なのだ～🌱
             view += XListView().configure {
                 position.weight = 1.0
                 position.alignmentX = Alignment.CENTER
                 view.sizingY = Sizing.FILL
 
-                view += StackView().configure { // カードなのだ～🌱
+                // カード外枠なのだ～🌱
+                view += StackView().configure {
                     view.sizingX = Sizing.FILL
                     view.sizingY = Sizing.FILL
 
@@ -95,7 +94,7 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, tit
                         view += MultiLineTextView().configure {
                             view.text.value = title
                             view.alignmentX = Alignment.CENTER
-                            view.color = textColor
+                            view.color = IFR_ENCYCLOPEDIA_TEXT_COLOR
                             view.shadow = false
                         }
 
@@ -122,7 +121,7 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, tit
                             val scrollView = YScrollContainerView().configure {
                                 view += MultiLineTextView().configure {
                                     view.text.value = text { card.textTranslation() }
-                                    view.color = textColor
+                                    view.color = IFR_ENCYCLOPEDIA_TEXT_COLOR
                                     view.shadow = false
                                 }
                             }
@@ -142,7 +141,7 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, tit
 
             view += YSpaceView(10)
 
-            // ボタン部分なのだ～🌱
+            // 下部ボタンなのだ～🌱
             view += XListView().configure {
                 position.alignmentX = Alignment.CENTER
 
@@ -166,6 +165,7 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, tit
                     }
                 }
             }
+
         }.margin(0, 0, 20, 4)
     }
 
