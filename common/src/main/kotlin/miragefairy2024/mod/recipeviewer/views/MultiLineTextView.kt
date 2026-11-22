@@ -38,8 +38,7 @@ class MultiLineTextView : AbstractView(), PlaceableView {
     override fun evaluateContentSizeXImpl() = 0
     override fun evaluateContentSizeYImpl(): Int {
         val lineCount = lines.evaluate().size
-        if (lineCount == 0) return 0
-        return renderingProxy.getTextHeight() * lineCount + lineSpacing * (lineCount - 1) atLeast 0
+        return if (lineCount == 0) 0 else renderingProxy.getTextHeight() * lineCount + lineSpacing * (lineCount - 1) atLeast 0
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
