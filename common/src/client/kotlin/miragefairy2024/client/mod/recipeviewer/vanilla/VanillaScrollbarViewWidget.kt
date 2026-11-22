@@ -67,12 +67,17 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
         }
     }
 
+
+    // スクロール操作なのだ～🌱
+
     private fun updateScroll(offset: Double): Boolean {
         val old = view.scrollOffset.value
         val range = evaluateScrollRange()
         view.scrollOffset.value = offset.coerceIn(range.start, range.endInclusive)
         return view.scrollOffset.value != old
     }
+
+    protected open fun onScrollInput() = Unit
 
 
     // マウス入力なのだ～🌱
@@ -88,8 +93,6 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
     protected abstract fun getDragAmount(dragX: Double, dragY: Double): Double
 
     protected abstract fun getScrollAmount(scrollX: Double, scrollY: Double): Double
-
-    protected open fun onScrollInput() = Unit
 
     override fun hasMouseCapture(button: Int) = !disposed && button == 0 && draggingScrollbar
 
