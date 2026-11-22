@@ -6,6 +6,7 @@ import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
 import miragefairy2024.client.mod.recipeviewer.common.ImageViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TextViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TooltipViewRenderer
+import miragefairy2024.client.util.LayeredImageButton
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewController
@@ -13,6 +14,7 @@ import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.ImageView
+import miragefairy2024.mod.recipeviewer.views.LayeredImageButtonView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
@@ -26,6 +28,7 @@ import miragefairy2024.mod.recipeviewer.views.YInventoryScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.fire
+import miragefairy2024.util.observe
 import miragefairy2024.util.observeAndInitialize
 import miragefairy2024.util.register
 import miragefairy2024.util.removeOn
@@ -33,6 +36,8 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.EditBox
+import net.minecraft.client.gui.components.Tooltip
+import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.network.chat.Component
 
 private infix fun VanillaViewPlacerContext.place(widget: AbstractWidget): ViewController {
@@ -152,6 +157,37 @@ fun initVanillaViewPlacers() {
             override fun getMessage() = view.message
         }
         context place TextButtonWidget()
+    }
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: LayeredImageButtonView, bounds ->
+        fun LayeredImageButtonView.Sprites.toWidgetSprites() = WidgetSprites(this.selected, this.unselected, this.selectedFocused, this.unselectedFocused)
+
+        val widget = LayeredImageButton(bounds.sizeX, bounds.sizeY, view.backgroundSprites?.toWidgetSprites(), view.foregroundSprites?.toWidgetSprites())
+        widget.setPosition(bounds.x, bounds.y)
+        val onClosed = EventRegistry<() -> Unit>()
+        view.selected.observeAndInitialize(onClosed) { _, selected ->
+            widget.selected = selected
+        }
+        view.tooltip.observeAndInitialize(onClosed) { _, tooltip ->
+            widget.tooltip = if (tooltip != null) Tooltip.create(tooltip) else null
+        }
+        widget.onClick.observe(onClosed) {
+            view.onClick.fire()
+        }
+        val controller = context place widget
+        object : ViewController {
+            override fun setOffset(offset: IntPoint) {
+                controller.setOffset(offset)
+            }
+
+            override fun detach() {
+                controller.detach()
+            }
+
+            override fun dispose() {
+                onClosed.fire()
+                controller.dispose()
+            }
+        }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextFieldView, bounds ->
         val onClosed = EventRegistry<() -> Unit>()
