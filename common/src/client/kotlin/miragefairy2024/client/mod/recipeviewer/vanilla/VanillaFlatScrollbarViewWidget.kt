@@ -42,8 +42,8 @@ abstract class VanillaFlatScrollbarViewWidget(view: FlatScrollbarView, bounds: I
         val range = evaluateScrollRange()
         if (range.start < range.endInclusive && scrollbarThickness > 0 && scrollbarLength > 0) {
             val now = Util.getMillis()
-            // ホバー中か、領域外でドラッグを保持している間、フェードアウトをリセットし続けるのだ～🌱
-            if (isMouseOver(mouseX.toDouble(), mouseY.toDouble()) || hasMouseCapture(0)) {
+            // 親のクリップで隠れた部分へのホバーを除外し、範囲外に出たドラッグは引き続き扱うのだ～🌱
+            if ((isActive && isHovered) || hasMouseCapture(0)) {
                 resetFadeTimer(now)
             }
             val start = evaluateThumbPosition().roundToInt()

@@ -81,6 +81,7 @@ class VanillaFlatScrollbarViewWidgetTest {
                     val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
                     val mouseX = if (horizontal) 20.0 else 12.0
                     val mouseY = if (horizontal) 22.0 else 30.0
+                    Mockito.`when`(graphics.containsPointInScissor(mouseX.toInt(), mouseY.toInt())).thenReturn(true)
                     widget.render(graphics, mouseX.toInt(), mouseY.toInt(), 0.0F)
                     if (horizontal) {
                         Mockito.verify(graphics).fill(10, 20, 43, 27, view.scrollbarColor)
@@ -124,7 +125,10 @@ class VanillaFlatScrollbarViewWidgetTest {
                     val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
                     val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
                     val inside = if (horizontal) IntPoint(20, 22) else IntPoint(12, 30)
+                    val clipped = if (horizontal) IntPoint(90, 22) else IntPoint(12, 100)
                     val outside = IntPoint.ZERO
+                    Mockito.`when`(graphics.containsPointInScissor(inside.x, inside.y)).thenReturn(true)
+                    Mockito.`when`(graphics.containsPointInScissor(clipped.x, clipped.y)).thenReturn(false)
 
                     fun assertColor(at: Long, mouse: IntPoint, color: Int) {
                         now = at
@@ -139,11 +143,12 @@ class VanillaFlatScrollbarViewWidgetTest {
 
                     try {
                         assertColor(1000L, outside, 0x00FFFFFF)
+                        assertColor(1000L, clipped, 0x00FFFFFF)
                         assertColor(1000L, inside, view.scrollbarColor)
                         assertColor(3000L, inside, view.scrollbarColor)
-                        assertColor(3750L, outside, view.scrollbarColor)
-                        assertColor(4125L, outside, 0x50FFFFFF)
-                        assertColor(4500L, outside, 0x00FFFFFF)
+                        assertColor(3750L, clipped, view.scrollbarColor)
+                        assertColor(4125L, clipped, 0x50FFFFFF)
+                        assertColor(4500L, clipped, 0x00FFFFFF)
 
                         Assertions.assertTrue(widget.mouseClicked(inside.x.toDouble(), inside.y.toDouble(), 0))
                         assertColor(6500L, outside, view.scrollbarColor)
