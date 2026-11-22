@@ -19,32 +19,28 @@ abstract class VanillaFlatScrollbarViewWidget(view: FlatScrollbarView, bounds: I
 
     private var fadeEndTime: Long? = null
 
-    protected fun resetFadeTimer(now: Long) {
-        fadeEndTime = now + 1500L
-    }
-
-    protected fun getScrollbarColor(now: Long): Int {
-        val color = view.scrollbarColor
-        val endTime = fadeEndTime
-        val alpha = if (endTime == null) {
-            0
-        } else {
-            // owo と同じく、表示期限までの残り 750 ms で透明にするのだ～🌱
-            val remainingTime = (endTime - now) atLeast 0L atMost 750L
-            val progress = remainingTime / 750.0F
-            val opacity = (sin(progress * PI - PI / 2) * 0.5 + 0.5).toFloat()
-            (opacity * color.alphaOfArgb).toInt()
-        }
-        return argbOf(alpha, color)
-    }
-
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+        fun getScrollbarColor(now: Long): Int {
+            val color = view.scrollbarColor
+            val endTime = fadeEndTime
+            val alpha = if (endTime == null) {
+                0
+            } else {
+                // owo と同じく、表示期限までの残り 750 ms で透明にするのだ～🌱
+                val remainingTime = (endTime - now) atLeast 0L atMost 750L
+                val progress = remainingTime / 750.0F
+                val opacity = (sin(progress * PI - PI / 2) * 0.5 + 0.5).toFloat()
+                (opacity * color.alphaOfArgb).toInt()
+            }
+            return argbOf(alpha, color)
+        }
+
         val range = evaluateScrollRange()
         if (range.start < range.endInclusive && scrollbarThickness > 0 && scrollbarLength > 0) {
             val now = Util.getMillis()
             // 親のクリップで隠れた部分へのホバーを除外し、範囲外に出たドラッグは引き続き扱うのだ～🌱
             if ((isActive && isHovered) || hasMouseCapture(0)) {
-                resetFadeTimer(now)
+                fadeEndTime = now + 1500L
             }
             val start = evaluateThumbPosition().roundToInt()
             val length = evaluateThumbLength()
