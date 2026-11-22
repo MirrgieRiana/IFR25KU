@@ -6,6 +6,7 @@ import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.contains
 import miragefairy2024.util.Remover
 import net.minecraft.client.Minecraft
@@ -20,7 +21,15 @@ import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.Slot
 
 /** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
-class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title), SlotHovering where T : AbstractContainerMenu, T : ViewProviderMenu {
+class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractViewContainerScreen<T>(menu, playerInventory, title) where T : AbstractContainerMenu, T : ViewProviderMenu {
+
+    override fun createRootView() = menu.createView(title, playerInventoryTitle)
+
+}
+
+abstract class AbstractViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title), SlotHovering {
+
+    protected abstract fun createRootView(): View
 
     private class SlotPlacement(val clipBounds: () -> IntRectangle?)
 
@@ -35,37 +44,37 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
         override fun getRenderingProxy() = renderingProxy
         override fun getViewPlacerRegistry() = VANILLA_VIEW_PLACER_REGISTRY
 
-        override fun getScreen() = this@ViewContainerScreen
+        override fun getScreen() = this@AbstractViewContainerScreen
         override fun canPlaceMenuSlots() = true
-        override fun getRegionSizeX() = this@ViewContainerScreen.width
-        override fun getRegionSizeY() = this@ViewContainerScreen.height
+        override fun getRegionSizeX() = this@AbstractViewContainerScreen.width
+        override fun getRegionSizeY() = this@AbstractViewContainerScreen.height
 
-        override fun createRootView() = menu.createView(title, playerInventoryTitle)
+        override fun createRootView() = this@AbstractViewContainerScreen.createRootView()
 
-        override fun getUiOffset() = IntPoint(this@ViewContainerScreen.leftPos, this@ViewContainerScreen.topPos)
+        override fun getUiOffset() = IntPoint(this@AbstractViewContainerScreen.leftPos, this@AbstractViewContainerScreen.topPos)
         override fun setUiSize(uiSize: IntPoint) {
-            this@ViewContainerScreen.imageWidth = uiSize.x
-            this@ViewContainerScreen.imageHeight = uiSize.y
+            this@AbstractViewContainerScreen.imageWidth = uiSize.x
+            this@AbstractViewContainerScreen.imageHeight = uiSize.y
         }
 
         override fun init() {
             slotPlacementMap.clear()
-            super@ViewContainerScreen.init()
+            super@AbstractViewContainerScreen.init()
         }
 
         override fun <T> addWidget(widget: T): Remover where T : GuiEventListener, T : NarratableEntry {
-            this@ViewContainerScreen.addWidget(widget)
-            return Remover { this@ViewContainerScreen.removeWidget(widget) }
+            this@AbstractViewContainerScreen.addWidget(widget)
+            return Remover { this@AbstractViewContainerScreen.removeWidget(widget) }
         }
 
         override fun addRenderableWidget(widget: AbstractWidget): Remover {
-            this@ViewContainerScreen.addRenderableWidget(widget)
-            return Remover { this@ViewContainerScreen.removeWidget(widget) }
+            this@AbstractViewContainerScreen.addRenderableWidget(widget)
+            return Remover { this@AbstractViewContainerScreen.removeWidget(widget) }
         }
 
         override fun addRenderableOnly(widget: AbstractWidget): Remover {
-            this@ViewContainerScreen.addRenderableOnly(widget)
-            return Remover { this@ViewContainerScreen.removeWidget(widget) }
+            this@AbstractViewContainerScreen.addRenderableOnly(widget)
+            return Remover { this@AbstractViewContainerScreen.removeWidget(widget) }
         }
 
         /** [clipBounds] は取得時点の画面座標で返し、クリップしない場合は null を返すのだ～🌱 */
