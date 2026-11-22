@@ -20,9 +20,9 @@ class IntRectangleTest {
     }
 
     @Test
-    fun `片軸の負の寸法を補正しても座標と他軸の寸法を維持するのだ`() {
-        assertEquals(IntRectangle(-1, -2, 0, 7), IntPoint(-1, -2).sized(IntPoint(-3, 7)))
-        assertEquals(IntRectangle(-1, -2, 7, 0), IntPoint(-1, -2).sized(IntPoint(7, -3)))
+    fun `sized は片軸だけが負の寸法でも例外を投げるのだ`() {
+        assertThrows(IllegalArgumentException::class.java) { IntPoint(-1, -2).sized(IntPoint(-3, 7)) }
+        assertThrows(IllegalArgumentException::class.java) { IntPoint(-1, -2).sized(IntPoint(7, -3)) }
     }
 
     @Test
