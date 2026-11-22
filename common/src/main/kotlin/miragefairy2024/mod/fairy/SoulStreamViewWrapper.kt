@@ -77,9 +77,6 @@ class SoulStreamViewWrapper(
 
     private val player: Player = menu.playerInventory.player
     private val onViewClosed = EventRegistry<() -> Unit>()
-    private var filterScrollView: YScrollContainerView? = null
-    private var inventoryScrollView: YScrollContainerView? = null
-    private var effectScrollView: YScrollContainerView? = null
     private var refreshEffects: (() -> Unit)? = null
 
     fun createView(title: Component): View {
@@ -97,7 +94,6 @@ class SoulStreamViewWrapper(
                     view.sizingX = Sizing.FILL
                     view.sizingY = Sizing.FILL
 
-                    // レシピビューワー用に左右の下部を空けるのだ～🌱
                     view += createFilterView().configure {
                         position.weight = 1.0
                         position.ignoreLayoutX = true
@@ -114,12 +110,6 @@ class SoulStreamViewWrapper(
         }
     }
 
-    fun clampScrollOffsets() {
-        filterScrollView?.clampScrollOffset()
-        inventoryScrollView?.clampScrollOffset()
-        effectScrollView?.clampScrollOffset()
-    }
-
     fun updateEffects() {
         refreshEffects?.invoke()
     }
@@ -129,13 +119,8 @@ class SoulStreamViewWrapper(
         refreshEffects = null
     }
 
-    private fun createScrollContainerView(previous: YScrollContainerView?) = YScrollContainerView().also {
-        it.scrollOffsetY.value = previous?.scrollOffsetY?.value ?: 0.0
-    }
-
     private fun createFilterView(): View {
-        val scrollView = createScrollContainerView(filterScrollView)
-        filterScrollView = scrollView
+        val scrollView = YScrollContainerView()
 
         return View {
             view += YListView().configure {
@@ -232,10 +217,9 @@ class SoulStreamViewWrapper(
     }
 
     private fun createInventoryView(title: Component): View {
-        val scrollView = createScrollContainerView(inventoryScrollView).also {
+        val scrollView = YScrollContainerView().also {
             it.scrollStep = SlotType.NORMAL.viewTexture.size.y
         }
-        inventoryScrollView = scrollView
 
         return View {
             val columnCount = 9
@@ -306,10 +290,9 @@ class SoulStreamViewWrapper(
     private fun createEffectView(): View {
         var effects = collectPassiveSkillTexts()
         val effectList = DynamicView(createEffectList(effects))
-        val scrollView = createScrollContainerView(effectScrollView).also {
+        val scrollView = YScrollContainerView().also {
             it += effectList
         }
-        effectScrollView = scrollView
 
         refreshEffects = {
             val newEffects = collectPassiveSkillTexts()
