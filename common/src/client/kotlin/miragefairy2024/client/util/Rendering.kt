@@ -136,7 +136,6 @@ fun GuiGraphics.drawNinePatchImage(
     repeatX: Boolean,
     repeatY: Boolean,
 ) {
-    val graphics = this
 
     val sw0 = textureWidth
     val sw1 = xStartSize
@@ -162,10 +161,10 @@ fun GuiGraphics.drawNinePatchImage(
     // val dy3 = bounds.y + bounds.sizeY
 
     // 角
-    graphics.blit(textureId, dx0, dy0, sx0.toFloat(), sy0.toFloat(), sw1, sh1, sw0, sh0)
-    graphics.blit(textureId, dx2, dy0, sx2.toFloat(), sy0.toFloat(), sw3, sh1, sw0, sh0)
-    graphics.blit(textureId, dx0, dy2, sx0.toFloat(), sy2.toFloat(), sw1, sh3, sw0, sh0)
-    graphics.blit(textureId, dx2, dy2, sx2.toFloat(), sy2.toFloat(), sw3, sh3, sw0, sh0)
+    this.blit(textureId, dx0, dy0, sx0.toFloat(), sy0.toFloat(), sw1, sh1, sw0, sh0)
+    this.blit(textureId, dx2, dy0, sx2.toFloat(), sy0.toFloat(), sw3, sh1, sw0, sh0)
+    this.blit(textureId, dx0, dy2, sx0.toFloat(), sy2.toFloat(), sw1, sh3, sw0, sh0)
+    this.blit(textureId, dx2, dy2, sx2.toFloat(), sy2.toFloat(), sw3, sh3, sw0, sh0)
 
     // 上下
     run {
@@ -175,8 +174,8 @@ fun GuiGraphics.drawNinePatchImage(
             val dw = if (repeatX) sw2 atMost dx2 - dx else dx2 - dx
             val sw = if (repeatX) dw else sw2
 
-            graphics.blit(textureId, dx, dy0, dw, sh1, sx1.toFloat(), sy0.toFloat(), sw, sh1, sw0, sh0)
-            graphics.blit(textureId, dx, dy2, dw, sh3, sx1.toFloat(), sy2.toFloat(), sw, sh3, sw0, sh0)
+            this.blit(textureId, dx, dy0, dw, sh1, sx1.toFloat(), sy0.toFloat(), sw, sh1, sw0, sh0)
+            this.blit(textureId, dx, dy2, dw, sh3, sx1.toFloat(), sy2.toFloat(), sw, sh3, sw0, sh0)
 
             dx += dw
         }
@@ -190,8 +189,8 @@ fun GuiGraphics.drawNinePatchImage(
             val dh = if (repeatY) sh2 atMost dy2 - dy else dy2 - dy
             val sh = if (repeatY) dh else sh2
 
-            graphics.blit(textureId, dx0, dy, sw1, dh, sx0.toFloat(), sy1.toFloat(), sw1, sh, sw0, sh0)
-            graphics.blit(textureId, dx2, dy, sw3, dh, sx2.toFloat(), sy1.toFloat(), sw3, sh, sw0, sh0)
+            this.blit(textureId, dx0, dy, sw1, dh, sx0.toFloat(), sy1.toFloat(), sw1, sh, sw0, sh0)
+            this.blit(textureId, dx2, dy, sw3, dh, sx2.toFloat(), sy1.toFloat(), sw3, sh, sw0, sh0)
 
             dy += dh
         }
@@ -211,7 +210,7 @@ fun GuiGraphics.drawNinePatchImage(
                 val dh = if (repeatY) sh2 atMost dy2 - dy else dy2 - dy
                 val sh = if (repeatY) dh else sh2
 
-                graphics.blit(textureId, dx, dy, dw, dh, sx1.toFloat(), sy1.toFloat(), sw, sh, sw0, sh0)
+                this.blit(textureId, dx, dy, dw, dh, sx1.toFloat(), sy1.toFloat(), sw, sh, sw0, sh0)
 
                 dy += dh
             }
