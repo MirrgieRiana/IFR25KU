@@ -7,6 +7,7 @@ import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.util.IngredientStack
+import mirrg.kotlin.helium.atLeast
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 
@@ -16,7 +17,7 @@ abstract class SlotView : AbstractView(), PlaceableView {
     var additionalTooltip = emptyList<Component>()
     override val sizingX = Sizing.WRAP
     override val sizingY = Sizing.WRAP
-    override fun evaluateContentSizeXImpl() = (16L + 2L * margin).coerceIn(0L, Int.MAX_VALUE.toLong()).toInt()
+    override fun evaluateContentSizeXImpl() = margin + 16 + margin atLeast 0
     override fun evaluateContentSizeYImpl() = evaluateContentSizeXImpl()
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
 }

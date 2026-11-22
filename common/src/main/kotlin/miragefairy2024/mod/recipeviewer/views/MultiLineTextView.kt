@@ -11,6 +11,7 @@ import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.util.ObservableValue
 import mirrg.kotlin.helium.CachingEvaluator
+import mirrg.kotlin.helium.atLeast
 import net.minecraft.network.chat.Component
 
 class MultiLineTextView : AbstractView(), PlaceableView {
@@ -38,7 +39,7 @@ class MultiLineTextView : AbstractView(), PlaceableView {
     override fun evaluateContentSizeYImpl(): Int {
         val lineCount = lines.evaluate().size
         if (lineCount == 0) return 0
-        return (renderingProxy.getTextHeight().toLong() * lineCount + lineSpacing.toLong() * (lineCount - 1)).coerceIn(0L, Int.MAX_VALUE.toLong()).toInt()
+        return renderingProxy.getTextHeight() * lineCount + lineSpacing * (lineCount - 1) atLeast 0
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
