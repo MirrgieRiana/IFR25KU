@@ -17,8 +17,6 @@ abstract class ScrollbarView(initialScrollbarThickness: Int) : AbstractView(), P
 
     val scrollOffset = ObservableValue(0.0)
 
-    val onScrollInput = EventRegistry<() -> Unit>()
-
     var contentLength = 0
         set(value) {
             if (value < 0) throw IllegalArgumentException("Content length must be non-negative")
@@ -39,6 +37,8 @@ abstract class ScrollbarView(initialScrollbarThickness: Int) : AbstractView(), P
             if (value <= 0) throw IllegalArgumentException("Scroll step must be positive")
             field = value
         }
+
+    val onScrollInput = EventRegistry<() -> Unit>()
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
 
