@@ -67,12 +67,17 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
         }
     }
 
+
+    // スクロール操作なのだ～🌱
+
     private fun updateScroll(offset: Double): Boolean {
         val old = view.scrollOffset.value
         val range = evaluateScrollRange()
         view.scrollOffset.value = offset.coerceIn(range.start, range.endInclusive)
         return view.scrollOffset.value != old
     }
+
+    protected open fun onScrollInput() = Unit
 
 
     // マウス入力なのだ～🌱
@@ -139,7 +144,11 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
         if (!isMouseOver(mouseX, mouseY)) return false
-        return updateScroll(view.scrollOffset.value - getScrollAmount(scrollX, scrollY) * view.scrollStep)
+        val amount = getScrollAmount(scrollX, scrollY)
+        if (amount == 0.0) return false
+        val handled = updateScroll(view.scrollOffset.value - amount * view.scrollStep)
+        onScrollInput()
+        return handled
     }
 
 
@@ -190,7 +199,9 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
             GLFW.GLFW_KEY_END -> evaluateScrollRange().endInclusive
             else -> return false
         }
-        return updateScroll(offset)
+        val handled = updateScroll(offset)
+        onScrollInput()
+        return handled
     }
 
 
