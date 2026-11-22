@@ -23,7 +23,7 @@ abstract class VanillaFlatScrollbarViewWidget(view: FlatScrollbarView, bounds: I
         showThumbAfterScrollInput()
     }
 
-    internal fun showThumbAfterScrollInput() {
+    fun showThumbAfterScrollInput() {
         fadeEndTime = Util.getMillis() + 1250L
     }
 
