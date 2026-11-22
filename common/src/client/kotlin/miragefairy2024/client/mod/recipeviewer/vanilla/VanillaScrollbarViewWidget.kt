@@ -89,6 +89,8 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
 
     protected abstract fun getScrollAmount(scrollX: Double, scrollY: Double): Double
 
+    protected open fun onScrollInput() = Unit
+
     override fun hasMouseCapture(button: Int) = !disposed && button == 0 && draggingScrollbar
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
@@ -139,7 +141,11 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
         if (!isMouseOver(mouseX, mouseY)) return false
-        return updateScroll(view.scrollOffset.value - getScrollAmount(scrollX, scrollY) * view.scrollStep)
+        val amount = getScrollAmount(scrollX, scrollY)
+        if (amount == 0.0) return false
+        val handled = updateScroll(view.scrollOffset.value - amount * view.scrollStep)
+        onScrollInput()
+        return handled
     }
 
 
@@ -186,11 +192,13 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
             forwardKey -> view.scrollOffset.value + view.scrollStep
             GLFW.GLFW_KEY_PAGE_UP -> view.scrollOffset.value - view.viewportLength * 0.8
             GLFW.GLFW_KEY_PAGE_DOWN -> view.scrollOffset.value + view.viewportLength * 0.8
-            GLFW.GLFW_KEY_HOME -> evaluateScrollRange().start
-            GLFW.GLFW_KEY_END -> evaluateScrollRange().endInclusive
+            GLFW.GLFW_KEY_HOME -> return updateScroll(evaluateScrollRange().start)
+            GLFW.GLFW_KEY_END -> return updateScroll(evaluateScrollRange().endInclusive)
             else -> return false
         }
-        return updateScroll(offset)
+        val handled = updateScroll(offset)
+        onScrollInput()
+        return handled
     }
 
 
