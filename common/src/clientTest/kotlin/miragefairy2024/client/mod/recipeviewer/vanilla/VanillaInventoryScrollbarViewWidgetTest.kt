@@ -32,6 +32,14 @@ private class ScrollbarGraphics : GuiGraphics(Minecraft.getInstance(), null) {
     }
 
     fun assertTrackAndThumb(track: IntRectangle, thumb: IntRectangle, thumbTexture: String) {
+        fun assertPaintedBounds(bounds: IntRectangle, rectangles: List<IntRectangle>) {
+            Assertions.assertEquals(bounds.x, rectangles.minOf { it.x })
+            Assertions.assertEquals(bounds.y, rectangles.minOf { it.y })
+            Assertions.assertEquals(bounds.x + bounds.sizeX, rectangles.maxOf { it.x + it.sizeX })
+            Assertions.assertEquals(bounds.y + bounds.sizeY, rectangles.maxOf { it.y + it.sizeY })
+            Assertions.assertEquals(bounds.sizeX * bounds.sizeY, rectangles.sumOf { it.sizeX * it.sizeY })
+        }
+
         Assertions.assertEquals(listOf(TRACK_TEXTURE, thumbTexture), blits.map { it.first }.distinct())
         val trackBlits = blits.takeWhile { it.first == TRACK_TEXTURE }
         val thumbBlits = blits.drop(trackBlits.size)
@@ -39,14 +47,6 @@ private class ScrollbarGraphics : GuiGraphics(Minecraft.getInstance(), null) {
         assertPaintedBounds(track, trackBlits.map { it.second })
         assertPaintedBounds(thumb, thumbBlits.map { it.second })
         Assertions.assertTrue(pose().clear())
-    }
-
-    private fun assertPaintedBounds(bounds: IntRectangle, rectangles: List<IntRectangle>) {
-        Assertions.assertEquals(bounds.x, rectangles.minOf { it.x })
-        Assertions.assertEquals(bounds.y, rectangles.minOf { it.y })
-        Assertions.assertEquals(bounds.x + bounds.sizeX, rectangles.maxOf { it.x + it.sizeX })
-        Assertions.assertEquals(bounds.y + bounds.sizeY, rectangles.maxOf { it.y + it.sizeY })
-        Assertions.assertEquals(bounds.sizeX * bounds.sizeY, rectangles.sumOf { it.sizeX * it.sizeY })
     }
 }
 

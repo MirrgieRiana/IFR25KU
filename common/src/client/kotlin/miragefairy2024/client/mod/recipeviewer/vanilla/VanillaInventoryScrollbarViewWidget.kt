@@ -66,7 +66,6 @@ abstract class VanillaInventoryScrollbarViewWidget(view: InventoryScrollbarView,
             remainingHeight -= height
         }
         blitThumbRow(thumbY + thumbHeight - 2, 2, 13)
-
     }
 
 }
