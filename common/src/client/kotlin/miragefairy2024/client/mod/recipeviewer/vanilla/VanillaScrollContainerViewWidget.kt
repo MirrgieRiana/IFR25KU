@@ -259,16 +259,11 @@ abstract class VanillaScrollContainerViewWidget(
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
         if (!isMouseOver(mouseX, mouseY)) return false
         if (containsViewport(mouseX, mouseY)) {
-            val scrollbar = children().firstOrNull { it is VanillaScrollbarViewWidget<*> && it.isMouseOver(mouseX, mouseY) }
-            val handled = if (scrollbar != null) {
-                scrollbar.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
-            } else {
-                widgetRegistrations.toList().any { widgetRegistration ->
-                    if (!widgetRegistration.interactive) return@any false
-                    if (widgetRegistration !in widgetRegistrations) return@any false
-                    val widget = widgetRegistration.widget
-                    widget.isMouseOver(mouseX, mouseY) && widget.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
-                }
+            val handled = widgetRegistrations.toList().any { widgetRegistration ->
+                if (!widgetRegistration.interactive) return@any false
+                if (widgetRegistration !in widgetRegistrations) return@any false
+                val widget = widgetRegistration.widget
+                widget.isMouseOver(mouseX, mouseY) && widget.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
             }
             if (handled) return true
         }
