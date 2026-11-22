@@ -267,7 +267,11 @@ abstract class VanillaScrollContainerViewWidget(
             }
             if (handled) return true
         }
-        return scrollBy(-getScrollAmount(scrollX, scrollY) * view.scrollStep)
+        val amount = getScrollAmount(scrollX, scrollY)
+        if (amount == 0.0) return false
+        val handled = scrollBy(-amount * view.scrollStep)
+        view.onScrollInput.fire()
+        return handled
     }
 
 
@@ -351,15 +355,17 @@ abstract class VanillaScrollContainerViewWidget(
         if (listener != null && listener.keyPressed(keyCode, scanCode, modifiers)) return true
         // 子が選択されている間は、矢印キーをスクロールで消費せず、Screen のフォーカス移動へ渡すのだ～🌱
         if (listener != null && (keyCode == backwardKey || keyCode == forwardKey)) return false
-        return when (keyCode) {
+        val handled = when (keyCode) {
             backwardKey -> scrollBy(-view.scrollStep.toDouble())
             forwardKey -> scrollBy(view.scrollStep.toDouble())
             GLFW.GLFW_KEY_PAGE_UP -> scrollBy(-viewportLength * 0.8)
             GLFW.GLFW_KEY_PAGE_DOWN -> scrollBy(viewportLength * 0.8)
             GLFW.GLFW_KEY_HOME -> updateScroll(0.0)
             GLFW.GLFW_KEY_END -> updateScroll(evaluateMaxScrollOffset().toDouble())
-            else -> false
+            else -> return false
         }
+        view.onScrollInput.fire()
+        return handled
     }
 
     override fun keyReleased(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
