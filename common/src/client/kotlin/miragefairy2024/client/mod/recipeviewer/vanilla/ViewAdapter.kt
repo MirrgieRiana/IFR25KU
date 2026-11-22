@@ -22,14 +22,6 @@ import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.screens.Screen
 import org.lwjgl.glfw.GLFW
 
-internal fun GuiEventListener.canFocusOnClick(button: Int): Boolean {
-    return when (this) {
-        is VanillaScrollbarViewWidget<*> -> this.focusable
-        is VanillaScrollContainerViewWidget -> this.canFocusOnClick(button)
-        else -> true
-    }
-}
-
 /** [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter] から画面の機能を呼び出すためのインターフェースなのだ～🌱 */
 interface ViewAdapterHost {
 
@@ -86,7 +78,6 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     private val mouseClickSentinel = MouseClickSentinel()
     private var mouseClickSentinelRemover: Remover? = null
-    private var mouseClickButton: Int? = null
 
     /**
      * View のツリーを再構築して、各ウィジェットをホストへ直接登録するのだ～🌱
@@ -161,24 +152,6 @@ class ViewAdapter(val host: ViewAdapterHost) {
                 mouseClickSentinelRemover = host.addWidget(mouseClickSentinel)
             }
         }
-    }
-
-    fun mouseClicked(mouseX: Double, mouseY: Double, button: Int, click: () -> Boolean): Boolean {
-        beforeMouseClicked()
-        val previousButton = mouseClickButton
-        mouseClickButton = button
-        val handled = try {
-            click()
-        } finally {
-            mouseClickButton = previousButton
-        }
-        mouseClicked(mouseX, mouseY)
-        return handled
-    }
-
-    fun canFocusOnClick(focused: GuiEventListener?): Boolean {
-        val button = mouseClickButton ?: return true
-        return focused?.canFocusOnClick(button) ?: true
     }
 
     fun mouseClicked(mouseX: Double, mouseY: Double) {

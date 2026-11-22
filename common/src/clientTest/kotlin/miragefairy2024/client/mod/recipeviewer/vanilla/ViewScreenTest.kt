@@ -1,23 +1,12 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
-import miragefairy2024.mod.recipeviewer.view.IntPoint
-import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import miragefairy2024.mod.recipeviewer.view.RenderingProxy
-import miragefairy2024.mod.recipeviewer.view.ViewController
-import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
-import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.EmptyView
-import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
-import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
-import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
-import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.empty
 import miragefairy2024.util.text
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.EditBox
-import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.client.gui.screens.Screen
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -39,72 +28,6 @@ private class KeyboardViewScreen : ViewScreen(text { empty() }) {
 }
 
 class ViewScreenTest {
-
-    @Test
-    fun `フォーカス不可のバーをクリックしても入力欄のフォーカスを維持してドラッグできるのだ`() {
-        class ScrollContent : FixedWidgetView(IntPoint(60, 300))
-
-        listOf(false, true).forEach { nested ->
-            Mockito.mockStatic(Screen::class.java).use {
-                val screen = KeyboardViewScreen()
-                val editBox: EditBox = EditBox(null, 20, 20, 40, 20, text { empty() })
-                val scrollbarView = YFlatScrollbarView()
-                scrollbarView.contentLength = 300
-                scrollbarView.viewportLength = 100
-                scrollbarView.focusable = false
-                val scrollbar = VanillaYFlatScrollbarViewWidget(scrollbarView, IntRectangle(135, 20, 5, 100))
-                val container = if (nested) {
-                    val scrollView = YScrollContainerView()
-                    scrollView += ScrollContent()
-                    scrollView.initSizeCalculation(Mockito.mock(RenderingProxy::class.java), { 60 }, { 120 })
-                    val context: VanillaViewPlacerContext = Mockito.mock(VanillaViewPlacerContext::class.java)
-                    Mockito.`when`(context.origin).thenReturn(IntPoint.ZERO)
-                    val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
-                    registry.register { childContext, _: ScrollContent, _ ->
-                        val remover = childContext.addRenderableWidget(scrollbar)
-                        object : ViewController {
-                            override fun setOffset(offset: IntPoint) = Unit
-                            override fun detach() = remover.remove()
-                        }
-                    }
-                    VanillaYScrollContainerViewWidget(scrollView, IntRectangle(100, 10, 60, 120), context, registry)
-                } else {
-                    null
-                }
-                screen.initialize()
-                screen.register(editBox)
-                screen.register(container ?: scrollbar)
-                try {
-                    screen.focused = editBox
-                    Assertions.assertNull(scrollbar.nextFocusPath(FocusNavigationEvent.TabNavigation(true)))
-                    Assertions.assertTrue(screen.mouseClicked(137.0, 25.0, GLFW.GLFW_MOUSE_BUTTON_LEFT))
-                    Assertions.assertSame(editBox, screen.focused)
-                    Assertions.assertTrue(editBox.isFocused)
-                    Assertions.assertFalse(scrollbar.isFocused)
-                    Assertions.assertNull(container?.focused)
-
-                    Assertions.assertTrue(screen.mouseDragged(180.0, 180.0, GLFW.GLFW_MOUSE_BUTTON_LEFT, 43.0, 155.0))
-                    Assertions.assertEquals(200.0, scrollbarView.scrollOffset.value)
-                    Assertions.assertTrue(screen.mouseReleased(180.0, 180.0, GLFW.GLFW_MOUSE_BUTTON_LEFT))
-                    Assertions.assertFalse(scrollbar.hasMouseCapture(GLFW.GLFW_MOUSE_BUTTON_LEFT))
-                    Assertions.assertTrue(screen.mouseScrolled(137.0, 25.0, 0.0, 1.0))
-                    Assertions.assertEquals(185.0, scrollbarView.scrollOffset.value)
-                    Assertions.assertSame(editBox, screen.focused)
-
-                    scrollbarView.focusable = true
-                    Assertions.assertNotNull(scrollbar.nextFocusPath(FocusNavigationEvent.TabNavigation(true)))
-                    Assertions.assertTrue(screen.mouseClicked(137.0, 115.0, GLFW.GLFW_MOUSE_BUTTON_LEFT))
-                    Assertions.assertSame(container ?: scrollbar, screen.focused)
-                    Assertions.assertTrue(scrollbar.isFocused)
-                } finally {
-                    screen.removed()
-                    container?.dispose()
-                    container?.detach()
-                    scrollbar.dispose()
-                }
-            }
-        }
-    }
 
     @Test
     fun `未消費の欄外クリックだけで入力欄のフォーカスを外すのだ`() {

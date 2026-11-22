@@ -156,17 +156,15 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
 
     private var focusedSelf = false
 
-    internal val focusable get() = view.focusable
-
-    override fun isFocused() = focusedSelf && focusable
+    override fun isFocused() = focusedSelf
 
     override fun setFocused(focused: Boolean) {
-        focusedSelf = focused && focusable
+        focusedSelf = focused
     }
 
     override fun nextFocusPath(event: FocusNavigationEvent): ComponentPath? {
 
-        if (!isActive || !focusable) return null
+        if (!isActive || !view.focusable) return null
 
         val range = evaluateScrollRange()
         if (range.start < range.endInclusive && !isFocused) {
