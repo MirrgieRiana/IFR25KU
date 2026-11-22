@@ -11,6 +11,10 @@ import mirrg.kotlin.helium.atLeast
 
 class AbsoluteView(private val size: IntPoint) : ContainerView<AbsoluteView.Position>() {
 
+    init {
+        require(size.x >= 0 && size.y >= 0) { "Absolute view dimensions must be non-negative" }
+    }
+
     sealed class Position {
         abstract fun evaluateSizeX(contentSizeXProvider: () -> Int, regionSizeXProvider: () -> Int): Int
         abstract fun evaluateSizeY(contentSizeYProvider: () -> Int, regionSizeYProvider: () -> Int): Int
@@ -30,6 +34,10 @@ class AbsoluteView(private val size: IntPoint) : ContainerView<AbsoluteView.Posi
     }
 
     data class Bounds(val bounds: IntRectangle) : Position() {
+        init {
+            require(bounds.sizeX >= 0 && bounds.sizeY >= 0) { "Child bounds dimensions must be non-negative" }
+        }
+
         override fun evaluateSizeX(contentSizeXProvider: () -> Int, regionSizeXProvider: () -> Int) = bounds.sizeX
         override fun evaluateSizeY(contentSizeYProvider: () -> Int, regionSizeYProvider: () -> Int) = bounds.sizeY
         override fun getOffset() = bounds.offset
@@ -41,8 +49,8 @@ class AbsoluteView(private val size: IntPoint) : ContainerView<AbsoluteView.Posi
     override var sizingX = Sizing.WRAP
     override var sizingY = Sizing.WRAP
 
-    override fun evaluateContentSizeXImpl() = size.x atLeast 0
-    override fun evaluateContentSizeYImpl() = size.y atLeast 0
+    override fun evaluateContentSizeXImpl() = size.x
+    override fun evaluateContentSizeYImpl() = size.y
 
     override fun evaluateChildRegionSizeX(index: Int) = children[index].position.evaluateSizeX({ children[index].view.evaluateContentSizeX() }, { evaluateActualSizeX() }) atLeast 0
     override fun evaluateChildRegionSizeY(index: Int) = children[index].position.evaluateSizeY({ children[index].view.evaluateContentSizeY() }, { evaluateActualSizeY() }) atLeast 0
