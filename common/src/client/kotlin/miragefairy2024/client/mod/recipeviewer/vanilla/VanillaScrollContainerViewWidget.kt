@@ -420,10 +420,8 @@ abstract class VanillaScrollContainerViewWidget(
     init {
         val childContext: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = context.origin
+            override val canPlaceMenuSlots = context.canPlaceMenuSlots
             override val onBeforeRender = context.onBeforeRender
-
-            // TODO スクロール領域内の MenuSlotView の配置に対応するのだ～🌱
-            override val canPlaceMenuSlots = false
             override fun addRenderableWidget(widget: AbstractWidget) = register(widget, true)
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false)
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover {

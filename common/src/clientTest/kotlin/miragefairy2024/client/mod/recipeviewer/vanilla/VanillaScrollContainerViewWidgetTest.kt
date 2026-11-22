@@ -16,6 +16,7 @@ import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.empty
+import miragefairy2024.util.register
 import miragefairy2024.util.text
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
@@ -59,6 +60,10 @@ class VanillaScrollContainerViewWidgetTest {
 
             scrollOffsetValue.value = 175.25
             val firstWidget = attach(100)
+            var scrollInputs = 0
+            val scrollInputRemover = view.onScrollInput.register {
+                scrollInputs++
+            }
             try {
                 Assertions.assertEquals(if (horizontal) IntPoint(-165, 20) else IntPoint(10, -155), placements[0].last())
                 Assertions.assertEquals(1, scrollOffsetValue.toList().size)
@@ -70,12 +75,22 @@ class VanillaScrollContainerViewWidgetTest {
                 Assertions.assertEquals(if (horizontal) IntPoint(-221, 20) else IntPoint(10, -211), placements[0].last())
                 Assertions.assertTrue(firstWidget.mouseScrolled(50.0, 50.0, 0.0, 1.0))
                 Assertions.assertEquals(215.75, scrollOffsetValue.value)
+                Assertions.assertEquals(1, scrollInputs)
                 firstWidget.isFocused = true
                 Assertions.assertTrue(firstWidget.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
                 Assertions.assertEquals(0.0, scrollOffsetValue.value)
+                Assertions.assertEquals(2, scrollInputs)
                 Assertions.assertTrue(firstWidget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
                 Assertions.assertEquals(200.0, scrollOffsetValue.value)
+                Assertions.assertEquals(3, scrollInputs)
+                Assertions.assertFalse(firstWidget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
+                Assertions.assertEquals(4, scrollInputs)
+                Assertions.assertFalse(firstWidget.mouseScrolled(50.0, 50.0, 0.0, -1.0))
+                Assertions.assertEquals(5, scrollInputs)
+                Assertions.assertFalse(firstWidget.mouseScrolled(50.0, 50.0, 0.0, 0.0))
+                Assertions.assertEquals(5, scrollInputs)
             } finally {
+                scrollInputRemover.remove()
                 firstWidget.dispose()
                 firstWidget.detach()
             }
