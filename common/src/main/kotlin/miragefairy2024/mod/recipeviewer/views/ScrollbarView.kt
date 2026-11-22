@@ -41,7 +41,7 @@ abstract class ScrollbarView(initialScrollbarThickness: Int) : AbstractView(), P
 
     val onScrollInput = EventRegistry<() -> Unit>()
 
-    internal fun notifyScrollInput() {
+    fun notifyScrollInput() {
         val scrollbars = notifiedScrollbars.get()
         if (scrollbars != null) {
             if (scrollbars.any { it === this }) return
@@ -57,7 +57,7 @@ abstract class ScrollbarView(initialScrollbarThickness: Int) : AbstractView(), P
         // 接続した領域とバー自身に同じホイール入力が届いても、バーへの通知は 1 回なのだ～🌱
         private val notifiedScrollbars = ThreadLocal<MutableList<ScrollbarView>>()
 
-        internal fun dispatchMouseScroll(dispatch: () -> Boolean): Boolean {
+        fun dispatchMouseScroll(dispatch: () -> Boolean): Boolean {
             val previousScrollbars = notifiedScrollbars.get()
             notifiedScrollbars.set(mutableListOf())
             try {
