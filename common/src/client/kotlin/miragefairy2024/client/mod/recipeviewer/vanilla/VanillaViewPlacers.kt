@@ -151,7 +151,7 @@ fun initVanillaViewPlacers() {
         context place TextButtonWidget()
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: LayeredImageButtonView, bounds ->
-        fun LayeredImageButtonView.Sprites.toWidgetSprites(): WidgetSprites = WidgetSprites(this.selected, this.unselected, this.selectedFocused, this.unselectedFocused)
+        fun LayeredImageButtonView.Sprites.toWidgetSprites() = WidgetSprites(this.selected, this.unselected, this.selectedFocused, this.unselectedFocused)
 
         val widget = LayeredImageButton(bounds.sizeX, bounds.sizeY, view.backgroundSprites?.toWidgetSprites(), view.foregroundSprites?.toWidgetSprites())
         widget.setPosition(bounds.x, bounds.y)
