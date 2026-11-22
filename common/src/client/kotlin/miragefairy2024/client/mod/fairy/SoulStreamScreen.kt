@@ -262,6 +262,14 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
     // レシピビューワーが使うバニラのコンテナー矩形を画面全体に広げないのだ～🌱
     override fun setMenuSize(size: IntPoint) = Unit
 
+    override fun hasClickedOutside(mouseX: Double, mouseY: Double, guiLeft: Int, guiTop: Int, mouseButton: Int): Boolean {
+        if (!super.hasClickedOutside(mouseX, mouseY, guiLeft, guiTop, mouseButton)) return false
+        // バニラはコンテナー矩形の外でスロットをクリックすると、スロット番号を投棄用の番号で上書きするのだ～🌱
+        return menu.slots.none { slot ->
+            slot.isActive && `mirageFairy2024$isHovering`(slot, mouseX, mouseY, isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY))
+        }
+    }
+
     internal fun getRecipeViewerExclusionAreas(): List<IntRectangle> {
         var x = PANE_MARGIN
         return panes.map { pane ->
