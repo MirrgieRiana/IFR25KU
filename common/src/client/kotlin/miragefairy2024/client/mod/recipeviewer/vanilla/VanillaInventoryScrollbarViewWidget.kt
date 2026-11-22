@@ -46,26 +46,26 @@ abstract class VanillaInventoryScrollbarViewWidget(view: InventoryScrollbarView,
             return
         }
 
-        fun blitThumbRow(dy: Int, height: Int, v: Int) {
-            guiGraphics.blit(texture, thumbX, dy, 2, height, 0F, v.toFloat(), 2, height, 12, 15)
+        fun blitThumbRow(dy: Int, height: Int, v: Float) {
+            guiGraphics.blit(texture, thumbX, dy, 2, height, 0F, v, 2, height, 12, 15)
             var remainingWidth = thumbWidth - 4
             while (remainingWidth > 0) {
                 val width = remainingWidth atMost 8
-                guiGraphics.blit(texture, thumbX + 2 + remainingWidth - width, dy, width, height, (10 - width).toFloat(), v.toFloat(), width, height, 12, 15)
+                guiGraphics.blit(texture, thumbX + 2 + remainingWidth - width, dy, width, height, (10 - width).toFloat(), v, width, height, 12, 15)
                 remainingWidth -= width
             }
-            guiGraphics.blit(texture, thumbX + thumbWidth - 2, dy, 2, height, 10F, v.toFloat(), 2, height, 12, 15)
+            guiGraphics.blit(texture, thumbX + thumbWidth - 2, dy, 2, height, 10F, v, 2, height, 12, 15)
         }
 
-        blitThumbRow(thumbY, 2, 0)
+        blitThumbRow(thumbY, 2, 0F)
         // 縞の端が下側の枠につながるよう、中央の 12 px を下から反復するのだ～🌱
         var remainingHeight = thumbHeight - 4
         while (remainingHeight > 0) {
             val height = remainingHeight atMost 12
-            blitThumbRow(thumbY + 2 + remainingHeight - height, height, 13 - height)
+            blitThumbRow(thumbY + 2 + remainingHeight - height, height, (13 - height).toFloat())
             remainingHeight -= height
         }
-        blitThumbRow(thumbY + thumbHeight - 2, 2, 13)
+        blitThumbRow(thumbY + thumbHeight - 2, 2, 13F)
     }
 
 }
