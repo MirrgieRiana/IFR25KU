@@ -7,6 +7,7 @@ import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.ObservableValue
+import miragefairy2024.util.fire
 
 /** スクロール位置をコンテンツ座標で保持し、再配置時にも引き継ぐバーなのだ～🌱 */
 abstract class ScrollbarView(initialScrollbarThickness: Int) : AbstractView(), PlaceableView {
@@ -40,6 +41,36 @@ abstract class ScrollbarView(initialScrollbarThickness: Int) : AbstractView(), P
 
     val onScrollInput = EventRegistry<() -> Unit>()
 
+    internal fun notifyScrollInput() {
+        val scrollbars = notifiedScrollbars.get()
+        if (scrollbars != null) {
+            if (scrollbars.any { it === this }) return
+            scrollbars += this
+        }
+        onScrollInput.fire()
+    }
+
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
+
+    companion object {
+
+        // 接続した領域とバー自身に同じホイール入力が届いても、バーへの通知は 1 回なのだ～🌱
+        private val notifiedScrollbars = ThreadLocal<MutableList<ScrollbarView>>()
+
+        internal fun dispatchMouseScroll(dispatch: () -> Boolean): Boolean {
+            val previousScrollbars = notifiedScrollbars.get()
+            notifiedScrollbars.set(mutableListOf())
+            try {
+                return dispatch()
+            } finally {
+                if (previousScrollbars == null) {
+                    notifiedScrollbars.remove()
+                } else {
+                    notifiedScrollbars.set(previousScrollbars)
+                }
+            }
+        }
+
+    }
 
 }

@@ -9,6 +9,7 @@ import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
+import miragefairy2024.mod.recipeviewer.views.ScrollbarView
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import miragefairy2024.util.fire
@@ -195,9 +196,11 @@ class ViewAdapter(val host: ViewAdapterHost) {
     fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
         if (!isInitialized) return false
         val screen = host.getScreen() ?: return false
-        return screen.children().toList().any { child ->
-            if (screen.children().none { it === child }) return@any false
-            child.isMouseOver(mouseX, mouseY) && child.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
+        return ScrollbarView.dispatchMouseScroll {
+            screen.children().toList().any { child ->
+                if (screen.children().none { it === child }) return@any false
+                child.isMouseOver(mouseX, mouseY) && child.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
+            }
         }
     }
 

@@ -8,7 +8,11 @@ import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
+import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.XListView
+import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
+import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
@@ -190,6 +194,54 @@ class ViewAdapterTest {
             Assertions.assertFalse(fixture.adapter.mouseScrolled(35.0, 45.0, 2.0, -3.0))
             Assertions.assertTrue(calls.isEmpty())
         } finally {
+            fixture.adapter.removed()
+        }
+    }
+
+    @Test
+    fun `領域とバーが重なる端でバーへの通知を 1 回にして未消費なら次の子へ渡すのだ`() {
+        val fixture = AdapterFixture()
+        val context = Mockito.mock(VanillaViewPlacerContext::class.java)
+        fun createScrollView(): YScrollContainerView {
+            return YScrollContainerView().also {
+                it += SpaceView(IntPoint(100, 300))
+                it.initSizeCalculation(ADAPTER_RENDERING_PROXY, { 100 }, { 100 })
+            }
+        }
+        val scrollView = createScrollView()
+        val scroll = VanillaYScrollContainerViewWidget(scrollView, IntRectangle(0, 0, 100, 100), context, ViewPlacerRegistry())
+        val scrollbarView = YFlatScrollbarView()
+        val scrollbar = VanillaYFlatScrollbarViewWidget(scrollbarView, IntRectangle(95, 0, 5, 100))
+        val nextScrollView = createScrollView()
+        val nextScroll = VanillaYScrollContainerViewWidget(nextScrollView, IntRectangle(0, 0, 100, 100), context, ViewPlacerRegistry())
+        fixture.interactiveWidgets += scroll
+        fixture.interactiveWidgets += scrollbar
+        fixture.interactiveWidgets += nextScroll
+        val connection = connectScrollbar(scrollView, scrollbarView)
+        val offsets = mutableListOf<Double>()
+        val scrollInputRemover = scrollbarView.onScrollInput.register {
+            offsets += scrollbarView.scrollOffset.value
+        }
+        try {
+            assertFalse(fixture.adapter.mouseScrolled(97.0, 50.0, 0.0, 1.0))
+            assertFalse(fixture.adapter.mouseScrolled(97.0, 50.0, 0.0, 1.0))
+            assertEquals(listOf(0.0, 0.0), offsets)
+
+            assertTrue(fixture.adapter.mouseScrolled(97.0, 50.0, 0.0, -1.0))
+            assertEquals(15.0, scrollView.scrollOffsetY.value)
+            assertEquals(0.0, nextScrollView.scrollOffsetY.value)
+
+            scrollbarView.scrollOffset.value = 200.0
+            assertTrue(fixture.adapter.mouseScrolled(97.0, 50.0, 0.0, -1.0))
+            assertEquals(200.0, scrollView.scrollOffsetY.value)
+            assertEquals(15.0, nextScrollView.scrollOffsetY.value)
+            assertEquals(listOf(0.0, 0.0, 15.0, 200.0), offsets)
+        } finally {
+            scrollInputRemover.remove()
+            connection.remove()
+            nextScroll.dispose()
+            scrollbar.dispose()
+            scroll.dispose()
             fixture.adapter.removed()
         }
     }
