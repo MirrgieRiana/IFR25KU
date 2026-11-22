@@ -88,13 +88,13 @@ class VanillaFlatScrollbarViewWidgetTest {
                     } else {
                         Mockito.verify(graphics).fill(10, 20, 17, 53, view.scrollbarColor)
                     }
-                    view.focusable = false
+                    view.keyboardFocusable = false
                     Assertions.assertFalse(widget.mouseClicked(if (horizontal) 20.0 else 17.0, if (horizontal) 27.0 else 30.0, 0))
                     Assertions.assertTrue(widget.mouseClicked(mouseX, mouseY, 0))
                     Assertions.assertTrue(widget.hasMouseCapture(0))
                     Assertions.assertTrue(widget.mouseReleased(mouseX, mouseY, 0))
                     Assertions.assertNull(widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true)))
-                    view.focusable = true
+                    view.keyboardFocusable = true
                     val path = widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true))
                     Assertions.assertNotNull(path)
                     path!!.applyFocus(true)

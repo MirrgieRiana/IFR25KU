@@ -181,7 +181,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                             }
                             view += scrollView
                             val scrollbarView = YFlatScrollbarView().configure {
-                                view.focusable = false
+                                view.keyboardFocusable = false
                             }
                             view += scrollbarView
                             connectScrollbar(scrollView.view, scrollbarView.view)

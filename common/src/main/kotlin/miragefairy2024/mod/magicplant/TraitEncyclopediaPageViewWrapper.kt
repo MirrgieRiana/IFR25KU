@@ -121,7 +121,7 @@ class TraitEncyclopediaPageViewWrapper(trait: Trait) {
                             view += scrollView
                             val scrollbarView = YFlatScrollbarView().configure {
                                 view.scrollbarColor = 0xA0FFFFFF.toInt()
-                                view.focusable = false
+                                view.keyboardFocusable = false
                             }
                             view += scrollbarView
                             connectScrollbar(scrollView.view, scrollbarView.view)
