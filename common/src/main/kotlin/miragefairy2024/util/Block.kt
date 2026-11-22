@@ -22,7 +22,7 @@ fun Block.getIdentifier() = BuiltInRegistries.BLOCK.getKey(this)
 
 fun ResourceLocation.toBlock() = BuiltInRegistries.BLOCK.get(this)
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Block).registerFlammable(burn: Int, spread: Int) = ModEvents.onInitialize {
     FlammableBlockRegistry.getDefaultInstance().add(this(), burn, spread)
 }
@@ -43,7 +43,7 @@ infix fun BlockState.isNotIn(block: Block) = !(this isIn block)
 infix fun BlockState.isIn(tag: TagKey<Block>) = this.`is`(tag)
 infix fun BlockState.isNotIn(tag: TagKey<Block>) = !(this isIn tag)
 
-context(ModContext)
+context(_: ModContext)
 fun registerBlockFamily(texturedModelProvider: TexturedModel.Provider, baseBlock: () -> Block, initializer: (BlockFamily.Builder) -> BlockFamily.Builder) {
     val family by lazy { initializer(BlockFamily.Builder(baseBlock())).family }
     DataGenerationEvents.onGenerateBlockModel {

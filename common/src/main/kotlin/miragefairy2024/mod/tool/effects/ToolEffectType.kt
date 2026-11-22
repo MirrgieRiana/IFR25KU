@@ -5,7 +5,7 @@ import miragefairy2024.mod.tool.ToolConfiguration
 import miragefairy2024.mod.tool.ToolEffectType
 import mirrg.kotlin.helium.max
 
-context(ModContext)
+context(_: ModContext)
 fun initToolEffectType() {
     SelfMendingToolEffectType.init()
     ObtainFairyToolEffectType.init()

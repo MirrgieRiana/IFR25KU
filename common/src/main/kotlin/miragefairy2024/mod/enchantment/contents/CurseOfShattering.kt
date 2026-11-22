@@ -8,7 +8,7 @@ import miragefairy2024.util.get
 import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.enchantment.EnchantmentHelper
 
-context(ModContext)
+context(_: ModContext)
 fun initCurseOfShattering() {
     EquippedItemBrokenCallback.EVENT.register { entity, _, slot ->
         if (entity.level().isClientSide) return@register

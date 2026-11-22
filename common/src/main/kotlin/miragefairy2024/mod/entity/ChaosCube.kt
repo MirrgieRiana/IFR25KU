@@ -99,7 +99,7 @@ object ChaosCubeCard {
         type = AdvancementCardType.NORMAL,
     )
 
-    context(ModContext)
+    context(_: ModContext)
     fun init() {
         entityType.register()
         ModEvents.onConstruction {

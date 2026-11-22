@@ -189,7 +189,7 @@ open class BlockMaterialCard(
                 )
             },
         ) {
-            context(ModContext) override fun initModelGeneration() = block.registerModelGeneration { texturedModelProvider!![block()] }
+            context(_: ModContext) override fun initModelGeneration() = block.registerModelGeneration { texturedModelProvider!![block()] }
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(AURA_RESISTANT_CERAMICS_TAG).init {
             // TODO 分解することで液体燃料が取れる
             registerShapedRecipeGeneration(item, count = 2) {
@@ -204,9 +204,9 @@ open class BlockMaterialCard(
             MapColor.COLOR_ORANGE, 30.0F, 30.0F, tags = listOf(RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG),
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = SlabBlock(properties)
-            context(ModContext) override fun initBlockStateGeneration() = Unit
-            context(ModContext) override fun initModelGeneration() = Unit
-            context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
+            context(_: ModContext) override fun initBlockStateGeneration() = Unit
+            context(_: ModContext) override fun initModelGeneration() = Unit
+            context(_: ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).tag(AURA_RESISTANT_CERAMIC_SLABS_TAG).init {
             registerBlockFamily(AURA_RESISTANT_CERAMIC.texturedModelProvider!!, AURA_RESISTANT_CERAMIC.block) { it.slab(block()) }
             registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
@@ -218,8 +218,8 @@ open class BlockMaterialCard(
             MapColor.COLOR_ORANGE, 30.0F, 30.0F, tags = listOf(RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG),
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(AURA_RESISTANT_CERAMIC.block.await().defaultBlockState(), properties)
-            context(ModContext) override fun initBlockStateGeneration() = Unit
-            context(ModContext) override fun initModelGeneration() = Unit
+            context(_: ModContext) override fun initBlockStateGeneration() = Unit
+            context(_: ModContext) override fun initModelGeneration() = Unit
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).tag(AURA_RESISTANT_CERAMIC_STAIRS_TAG).init {
             registerBlockFamily(AURA_RESISTANT_CERAMIC.texturedModelProvider!!, AURA_RESISTANT_CERAMIC.block) { it.stairs(block()) }
             registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
@@ -245,7 +245,7 @@ open class BlockMaterialCard(
             PoemList(2).poem(EnJa("Turpentine improves its flowability", "空隙に走る樹脂の流れ――")),
             MapColor.COLOR_ORANGE, 30.0F, 30.0F, tags = listOf(RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG),
         ) {
-            context(ModContext)
+            context(_: ModContext)
             override fun initModelGeneration() = block.registerModelGeneration {
                 ModelTemplates.CUBE_ALL.with(
                     TextureSlot.ALL to "block/" * AURA_RESISTANT_CERAMIC.identifier,
@@ -285,9 +285,9 @@ open class BlockMaterialCard(
             MapColor.COLOR_ORANGE, 30.0F, 30.0F, tags = listOf(RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG),
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = SlabBlock(properties)
-            context(ModContext) override fun initBlockStateGeneration() = Unit
-            context(ModContext) override fun initModelGeneration() = Unit
-            context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
+            context(_: ModContext) override fun initBlockStateGeneration() = Unit
+            context(_: ModContext) override fun initModelGeneration() = Unit
+            context(_: ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).tag(AURA_RESISTANT_CERAMIC_SLABS_TAG).init {
             registerBlockFamily(TexturedModel.CUBE, AURA_RESISTANT_CERAMIC_BRICKS.block) { it.slab(block()) }
             registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
@@ -300,8 +300,8 @@ open class BlockMaterialCard(
             MapColor.COLOR_ORANGE, 30.0F, 30.0F, tags = listOf(RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG),
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(AURA_RESISTANT_CERAMIC.block.await().defaultBlockState(), properties)
-            context(ModContext) override fun initBlockStateGeneration() = Unit
-            context(ModContext) override fun initModelGeneration() = Unit
+            context(_: ModContext) override fun initBlockStateGeneration() = Unit
+            context(_: ModContext) override fun initModelGeneration() = Unit
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).tag(AURA_RESISTANT_CERAMIC_STAIRS_TAG).init {
             registerBlockFamily(TexturedModel.CUBE, AURA_RESISTANT_CERAMIC_BRICKS.block) { it.stairs(block()) }
             registerStonecutterRecipeGeneration(SMOOTH_AURA_RESISTANT_CERAMIC.item, item)
@@ -334,8 +334,8 @@ open class BlockMaterialCard(
             MapColor.COLOR_ORANGE, 30.0F, 30.0F, tags = listOf(RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG),
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = RotatedPillarBlock(properties)
-            context(ModContext) override fun initBlockStateGeneration() = Unit
-            context(ModContext) override fun initModelGeneration() = Unit
+            context(_: ModContext) override fun initBlockStateGeneration() = Unit
+            context(_: ModContext) override fun initModelGeneration() = Unit
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(AURA_RESISTANT_CERAMICS_TAG).init {
             run {
                 val textureMapping by lazy {
@@ -387,9 +387,9 @@ open class BlockMaterialCard(
             MapColor.LAPIS, 3.0F, 3.0F,
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = SlabBlock(properties)
-            context(ModContext) override fun initBlockStateGeneration() = Unit
-            context(ModContext) override fun initModelGeneration() = Unit
-            context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
+            context(_: ModContext) override fun initBlockStateGeneration() = Unit
+            context(_: ModContext) override fun initModelGeneration() = Unit
+            context(_: ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).tag(LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG).init {
             registerBlockFamily(TexturedModel.CUBE, MIRANAGITE_TILES.block) { it.slab(block()) }
             registerStonecutterRecipeGeneration(MIRANAGITE_TILES.item, item, 2)
@@ -400,8 +400,8 @@ open class BlockMaterialCard(
             MapColor.LAPIS, 3.0F, 3.0F,
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(MIRANAGITE_TILES.block.await().defaultBlockState(), properties)
-            context(ModContext) override fun initBlockStateGeneration() = Unit
-            context(ModContext) override fun initModelGeneration() = Unit
+            context(_: ModContext) override fun initBlockStateGeneration() = Unit
+            context(_: ModContext) override fun initModelGeneration() = Unit
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).tag(LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG).init {
             registerBlockFamily(TexturedModel.CUBE, MIRANAGITE_TILES.block) { it.stairs(block()) }
             registerStonecutterRecipeGeneration(MIRANAGITE_TILES.item, item)
@@ -413,8 +413,8 @@ open class BlockMaterialCard(
         ) {
             override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().forceSolidOn()
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = WallBlock(properties)
-            context(ModContext) override fun initBlockStateGeneration() = Unit
-            context(ModContext) override fun initModelGeneration() = Unit
+            context(_: ModContext) override fun initBlockStateGeneration() = Unit
+            context(_: ModContext) override fun initModelGeneration() = Unit
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.WALLS).tag(ItemTags.WALLS).tag(LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG).init {
             registerBlockFamily(TexturedModel.CUBE, MIRANAGITE_TILES.block) { it.wall(block()) }
             registerStonecutterRecipeGeneration(MIRANAGITE_TILES.item, item, category = RecipeCategory.DECORATIONS)
@@ -473,7 +473,7 @@ open class BlockMaterialCard(
 
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = MiragidianLampBlock(properties)
 
-            context(ModContext)
+            context(_: ModContext)
             override fun initBlockStateGeneration() {
                 block.registerVariantsBlockStateGeneration {
                     val normal = BlockStateVariant(model = "block/" * block().getIdentifier())
@@ -485,9 +485,9 @@ open class BlockMaterialCard(
                 }
             }
 
-            context(ModContext) override fun initModelGeneration() = Unit
+            context(_: ModContext) override fun initModelGeneration() = Unit
 
-            context(ModContext)
+            context(_: ModContext)
             override fun initLootTableGeneration() {
                 block.registerLootTableGeneration { provider, _ ->
                     provider.createSinglePropConditionTable(block(), MiragidianLampBlock.PART, MiragidianLampBlock.Part.FOOT)
@@ -524,9 +524,9 @@ open class BlockMaterialCard(
             MapColor.SAND, 3.0F, 3.0F,
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = SlabBlock(properties)
-            context(ModContext) override fun initBlockStateGeneration() = Unit
-            context(ModContext) override fun initModelGeneration() = Unit
-            context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
+            context(_: ModContext) override fun initBlockStateGeneration() = Unit
+            context(_: ModContext) override fun initModelGeneration() = Unit
+            context(_: ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
         }.tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.MINEABLE_WITH_AXE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).init {
             registerBlockFamily(TexturedModel.CUBE, DRYWALL.block) { it.slab(block()) }
             registerStonecutterRecipeGeneration(DRYWALL.item, item, 2)
@@ -537,8 +537,8 @@ open class BlockMaterialCard(
             MapColor.SAND, 3.0F, 3.0F,
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(DRYWALL.block.await().defaultBlockState(), properties)
-            context(ModContext) override fun initBlockStateGeneration() = Unit
-            context(ModContext) override fun initModelGeneration() = Unit
+            context(_: ModContext) override fun initBlockStateGeneration() = Unit
+            context(_: ModContext) override fun initModelGeneration() = Unit
         }.tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.MINEABLE_WITH_AXE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).init {
             registerBlockFamily(TexturedModel.CUBE, DRYWALL.block) { it.stairs(block()) }
             registerStonecutterRecipeGeneration(DRYWALL.item, item)
@@ -549,7 +549,7 @@ open class BlockMaterialCard(
             MapColor.COLOR_BLACK, -1.0F, 3600000.0F,
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = LocalVacuumDecayBlock(properties)
-            context(ModContext) override fun initModelGeneration() = block.registerModelGeneration(localVacuumDecayTexturedModelFactory)
+            context(_: ModContext) override fun initModelGeneration() = block.registerModelGeneration(localVacuumDecayTexturedModelFactory)
         }.cutout().sound(SoundType.SLIME_BLOCK).invincible().speed(0.5F)
         val AURA_STONE = !BlockMaterialCard(
             "aura_stone", EnJa("Aura Stone", "霊氣石"),
@@ -575,7 +575,7 @@ open class BlockMaterialCard(
             override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().instrument(NoteBlockInstrument.HAT).noOcclusion().isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never)
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = FairyCrystalGlassBlock(properties)
 
-            context(ModContext)
+            context(_: ModContext)
             override fun initBlockStateGeneration() {
                 block.registerBlockStateGeneration {
                     fun createPart(direction: String, x: Int, y: Int) = jsonObject(
@@ -601,7 +601,7 @@ open class BlockMaterialCard(
                 }
             }
 
-            context(ModContext) override fun initModelGeneration() = Unit
+            context(_: ModContext) override fun initModelGeneration() = Unit
         }.cutout().sound(SoundType.GLASS).needTool(ToolType.PICKAXE, ToolLevel.STONE).soulStream().beaconBase().noSpawn().tag(BlockTags.IMPERMEABLE).init {
             // インベントリ内のモデル
             registerModelGeneration({ "block/" * identifier }) {
@@ -650,9 +650,9 @@ open class BlockMaterialCard(
             MapColor.COLOR_RED, 2.0F, 6.0F,
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = SlabBlock(properties)
-            context(ModContext) override fun initBlockStateGeneration() = Unit
-            context(ModContext) override fun initModelGeneration() = Unit
-            context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
+            context(_: ModContext) override fun initBlockStateGeneration() = Unit
+            context(_: ModContext) override fun initModelGeneration() = Unit
+            context(_: ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).init {
             registerBlockFamily(TexturedModel.CUBE, FAIRY_CERAMIC_BRICKS.block) { it.slab(block()) }
             registerStonecutterRecipeGeneration(FAIRY_CERAMIC.item, item)
@@ -664,8 +664,8 @@ open class BlockMaterialCard(
             MapColor.COLOR_RED, 2.0F, 6.0F,
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(FAIRY_CERAMIC_BRICKS.block.await().defaultBlockState(), properties)
-            context(ModContext) override fun initBlockStateGeneration() = Unit
-            context(ModContext) override fun initModelGeneration() = Unit
+            context(_: ModContext) override fun initBlockStateGeneration() = Unit
+            context(_: ModContext) override fun initModelGeneration() = Unit
         }.needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).init {
             registerBlockFamily(TexturedModel.CUBE, FAIRY_CERAMIC_BRICKS.block) { it.stairs(block()) }
             registerStonecutterRecipeGeneration(FAIRY_CERAMIC.item, item)
@@ -679,7 +679,7 @@ open class BlockMaterialCard(
             override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion().pushReaction(PushReaction.DESTROY)
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = EggBlock(properties)
 
-            context(ModContext)
+            context(_: ModContext)
             override fun initModelGeneration() {
                 block.registerModelGeneration {
                     Model { textureMapping ->
@@ -698,7 +698,7 @@ open class BlockMaterialCard(
                 }
             }
 
-            context(ModContext)
+            context(_: ModContext)
             override fun initLootTableGeneration() {
                 block.registerLootTableGeneration { it, _ ->
                     it.createSilkTouchOnlyTable(block())
@@ -798,7 +798,7 @@ open class BlockMaterialCard(
             ) {
                 override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties().noOcclusion()
                 override suspend fun createBlock(properties: BlockBehaviour.Properties) = HoneyBlock(properties)
-                context(ModContext) override fun initModelGeneration() = block.registerModelGeneration { texturedModelProvider!![block()] }
+                context(_: ModContext) override fun initModelGeneration() = block.registerModelGeneration { texturedModelProvider!![block()] }
             }.translucent().sound(SoundType.HONEY_BLOCK).speed(0.4F).jump(0.5F).tag(BlockTags.SNOW_LAYER_CAN_SURVIVE_ON).init {
                 registerCompressionRecipeGeneration(lower, { lower().toIngredient() }, item, { item().toIngredient() })
             }
@@ -851,9 +851,9 @@ open class BlockMaterialCard(
             MapColor.COLOR_ORANGE, 1.0F, 1.0F,
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = SlabBlock(properties)
-            context(ModContext) override fun initBlockStateGeneration() = Unit
-            context(ModContext) override fun initModelGeneration() = Unit
-            context(ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
+            context(_: ModContext) override fun initBlockStateGeneration() = Unit
+            context(_: ModContext) override fun initModelGeneration() = Unit
+            context(_: ModContext) override fun initLootTableGeneration() = block.registerLootTableGeneration { it, _ -> it.createSlabItemTable(block()) }
         }.sound(SoundType.TUFF_BRICKS).needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.SLABS).tag(ItemTags.SLABS).init {
             registerBlockFamily(TexturedModel.CUBE, RESIN_CEMENT_BRICKS.block) { it.slab(block()) }
             registerStonecutterRecipeGeneration(RESIN_CEMENT.item, item)
@@ -865,8 +865,8 @@ open class BlockMaterialCard(
             MapColor.COLOR_ORANGE, 1.0F, 1.0F,
         ) {
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = StairBlock(RESIN_CEMENT_BRICKS.block.await().defaultBlockState(), properties)
-            context(ModContext) override fun initBlockStateGeneration() = Unit
-            context(ModContext) override fun initModelGeneration() = Unit
+            context(_: ModContext) override fun initBlockStateGeneration() = Unit
+            context(_: ModContext) override fun initModelGeneration() = Unit
         }.sound(SoundType.TUFF_BRICKS).needTool(ToolType.PICKAXE, ToolLevel.STONE).tag(BlockTags.STAIRS).tag(ItemTags.STAIRS).init {
             registerBlockFamily(TexturedModel.CUBE, RESIN_CEMENT_BRICKS.block) { it.stairs(block()) }
             registerStonecutterRecipeGeneration(RESIN_CEMENT.item, item)
@@ -902,7 +902,7 @@ open class BlockMaterialCard(
 
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = MirameraBlock(properties)
 
-            context(ModContext)
+            context(_: ModContext)
             override fun initModelGeneration() {
                 block.registerModelGeneration {
                     ModelTemplates.CROSS.with(
@@ -911,7 +911,7 @@ open class BlockMaterialCard(
                 }
             }
 
-            context(ModContext)
+            context(_: ModContext)
             override fun initLootTableGeneration() {
                 block.registerLootTableGeneration { it, registries ->
                     // 草のドロップの形のまま、落ちるものだけを妖精の鱗粉へ差し替えたものなのだ～🌱
@@ -946,7 +946,7 @@ open class BlockMaterialCard(
 
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = DayflowerBlock(properties)
 
-            context(ModContext)
+            context(_: ModContext)
             override fun initModelGeneration() {
                 block.registerModelGeneration {
                     ModelTemplates.CROSS.with(
@@ -955,7 +955,7 @@ open class BlockMaterialCard(
                 }
             }
 
-            context(ModContext)
+            context(_: ModContext)
             override fun initLootTableGeneration() {
                 block.registerLootTableGeneration { it, _ ->
                     it.createGrassDrops(block())
@@ -980,7 +980,7 @@ open class BlockMaterialCard(
 
             override suspend fun createBlock(properties: BlockBehaviour.Properties) = NectarflowerBlock(properties)
 
-            context(ModContext)
+            context(_: ModContext)
             override fun initModelGeneration() {
                 block.registerModelGeneration {
                     ModelTemplates.CROSS.with(
@@ -989,7 +989,7 @@ open class BlockMaterialCard(
                 }
             }
 
-            context(ModContext)
+            context(_: ModContext)
             override fun initLootTableGeneration() {
                 block.registerLootTableGeneration { it, registries ->
                     // 草のドロップの形のまま、落ちるものだけをプラノキの樹液へ差し替えたものなのだ～🌱
@@ -1037,7 +1037,7 @@ open class BlockMaterialCard(
 
     val initializers = mutableListOf<(ModContext) -> Unit>()
 
-    context(ModContext)
+    context(modContext: ModContext)
     open fun init() {
 
         block.register()
@@ -1068,28 +1068,28 @@ open class BlockMaterialCard(
         advancement?.init()
 
         initializers.forEach {
-            it(this@ModContext)
+            it(modContext)
         }
 
     }
 
-    context(ModContext)
+    context(_: ModContext)
     open fun initBlockStateGeneration() {
         block.registerSingletonBlockStateGeneration()
     }
 
-    context(ModContext)
+    context(_: ModContext)
     open fun initModelGeneration() {
         block.registerModelGeneration(TexturedModel.CUBE)
     }
 
-    context(ModContext)
+    context(_: ModContext)
     open fun initLootTableGeneration() {
         block.registerDefaultLootTableGeneration()
     }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initBlockMaterialsModule() {
 
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("miragidian_lamp")) { MiragidianLampBlock.CODEC }.register()

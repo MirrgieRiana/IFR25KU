@@ -85,7 +85,7 @@ object FairyHouseCard : FairyFactoryCard<FairyHouseBlock, FairyHouseBlockEntity,
         type = AdvancementCardType.NORMAL,
     )
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
         Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("fairy_house")) { FairyHouseBlock.CODEC }.register()

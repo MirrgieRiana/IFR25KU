@@ -92,7 +92,7 @@ object SarraceniaCard : AbstractVeropedaCard<SarraceniaBlock>() {
         type = AdvancementCardType.NORMAL,
     )
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 

@@ -26,7 +26,7 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 
-context(ModContext)
+context(_: ModContext)
 fun initToolConfiguration() {
 
     BlockCallback.AFTER_BREAK.register { level, player, pos, state, blockEntity, tool ->
@@ -97,7 +97,7 @@ abstract class ToolConfiguration {
 
     abstract fun createItem(properties: Item.Properties): Item
 
-    context(ModContext)
+    context(_: ModContext)
     fun init(card: ToolCard) {
         tags.forEach {
             it.generator.registerChild(card.item)

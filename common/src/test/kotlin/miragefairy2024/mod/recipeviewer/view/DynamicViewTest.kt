@@ -2,10 +2,10 @@ package miragefairy2024.mod.recipeviewer.view
 
 import miragefairy2024.mod.recipeviewer.views.Child
 import miragefairy2024.mod.recipeviewer.views.DynamicView
+import miragefairy2024.mod.recipeviewer.views.EmptyView
 import miragefairy2024.mod.recipeviewer.views.FixedView
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.PagingView
-import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
@@ -365,7 +365,7 @@ class DynamicViewTest {
         val events = mutableListOf<String>()
         val first = RecordingDynamicChildView("first", IntPoint(10, 20), events)
         val second = RecordingDynamicChildView("second", IntPoint(30, 40), events)
-        val empty = SpaceView()
+        val empty = EmptyView()
         val view = DynamicView(empty)
         val content = view.content
         assertSame(empty, content.value)
@@ -399,13 +399,13 @@ class DynamicViewTest {
     }
 
     @Test
-    fun `PagingView の配置中に SpaceView へ差し替えてから別の子を配置できるのだ`() {
+    fun `PagingView の配置中に EmptyView へ差し替えてから別の子を配置できるのだ`() {
         val pagingChild = object : FixedWidgetView(IntPoint(10, 20)) { }
         val replacement = object : FixedWidgetView(IntPoint(30, 40)) { }
         val pagingView = PagingView().also {
             it.add(ChildrenGenerator { _, _ -> listOf(Child(Alignment.START, pagingChild)) })
         }
-        val empty = SpaceView()
+        val empty = EmptyView()
         val view = DynamicView(pagingView)
         val content = view.content
         val remover = pagingView.pageCount.register { _, _ ->

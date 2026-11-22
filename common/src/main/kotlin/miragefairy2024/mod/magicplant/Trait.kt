@@ -52,7 +52,7 @@ data class TraitEffectKeyEntry(val traitEffectKey: TraitEffectKey<*>, val factor
 
 // init
 
-context(ModContext)
+context(_: ModContext)
 fun Trait.enJa(enName: String, jaName: String) {
     en { this.getTranslationKey() to enName }
     ja { this.getTranslationKey() to jaName }

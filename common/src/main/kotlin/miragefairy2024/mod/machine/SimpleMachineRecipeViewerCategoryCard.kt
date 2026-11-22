@@ -66,13 +66,13 @@ abstract class SimpleMachineRecipeViewerCategoryCard<R : SimpleMachineRecipe> : 
 
     protected fun getTexture(bounds: IntRectangle) = ViewTexture(getMachineCard().backgroundTexture, getMachineCard().backgroundTextureSize, bounds)
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
         RecipeViewerEvents.recipeViewerCategoryCardRecipeManagerBridges += RecipeViewerCategoryCardRecipeManagerBridge(getRecipeCard().recipeClass, getRecipeCard().type, this)
     }
 
-    context(Child<*, out ParentView<AbsoluteView.Position>>)
+    context(_: Child<*, out ParentView<AbsoluteView.Position>>)
     protected fun createInputSlot(recipeEntry: RecipeEntry<R>, index: Int, offset: IntPoint): Child<AbsoluteView.Position, StackView> {
         val input = recipeEntry.recipe.inputs.getOrNull(index)
         return StackView().configure {

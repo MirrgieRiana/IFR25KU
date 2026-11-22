@@ -23,7 +23,7 @@ fun TreeBlockCard.createPlankSettings(sound: Boolean = true): BlockBehaviour.Pro
 open class AbstractTreePlanksBlockCard(configuration: TreeBlockConfiguration) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = createPlankSettings()
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 
@@ -38,7 +38,7 @@ open class AbstractTreePlanksBlockCard(configuration: TreeBlockConfiguration) : 
 }
 
 class TreePlanksBlockCard(configuration: TreeBlockConfiguration, private val input: () -> Item) : AbstractTreePlanksBlockCard(configuration) {
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
         registerShapelessRecipeGeneration(item, 4) {
@@ -48,7 +48,7 @@ class TreePlanksBlockCard(configuration: TreeBlockConfiguration, private val inp
 }
 
 class TreeBricksBlockCard(configuration: TreeBlockConfiguration, private val input: () -> Item) : AbstractTreePlanksBlockCard(configuration) {
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
         registerShapedRecipeGeneration(item) {

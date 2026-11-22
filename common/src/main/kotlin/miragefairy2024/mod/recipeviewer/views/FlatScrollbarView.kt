@@ -1,9 +1,12 @@
 package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.util.EventRegistry
 
 abstract class FlatScrollbarView : ScrollbarView(5) {
     var scrollbarColor = 0xA0000000.toInt()
+
+    val onScrollInput = EventRegistry<() -> Unit>()
 }
 
 class XFlatScrollbarView : FlatScrollbarView() {

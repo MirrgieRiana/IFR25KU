@@ -66,7 +66,7 @@ class SoundEventPacket(
     val useDistance: Boolean,
 )
 
-context(ModContext)
+context(_: ModContext)
 fun initSoundEventModule() {
     SoundEventChannel.registerServerToClientPayloadType()
     SoundEventCard.entries.forEach { card ->

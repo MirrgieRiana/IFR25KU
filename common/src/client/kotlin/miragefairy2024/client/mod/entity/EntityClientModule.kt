@@ -13,7 +13,7 @@ import net.minecraft.client.model.geom.builders.PartDefinition
 import net.minecraft.resources.ResourceLocation
 import java.util.function.Supplier
 
-context(ModContext)
+context(_: ModContext)
 fun initEntityClientModule() {
     EntityModelLayerRegistry.register(AntimatterBoltEntityRenderer.MAIN.entityModelLayer, AntimatterBoltEntityRenderer.MAIN.provider)
     AntimatterBoltCard.entityType.registerEntityRenderer(::AntimatterBoltEntityRenderer)
