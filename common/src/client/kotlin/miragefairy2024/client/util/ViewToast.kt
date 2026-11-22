@@ -33,6 +33,7 @@ class ViewToast(rootView: View) : Toast {
         override fun getRegionSizeY() = 1000
 
         override fun createRootView() = rootView
+        override fun getRootViewOffset() = IntPoint.ZERO
 
         override fun getUiOffset() = IntPoint.ZERO
         override fun setUiSize(uiSize: IntPoint) = run { size = uiSize }
@@ -51,7 +52,7 @@ class ViewToast(rootView: View) : Toast {
 
         override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
 
-    }) { IntPoint.ZERO }
+    })
 
     init {
         viewAdapter.init()

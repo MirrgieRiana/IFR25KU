@@ -29,6 +29,7 @@ abstract class ViewScreen(title: Component) : Screen(title) {
         override fun getRegionSizeY() = this@ViewScreen.height
 
         override fun createRootView() = this@ViewScreen.createRootView()
+        override fun getRootViewOffset() = IntPoint.ZERO
 
         override fun getUiOffset() = IntPoint.ZERO
         override fun setUiSize(uiSize: IntPoint) = Unit
@@ -52,7 +53,7 @@ abstract class ViewScreen(title: Component) : Screen(title) {
 
         override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
 
-    }) { IntPoint.ZERO }
+    })
 
     override fun init() = viewAdapter.init()
 

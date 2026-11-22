@@ -48,6 +48,7 @@ open class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Co
         override fun getRegionSizeY() = this@ViewContainerScreen.height
 
         override fun createRootView() = menu.createView(title, playerInventoryTitle)
+        override fun getRootViewOffset() = this@ViewContainerScreen.getRootViewOffset()
 
         override fun getUiOffset() = IntPoint(this@ViewContainerScreen.leftPos, this@ViewContainerScreen.topPos)
         override fun setUiSize(uiSize: IntPoint) = setMenuSize(uiSize)
@@ -81,7 +82,7 @@ open class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Co
             }
         }
 
-    }) { getRootViewOffset() }
+    })
 
     override fun init() = viewAdapter.init()
 

@@ -85,6 +85,7 @@ private class AdapterFixture(vararg views: TestView) {
         override fun canPlaceMenuSlots() = false
         override fun getRegionSizeX() = screen.width
         override fun getRegionSizeY() = screen.height
+        override fun getRootViewOffset() = getUiOffset()
         override fun getUiOffset() = IntPoint(30, 40)
         override fun setUiSize(uiSize: IntPoint) {
             this@AdapterFixture.imageWidth = uiSize.x
@@ -147,7 +148,7 @@ private class AdapterFixture(vararg views: TestView) {
         }
         override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
     }
-    val adapter = ViewAdapter(host) { host.getUiOffset() }
+    val adapter = ViewAdapter(host)
 
     init {
         init()
@@ -281,6 +282,7 @@ class ViewAdapterTest {
             override fun getRegionSizeX() = 300
             override fun getRegionSizeY() = 80
             override fun createRootView() = rootView
+            override fun getRootViewOffset() = IntPoint.ZERO
             override fun getUiOffset() = IntPoint.ZERO
             override fun setUiSize(uiSize: IntPoint) = run { size = uiSize }
             override fun init() {
@@ -292,7 +294,7 @@ class ViewAdapterTest {
             }
             override fun addRenderableOnly(widget: AbstractWidget) = addRenderableWidget(widget)
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
-        }) { IntPoint.ZERO }
+        })
         adapter.init()
         assertEquals(IntPoint(300, 80), size)
         assertEquals(listOf(0, 10), widgets.map { it.x })
@@ -329,6 +331,7 @@ class ViewAdapterTest {
         Mockito.`when`(host.getRenderingProxy()).thenReturn(ADAPTER_RENDERING_PROXY)
         Mockito.`when`(host.getViewPlacerRegistry()).thenReturn(registry)
         Mockito.`when`(host.createRootView()).thenReturn(TestView(false))
+        Mockito.`when`(host.getRootViewOffset()).thenReturn(IntPoint.ZERO)
         val slotOrigin = IntPoint(30, 40)
         Mockito.`when`(host.getUiOffset()).thenReturn(slotOrigin)
         Mockito.`when`(host.canPlaceMenuSlots()).thenReturn(true)
@@ -336,7 +339,7 @@ class ViewAdapterTest {
         val clipBounds = { IntRectangle(10, 20, 30, 40) }
         val remover = Remover { }
         Mockito.`when`(host.registerMenuSlotPlacement(slotId, clipBounds)).thenReturn(remover)
-        val adapter = ViewAdapter(host) { IntPoint.ZERO }
+        val adapter = ViewAdapter(host)
         adapter.init()
         try {
             assertEquals(IntRectangle(0, 0, 10, 20), placements.single())
