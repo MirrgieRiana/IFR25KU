@@ -4,6 +4,7 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.XFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
+import miragefairy2024.util.register
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
@@ -376,6 +377,10 @@ class VanillaFlatScrollbarViewWidgetTest {
             view.contentLength = 300
             view.viewportLength = 100
             val widget = VanillaYFlatScrollbarViewWidget(view, IntRectangle(200, 20, 5, 100))
+            val scrollInputs = mutableListOf<Double>()
+            val inputRemover = view.onScrollInput.register {
+                scrollInputs += view.scrollOffset.value
+            }
             Assertions.assertFalse(widget.mouseClicked(50.0, 50.0, 0))
             Assertions.assertFalse(widget.mouseClicked(202.0, 25.0, 1))
             Assertions.assertTrue(widget.mouseClicked(202.0, 110.0, 0))
@@ -395,7 +400,10 @@ class VanillaFlatScrollbarViewWidgetTest {
             widget.render(environment.graphics, 202, 25, 0.0F)
             Assertions.assertEquals(IntRectangle(200, 30, 5, 33), environment.fills.last())
             Assertions.assertTrue(widget.mouseClicked(202.0, 40.0, 0))
+            inputRemover.remove()
             widget.dispose()
+            Assertions.assertEquals(listOf(200.0, 0.0, 15.0, 30.0), scrollInputs)
+            Assertions.assertTrue(view.onScrollInput.toList().isEmpty())
             Assertions.assertFalse(widget.hasMouseCapture(0))
             Assertions.assertFalse(widget.mouseDragged(500.0, 500.0, 0, 0.0, 0.0))
             Assertions.assertFalse(widget.mouseReleased(500.0, 500.0, 0))

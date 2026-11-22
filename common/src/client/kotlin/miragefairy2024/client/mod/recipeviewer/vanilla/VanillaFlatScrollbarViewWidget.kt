@@ -4,6 +4,7 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.FlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
+import miragefairy2024.util.register
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.atMost
 import mirrg.kotlin.hydrogen.alphaOfArgb
@@ -19,12 +20,13 @@ abstract class VanillaFlatScrollbarViewWidget(view: FlatScrollbarView, bounds: I
 
     private var fadeEndTime: Long? = null
 
-    override fun onScrollInput() {
-        showThumbAfterScrollInput()
+    private val scrollInputRemover = view.onScrollInput.register {
+        fadeEndTime = Util.getMillis() + 1250L
     }
 
-    fun showThumbAfterScrollInput() {
-        fadeEndTime = Util.getMillis() + 1250L
+    override fun dispose() {
+        scrollInputRemover.remove()
+        super.dispose()
     }
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
