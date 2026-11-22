@@ -7,6 +7,7 @@ import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
+import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Remover
 import miragefairy2024.util.plus
@@ -38,6 +39,8 @@ abstract class ScrollContainerView : WrapperView(), PlaceableView {
         }
 
     val scrollBounds = ObservableValue(ScrollBounds(0, 0))
+
+    val onScrollInput = EventRegistry<() -> Unit>()
 
     protected abstract fun evaluateContentLength(): Int
     protected abstract fun evaluateViewportLength(): Int
