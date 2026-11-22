@@ -350,21 +350,25 @@ class VanillaViewPlacersTest {
         }
     }
 
+    private fun createScrollbarPlacerContext(widgets: MutableList<AbstractWidget>): VanillaViewPlacerContext {
+        return object : VanillaViewPlacerContext {
+            override val origin = IntPoint(10, 20)
+            override val canPlaceMenuSlots = false
+            override val onBeforeRender = EventRegistry<() -> Unit>()
+            override fun addRenderableWidget(widget: AbstractWidget): Remover {
+                widgets += widget
+                return Remover { widgets.remove(widget) }
+            }
+            override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Scrollbars must accept input")
+            override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
+        }
+    }
+
     @Test
     fun `本番のバー登録が単体の配置と移動と破棄と解除を中継するのだ`() {
         listOf(false, true).forEach { horizontal ->
             val widgets = mutableListOf<AbstractWidget>()
-            val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
-                override val origin = IntPoint(10, 20)
-                override val canPlaceMenuSlots = false
-                override val onBeforeRender = EventRegistry<() -> Unit>()
-                override fun addRenderableWidget(widget: AbstractWidget): Remover {
-                    widgets += widget
-                    return Remover { widgets.remove(widget) }
-                }
-                override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Scrollbars must accept input")
-                override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
-            }
+            val context = createScrollbarPlacerContext(widgets)
             val view = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
             view.contentLength = 300
             view.viewportLength = 100
@@ -392,17 +396,7 @@ class VanillaViewPlacersTest {
     fun `本番のインベントリ風スクロールバー登録が配置と解除を中継し再配置で位置を保持するのだ`() {
         listOf(false, true).forEach { horizontal ->
             val widgets = mutableListOf<AbstractWidget>()
-            val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
-                override val origin = IntPoint(10, 20)
-                override val canPlaceMenuSlots = false
-                override val onBeforeRender = EventRegistry<() -> Unit>()
-                override fun addRenderableWidget(widget: AbstractWidget): Remover {
-                    widgets += widget
-                    return Remover { widgets.remove(widget) }
-                }
-                override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Scrollbars must accept input")
-                override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
-            }
+            val context = createScrollbarPlacerContext(widgets)
             val view = if (horizontal) XInventoryScrollbarView() else YInventoryScrollbarView()
             view.contentLength = 300
             view.viewportLength = 100
