@@ -38,6 +38,23 @@ abstract class VanillaFlatScrollbarViewWidget(view: FlatScrollbarView, bounds: I
         return argbOf(alpha, color)
     }
 
+    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+        val range = evaluateScrollRange()
+        if (range.start < range.endInclusive && scrollbarThickness > 0 && scrollbarLength > 0) {
+            val now = Util.getMillis()
+            // ホバー中か、領域外でドラッグを保持している間、フェードアウトをリセットし続けるのだ～🌱
+            if (isMouseOver(mouseX.toDouble(), mouseY.toDouble()) || hasMouseCapture(0)) {
+                resetFadeTimer(now)
+            }
+            val start = evaluateThumbPosition().roundToInt()
+            val length = evaluateThumbLength()
+            val color = getScrollbarColor(now)
+            renderImpl(guiGraphics, start, length, color)
+        }
+    }
+
+    protected abstract fun renderImpl(guiGraphics: GuiGraphics, start: Int, length: Int, color: Int)
+
 }
 
 class VanillaXFlatScrollbarViewWidget(
@@ -65,25 +82,8 @@ class VanillaXFlatScrollbarViewWidget(
     // 横方向の入力がない場合は、縦方向のホイール入力で横スクロールするのだ～🌱
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
 
-    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        val range = evaluateScrollRange()
-        if (range.start < range.endInclusive && scrollbarThickness > 0 && scrollbarLength > 0) {
-            val now = Util.getMillis()
-            // ホバー中か、領域外でドラッグを保持している間、フェードアウトをリセットし続けるのだ～🌱
-            if (isMouseOver(mouseX.toDouble(), mouseY.toDouble()) || hasMouseCapture(0)) {
-                resetFadeTimer(now)
-            }
-            val start = evaluateThumbPosition().roundToInt()
-            val length = evaluateThumbLength()
-            val color = getScrollbarColor(now)
-            guiGraphics.fill(
-                x + start,
-                y,
-                x + start + length,
-                y + height,
-                color,
-            )
-        }
+    override fun renderImpl(guiGraphics: GuiGraphics, start: Int, length: Int, color: Int) {
+        guiGraphics.fill(x + start, y, x + start + length, y + height, color)
     }
 
 }
@@ -111,25 +111,8 @@ class VanillaYFlatScrollbarViewWidget(
     override fun getDragAmount(dragX: Double, dragY: Double) = dragY
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
 
-    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        val range = evaluateScrollRange()
-        if (range.start < range.endInclusive && scrollbarThickness > 0 && scrollbarLength > 0) {
-            val now = Util.getMillis()
-            // ホバー中か、領域外でドラッグを保持している間、フェードアウトをリセットし続けるのだ～🌱
-            if (isMouseOver(mouseX.toDouble(), mouseY.toDouble()) || hasMouseCapture(0)) {
-                resetFadeTimer(now)
-            }
-            val start = evaluateThumbPosition().roundToInt()
-            val length = evaluateThumbLength()
-            val color = getScrollbarColor(now)
-            guiGraphics.fill(
-                x,
-                y + start,
-                x + width,
-                y + start + length,
-                color,
-            )
-        }
+    override fun renderImpl(guiGraphics: GuiGraphics, start: Int, length: Int, color: Int) {
+        guiGraphics.fill(x, y + start, x + width, y + start + length, color)
     }
 
 }
