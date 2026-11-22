@@ -131,6 +131,7 @@ abstract class FairyDreamRecipeRecipeViewerCategoryCard<T> : RecipeViewerCategor
             view += TextView(text).configure {
                 position.alignmentY = Alignment.CENTER
                 position.weight = 1.0
+                position.ignoreLayoutX = true
                 view.sizingX = Sizing.FILL
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false

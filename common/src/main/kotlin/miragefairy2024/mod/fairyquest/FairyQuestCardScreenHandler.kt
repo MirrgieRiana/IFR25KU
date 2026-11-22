@@ -180,9 +180,11 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                                 }
                             }
                             view += scrollView
-                            val scrollbarView = YFlatScrollbarView()
+                            val scrollbarView = YFlatScrollbarView().configure {
+                                view.keyboardFocusable = false
+                            }
                             view += scrollbarView
-                            connectScrollbar(scrollView.view, scrollbarView)
+                            connectScrollbar(scrollView.view, scrollbarView.view)
                         }.margin(11, 6, 11, 11)
 
                     }.minContentSizeY(11 * 7 + 5).wrapClickable {

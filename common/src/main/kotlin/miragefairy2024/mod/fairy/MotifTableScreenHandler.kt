@@ -131,9 +131,11 @@ class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifC
                         }.margin(0, 3, 0, 0)
                     }
                     view += scrollView
-                    val scrollbarView = YInventoryScrollbarView()
+                    val scrollbarView = YInventoryScrollbarView().configure {
+                        view.keyboardFocusable = false
+                    }
                     view += scrollbarView
-                    connectScrollbar(scrollView.view, scrollbarView)
+                    connectScrollbar(scrollView.view, scrollbarView.view)
                 }.margin(panelMargin)
             }.margin(0, 4)
         }

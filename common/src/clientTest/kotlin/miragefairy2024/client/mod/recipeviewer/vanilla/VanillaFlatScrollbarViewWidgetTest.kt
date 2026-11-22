@@ -4,6 +4,7 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.XFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
+import miragefairy2024.util.register
 import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
@@ -88,10 +89,13 @@ class VanillaFlatScrollbarViewWidgetTest {
                     } else {
                         Mockito.verify(graphics).fill(10, 20, 17, 53, view.scrollbarColor)
                     }
+                    view.keyboardFocusable = false
                     Assertions.assertFalse(widget.mouseClicked(if (horizontal) 20.0 else 17.0, if (horizontal) 27.0 else 30.0, 0))
                     Assertions.assertTrue(widget.mouseClicked(mouseX, mouseY, 0))
                     Assertions.assertTrue(widget.hasMouseCapture(0))
                     Assertions.assertTrue(widget.mouseReleased(mouseX, mouseY, 0))
+                    Assertions.assertNull(widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true)))
+                    view.keyboardFocusable = true
                     val path = widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true))
                     Assertions.assertNotNull(path)
                     path!!.applyFocus(true)
@@ -158,6 +162,52 @@ class VanillaFlatScrollbarViewWidgetTest {
                         assertColor(9250L, outside, view.scrollbarColor)
                         assertColor(9625L, outside, 0x50FFFFFF)
                         assertColor(10000L, outside, 0x00FFFFFF)
+                    } finally {
+                        widget.dispose()
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `縦横のバーは自身が受けたホイールとキー操作で再表示されるのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            GuiTestEnvironment().use {
+                Mockito.mockStatic(Util::class.java, Mockito.CALLS_REAL_METHODS).use { clock ->
+                    var now = 1000L
+                    clock.`when`<Long> { Util.getMillis() }.thenAnswer { now }
+                    val view = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
+                    view.scrollbarColor = 0xA0FFFFFF.toInt()
+                    view.contentLength = 300
+                    view.viewportLength = 100
+                    view.scrollOffset.value = 200.0
+                    val bounds = if (horizontal) IntRectangle(10, 20, 100, 7) else IntRectangle(10, 20, 7, 100)
+                    val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
+                    val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+
+                    fun assertColor(at: Long, color: Int) {
+                        now = at
+                        Mockito.clearInvocations(graphics)
+                        widget.render(graphics, 0, 0, 0.0F)
+                        if (horizontal) {
+                            Mockito.verify(graphics).fill(77, 20, 110, 27, color)
+                        } else {
+                            Mockito.verify(graphics).fill(10, 87, 17, 120, color)
+                        }
+                    }
+
+                    try {
+                        assertColor(1000L, 0x00FFFFFF)
+                        widget.isFocused = true
+                        Assertions.assertFalse(widget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
+                        assertColor(1500L, view.scrollbarColor)
+                        assertColor(1875L, 0x50FFFFFF)
+                        assertColor(2250L, 0x00FFFFFF)
+
+                        Assertions.assertFalse(widget.mouseScrolled(12.0, 22.0, 0.0, -1.0))
+                        assertColor(2750L, view.scrollbarColor)
+                        assertColor(3500L, 0x00FFFFFF)
                     } finally {
                         widget.dispose()
                     }
@@ -327,6 +377,10 @@ class VanillaFlatScrollbarViewWidgetTest {
             view.contentLength = 300
             view.viewportLength = 100
             val widget = VanillaYFlatScrollbarViewWidget(view, IntRectangle(200, 20, 5, 100))
+            val scrollInputs = mutableListOf<Double>()
+            val inputRemover = view.onScrollInput.register {
+                scrollInputs += view.scrollOffset.value
+            }
             Assertions.assertFalse(widget.mouseClicked(50.0, 50.0, 0))
             Assertions.assertFalse(widget.mouseClicked(202.0, 25.0, 1))
             Assertions.assertTrue(widget.mouseClicked(202.0, 110.0, 0))
@@ -346,7 +400,10 @@ class VanillaFlatScrollbarViewWidgetTest {
             widget.render(environment.graphics, 202, 25, 0.0F)
             Assertions.assertEquals(IntRectangle(200, 30, 5, 33), environment.fills.last())
             Assertions.assertTrue(widget.mouseClicked(202.0, 40.0, 0))
+            inputRemover.remove()
             widget.dispose()
+            Assertions.assertEquals(listOf(200.0, 0.0, 15.0, 30.0), scrollInputs)
+            Assertions.assertTrue(view.onScrollInput.toList().isEmpty())
             Assertions.assertFalse(widget.hasMouseCapture(0))
             Assertions.assertFalse(widget.mouseDragged(500.0, 500.0, 0, 0.0, 0.0))
             Assertions.assertFalse(widget.mouseReleased(500.0, 500.0, 0))
