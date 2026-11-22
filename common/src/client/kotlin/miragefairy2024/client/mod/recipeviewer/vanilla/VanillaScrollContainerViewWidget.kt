@@ -196,6 +196,8 @@ abstract class VanillaScrollContainerViewWidget(
 
     override fun hasMouseCapture(button: Int) = !disposed && button in pressedWidgetRegistrations
 
+    internal fun canFocusOnClick(button: Int) = pressedWidgetRegistrations[button]?.widget?.canFocusOnClick(button) ?: true
+
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         pressedWidgetRegistrations -= button
         if (button == 0) isDragging = false
@@ -214,7 +216,7 @@ abstract class VanillaScrollContainerViewWidget(
                 if (!disposed) {
                     if (widgetRegistration in widgetRegistrations) {
                         pressedWidgetRegistrations[button] = widgetRegistration
-                        focused = widgetRegistration.widget
+                        if (widgetRegistration.widget.canFocusOnClick(button)) focused = widgetRegistration.widget
                         if (button == 0) isDragging = true
                     } else {
                         pressedWidgetRegistrations[button] = null

@@ -15,6 +15,7 @@ abstract class ScrollbarView(initialScrollbarThickness: Int) : AbstractView(), P
     }
 
     val scrollOffset = ObservableValue(0.0)
+    var focusable = true
 
     var contentLength = 0
         set(value) {

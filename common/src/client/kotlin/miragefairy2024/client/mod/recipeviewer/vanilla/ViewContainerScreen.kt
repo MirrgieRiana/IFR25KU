@@ -130,12 +130,15 @@ class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Compone
         viewAdapter.removeWidget(listener)
     }
 
+    override fun setFocused(focused: GuiEventListener?) {
+        if (viewAdapter.canFocusOnClick(focused)) super.setFocused(focused)
+    }
+
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        viewAdapter.beforeMouseClicked()
-        clearInvalidHoveredSlot(mouseX, mouseY)
-        val handled = super.mouseClicked(mouseX, mouseY, button)
-        viewAdapter.mouseClicked(mouseX, mouseY)
-        return handled
+        return viewAdapter.mouseClicked(mouseX, mouseY, button) {
+            clearInvalidHoveredSlot(mouseX, mouseY)
+            super.mouseClicked(mouseX, mouseY, button)
+        }
     }
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
