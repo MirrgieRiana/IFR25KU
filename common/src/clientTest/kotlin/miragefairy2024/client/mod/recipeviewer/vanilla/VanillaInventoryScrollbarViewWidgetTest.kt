@@ -1,5 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import miragefairy2024.MirageFairy2024
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.x2
 import miragefairy2024.mod.recipeviewer.view.y2
@@ -16,14 +17,18 @@ import org.junit.jupiter.api.Test
 import org.lwjgl.glfw.GLFW
 import kotlin.math.roundToInt
 
-private val TRACK_TEXTURE: ResourceLocation = ResourceLocation.withDefaultNamespace("textures/gui/container/creative_inventory/tab_items.png")
-private val THUMB_TEXTURE: ResourceLocation = ResourceLocation.withDefaultNamespace("textures/gui/sprites/container/creative_inventory/scroller.png")
-private val DISABLED_THUMB_TEXTURE: ResourceLocation = ResourceLocation.withDefaultNamespace("textures/gui/sprites/container/creative_inventory/scroller_disabled.png")
+private val TRACK_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_background.png")
+private val THUMB_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_scroller.png")
+private val DISABLED_THUMB_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_scroller_disabled.png")
 
 private class ScrollbarGraphics : GuiGraphics(Minecraft.getInstance(), null) {
     val blits = mutableListOf<Pair<ResourceLocation, IntRectangle>>()
 
     override fun blit(atlasLocation: ResourceLocation, x: Int, y: Int, width: Int, height: Int, uOffset: Float, vOffset: Float, uWidth: Int, vHeight: Int, textureWidth: Int, textureHeight: Int) {
+        Assertions.assertEquals(16, textureWidth)
+        Assertions.assertEquals(16, textureHeight)
+        Assertions.assertTrue(uOffset >= 0F && uOffset + uWidth <= 15F)
+        Assertions.assertTrue(vOffset >= 0F && vOffset + vHeight <= 15F)
         val matrix: Matrix4f = pose().last().pose()
         val start: Vector3f = matrix.transformPosition(x.toFloat(), y.toFloat(), 0F, Vector3f())
         val end: Vector3f = matrix.transformPosition((x + width).toFloat(), (y + height).toFloat(), 0F, Vector3f())
@@ -66,7 +71,7 @@ class VanillaInventoryScrollbarViewWidgetTest {
     }
 
     @Test
-    fun `両軸でバニラの背景とつまみを描きスクロール位置を読み書きするのだ`() {
+    fun `両軸でインベントリ風の背景とつまみを描きスクロール位置を読み書きするのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use {
                 val bounds = if (horizontal) IntRectangle(10, 20, 100, 18) else IntRectangle(10, 20, 18, 100)
@@ -130,11 +135,14 @@ class VanillaInventoryScrollbarViewWidgetTest {
                 Assertions.assertTrue(graphics.blits.isEmpty())
                 Assertions.assertFalse(widget.mouseClicked(12.0, 22.0, 0))
 
-                widget.setSize(6, 6)
-                widget.render(graphics, 12, 22, 0F)
-                graphics.assertTrackAndThumb(IntRectangle(10, 20, 6, 6), IntRectangle(11, 21, 4, 4), THUMB_TEXTURE)
-                Assertions.assertFalse(widget.mouseClicked(12.0, 22.0, 0))
-                Assertions.assertFalse(widget.hasMouseCapture(0))
+                listOf(3, 4, 5, 6).forEach { size ->
+                    graphics.blits.clear()
+                    widget.setSize(size, size)
+                    widget.render(graphics, 12, 22, 0F)
+                    graphics.assertTrackAndThumb(IntRectangle(10, 20, size, size), IntRectangle(11, 21, size - 2, size - 2), THUMB_TEXTURE)
+                    Assertions.assertFalse(widget.mouseClicked(12.0, 22.0, 0))
+                    Assertions.assertFalse(widget.hasMouseCapture(0))
+                }
                 widget.dispose()
             }
         }
