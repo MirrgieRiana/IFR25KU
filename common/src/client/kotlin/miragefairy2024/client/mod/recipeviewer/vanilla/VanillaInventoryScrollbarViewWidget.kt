@@ -28,7 +28,9 @@ abstract class VanillaInventoryScrollbarViewWidget(view: InventoryScrollbarView,
         // クリエイティブインベントリの背景に含まれる溝は、外周の 1 px を保ったまま伸長するのだ～🌱
         fun blitTrackRow(dy: Int, height: Int, v: Float) {
             guiGraphics.blit(CREATIVE_INVENTORY_TEXTURE, x, dy, 1, height, 174F, v, 1, 1, 256, 256)
-            if (scrollbarThickness > 2) guiGraphics.blit(CREATIVE_INVENTORY_TEXTURE, x + 1, dy, scrollbarThickness - 2, height, 175F, v, 12, 1, 256, 256)
+            if (scrollbarThickness > 2) {
+                guiGraphics.blit(CREATIVE_INVENTORY_TEXTURE, x + 1, dy, scrollbarThickness - 2, height, 175F, v, 12, 1, 256, 256)
+            }
             guiGraphics.blit(CREATIVE_INVENTORY_TEXTURE, x + scrollbarThickness - 1, dy, 1, height, 187F, v, 1, 1, 256, 256)
         }
         blitTrackRow(y, 1, 17F)
