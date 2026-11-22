@@ -27,6 +27,7 @@ import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.client.util.sendToServer
 import miragefairy2024.client.util.slotContainer
 import miragefairy2024.client.util.nonnegativeHorizontalFlow
+import miragefairy2024.client.util.nonnegativeVanillaScrollbar
 import miragefairy2024.client.util.nonnegativeVerticalFlow
 import miragefairy2024.client.util.tooltipContainer
 import miragefairy2024.client.util.verticalScroll
@@ -318,7 +319,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
 
                 child(verticalScroll(Sizing.fill(100), Sizing.expand(), 18).apply {
                     surface(Surface.tiled(SlotType.NORMAL.viewTexture.id, 18, 18))
-                    scrollbar(ScrollContainer.Scrollbar.vanilla())
+                    scrollbar(nonnegativeVanillaScrollbar())
                     scrollStep(18)
                     (9 until menu.soulStream.size).chunked(9).forEach { indices ->
                         child().child(Containers.horizontalFlow(Sizing.fill(100), Sizing.content()).apply {

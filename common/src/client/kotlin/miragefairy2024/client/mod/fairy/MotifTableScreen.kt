@@ -5,7 +5,6 @@ import io.wispforest.owo.ui.component.Components
 import io.wispforest.owo.ui.component.ItemComponent
 import io.wispforest.owo.ui.container.Containers
 import io.wispforest.owo.ui.container.FlowLayout
-import io.wispforest.owo.ui.container.ScrollContainer
 import io.wispforest.owo.ui.core.Color
 import io.wispforest.owo.ui.core.HorizontalAlignment
 import io.wispforest.owo.ui.core.Insets
@@ -15,6 +14,8 @@ import io.wispforest.owo.ui.core.Surface
 import io.wispforest.owo.ui.core.VerticalAlignment
 import miragefairy2024.ModContext
 import miragefairy2024.client.util.horizontalSpace
+import miragefairy2024.client.util.nonnegativeVanillaScrollbar
+import miragefairy2024.client.util.nonnegativeVerticalFlow
 import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.client.util.verticalScroll
 import miragefairy2024.mod.fairy.MotifTableScreenHandler
@@ -38,7 +39,7 @@ fun initMotifTableClientModule() {
 }
 
 class MotifTableScreen(handler: MotifTableScreenHandler, playerInventory: Inventory, title: Component) : BaseOwoHandledScreen<FlowLayout, MotifTableScreenHandler>(handler, playerInventory, title) {
-    override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::verticalFlow)
+    override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, ::nonnegativeVerticalFlow)
     override fun build(rootComponent: FlowLayout) {
         rootComponent.apply {
             surface(Surface.VANILLA_TRANSLUCENT)
@@ -47,19 +48,19 @@ class MotifTableScreen(handler: MotifTableScreenHandler, playerInventory: Invent
             horizontalAlignment(HorizontalAlignment.CENTER)
 
             // GUIパネル外枠
-            child(Containers.verticalFlow(Sizing.content(), Sizing.fill(100)).apply {
+            child(nonnegativeVerticalFlow(Sizing.content(), Sizing.fill(100)).apply {
                 surface(Surface.PANEL)
                 padding(Insets.of(7))
 
                 // メインコンテナ
-                child(Containers.verticalFlow(Sizing.content(), Sizing.fill(100)).apply {
+                child(nonnegativeVerticalFlow(Sizing.content(), Sizing.fill(100)).apply {
 
                     // スクロールパネル
                     child(verticalScroll(Sizing.content(), Sizing.fill(100), 18).apply {
-                        scrollbar(ScrollContainer.Scrollbar.vanilla())
+                        scrollbar(nonnegativeVanillaScrollbar())
 
                         // スロットパネル
-                        child().child(Containers.verticalFlow(Sizing.content(), Sizing.content()).apply {
+                        child().child(nonnegativeVerticalFlow(Sizing.content(), Sizing.content()).apply {
                             padding(Insets.of(0, 0, 0, 3))
 
                             menu.chanceTable.forEach { chance ->

@@ -11,6 +11,7 @@ import io.wispforest.owo.ui.core.Insets
 import io.wispforest.owo.ui.core.Size
 import io.wispforest.owo.ui.core.Sizing
 import io.wispforest.owo.ui.core.Surface
+import io.wispforest.owo.ui.util.NinePatchTexture
 import miragefairy2024.mod.common.SlotType
 import mirrg.kotlin.helium.atLeast
 import net.minecraft.client.gui.components.WidgetSprites
@@ -71,6 +72,19 @@ fun horizontalScroll(horizontalSizing: Sizing, verticalSizing: Sizing, scrollbar
         if (!overlapped) padding(Insets.of(0, scrollbarThiccness, 0, 0))
     }).apply {
         scrollbarThiccness(scrollbarThiccness)
+    }
+}
+
+fun nonnegativeVanillaScrollbar(): ScrollContainer.Scrollbar {
+    val vanillaScrollbar = ScrollContainer.Scrollbar.vanilla()
+    return ScrollContainer.Scrollbar { context, x, y, width, height, trackX, trackY, trackWidth, trackHeight, lastInteractTime, direction, active ->
+        if (trackWidth > 0 && trackHeight > 0) {
+            if (width >= 2 && height >= 2) {
+                vanillaScrollbar.draw(context, x, y, width, height, trackX, trackY, trackWidth, trackHeight, lastInteractTime, direction, active)
+            } else {
+                NinePatchTexture.draw(ScrollContainer.VANILLA_SCROLLBAR_TRACK_TEXTURE, context, trackX, trackY, trackWidth, trackHeight)
+            }
+        }
     }
 }
 
