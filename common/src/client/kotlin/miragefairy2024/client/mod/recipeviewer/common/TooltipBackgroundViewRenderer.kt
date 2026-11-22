@@ -17,14 +17,36 @@ object TooltipBackgroundViewRenderer : ViewRenderer<TooltipBackgroundView, Unit>
         graphics.drawManaged {
             RenderSystem.enableBlend()
             RenderSystem.defaultBlendFunc()
-            TooltipRenderUtil.renderTooltipBackground(
-                graphics,
-                bounds.x + 4,
-                bounds.y + 4,
-                bounds.sizeX - 8,
-                bounds.sizeY - 8,
-                0,
-            )
+            if (bounds.sizeX >= 8 && bounds.sizeY >= 8) {
+                TooltipRenderUtil.renderTooltipBackground(
+                    graphics,
+                    bounds.x + 4,
+                    bounds.y + 4,
+                    bounds.sizeX - 8,
+                    bounds.sizeY - 8,
+                    0,
+                )
+            } else {
+                renderCompactBackground(bounds, graphics)
+            }
         }
+    }
+
+    private fun renderCompactBackground(bounds: IntRectangle, graphics: GuiGraphics) {
+        val left = bounds.x
+        val top = bounds.y
+        val right = left + bounds.sizeX
+        val bottom = top + bounds.sizeY
+        val backgroundColor = 0xF0100010.toInt()
+        val borderColorTop = 0x505000FF
+        val borderColorBottom = 0x5028007F
+
+        graphics.fill(left + 1, top, right - 1, bottom, backgroundColor)
+        graphics.fill(left, top + 1, left + 1, bottom - 1, backgroundColor)
+        graphics.fill(right - 1, top + 1, right, bottom - 1, backgroundColor)
+        graphics.fillGradient(left + 1, top + 2, left + 2, bottom - 2, borderColorTop, borderColorBottom)
+        graphics.fillGradient(right - 2, top + 2, right - 1, bottom - 2, borderColorTop, borderColorBottom)
+        graphics.fill(left + 1, top + 1, right - 1, top + 2, borderColorTop)
+        graphics.fill(left + 1, bottom - 2, right - 1, bottom - 1, borderColorBottom)
     }
 }
