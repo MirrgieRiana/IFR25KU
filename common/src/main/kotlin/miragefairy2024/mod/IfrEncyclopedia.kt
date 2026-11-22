@@ -199,7 +199,7 @@ class IfrEncyclopediaEntryCard(
 }
 
 /**
- * タイトルと本文の文字色なのだ～🌱
+ * 図鑑の文字色なのだ～🌱
  * 背景のテクスチャはダークモードでも替わらないから、暗い側も同じ色にするのだ～🌱
  */
 internal val IFR_ENCYCLOPEDIA_TEXT_COLOR = ColorPair(0xFF493208.toInt(), 0xFF493208.toInt())
@@ -335,7 +335,7 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
                         position.alignmentY = Alignment.CENTER
                         view.sizingX = Sizing.FILL
                         view.alignmentX = Alignment.CENTER
-                        view.color = TEXT_COLOR
+                        view.color = IFR_ENCYCLOPEDIA_TEXT_COLOR
                         view.shadow = false
 
                         pageIndex.registerAndInitialize { _, _ ->
