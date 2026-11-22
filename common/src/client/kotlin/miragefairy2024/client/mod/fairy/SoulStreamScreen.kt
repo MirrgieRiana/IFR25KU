@@ -16,6 +16,8 @@ import io.wispforest.owo.ui.core.Surface
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.RenderingEvent
+import miragefairy2024.client.mod.recipeviewer.ViewRenderer
+import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
 import miragefairy2024.client.util.ClickableContainer
 import miragefairy2024.client.util.KeyMappingCard
 import miragefairy2024.client.util.LayeredImageButton
@@ -42,6 +44,7 @@ import miragefairy2024.mod.fairy.SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATIO
 import miragefairy2024.mod.fairy.SOUL_STREAM_PASSIVE_SKILL_EFFECT_TRANSLATION
 import miragefairy2024.mod.fairy.SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION
 import miragefairy2024.mod.fairy.SetCollectionEnabledChannel
+import miragefairy2024.mod.fairy.SoulStreamFilterView
 import miragefairy2024.mod.fairy.SoulStreamScreenHandler
 import miragefairy2024.mod.fairy.collectionEnabled
 import miragefairy2024.mod.fairy.getFairyMotif
@@ -54,6 +57,11 @@ import miragefairy2024.mod.passiveskill.collect
 import miragefairy2024.mod.passiveskill.effects.ManaBoostPassiveSkillEffect
 import miragefairy2024.mod.passiveskill.findPassiveSkillProviders
 import miragefairy2024.mod.passiveskill.passiveSkillEffectRegistry
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.x1
+import miragefairy2024.mod.recipeviewer.view.x2
+import miragefairy2024.mod.recipeviewer.view.y1
+import miragefairy2024.mod.recipeviewer.view.y2
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.blue
@@ -69,6 +77,7 @@ import miragefairy2024.util.red
 import miragefairy2024.util.register
 import miragefairy2024.util.size
 import miragefairy2024.util.text
+import mirrg.kotlin.helium.Slot
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
 import net.fabricmc.fabric.api.client.screen.v1.Screens
@@ -79,6 +88,7 @@ import net.minecraft.client.gui.components.ImageButton
 import net.minecraft.client.gui.components.Tooltip
 import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.client.gui.screens.inventory.InventoryScreen
+import net.minecraft.client.renderer.RenderType
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.player.Inventory
@@ -113,6 +123,7 @@ fun initSoulStreamClientModule() {
 
     // GUI登録
     soulStreamScreenHandlerType.registerHandledScreen { gui, inventory, title -> SoulStreamScreen(gui, inventory, title) }
+    ViewRendererRegistry.register(SoulStreamFilterView::class.java, SoulStreamFilterViewRenderer)
 
     // ソウルストリームのキーバインド
     soulStreamKeyMappingCard.init()
@@ -471,6 +482,25 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
     override fun onClose() {
         super.onClose()
         onClose.fire()
+    }
+
+}
+
+private object SoulStreamFilterViewRenderer : ViewRenderer<SoulStreamFilterView, Unit> {
+
+    override fun createState(view: SoulStreamFilterView) = Unit
+
+    override fun isFocusable(view: SoulStreamFilterView, state: Slot<Unit>) = true
+
+    override fun mouseClicked(view: SoulStreamFilterView, state: Slot<Unit>, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int): Boolean {
+        view.onClick()
+        return true
+    }
+
+    override fun render(view: SoulStreamFilterView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+        if (isHovered) {
+            graphics.fill(RenderType.guiOverlay(), bounds.x1, bounds.y1, bounds.x2, bounds.y2, 0x80FFFFFF.toInt())
+        }
     }
 
 }
