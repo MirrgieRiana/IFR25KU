@@ -55,7 +55,7 @@ abstract class ScrollContainerView : WrapperView(), PlaceableView {
     }
 
     fun updateScrollBounds() {
-        scrollBounds.value = ScrollBounds(evaluateContentLength() atLeast 0, evaluateViewportLength() atLeast 0)
+        scrollBounds.value = ScrollBounds(evaluateContentLength(), evaluateViewportLength())
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
@@ -74,7 +74,7 @@ class XScrollContainerView : ScrollContainerView() {
     override fun evaluateContentSizeYImpl() = childView.evaluateContentSizeY()
 
     override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX() max childView.evaluateContentSizeX()
-    override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY() atLeast 0
+    override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY()
 
     override fun evaluateContentLength() = childView.evaluateActualSizeX()
     override fun evaluateViewportLength() = evaluateActualSizeX()
@@ -93,7 +93,7 @@ class YScrollContainerView : ScrollContainerView() {
     override fun evaluateContentSizeXImpl() = childView.evaluateContentSizeX()
     override fun evaluateContentSizeYImpl() = 0
 
-    override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX() atLeast 0
+    override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX()
     override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY() max childView.evaluateContentSizeY()
 
     override fun evaluateContentLength() = childView.evaluateActualSizeY()

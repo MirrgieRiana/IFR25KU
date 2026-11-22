@@ -267,4 +267,14 @@ class AxisWiseContentSizeTest {
         }
     }
 
+    @Test
+    fun `負の幅を持つテキストの内容幅は 0 なのだ`() {
+        val renderingProxy = object : RenderingProxy by TEST_RENDERING_PROXY {
+            override fun calculateTextWidth(text: FormattedCharSequence) = -3
+        }
+        val view = TextView()
+        view.initSizeCalculation(renderingProxy, { 100 }, { 100 })
+        assertEquals(0, view.evaluateContentSizeX())
+    }
+
 }
