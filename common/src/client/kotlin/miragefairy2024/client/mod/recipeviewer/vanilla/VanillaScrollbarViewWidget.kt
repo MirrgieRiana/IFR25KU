@@ -20,7 +20,7 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
     protected val view: V,
     bounds: IntRectangle,
 ) :
-    AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }), MouseCaptureContainer {
+    AbstractWidget(bounds.x, bounds.y, bounds.sizeX atLeast 0, bounds.sizeY atLeast 0, text { empty() }), MouseCaptureContainer {
 
 
     // ライフサイクルなのだ～🌱
@@ -35,6 +35,10 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
 
 
     // サイズと位置なのだ～🌱
+
+    override fun setWidth(width: Int) = super.setWidth(width atLeast 0)
+    override fun setHeight(height: Int) = super.setHeight(height atLeast 0)
+    override fun setSize(width: Int, height: Int) = super.setSize(width atLeast 0, height atLeast 0)
 
     protected abstract val scrollbarLength: Int
     protected abstract val scrollbarThickness: Int

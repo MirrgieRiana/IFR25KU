@@ -27,6 +27,7 @@ import miragefairy2024.util.fire
 import miragefairy2024.util.observeAndInitialize
 import miragefairy2024.util.register
 import miragefairy2024.util.removeOn
+import mirrg.kotlin.helium.atLeast
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.Button
@@ -135,8 +136,8 @@ fun initVanillaViewPlacers() {
         class TextButtonWidget : Button(
             bounds.x,
             bounds.y,
-            bounds.sizeX,
-            bounds.sizeY,
+            bounds.sizeX atLeast 0,
+            bounds.sizeY atLeast 0,
             view.message,
             { view.onClick.fire { it() } },
             DEFAULT_NARRATION,
@@ -145,7 +146,8 @@ fun initVanillaViewPlacers() {
         }
         context place TextButtonWidget()
     }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextFieldView, bounds ->
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextFieldView, suppliedBounds ->
+        val bounds = suppliedBounds.copy(sizeX = suppliedBounds.sizeX atLeast 0, sizeY = suppliedBounds.sizeY atLeast 0)
         val onClosed = EventRegistry<() -> Unit>()
         val editBox = EditBox(Minecraft.getInstance().font, bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty())
         editBox.setMaxLength(Int.MAX_VALUE)

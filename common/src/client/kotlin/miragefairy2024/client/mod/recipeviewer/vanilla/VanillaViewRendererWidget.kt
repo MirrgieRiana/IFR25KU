@@ -4,6 +4,7 @@ import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import mirrg.kotlin.helium.Slot
+import mirrg.kotlin.helium.atLeast
 import net.minecraft.client.gui.ComponentPath
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
@@ -11,12 +12,29 @@ import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.network.chat.Component
 
-class VanillaViewRendererWidget<V : PlaceableView, S>(private val renderer: ViewRenderer<V, S>, private val view: V, private var bounds2: IntRectangle) :
-    AbstractWidget(bounds2.x, bounds2.y, bounds2.sizeX, bounds2.sizeY, Component.empty()) {
+class VanillaViewRendererWidget<V : PlaceableView, S>(private val renderer: ViewRenderer<V, S>, private val view: V, bounds: IntRectangle) :
+    AbstractWidget(bounds.x, bounds.y, bounds.sizeX atLeast 0, bounds.sizeY atLeast 0, Component.empty()) {
 
     private val state = Slot(renderer.createState(view))
 
+    private var bounds2 = bounds.copy(sizeX = width, sizeY = height)
+
     private val pressedButtons = mutableSetOf<Int>()
+
+    override fun setWidth(width: Int) {
+        super.setWidth(width atLeast 0)
+        bounds2 = bounds2.copy(sizeX = this.width)
+    }
+
+    override fun setHeight(height: Int) {
+        super.setHeight(height atLeast 0)
+        bounds2 = bounds2.copy(sizeY = this.height)
+    }
+
+    override fun setSize(width: Int, height: Int) {
+        super.setSize(width atLeast 0, height atLeast 0)
+        bounds2 = bounds2.copy(sizeX = this.width, sizeY = this.height)
+    }
 
     override fun setPosition(x: Int, y: Int) {
         super.setPosition(x, y)

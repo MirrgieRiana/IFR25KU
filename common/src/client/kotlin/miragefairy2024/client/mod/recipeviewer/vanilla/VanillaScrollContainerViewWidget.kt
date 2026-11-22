@@ -47,7 +47,7 @@ abstract class VanillaScrollContainerViewWidget(
     context: VanillaViewPlacerContext,
     registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
 ) :
-    AbstractContainerWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }), MouseCaptureContainer {
+    AbstractContainerWidget(bounds.x, bounds.y, bounds.sizeX atLeast 0, bounds.sizeY atLeast 0, text { empty() }), MouseCaptureContainer {
 
 
     // Widget の登録なのだ～🌱
@@ -134,17 +134,17 @@ abstract class VanillaScrollContainerViewWidget(
     }
 
     override fun setWidth(width: Int) {
-        super.setWidth(width)
+        super.setWidth(width atLeast 0)
         updateScrollBounds()
     }
 
     override fun setHeight(height: Int) {
-        super.setHeight(height)
+        super.setHeight(height atLeast 0)
         updateScrollBounds()
     }
 
     override fun setSize(width: Int, height: Int) {
-        super.setSize(width, height)
+        super.setSize(width atLeast 0, height atLeast 0)
         updateScrollBounds()
     }
 
