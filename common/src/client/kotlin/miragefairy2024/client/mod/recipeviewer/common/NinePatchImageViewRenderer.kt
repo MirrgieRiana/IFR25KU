@@ -11,8 +11,7 @@ import net.minecraft.resources.ResourceLocation
 object NinePatchImageViewRenderer : ViewRenderer<NinePatchImageView, Unit> {
     override fun createState(view: NinePatchImageView) = Unit
     override fun render(view: NinePatchImageView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
-        renderNinePatchImage(
-            graphics,
+        graphics.renderNinePatchImage(
             bounds,
             view.textureId,
             view.textureWidth,
@@ -29,8 +28,7 @@ object NinePatchImageViewRenderer : ViewRenderer<NinePatchImageView, Unit> {
     }
 }
 
-fun renderNinePatchImage(
-    graphics: GuiGraphics,
+fun GuiGraphics.renderNinePatchImage(
     bounds: IntRectangle,
     textureId: ResourceLocation,
     textureWidth: Int,
@@ -44,6 +42,7 @@ fun renderNinePatchImage(
     repeatX: Boolean,
     repeatY: Boolean,
 ) {
+    val graphics = this
 
     val sw0 = textureWidth
     val sw1 = xStartSize
