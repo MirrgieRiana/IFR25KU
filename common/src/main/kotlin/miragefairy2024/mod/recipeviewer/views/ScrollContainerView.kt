@@ -7,8 +7,10 @@ import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
+import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Remover
+import miragefairy2024.util.fire
 import miragefairy2024.util.plus
 import miragefairy2024.util.register
 import mirrg.kotlin.helium.atLeast
@@ -38,6 +40,8 @@ abstract class ScrollContainerView : WrapperView(), PlaceableView {
         }
 
     val scrollBounds = ObservableValue(ScrollBounds(0, 0))
+
+    val onScrollInput = EventRegistry<() -> Unit>()
 
     protected abstract fun evaluateContentLength(): Int
     protected abstract fun evaluateViewportLength(): Int
@@ -131,6 +135,9 @@ private fun connectScrollbarImpl(
     remover += scrollView.scrollBounds.register { _, bounds ->
         scrollbarView.contentLength = bounds.contentLength
         scrollbarView.viewportLength = bounds.viewportLength
+    }
+    remover += scrollView.onScrollInput.register {
+        scrollbarView.onScrollInput.fire()
     }
 
     fun connectOffset(offset: ObservableValue<Double>) {
