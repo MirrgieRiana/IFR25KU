@@ -22,7 +22,6 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.Slot
-import mirrg.kotlin.helium.atMost
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.Rect2i
 import net.minecraft.resources.ResourceLocation
@@ -161,7 +160,7 @@ abstract class SimpleMachineScreen<H : SimpleMachineScreenHandler>(card: SimpleM
         super.renderBg(context, delta, mouseX, mouseY)
 
         if (menu.progressMax > 0) {
-            val w = (arrowBound.width.toDouble() * (menu.progress.toDouble() / menu.progressMax.toDouble() atMost 1.0)).roundToInt()
+            val w = (arrowBound.width.toDouble() * (menu.progress.toDouble() / menu.progressMax.toDouble()).coerceIn(0.0, 1.0)).roundToInt()
             context.blit(
                 arrowTexture,
                 leftPos + arrowBound.x,
@@ -206,7 +205,7 @@ class AuraReflectorFurnaceScreen(card: AuraReflectorFurnaceCard, arguments: Argu
         super.renderBg(context, delta, mouseX, mouseY)
 
         if (menu.fuelMax > 0) {
-            val h = (fuelBound.height.toDouble() * (menu.fuel.toDouble() / menu.fuelMax.toDouble() atMost 1.0)).roundToInt()
+            val h = (fuelBound.height.toDouble() * (menu.fuel.toDouble() / menu.fuelMax.toDouble()).coerceIn(0.0, 1.0)).roundToInt()
             context.blit(
                 BlueFuelViewRenderer.TEXTURE,
                 leftPos + fuelBound.x - 1,
@@ -231,7 +230,7 @@ class AthanorScreen(card: AthanorCard, arguments: Arguments<AthanorScreenHandler
         super.renderBg(context, delta, mouseX, mouseY)
 
         if (menu.fuelMax > 0) {
-            val h = (fuelBound.height.toDouble() * (menu.fuel.toDouble() / menu.fuelMax.toDouble() atMost 1.0)).roundToInt()
+            val h = (fuelBound.height.toDouble() * (menu.fuel.toDouble() / menu.fuelMax.toDouble()).coerceIn(0.0, 1.0)).roundToInt()
             context.blit(
                 FuelViewRenderer.TEXTURE,
                 leftPos + fuelBound.x - 1,

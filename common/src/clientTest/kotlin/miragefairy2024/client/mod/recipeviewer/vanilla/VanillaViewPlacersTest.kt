@@ -21,9 +21,11 @@ import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.XFlatScrollbarView
+import miragefairy2024.mod.recipeviewer.views.XInventoryScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YInventoryScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
@@ -35,6 +37,7 @@ import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
 import miragefairy2024.util.register
 import miragefairy2024.util.text
+import net.minecraft.Util
 import net.minecraft.client.DeltaTracker
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
@@ -51,6 +54,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.lwjgl.glfw.GLFW
 import org.mockito.Mockito
 import kotlin.math.roundToInt
 
@@ -192,10 +196,10 @@ class VanillaViewPlacersTest {
     }
 
     @Test
-    fun `親で Slot を配置できても縦横スクロールと入れ子の内側では拒否するのだ`() {
+    fun `親がスロット配置を許可しない場合は縦横スクロールと入れ子の内側でも拒否するのだ`() {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint.ZERO
-            override val canPlaceMenuSlots = true
+            override val canPlaceMenuSlots = false
             override val onBeforeRender = EventRegistry<() -> Unit>()
             override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("Placement must fail before widget registration")
             override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Placement must fail before widget registration")
@@ -348,21 +352,25 @@ class VanillaViewPlacersTest {
         }
     }
 
+    private fun createScrollbarPlacerContext(widgets: MutableList<AbstractWidget>): VanillaViewPlacerContext {
+        return object : VanillaViewPlacerContext {
+            override val origin = IntPoint(10, 20)
+            override val canPlaceMenuSlots = false
+            override val onBeforeRender = EventRegistry<() -> Unit>()
+            override fun addRenderableWidget(widget: AbstractWidget): Remover {
+                widgets += widget
+                return Remover { widgets.remove(widget) }
+            }
+            override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Scrollbars must accept input")
+            override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
+        }
+    }
+
     @Test
     fun `本番のバー登録が単体の配置と移動と破棄と解除を中継するのだ`() {
         listOf(false, true).forEach { horizontal ->
             val widgets = mutableListOf<AbstractWidget>()
-            val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
-                override val origin = IntPoint(10, 20)
-                override val canPlaceMenuSlots = false
-                override val onBeforeRender = EventRegistry<() -> Unit>()
-                override fun addRenderableWidget(widget: AbstractWidget): Remover {
-                    widgets += widget
-                    return Remover { widgets.remove(widget) }
-                }
-                override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Scrollbars must accept input")
-                override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
-            }
+            val context = createScrollbarPlacerContext(widgets)
             val view = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
             view.contentLength = 300
             view.viewportLength = 100
@@ -383,6 +391,48 @@ class VanillaViewPlacersTest {
             Assertions.assertFalse(widget.isActive)
             Assertions.assertFalse(widget.hasMouseCapture(0))
             Assertions.assertTrue(widgets.isEmpty())
+        }
+    }
+
+    @Test
+    fun `本番のインベントリ風スクロールバー登録が配置と解除を中継し再配置で位置を保持するのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            val widgets = mutableListOf<AbstractWidget>()
+            val context = createScrollbarPlacerContext(widgets)
+            val view = if (horizontal) XInventoryScrollbarView() else YInventoryScrollbarView()
+            view.contentLength = 300
+            view.viewportLength = 100
+            view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
+            val controller = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
+            val widget = widgets.single() as VanillaInventoryScrollbarViewWidget
+            try {
+                Assertions.assertEquals(if (horizontal) VanillaXInventoryScrollbarViewWidget::class.java else VanillaYInventoryScrollbarViewWidget::class.java, widget.javaClass)
+                Assertions.assertEquals(if (horizontal) IntPoint(100, 18) else IntPoint(18, 100), IntPoint(widget.width, widget.height))
+                controller.setOffset(IntPoint(40, 60))
+                Assertions.assertEquals(IntPoint(40, 60), IntPoint(widget.x, widget.y))
+                Assertions.assertTrue(widget.mouseClicked(42.0, 62.0, 0))
+                Assertions.assertTrue(widget.hasMouseCapture(0))
+                widget.isFocused = true
+                Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
+            } finally {
+                controller.dispose()
+                controller.detach()
+            }
+            Assertions.assertFalse(widget.isActive)
+            Assertions.assertFalse(widget.hasMouseCapture(0))
+            Assertions.assertTrue(widgets.isEmpty())
+
+            view.initSizeCalculation(PLACER_RENDERING_PROXY, { 120 }, { 120 })
+            val newController = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
+            val newWidget = widgets.single() as VanillaInventoryScrollbarViewWidget
+            try {
+                newWidget.isFocused = true
+                Assertions.assertFalse(newWidget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
+                Assertions.assertTrue(newWidget.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
+            } finally {
+                newController.dispose()
+                newController.detach()
+            }
         }
     }
 
@@ -523,6 +573,69 @@ class VanillaViewPlacersTest {
                     connection.remove()
                 }
                 Assertions.assertTrue(context.onBeforeRender.toList().isEmpty())
+            }
+        }
+    }
+
+    @Test
+    fun `領域のスクロール操作で接続先のフラットバーを再表示し破棄時に購読を解除するのだ`() {
+        GuiTestEnvironment().use {
+            Mockito.mockStatic(Util::class.java, Mockito.CALLS_REAL_METHODS).use { clock ->
+                var now = 1000L
+                clock.`when`<Long> { Util.getMillis() }.thenAnswer { now }
+                val widgets = mutableListOf<AbstractWidget>()
+                val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+                    override val origin = IntPoint.ZERO
+                    override val canPlaceMenuSlots = false
+                    override val onBeforeRender = EventRegistry<() -> Unit>()
+                    override fun addRenderableWidget(widget: AbstractWidget): Remover {
+                        widgets += widget
+                        return Remover { widgets.remove(widget) }
+                    }
+                    override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Unexpected render-only widget")
+                    override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
+                }
+                val scrollView = YScrollContainerView()
+                scrollView += SpaceView(IntPoint(100, 300))
+                scrollView.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
+                val scrollbarView = YFlatScrollbarView()
+                scrollbarView.scrollbarColor = 0xA0FFFFFF.toInt()
+                val connection = connectScrollbar(scrollView, scrollbarView)
+                val scrollController = scrollView.attachTo(context.origin) { view, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds) }
+                val scrollbarController = VANILLA_VIEW_PLACER_REGISTRY.place(context, scrollbarView, IntRectangle(200, 20, 5, 100))
+                val scrollWidget = widgets.filterIsInstance<VanillaYScrollContainerViewWidget>().single()
+                val scrollbarWidget = widgets.filterIsInstance<VanillaYFlatScrollbarViewWidget>().single()
+                val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+
+                fun assertColor(at: Long, color: Int, thumbY: Int) {
+                    now = at
+                    Mockito.clearInvocations(graphics)
+                    scrollbarWidget.render(graphics, 50, 25, 0.0F)
+                    Mockito.verify(graphics).fill(200, thumbY, 205, thumbY + 33, color)
+                }
+
+                try {
+                    Assertions.assertEquals(1, scrollbarView.onScrollInput.toList().size)
+                    assertColor(1000L, 0x00FFFFFF, 20)
+                    Assertions.assertFalse(scrollWidget.mouseScrolled(50.0, 25.0, 0.0, 1.0))
+                    assertColor(1500L, scrollbarView.scrollbarColor, 20)
+                    assertColor(1875L, 0x50FFFFFF, 20)
+                    assertColor(2250L, 0x00FFFFFF, 20)
+
+                    scrollWidget.isFocused = true
+                    Assertions.assertTrue(scrollWidget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
+                    assertColor(2250L, scrollbarView.scrollbarColor, 87)
+                    assertColor(3500L, 0x00FFFFFF, 87)
+                    Assertions.assertTrue(scrollWidget.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
+                    assertColor(3500L, scrollbarView.scrollbarColor, 20)
+                } finally {
+                    scrollbarController.dispose()
+                    scrollbarController.detach()
+                    scrollController.dispose()
+                    scrollController.detach()
+                    connection.remove()
+                }
+                Assertions.assertTrue(scrollbarView.onScrollInput.toList().isEmpty())
             }
         }
     }

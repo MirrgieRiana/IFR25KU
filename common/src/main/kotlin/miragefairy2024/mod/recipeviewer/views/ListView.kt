@@ -8,6 +8,7 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import mirrg.kotlin.helium.CachingEvaluator
+import mirrg.kotlin.helium.atLeast
 import kotlin.math.roundToInt
 
 abstract class ListView : ContainerView<ListView.Position>() {
@@ -58,7 +59,7 @@ class XListView : ListView() {
                 it.evaluateReservedSizeX()
             }
         } else {
-            val remaining = (evaluateActualSizeX() - evaluateContentSizeX()).toDouble()
+            val remaining = (evaluateActualSizeX() - evaluateContentSizeX() atLeast 0).toDouble()
             var consumed = 0.0
             children.map {
                 val oldConsumed = consumed
@@ -119,7 +120,7 @@ class YListView : ListView() {
                 it.evaluateReservedSizeY()
             }
         } else {
-            val remaining = (evaluateActualSizeY() - evaluateContentSizeY()).toDouble()
+            val remaining = (evaluateActualSizeY() - evaluateContentSizeY() atLeast 0).toDouble()
             var consumed = 0.0
             children.map {
                 val oldConsumed = consumed

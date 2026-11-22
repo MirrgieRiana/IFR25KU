@@ -5,6 +5,7 @@ import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
+import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.ObservableValue
 
 /** スクロール位置をコンテンツ座標で保持し、再配置時にも引き継ぐバーなのだ～🌱 */
@@ -14,6 +15,7 @@ abstract class ScrollbarView(initialScrollbarThickness: Int) : AbstractView(), P
         require(initialScrollbarThickness >= 0) { "Scrollbar thickness must be non-negative" }
     }
 
+    var keyboardFocusable = true
     val scrollOffset = ObservableValue(0.0)
 
     var contentLength = 0
@@ -36,6 +38,8 @@ abstract class ScrollbarView(initialScrollbarThickness: Int) : AbstractView(), P
             if (value <= 0) throw IllegalArgumentException("Scroll step must be positive")
             field = value
         }
+
+    val onScrollInput = EventRegistry<() -> Unit>()
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
 
