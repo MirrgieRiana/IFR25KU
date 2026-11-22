@@ -33,3 +33,7 @@ class MinContentSizeYView(private val sizeY: Int) : WrapperView() {
 
 fun <P> Child<P, *>.minContentSizeX(x: Int) = this.wrap(MinContentSizeXView(x))
 fun <P> Child<P, *>.minContentSizeY(y: Int) = this.wrap(MinContentSizeYView(y))
+
+
+fun <P> Child<P, *>.fixedContentSizeX(x: Int) = this.maxContentSizeX(x).minContentSizeX(x)
+fun <P> Child<P, *>.fixedContentSizeY(y: Int) = this.maxContentSizeY(y).minContentSizeY(y)
