@@ -39,7 +39,6 @@ abstract class ScrollContainerView : WrapperView(), PlaceableView {
             field = value
         }
 
-    internal val scrollOffset = ObservableValue(0.0)
     val scrollBounds = ObservableValue(ScrollBounds(0, 0))
 
     val onScrollInput = EventRegistry<() -> Unit>()
@@ -69,7 +68,7 @@ abstract class ScrollContainerView : WrapperView(), PlaceableView {
 /** 子 View を X 軸方向へスクロールするのだ～🌱 */
 class XScrollContainerView : ScrollContainerView() {
 
-    val scrollOffsetX get() = scrollOffset
+    val scrollOffsetX = ObservableValue(0.0)
 
     override fun evaluateContentSizeXImpl() = 0
     override fun evaluateContentSizeYImpl() = childView.evaluateContentSizeY()
@@ -89,7 +88,7 @@ class XScrollContainerView : ScrollContainerView() {
 /** 子 View を Y 軸方向へスクロールするのだ～🌱 */
 class YScrollContainerView : ScrollContainerView() {
 
-    val scrollOffsetY get() = scrollOffset
+    val scrollOffsetY = ObservableValue(0.0)
 
     override fun evaluateContentSizeXImpl() = childView.evaluateContentSizeX()
     override fun evaluateContentSizeYImpl() = 0
@@ -107,11 +106,26 @@ class YScrollContainerView : ScrollContainerView() {
 }
 
 /**
- * 領域とバーを接続し、その間のコンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
+ * X 軸の領域とバーを接続し、その間のコンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
  * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
  */
-fun connectScrollbar(scrollView: ScrollContainerView, scrollbarView: ScrollbarView): Remover {
-    val scrollViewOffset = scrollView.scrollOffset
+fun connectScrollbar(scrollView: XScrollContainerView, scrollbarView: XFlatScrollbarView): Remover {
+    return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetX)
+}
+
+/**
+ * Y 軸の領域とバーを接続し、その間のコンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
+ * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
+ */
+fun connectScrollbar(scrollView: YScrollContainerView, scrollbarView: ScrollbarView): Remover {
+    return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetY)
+}
+
+private fun connectScrollbarImpl(
+    scrollView: ScrollContainerView,
+    scrollbarView: ScrollbarView,
+    scrollViewOffset: ObservableValue<Double>,
+): Remover {
     val initialScrollViewOffset = scrollViewOffset.value
     val initialScrollbarViewOffset = scrollbarView.scrollOffset.value
     var remover = Remover.NONE
