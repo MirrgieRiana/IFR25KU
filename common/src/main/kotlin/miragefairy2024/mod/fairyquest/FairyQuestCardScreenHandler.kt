@@ -17,13 +17,12 @@ import miragefairy2024.mod.recipeviewer.views.GhostRecipeItemView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.ProgressView
-import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
+import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
-import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
@@ -181,7 +180,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                                 }
                             }
                             view += scrollView
-                            val scrollbarView = YScrollbarView(ScrollbarStyle.Flat()).configure {
+                            val scrollbarView = YFlatScrollbarView().configure {
                                 view.keyboardFocusable = false
                             }
                             view += scrollbarView

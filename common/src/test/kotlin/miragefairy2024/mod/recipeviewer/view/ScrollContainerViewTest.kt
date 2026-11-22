@@ -3,12 +3,12 @@ package miragefairy2024.mod.recipeviewer.view
 import miragefairy2024.mod.recipeviewer.views.AbstractView
 import miragefairy2024.mod.recipeviewer.views.DynamicView
 import miragefairy2024.mod.recipeviewer.views.ScrollBounds
-import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
+import miragefairy2024.mod.recipeviewer.views.ScrollbarView
 import miragefairy2024.mod.recipeviewer.views.SpaceView
+import miragefairy2024.mod.recipeviewer.views.XFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
-import miragefairy2024.mod.recipeviewer.views.XScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
-import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.register
 import mirrg.kotlin.helium.max
@@ -126,7 +126,7 @@ class ScrollContainerViewTest {
     @Test
     fun `子を持たないバーは指定された太さをコンテンツ寸法に使うのだ`() {
         listOf(false, true).forEach { horizontal ->
-            val view = if (horizontal) XScrollbarView(ScrollbarStyle.Flat()) else YScrollbarView(ScrollbarStyle.Flat())
+            val view = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
             view.scrollbarThickness = 7
             Assertions.assertEquals(if (horizontal) Sizing.FILL else Sizing.WRAP, view.sizingX)
             Assertions.assertEquals(if (horizontal) Sizing.WRAP else Sizing.FILL, view.sizingY)
@@ -142,17 +142,24 @@ class ScrollContainerViewTest {
     }
 
     @Test
-    fun `バーの初期の太さは描画スタイルで決まるのだ`() {
-        Assertions.assertEquals(5, XScrollbarView(ScrollbarStyle.Flat()).scrollbarThickness)
-        Assertions.assertEquals(18, YScrollbarView(ScrollbarStyle.Inventory).scrollbarThickness)
+    fun `バーの初期の太さは 0 以上を要求するのだ`() {
+        fun createScrollbar(thickness: Int) = object : ScrollbarView(thickness) {
+            override val sizingX = Sizing.FILL
+            override val sizingY = Sizing.WRAP
+            override fun evaluateContentSizeXImpl() = 0
+            override fun evaluateContentSizeYImpl() = scrollbarThickness
+        }
+
+        Assertions.assertThrows(IllegalArgumentException::class.java) { createScrollbar(-1) }
+        Assertions.assertEquals(0, createScrollbar(0).scrollbarThickness)
     }
 
     @Test
     fun `バーの短軸を FILL にしてもコンテンツ寸法は設定した太さを維持するのだ`() {
         listOf(false, true).forEach { horizontal ->
-            val view = if (horizontal) XScrollbarView(ScrollbarStyle.Flat()) else YScrollbarView(ScrollbarStyle.Flat())
+            val view = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
             view.scrollbarThickness = 7
-            if (horizontal) (view as XScrollbarView).sizingY = Sizing.FILL else (view as YScrollbarView).sizingX = Sizing.FILL
+            if (horizontal) (view as XFlatScrollbarView).sizingY = Sizing.FILL else (view as YFlatScrollbarView).sizingX = Sizing.FILL
             view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 100 }, { 80 })
             Assertions.assertEquals(if (horizontal) IntPoint(0, 7) else IntPoint(7, 0), view.evaluateContentSize())
             Assertions.assertEquals(IntPoint(100, 80), view.evaluateActualSize())

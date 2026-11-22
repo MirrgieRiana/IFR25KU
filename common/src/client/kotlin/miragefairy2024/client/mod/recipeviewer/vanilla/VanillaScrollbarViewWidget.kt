@@ -1,43 +1,24 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
-import com.mojang.blaze3d.vertex.PoseStack
-import com.mojang.math.Axis
-import miragefairy2024.MirageFairy2024
-import miragefairy2024.client.util.drawNinePatchImage
-import miragefairy2024.client.util.stack
 import miragefairy2024.mod.recipeviewer.SCROLL_AREA_TRANSLATION
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
 import miragefairy2024.mod.recipeviewer.views.ScrollbarView
-import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
 import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
-import miragefairy2024.util.register
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.atLeast
-import mirrg.kotlin.helium.atMost
-import mirrg.kotlin.hydrogen.alphaOfArgb
-import mirrg.kotlin.hydrogen.argbOf
-import net.minecraft.Util
 import net.minecraft.client.gui.ComponentPath
-import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.narration.NarratableEntry
 import net.minecraft.client.gui.narration.NarratedElementType
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import org.lwjgl.glfw.GLFW
-import kotlin.math.PI
 import kotlin.math.roundToInt
-import kotlin.math.sin
 
-private val BACKGROUND_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_background.png")
-private val SCROLLER_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_scroller.png")
-private val DISABLED_SCROLLER_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_scroller_disabled.png")
-
-class VanillaScrollbarViewWidget(
-    private val view: ScrollbarView,
+abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
+    protected val view: V,
     bounds: IntRectangle,
 ) :
     AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }), MouseCaptureContainer {
@@ -47,17 +28,7 @@ class VanillaScrollbarViewWidget(
 
     private var disposed = false
 
-    private var fadeEndTime: Long? = null
-    private val scrollInputRemover = if (view.style is ScrollbarStyle.Flat) {
-        view.onScrollInput.register {
-            fadeEndTime = Util.getMillis() + 1250L
-        }
-    } else {
-        Remover.NONE
-    }
-
-    fun dispose() {
-        scrollInputRemover.remove()
+    open fun dispose() {
         disposed = true
         draggingScrollbar = false
         focusedSelf = false
@@ -66,16 +37,16 @@ class VanillaScrollbarViewWidget(
 
     // サイズと位置なのだ～🌱
 
-    private val scrollbarLength get() = if (view.horizontal) width else height
-    private val scrollbarThickness get() = if (view.horizontal) height else width
+    protected abstract val scrollbarLength: Int
+    protected abstract val scrollbarThickness: Int
 
     // 範囲が狭まっても、現在の位置から操作できるようにするのだ～🌱
-    private fun evaluateScrollRange(): ClosedFloatingPointRange<Double> {
+    protected fun evaluateScrollRange(): ClosedFloatingPointRange<Double> {
         val normalMaxScrollOffset = (view.contentLength - view.viewportLength atLeast 0).toDouble()
         return minOf(0.0, view.scrollOffset.value)..maxOf(normalMaxScrollOffset, view.scrollOffset.value)
     }
 
-    private fun evaluateThumbLength(): Int {
+    protected fun evaluateThumbLength(): Int {
         if (scrollbarLength <= 0) return 0
         val range = evaluateScrollRange()
         val scrollLength = range.endInclusive - range.start
@@ -86,7 +57,7 @@ class VanillaScrollbarViewWidget(
         return rawThumbLength.coerceIn(minThumbLength, scrollbarLength)
     }
 
-    private fun evaluateThumbPosition(): Double {
+    protected fun evaluateThumbPosition(): Double {
         val range = evaluateScrollRange()
         return if (range.start == range.endInclusive) {
             0.0
@@ -116,6 +87,12 @@ class VanillaScrollbarViewWidget(
 
     override fun isMouseOver(mouseX: Double, mouseY: Double) = isActive && super.isMouseOver(mouseX, mouseY)
 
+    protected abstract fun getMousePosition(mouseX: Double, mouseY: Double): Double
+
+    protected abstract fun getDragAmount(dragX: Double, dragY: Double): Double
+
+    protected abstract fun getScrollAmount(scrollX: Double, scrollY: Double): Double
+
     override fun hasMouseCapture(button: Int) = !disposed && button == 0 && draggingScrollbar
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
@@ -131,7 +108,7 @@ class VanillaScrollbarViewWidget(
             val remainingThumbLength = scrollbarLength - thumbLength
             if (remainingThumbLength <= 0) return false
             draggingScrollbar = true
-            val mousePosition = if (view.horizontal) mouseX - x else mouseY - y
+            val mousePosition = getMousePosition(mouseX, mouseY)
             val thumbPosition = evaluateThumbPosition()
             if (mousePosition < thumbPosition || mousePosition >= thumbPosition + thumbLength) {
                 val scrollRatio = ((mousePosition - thumbLength / 2.0) / remainingThumbLength).coerceIn(0.0, 1.0)
@@ -148,8 +125,7 @@ class VanillaScrollbarViewWidget(
             val remainingThumbLength = scrollbarLength - evaluateThumbLength()
             if (remainingThumbLength > 0) {
                 val range = evaluateScrollRange()
-                val dragAmount = if (view.horizontal) dragX else dragY
-                val scrollDelta = dragAmount * (range.endInclusive - range.start) / remainingThumbLength
+                val scrollDelta = getDragAmount(dragX, dragY) * (range.endInclusive - range.start) / remainingThumbLength
                 updateScroll(view.scrollOffset.value + scrollDelta)
             }
             return true
@@ -167,8 +143,7 @@ class VanillaScrollbarViewWidget(
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
         if (!isMouseOver(mouseX, mouseY)) return false
-        // 横方向の入力がない場合は、縦方向のホイール入力で横スクロールするのだ～🌱
-        val amount = if (view.horizontal && scrollX != 0.0) scrollX else scrollY
+        val amount = getScrollAmount(scrollX, scrollY)
         if (amount == 0.0) return false
         val handled = updateScroll(view.scrollOffset.value - amount * view.scrollStep)
         view.onScrollInput.fire()
@@ -208,11 +183,12 @@ class VanillaScrollbarViewWidget(
         return null
     }
 
+    protected abstract val backwardKey: Int
+    protected abstract val forwardKey: Int
+
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         if (!isActive) return false
         if (!isFocused) return false
-        val backwardKey = if (view.horizontal) GLFW.GLFW_KEY_LEFT else GLFW.GLFW_KEY_UP
-        val forwardKey = if (view.horizontal) GLFW.GLFW_KEY_RIGHT else GLFW.GLFW_KEY_DOWN
         val offset = when (keyCode) {
             backwardKey -> view.scrollOffset.value - view.scrollStep
             forwardKey -> view.scrollOffset.value + view.scrollStep
@@ -240,97 +216,6 @@ class VanillaScrollbarViewWidget(
         if (isFocused) {
             narrationElementOutput.add(NarratedElementType.TITLE, text { SCROLL_AREA_TRANSLATION() })
             return
-        }
-    }
-
-
-    // 描画なのだ～🌱
-
-    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        when (val style = view.style) {
-            is ScrollbarStyle.Flat -> renderFlatScrollbar(guiGraphics, style.color)
-            ScrollbarStyle.Inventory -> renderInventoryScrollbar(guiGraphics)
-        }
-    }
-
-    private fun renderFlatScrollbar(guiGraphics: GuiGraphics, scrollbarColor: Int) {
-        fun getScrollbarColor(now: Long): Int {
-            val endTime = fadeEndTime
-            val alpha = if (endTime == null) {
-                0
-            } else {
-                // owo と同じく、表示期限までの残り 750 ms で透明にするのだ～🌱
-                val remainingTime = (endTime - now) atLeast 0L atMost 750L
-                val progress = remainingTime / 750.0F
-                val opacity = (sin(progress * PI - PI / 2) * 0.5 + 0.5).toFloat()
-                (opacity * scrollbarColor.alphaOfArgb).toInt()
-            }
-            return argbOf(alpha, scrollbarColor)
-        }
-
-        val range = evaluateScrollRange()
-        if (range.start < range.endInclusive && scrollbarThickness > 0 && scrollbarLength > 0) {
-            val now = Util.getMillis()
-            // 親のクリップで隠れた部分へのホバーを除外し、範囲外に出たドラッグは引き続き扱うのだ～🌱
-            if ((isActive && isHovered) || hasMouseCapture(0)) {
-                fadeEndTime = now + 1500L
-            }
-            val start = evaluateThumbPosition().roundToInt()
-            val length = evaluateThumbLength()
-            val color = getScrollbarColor(now)
-            if (view.horizontal) {
-                guiGraphics.fill(x + start, y, x + start + length, y + height, color)
-            } else {
-                guiGraphics.fill(x, y + start, x + width, y + start + length, color)
-            }
-        }
-    }
-
-    private fun renderInventoryScrollbar(guiGraphics: GuiGraphics) {
-        if (scrollbarThickness < 2 || scrollbarLength < 2) return
-
-        fun renderVerticalScrollbar(x: Int, y: Int) {
-            val range = evaluateScrollRange()
-            val scrollable = range.start < range.endInclusive
-            val start = evaluateThumbPosition().roundToInt()
-            val length = evaluateThumbLength()
-
-            // 背景の描画
-            guiGraphics.drawNinePatchImage(
-                IntRectangle(x, y, scrollbarThickness, scrollbarLength),
-                BACKGROUND_TEXTURE,
-                16, 1, 13, 1,
-                16, 1, 13, 1,
-                false, false,
-            )
-
-            // つまみの描画
-            val texture = if (scrollable) SCROLLER_TEXTURE else DISABLED_SCROLLER_TEXTURE
-            val thumbX = x + 1
-            val thumbY = y + start + 1
-            val thumbWidth = scrollbarThickness - 2
-            val thumbHeight = length - 2
-            // 狭すぎる場合はつまみを描画しないのだ～🌱
-            if (thumbWidth >= 4 && thumbHeight >= 4) {
-                guiGraphics.drawNinePatchImage(
-                    IntRectangle(thumbX, thumbY, thumbWidth, thumbHeight),
-                    texture,
-                    16, 2, 11, 2,
-                    16, 2, 11, 2,
-                    false, true,
-                )
-            }
-        }
-
-        if (view.horizontal) {
-            val pose: PoseStack = guiGraphics.pose()
-            pose.stack {
-                pose.translate(x.toFloat(), (y + height).toFloat(), 0F)
-                pose.mulPose(Axis.ZN.rotationDegrees(90F))
-                renderVerticalScrollbar(0, 0)
-            }
-        } else {
-            renderVerticalScrollbar(x, y)
         }
     }
 

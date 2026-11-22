@@ -109,7 +109,7 @@ class YScrollContainerView : ScrollContainerView() {
  * X 軸の領域とバーを接続し、その間のコンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
  * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
  */
-fun connectScrollbar(scrollView: XScrollContainerView, scrollbarView: XScrollbarView): Remover {
+fun connectScrollbar(scrollView: XScrollContainerView, scrollbarView: XFlatScrollbarView): Remover {
     return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetX)
 }
 
@@ -117,7 +117,15 @@ fun connectScrollbar(scrollView: XScrollContainerView, scrollbarView: XScrollbar
  * Y 軸の領域とバーを接続し、その間のコンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
  * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
  */
-fun connectScrollbar(scrollView: YScrollContainerView, scrollbarView: YScrollbarView): Remover {
+fun connectScrollbar(scrollView: YScrollContainerView, scrollbarView: YFlatScrollbarView): Remover {
+    return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetY)
+}
+
+/**
+ * Y 軸の領域とバーを接続し、その間のコンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
+ * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
+ */
+fun connectScrollbar(scrollView: YScrollContainerView, scrollbarView: YInventoryScrollbarView): Remover {
     return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetY)
 }
 
