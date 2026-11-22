@@ -52,7 +52,7 @@ interface ViewAdapterHost {
  * ホストを初期化するときは [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter.init] を呼ぶのだ～🌱
  * ホストが表示終了を通知できる場合は、最後の描画を終えてから [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter.removed] を呼ぶのだ～🌱
  */
-class ViewAdapter(val host: ViewAdapterHost) {
+class ViewAdapter(val host: ViewAdapterHost, private val getRootViewOffset: () -> IntPoint = host::getUiOffset) {
 
     private var isInitialized = false
     private var viewController: ViewController? = null
@@ -98,7 +98,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
             override fun addRenderableOnly(widget: AbstractWidget) = host.addRenderableOnly(widget)
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = host.registerMenuSlotPlacement(slotId, clipBounds)
         }
-        viewController = rootView.attachTo(host.getUiOffset()) { view, bounds ->
+        viewController = rootView.attachTo(getRootViewOffset()) { view, bounds ->
             host.getViewPlacerRegistry().place(context, view, bounds)
         }
         isInitialized = true

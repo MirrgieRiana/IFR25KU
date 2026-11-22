@@ -313,11 +313,13 @@ class ViewAdapterTest {
     }
 
     @Test
-    fun `配置コンテキストからホストへスロット番号と矩形取得関数を中継するのだ`() {
+    fun `ルート View の配置位置とスロットの座標原点を別々に指定できるのだ`() {
         val contexts = mutableListOf<VanillaViewPlacerContext>()
+        val placements = mutableListOf<IntRectangle>()
         val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
-        registry.register(TestView::class.java) { context, _, _ ->
+        registry.register(TestView::class.java) { context, _, bounds ->
             contexts += context
+            placements += bounds
             object : ViewController {
                 override fun setOffset(offset: IntPoint) = Unit
                 override fun detach() = Unit
@@ -327,15 +329,18 @@ class ViewAdapterTest {
         Mockito.`when`(host.getRenderingProxy()).thenReturn(ADAPTER_RENDERING_PROXY)
         Mockito.`when`(host.getViewPlacerRegistry()).thenReturn(registry)
         Mockito.`when`(host.createRootView()).thenReturn(TestView(false))
-        Mockito.`when`(host.getUiOffset()).thenReturn(IntPoint.ZERO)
+        val slotOrigin = IntPoint(30, 40)
+        Mockito.`when`(host.getUiOffset()).thenReturn(slotOrigin)
         Mockito.`when`(host.canPlaceMenuSlots()).thenReturn(true)
         val slotId = 3
         val clipBounds = { IntRectangle(10, 20, 30, 40) }
         val remover = Remover { }
         Mockito.`when`(host.registerMenuSlotPlacement(slotId, clipBounds)).thenReturn(remover)
-        val adapter = ViewAdapter(host)
+        val adapter = ViewAdapter(host) { IntPoint.ZERO }
         adapter.init()
         try {
+            assertEquals(IntRectangle(0, 0, 10, 20), placements.single())
+            assertEquals(slotOrigin, contexts.single().origin)
             Assertions.assertTrue(contexts.single().canPlaceMenuSlots)
             Assertions.assertSame(remover, contexts.single().registerMenuSlotPlacement(slotId, clipBounds))
             Mockito.verify(host).registerMenuSlotPlacement(slotId, clipBounds)
