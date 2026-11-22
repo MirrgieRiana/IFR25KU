@@ -149,7 +149,7 @@ internal class SoulStreamFilterPane(
 
 }
 
-internal class SoulStreamFilterView(val onClick: () -> Unit) : WrapperView(), PlaceableView {
+class SoulStreamFilterView(val onClick: () -> Unit) : WrapperView(), PlaceableView {
 
     override val sizingX = Sizing.FILL
 
