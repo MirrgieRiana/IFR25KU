@@ -5,9 +5,12 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
 import miragefairy2024.clientProxy
+import miragefairy2024.mod.passiveskill.PassiveSkillEffectFilter
+import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.util.Channel
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.ItemStacks
+import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Registration
 import miragefairy2024.util.Translation
 import miragefairy2024.util.dummyUnitStreamCodec
@@ -30,7 +33,9 @@ import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.RegistryFriendlyByteBuf
+import net.minecraft.network.chat.Component
 import net.minecraft.network.codec.StreamCodec
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.Container
 import net.minecraft.world.SimpleContainer
@@ -133,7 +138,10 @@ val soulStreamScreenHandlerType = Registration(BuiltInRegistries.MENU, MirageFai
     }, dummyUnitStreamCodec())
 }
 
-class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val soulStream: Container) : AbstractContainerMenu(soulStreamScreenHandlerType(), syncId) {
+class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val soulStream: Container) : AbstractContainerMenu(soulStreamScreenHandlerType(), syncId), ViewProviderMenu {
+
+    private lateinit var viewWrapper: SoulStreamViewWrapper
+
     init {
         repeat(3) { r ->
             repeat(9) { c ->
@@ -157,4 +165,18 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
         val destinationIndices = if (slot in playerIndices) utilityIndices else playerIndices
         return quickMove(slot, destinationIndices)
     }
+
+    fun initViewWrapper(
+        enabledPassiveSkillEffectFilters: ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>,
+        enableGlobalFairyHighlight: ObservableValue<Boolean>,
+        collectionToggleKeyText: Component,
+        setCollectionEnabled: (Boolean) -> Unit,
+    ): SoulStreamViewWrapper {
+        return SoulStreamViewWrapper(this, enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, collectionToggleKeyText, setCollectionEnabled).also {
+            viewWrapper = it
+        }
+    }
+
+    override fun createView(title: Component, playerInventoryTitle: Component) = viewWrapper.createView(title)
+
 }

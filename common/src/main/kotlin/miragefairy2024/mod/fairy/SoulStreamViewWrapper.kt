@@ -76,7 +76,6 @@ private val BUTTON_14_BACKGROUND = LayeredImageButtonView.Sprites(
 
 class SoulStreamViewWrapper(
     private val menu: SoulStreamScreenHandler,
-    private val title: Component,
     private val enabledPassiveSkillEffectFilters: ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>,
     private val enableGlobalFairyHighlight: ObservableValue<Boolean>,
     private val collectionToggleKeyText: Component,
@@ -117,9 +116,9 @@ class SoulStreamViewWrapper(
         }
     }
 
-    fun createView(): View {
+    fun createView(title: Component): View {
         val filterPane = createFilterPane()
-        val inventoryPane = createInventoryPane()
+        val inventoryPane = createInventoryPane(title)
         val effectPane = createEffectPane()
         panes = listOf(filterPane, inventoryPane, effectPane)
 
@@ -255,7 +254,7 @@ class SoulStreamViewWrapper(
         }
     }
 
-    private fun createInventoryPane(): View {
+    private fun createInventoryPane(title: Component): View {
         val columnCount = 9
         val inventorySlotCount = columnCount * 3
         val soulStreamSlotIndexOffset = inventorySlotCount + columnCount

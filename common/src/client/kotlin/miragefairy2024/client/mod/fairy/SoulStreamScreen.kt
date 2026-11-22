@@ -7,7 +7,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.RenderingEvent
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
-import miragefairy2024.client.mod.recipeviewer.vanilla.AbstractViewContainerScreen
+import miragefairy2024.client.mod.recipeviewer.vanilla.ViewContainerScreen
 import miragefairy2024.client.util.KeyMappingCard
 import miragefairy2024.client.util.WidgetSprites
 import miragefairy2024.client.util.invoke
@@ -19,7 +19,6 @@ import miragefairy2024.mod.fairy.OpenSoulStreamChannel
 import miragefairy2024.mod.fairy.SetCollectionEnabledChannel
 import miragefairy2024.mod.fairy.SoulStreamFilterView
 import miragefairy2024.mod.fairy.SoulStreamScreenHandler
-import miragefairy2024.mod.fairy.SoulStreamViewWrapper
 import miragefairy2024.mod.fairy.getFairyMotif
 import miragefairy2024.mod.fairy.soulStreamScreenHandlerType
 import miragefairy2024.mod.passiveskill.PassiveSkillEffectFilter
@@ -139,9 +138,9 @@ fun initSoulStreamClientModule() {
 
 }
 
-class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : AbstractViewContainerScreen<SoulStreamScreenHandler>(handler, playerInventory, title) {
+class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : ViewContainerScreen<SoulStreamScreenHandler>(handler, playerInventory, title) {
 
-    private val viewWrapper = SoulStreamViewWrapper(handler, title, enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, text { toggleCollectionEnabledKeyMappingCard() }) {
+    private val viewWrapper = handler.initViewWrapper(enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, text { toggleCollectionEnabledKeyMappingCard() }) {
         SetCollectionEnabledChannel.sendToServer(it)
     }
     private var isFirstRender = true
@@ -183,8 +182,6 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
     }
 
     internal fun getRecipeViewerExclusionAreas() = viewWrapper.getRecipeViewerExclusionAreas()
-
-    override fun createRootView() = viewWrapper.createView()
 
     override fun containerTick() {
         super.containerTick()
