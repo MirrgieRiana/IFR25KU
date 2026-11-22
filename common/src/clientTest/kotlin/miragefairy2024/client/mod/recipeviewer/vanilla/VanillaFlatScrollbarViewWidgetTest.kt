@@ -77,7 +77,7 @@ class VanillaFlatScrollbarViewWidgetTest {
                     val bounds = if (horizontal) IntRectangle(10, 20, 100, 7) else IntRectangle(10, 20, 7, 100)
                     val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
                     val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
-                    widget.render(graphics, 50, 50, 0.0F)
+                    widget.render(graphics, if (horizontal) 20 else 12, if (horizontal) 22 else 30, 0.0F)
                     if (horizontal) {
                         Mockito.verify(graphics).fill(10, 20, 43, 27, view.scrollbarColor)
                     } else {

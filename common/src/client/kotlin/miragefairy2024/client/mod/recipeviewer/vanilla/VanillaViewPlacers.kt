@@ -89,16 +89,20 @@ fun initVanillaViewPlacers() {
     }
     fun placeScrollbarView(context: VanillaViewPlacerContext, widget: VanillaFlatScrollbarViewWidget): ViewController {
         val controller = context place widget
+        val onClosed = EventRegistry<() -> Unit>()
+        widget.observeScrollInput(onClosed)
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {
                 controller.setOffset(offset)
             }
 
             override fun detach() {
+                onClosed.fire()
                 controller.detach()
             }
 
             override fun dispose() {
+                onClosed.fire()
                 widget.dispose()
                 controller.dispose()
             }
