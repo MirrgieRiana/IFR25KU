@@ -171,9 +171,9 @@ class AxisWiseActualSizeTest {
     @Test
     fun `余白の合計が領域より大きい軸では子の供給元が 0 を返すのだ`() {
         val childView = RecordingActualSizeView()
+        childView.sizingX = Sizing.FILL
+        childView.sizingY = Sizing.FILL
         val view = MarginView(8, 8, 4, 4)
-        view.sizingX = Sizing.FILL
-        view.sizingY = Sizing.FILL
         view.add(Child(Unit, childView))
 
         view.initSizeCalculation(TEST_RENDERING_PROXY, { 10 }, { 12 })
