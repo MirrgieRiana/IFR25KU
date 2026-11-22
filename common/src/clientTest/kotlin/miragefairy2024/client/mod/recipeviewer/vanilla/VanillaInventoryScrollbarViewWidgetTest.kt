@@ -39,15 +39,13 @@ private class ScrollbarGraphics : GuiGraphics(Minecraft.getInstance(), null) {
         blits += Pair(atlasLocation, IntRectangle(left, top, right - left, bottom - top))
     }
 
-    fun assertBackgroundAndThumb(background: IntRectangle, thumb: IntRectangle, thumbTexture: ResourceLocation) {
-        fun assertPaintedBounds(bounds: IntRectangle, rectangles: List<IntRectangle>) {
-            Assertions.assertEquals(bounds.x, rectangles.minOf { it.x })
-            Assertions.assertEquals(bounds.y, rectangles.minOf { it.y })
-            Assertions.assertEquals(bounds.x2, rectangles.maxOf { it.x2 })
-            Assertions.assertEquals(bounds.y2, rectangles.maxOf { it.y2 })
-            Assertions.assertEquals(bounds.sizeX * bounds.sizeY, rectangles.sumOf { it.sizeX * it.sizeY })
-        }
+    fun assertBackgroundOnly(background: IntRectangle) {
+        Assertions.assertEquals(listOf(BACKGROUND_TEXTURE), blits.map { it.first }.distinct())
+        assertPaintedBounds(background, blits.map { it.second })
+        Assertions.assertTrue(pose().clear())
+    }
 
+    fun assertBackgroundAndThumb(background: IntRectangle, thumb: IntRectangle, thumbTexture: ResourceLocation) {
         Assertions.assertEquals(listOf(BACKGROUND_TEXTURE, thumbTexture), blits.map { it.first }.distinct())
         val backgroundBlits = blits.takeWhile { it.first == BACKGROUND_TEXTURE }
         val thumbBlits = blits.drop(backgroundBlits.size)
@@ -55,6 +53,14 @@ private class ScrollbarGraphics : GuiGraphics(Minecraft.getInstance(), null) {
         assertPaintedBounds(background, backgroundBlits.map { it.second })
         assertPaintedBounds(thumb, thumbBlits.map { it.second })
         Assertions.assertTrue(pose().clear())
+    }
+
+    private fun assertPaintedBounds(bounds: IntRectangle, rectangles: List<IntRectangle>) {
+        Assertions.assertEquals(bounds.x, rectangles.minOf { it.x })
+        Assertions.assertEquals(bounds.y, rectangles.minOf { it.y })
+        Assertions.assertEquals(bounds.x2, rectangles.maxOf { it.x2 })
+        Assertions.assertEquals(bounds.y2, rectangles.maxOf { it.y2 })
+        Assertions.assertEquals(bounds.sizeX * bounds.sizeY, rectangles.sumOf { it.sizeX * it.sizeY })
     }
 }
 
@@ -116,7 +122,7 @@ class VanillaInventoryScrollbarViewWidgetTest {
     }
 
     @Test
-    fun `両軸で空内容では無効なつまみを描き軸長ゼロでは描画しないのだ`() {
+    fun `両軸で空内容のつまみと極小寸法の描画を確認するのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use {
                 val bounds = if (horizontal) IntRectangle(10, 20, 100, 18) else IntRectangle(10, 20, 18, 100)
@@ -128,6 +134,13 @@ class VanillaInventoryScrollbarViewWidgetTest {
                 graphics.assertBackgroundAndThumb(bounds, disabledThumb, DISABLED_THUMB_TEXTURE)
                 Assertions.assertFalse(widget.mouseClicked(12.0, 22.0, 0))
 
+                (2..5).forEach { width ->
+                    graphics.blits.clear()
+                    widget.setSize(width, 6)
+                    widget.render(graphics, 12, 22, 0F)
+                    graphics.assertBackgroundOnly(IntRectangle(10, 20, width, 6))
+                }
+
                 graphics.blits.clear()
                 view.contentLength = 300
                 widget.setSize(if (horizontal) 0 else 18, if (horizontal) 18 else 0)
@@ -135,14 +148,11 @@ class VanillaInventoryScrollbarViewWidgetTest {
                 Assertions.assertTrue(graphics.blits.isEmpty())
                 Assertions.assertFalse(widget.mouseClicked(12.0, 22.0, 0))
 
-                listOf(3, 4, 5, 6).forEach { size ->
-                    graphics.blits.clear()
-                    widget.setSize(size, size)
-                    widget.render(graphics, 12, 22, 0F)
-                    graphics.assertBackgroundAndThumb(IntRectangle(10, 20, size, size), IntRectangle(11, 21, size - 2, size - 2), THUMB_TEXTURE)
-                    Assertions.assertFalse(widget.mouseClicked(12.0, 22.0, 0))
-                    Assertions.assertFalse(widget.hasMouseCapture(0))
-                }
+                widget.setSize(6, 6)
+                widget.render(graphics, 12, 22, 0F)
+                graphics.assertBackgroundAndThumb(IntRectangle(10, 20, 6, 6), IntRectangle(11, 21, 4, 4), THUMB_TEXTURE)
+                Assertions.assertFalse(widget.mouseClicked(12.0, 22.0, 0))
+                Assertions.assertFalse(widget.hasMouseCapture(0))
                 widget.dispose()
             }
         }
