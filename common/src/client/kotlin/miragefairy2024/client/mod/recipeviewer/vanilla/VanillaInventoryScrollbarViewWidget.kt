@@ -40,12 +40,8 @@ abstract class VanillaInventoryScrollbarViewWidget(view: InventoryScrollbarView,
         val thumbY = y + start + 1
         val thumbWidth = scrollbarThickness - 2
         val thumbHeight = length - 2
-        if (thumbWidth <= 0 || thumbHeight <= 0) {
-            // noop
-        } else if (thumbWidth < 4 || thumbHeight < 4) {
-            // 描画領域が足りない場合にはみ出さないために、つまみの全体を縮小して誤魔化すのだ～🌱
-            guiGraphics.blit(texture, thumbX, thumbY, thumbWidth, thumbHeight, 0F, 0F, 15, 15, 16, 16)
-        } else {
+        // 狭すぎる場合はつまみを描画しないのだ～🌱
+        if (thumbWidth >= 4 && thumbHeight >= 4) {
             guiGraphics.drawNinePatchImage(
                 IntRectangle(thumbX, thumbY, thumbWidth, thumbHeight),
                 texture,
