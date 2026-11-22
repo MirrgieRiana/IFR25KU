@@ -3,6 +3,7 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.XFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
+import net.minecraft.Util
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import org.junit.jupiter.api.Assertions
@@ -77,7 +78,7 @@ class VanillaFlatScrollbarViewWidgetTest {
                     val bounds = if (horizontal) IntRectangle(10, 20, 100, 7) else IntRectangle(10, 20, 7, 100)
                     val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
                     val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
-                    widget.render(graphics, 50, 50, 0.0F)
+                    widget.render(graphics, if (horizontal) 20 else 12, if (horizontal) 22 else 30, 0.0F)
                     if (horizontal) {
                         Mockito.verify(graphics).fill(10, 20, 43, 27, view.scrollbarColor)
                     } else {
@@ -101,6 +102,46 @@ class VanillaFlatScrollbarViewWidgetTest {
                     } else {
                         Mockito.verify(graphics).fill(10, 25, 17, 58, view.scrollbarColor)
                     }
+                    widget.dispose()
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `ホバーとドラッグが終わってから待機してフェードアウトするのだ`() {
+        GuiTestEnvironment().use {
+            Mockito.mockStatic(Util::class.java, Mockito.CALLS_REAL_METHODS).use { clock ->
+                var now = 1000L
+                clock.`when`<Long> { Util.getMillis() }.thenAnswer { now }
+                val view = YFlatScrollbarView()
+                view.scrollbarColor = 0xA0FFFFFF.toInt()
+                view.contentLength = 300
+                view.viewportLength = 100
+                val widget = VanillaYFlatScrollbarViewWidget(view, IntRectangle(10, 20, 7, 100))
+                val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+
+                fun assertColor(at: Long, mouseX: Int, color: Int) {
+                    now = at
+                    Mockito.clearInvocations(graphics)
+                    widget.render(graphics, mouseX, 25, 0.0F)
+                    Mockito.verify(graphics).fill(10, 20, 17, 53, color)
+                }
+
+                try {
+                    assertColor(1000L, 50, 0x00FFFFFF)
+                    assertColor(1000L, 12, view.scrollbarColor)
+                    assertColor(1750L, 50, view.scrollbarColor)
+                    assertColor(2125L, 50, 0x50FFFFFF)
+                    assertColor(2500L, 50, 0x00FFFFFF)
+
+                    Assertions.assertTrue(widget.mouseClicked(12.0, 30.0, 0))
+                    assertColor(4000L, 50, view.scrollbarColor)
+                    Assertions.assertTrue(widget.mouseReleased(50.0, 25.0, 0))
+                    assertColor(4750L, 50, view.scrollbarColor)
+                    assertColor(5125L, 50, 0x50FFFFFF)
+                    assertColor(5500L, 50, 0x00FFFFFF)
+                } finally {
                     widget.dispose()
                 }
             }
