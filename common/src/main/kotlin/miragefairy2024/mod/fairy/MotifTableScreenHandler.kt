@@ -15,7 +15,7 @@ import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
-import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YInventoryScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.configure
@@ -87,28 +87,20 @@ fun initMotifTableScreenHandler() {
 class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifChance>) : AbstractContainerMenu(motifTableScreenHandlerType(), syncId), ViewProviderMenu {
 
     override fun createView(title: Component, playerInventoryTitle: Component): View {
-        val panelTexture = "textures/gui/" * MirageFairy2024.identifier("panel") * ".png"
-        val panelMargin = 7
-
-        fun textView(text: Component, width: Int, alignment: Alignment) = View {
-            view += MultiLineTextView().configure {
-                view.text.value = text
-                view.alignmentX = alignment
-                view.color = ColorPair.DARK_GRAY
-                view.shadow = false
-            }.minContentSizeX(width).maxContentSizeX(width)
-        }
-
         return View {
-            view += StackView().configure { // 外枠なのだ～🌱
+            // 外枠
+            view += StackView().configure {
                 view.sizingY = Sizing.FILL
 
-                view += NinePatchImageView(panelTexture, 16, 16, 5, 5, 5, 5, 5, 5, false, false)
+                view += NinePatchImageView("textures/gui/" * MirageFairy2024.identifier("panel") * ".png", 16, 16, 5, 5, 5, 5, 5, 5, false, false)
+                // メインコンテナ
                 view += XListView().configure {
                     view.sizingY = Sizing.FILL
+                    // スクロールパネル
                     val scrollView = YScrollContainerView().configure {
                         view.sizingX = Sizing.WRAP
 
+                        // スロットパネル
                         view += YListView().configure {
                             chanceTable.forEach { chance ->
                                 view += XListView().configure {
@@ -117,6 +109,16 @@ class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifC
                                         view.showDecorations = false
                                     }
                                     view += XSpaceView(3)
+
+                                    fun textView(text: Component, width: Int, alignment: Alignment) = View {
+                                        view += MultiLineTextView().configure {
+                                            view.text.value = text
+                                            view.alignmentX = alignment
+                                            view.color = ColorPair.DARK_GRAY
+                                            view.shadow = false
+                                        }.minContentSizeX(width).maxContentSizeX(width)
+                                    }
+
                                     view += textView(chance.showingItemStack.hoverName, 150, Alignment.START).configure {
                                         position.alignmentY = Alignment.CENTER
                                     }
@@ -129,14 +131,15 @@ class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifC
                                 }.tooltip { _, _ -> clientProxy!!.getItemTooltip(chance.showingItemStack) }
                             }
                         }.margin(0, 3, 0, 0)
+
                     }
                     view += scrollView
-                    val scrollbarView = YFlatScrollbarView().configure {
-                        view.scrollbarThickness = 18
+                    val scrollbarView = YInventoryScrollbarView().configure {
+                        view.keyboardFocusable = false
                     }
                     view += scrollbarView
                     connectScrollbar(scrollView.view, scrollbarView.view)
-                }.margin(panelMargin)
+                }.margin(7)
             }.margin(0, 4)
         }
     }

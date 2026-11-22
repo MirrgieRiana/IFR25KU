@@ -10,6 +10,7 @@ import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.mod.recipeviewer.views.AlignView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.ItemView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
@@ -108,20 +109,18 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, tit
                             val itemStack = card.itemStacksGetter().firstOrNull()
                             if (itemStack != null) {
                                 view += ImageView(SlotType.NORMAL.viewTexture)
-                                view += ItemView(itemStack).configure().margin(1)
+                                view += ItemView(itemStack).configure().margin(SlotType.NORMAL.margin.x, SlotType.NORMAL.margin.y)
                             }
                         }.margin(0, 5)
 
                         view += YSpaceView(5)
 
                         // 本文なのだ～🌱
-                        view += XListView().configure {
+                        view += StackView().configure {
                             position.weight = 1.0
                             view.sizingX = Sizing.FILL
                             view.sizingY = Sizing.FILL
                             val scrollView = YScrollContainerView().configure {
-                                position.weight = 1.0
-
                                 view += MultiLineTextView().configure {
                                     view.text.value = text { card.textTranslation() }
                                     view.color = textColor
@@ -129,9 +128,15 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, tit
                                 }
                             }
                             view += scrollView
-                            val scrollbarView = YFlatScrollbarView()
-                            view += scrollbarView
-                            connectScrollbar(scrollView.view, scrollbarView)
+                            val scrollbarView = YFlatScrollbarView().configure {
+                                view.scrollbarColor = 0xA0000000.toInt()
+                                view.keyboardFocusable = false
+                            }
+                            view += AlignView().configure {
+                                view.alignmentX = Alignment.END
+                                view += scrollbarView
+                            }
+                            connectScrollbar(scrollView.view, scrollbarView.view)
                         }
                     }.margin(5, 5, 10, 5)
                 }.minContentSizeX(200).maxContentSizeX(200)
@@ -152,9 +157,7 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, tit
                         false
                     }
                 }
-
                 view += XSpaceView(20)
-
                 view += TextButtonView(IntPoint(80, 20)).configure {
                     view.message = CommonComponents.GUI_BACK
                     view.onClick.register {

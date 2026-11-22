@@ -24,6 +24,10 @@ class MultiLineTextView : AbstractView(), PlaceableView {
     var shadow = true
     var alignmentX = Alignment.START
     var lineSpacing = 2
+        set(value) {
+            if (value < 0) throw IllegalArgumentException("Line spacing must be non-negative")
+            field = value
+        }
 
     override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
         super.initSizeCalculation(renderingProxy, regionSizeXProvider, regionSizeYProvider)

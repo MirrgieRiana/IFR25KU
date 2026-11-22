@@ -4,6 +4,7 @@ import miragefairy2024.mod.recipeviewer.SCROLL_AREA_TRANSLATION
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.ScrollbarView
 import miragefairy2024.util.empty
+import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.atLeast
@@ -27,7 +28,7 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
 
     private var disposed = false
 
-    fun dispose() {
+    open fun dispose() {
         disposed = true
         draggingScrollbar = false
         focusedSelf = false
@@ -66,6 +67,9 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
             maxThumbPosition.toDouble() * scrollRatio
         }
     }
+
+
+    // スクロール操作なのだ～🌱
 
     private fun updateScroll(offset: Double): Boolean {
         val old = view.scrollOffset.value
@@ -139,7 +143,11 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
         if (!isMouseOver(mouseX, mouseY)) return false
-        return updateScroll(view.scrollOffset.value - getScrollAmount(scrollX, scrollY) * view.scrollStep)
+        val amount = getScrollAmount(scrollX, scrollY)
+        if (amount == 0.0) return false
+        val handled = updateScroll(view.scrollOffset.value - amount * view.scrollStep)
+        view.onScrollInput.fire()
+        return handled
     }
 
 
@@ -155,7 +163,7 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
 
     override fun nextFocusPath(event: FocusNavigationEvent): ComponentPath? {
 
-        if (!isActive) return null
+        if (!isActive || !view.keyboardFocusable) return null
 
         val range = evaluateScrollRange()
         if (range.start < range.endInclusive && !isFocused) {
@@ -190,7 +198,9 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
             GLFW.GLFW_KEY_END -> evaluateScrollRange().endInclusive
             else -> return false
         }
-        return updateScroll(offset)
+        val handled = updateScroll(offset)
+        view.onScrollInput.fire()
+        return handled
     }
 
 

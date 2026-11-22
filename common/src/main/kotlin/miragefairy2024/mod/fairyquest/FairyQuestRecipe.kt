@@ -551,6 +551,7 @@ object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Fairy
                 view += TextView(recipeEntry.recipe.title).configure {
                     position.alignmentY = Alignment.CENTER
                     position.weight = 1.0
+                    position.ignoreLayoutX = true
                     view.sizingX = Sizing.FILL
                     view.color = ColorPair.DARK_GRAY
                     view.shadow = false

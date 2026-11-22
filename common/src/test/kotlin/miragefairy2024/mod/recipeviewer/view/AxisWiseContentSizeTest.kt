@@ -19,6 +19,8 @@ import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.WrapperView
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.YListView
+import miragefairy2024.mod.recipeviewer.views.fixedContentSizeX
+import miragefairy2024.mod.recipeviewer.views.fixedContentSizeY
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -172,6 +174,19 @@ class AxisWiseContentSizeTest {
     }
 
     @Test
+    fun `内容寸法を固定すると指定された軸だけが固定値になるのだ`() {
+        listOf(0, 6, 30).forEach { size ->
+            val widthFixedView = Child(Unit, SpaceView(IntPoint(10, 20))).fixedContentSizeX(size).view
+            widthFixedView.initSizeCalculation(TEST_RENDERING_PROXY, { throw UnsupportedOperationException() }, { throw UnsupportedOperationException() })
+            assertEquals(IntPoint(size, 20), widthFixedView.evaluateContentSize())
+
+            val heightFixedView = Child(Unit, SpaceView(IntPoint(10, 20))).fixedContentSizeY(size).view
+            heightFixedView.initSizeCalculation(TEST_RENDERING_PROXY, { throw UnsupportedOperationException() }, { throw UnsupportedOperationException() })
+            assertEquals(IntPoint(10, size), heightFixedView.evaluateContentSize())
+        }
+    }
+
+    @Test
     fun `リストのレイアウト除外は各軸で独立して最小サイズの集計に適用するのだ`() {
         listOf(true, false).forEach { horizontal ->
             listOf(true, false).forEach { xFirst ->
@@ -265,6 +280,16 @@ class AxisWiseContentSizeTest {
             assertEquals(IntPoint(37, 9), view.evaluateContentSize())
             assertEquals(if (xFirst) listOf("width", "height") else listOf("height", "width"), events)
         }
+    }
+
+    @Test
+    fun `負の幅を持つテキストの内容幅は 0 なのだ`() {
+        val renderingProxy = object : RenderingProxy by TEST_RENDERING_PROXY {
+            override fun calculateTextWidth(text: FormattedCharSequence) = -3
+        }
+        val view = TextView()
+        view.initSizeCalculation(renderingProxy, { 100 }, { 100 })
+        assertEquals(0, view.evaluateContentSizeX())
     }
 
 }
