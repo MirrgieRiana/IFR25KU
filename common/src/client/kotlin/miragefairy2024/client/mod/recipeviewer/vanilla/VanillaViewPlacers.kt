@@ -37,7 +37,7 @@ import net.minecraft.client.gui.components.Tooltip
 import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.network.chat.Component
 
-internal infix fun VanillaViewPlacerContext.place(widget: AbstractWidget): ViewController {
+private infix fun VanillaViewPlacerContext.place(widget: AbstractWidget): ViewController {
     val onDetached = EventRegistry<() -> Unit>()
     addRenderableWidget(widget).removeOn(onDetached)
     return object : ViewController {
