@@ -10,6 +10,7 @@ import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Remover
+import miragefairy2024.util.fire
 import miragefairy2024.util.plus
 import miragefairy2024.util.register
 import mirrg.kotlin.helium.atLeast
@@ -136,7 +137,7 @@ private fun connectScrollbarImpl(
         scrollbarView.viewportLength = bounds.viewportLength
     }
     remover += scrollView.onScrollInput.register {
-        scrollbarView.notifyScrollInput()
+        scrollbarView.onScrollInput.fire()
     }
 
     fun connectOffset(offset: ObservableValue<Double>) {

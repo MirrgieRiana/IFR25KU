@@ -146,7 +146,7 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
         val amount = getScrollAmount(scrollX, scrollY)
         if (amount == 0.0) return false
         val handled = updateScroll(view.scrollOffset.value - amount * view.scrollStep)
-        view.notifyScrollInput()
+        view.onScrollInput.fire()
         return handled
     }
 
