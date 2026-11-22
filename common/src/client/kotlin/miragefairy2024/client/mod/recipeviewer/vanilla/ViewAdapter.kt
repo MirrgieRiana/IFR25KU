@@ -195,7 +195,10 @@ class ViewAdapter(val host: ViewAdapterHost) {
     fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
         if (!isInitialized) return false
         val screen = host.getScreen() ?: return false
-        return screen.children().toList().any { child ->
+        val children = screen.children().toList()
+        val scrollbar = children.firstOrNull { it is VanillaScrollbarViewWidget<*> && it.isMouseOver(mouseX, mouseY) }
+        if (scrollbar != null) return scrollbar.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
+        return children.any { child ->
             if (screen.children().none { it === child }) return@any false
             child.isMouseOver(mouseX, mouseY) && child.mouseScrolled(mouseX, mouseY, scrollX, scrollY)
         }

@@ -11,6 +11,7 @@ import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.FixedView
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
+import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
@@ -161,6 +162,44 @@ class VanillaScrollContainerViewWidgetTest {
                 Assertions.assertTrue(disposed)
                 Assertions.assertFalse(widget.mouseClicked(109.0, 119.0, 0))
             }
+        }
+    }
+
+    @Test
+    fun `子のバーが端なら重なった子を飛ばして親をスクロールするのだ`() {
+        val view = YScrollContainerView()
+        view += ScrollContainerTestView(IntPoint(100, 300))
+        view.initSizeCalculation(Mockito.mock(RenderingProxy::class.java), { 100 }, { 100 })
+        val context = Mockito.mock(VanillaViewPlacerContext::class.java)
+        val background = Mockito.mock(AbstractWidget::class.java)
+        Mockito.`when`(background.isMouseOver(97.0, 50.0)).thenReturn(true)
+        Mockito.`when`(background.mouseScrolled(97.0, 50.0, 0.0, -1.0)).thenReturn(true)
+        val scrollbarView = YFlatScrollbarView().also {
+            it.contentLength = 300
+            it.viewportLength = 100
+            it.scrollOffset.value = 200.0
+        }
+        val scrollbar = VanillaYFlatScrollbarViewWidget(scrollbarView, IntRectangle(95, 0, 5, 100))
+        val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
+        registry.register { childContext, _: ScrollContainerTestView, _ ->
+            childContext.addRenderableWidget(background)
+            childContext.addRenderableWidget(scrollbar)
+            ViewController.NONE
+        }
+        val widget = VanillaYScrollContainerViewWidget(view, IntRectangle(0, 0, 100, 100), context, registry)
+        var scrollInputs = 0
+        val scrollInputRemover = scrollbarView.onScrollInput.register {
+            scrollInputs++
+        }
+        try {
+            Assertions.assertTrue(widget.mouseScrolled(97.0, 50.0, 0.0, -1.0))
+            Assertions.assertEquals(1, scrollInputs)
+            Assertions.assertEquals(15.0, view.scrollOffsetY.value)
+            Mockito.verify(background, Mockito.never()).mouseScrolled(97.0, 50.0, 0.0, -1.0)
+        } finally {
+            scrollInputRemover.remove()
+            scrollbar.dispose()
+            widget.dispose()
         }
     }
 
