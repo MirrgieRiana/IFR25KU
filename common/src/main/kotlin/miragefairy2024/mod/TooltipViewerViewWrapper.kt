@@ -151,9 +151,11 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, tooltipProvider: (It
                             view += contentView
                         }
                         view += scrollView
-                        val scrollbarView = YFlatScrollbarView()
+                        val scrollbarView = YFlatScrollbarView().configure {
+                            view.keyboardFocusable = false
+                        }
                         view += scrollbarView
-                        connectScrollbar(scrollView.view, scrollbarView)
+                        connectScrollbar(scrollView.view, scrollbarView.view)
 
                         textField.view.text.register { _, newValue ->
                             contentView.content.value = createContentView(newValue)

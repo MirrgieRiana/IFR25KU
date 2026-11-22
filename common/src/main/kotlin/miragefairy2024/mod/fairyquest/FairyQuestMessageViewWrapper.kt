@@ -119,6 +119,7 @@ class FairyQuestMessageViewWrapper(fairyQuestTitle: Component, fairyQuestMessage
                 val scrollbarView = YFlatScrollbarView().configure {
                     view.scrollbarThickness = 10
                     view.scrollbarColor = 0xA0FFFFFF.toInt()
+                    view.keyboardFocusable = false
                 }
                 view += scrollbarView
                 connectScrollbar(scrollView.view, scrollbarView.view)

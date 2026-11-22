@@ -176,6 +176,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                         view += scrollView
                         val scrollbarView = YFlatScrollbarView().configure {
                             view.scrollbarColor = 0xA0FFFFFF.toInt()
+                            view.keyboardFocusable = false
                         }
                         view += AlignView().configure {
                             view.alignmentX = Alignment.END
@@ -267,6 +268,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                             view += scrollView
                             val scrollbarView = YFlatScrollbarView().configure {
                                 view.scrollbarColor = 0xA0FFFFFF.toInt()
+                                view.keyboardFocusable = false
                             }
                             view += scrollbarView
                             connectScrollbar(scrollView.view, scrollbarView.view)
