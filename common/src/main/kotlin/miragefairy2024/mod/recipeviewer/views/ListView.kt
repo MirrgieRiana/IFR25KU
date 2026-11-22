@@ -8,6 +8,7 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import mirrg.kotlin.helium.CachingEvaluator
+import mirrg.kotlin.helium.atLeast
 import kotlin.math.roundToInt
 
 abstract class ListView : ContainerView<ListView.Position>() {
@@ -64,7 +65,7 @@ class XListView : ListView() {
                 val oldConsumed = consumed
                 val newConsumed = oldConsumed + remaining * it.position.weight / totalWeight
                 consumed = newConsumed
-                it.evaluateReservedSizeX() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
+                it.evaluateReservedSizeX() + (newConsumed.roundToInt() - oldConsumed.roundToInt()) atLeast 0
             }
         }
     }
@@ -125,7 +126,7 @@ class YListView : ListView() {
                 val oldConsumed = consumed
                 val newConsumed = oldConsumed + remaining * it.position.weight / totalWeight
                 consumed = newConsumed
-                it.evaluateReservedSizeY() + (newConsumed.roundToInt() - oldConsumed.roundToInt())
+                it.evaluateReservedSizeY() + (newConsumed.roundToInt() - oldConsumed.roundToInt()) atLeast 0
             }
         }
     }
