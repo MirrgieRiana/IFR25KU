@@ -19,10 +19,8 @@ abstract class VanillaFlatScrollbarViewWidget(view: FlatScrollbarView, bounds: I
 
     private var fadeEndTime: Long? = null
 
-    protected fun updateFadeEndTime(mouseX: Int, mouseY: Int, now: Long) {
-        if (isMouseOver(mouseX.toDouble(), mouseY.toDouble()) || hasMouseCapture(0)) {
-            fadeEndTime = now + 1500L
-        }
+    protected fun resetFadeTimer(now: Long) {
+        fadeEndTime = now + 1500L
     }
 
     protected fun getScrollbarColor(now: Long): Int {
@@ -73,7 +71,9 @@ class VanillaXFlatScrollbarViewWidget(
             val start = evaluateThumbPosition().roundToInt()
             val length = evaluateThumbLength()
             val now = Util.getMillis()
-            updateFadeEndTime(mouseX, mouseY, now)
+            if (isMouseOver(mouseX.toDouble(), mouseY.toDouble()) || hasMouseCapture(0)) {
+                resetFadeTimer(now)
+            }
             val color = getScrollbarColor(now)
             guiGraphics.fill(
                 x + start,
@@ -116,7 +116,9 @@ class VanillaYFlatScrollbarViewWidget(
             val start = evaluateThumbPosition().roundToInt()
             val length = evaluateThumbLength()
             val now = Util.getMillis()
-            updateFadeEndTime(mouseX, mouseY, now)
+            if (isMouseOver(mouseX.toDouble(), mouseY.toDouble()) || hasMouseCapture(0)) {
+                resetFadeTimer(now)
+            }
             val color = getScrollbarColor(now)
             guiGraphics.fill(
                 x,
