@@ -17,14 +17,15 @@ import miragefairy2024.mod.recipeviewer.views.EmptyView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
+import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
-import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
@@ -174,8 +175,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                             }
                         }
                         view += scrollView
-                        val scrollbarView = YFlatScrollbarView().configure {
-                            view.scrollbarColor = 0xA0FFFFFF.toInt()
+                        val scrollbarView = YScrollbarView(ScrollbarStyle.Flat(0xA0FFFFFF.toInt())).configure {
                             view.keyboardFocusable = false
                         }
                         view += AlignView().configure {
@@ -266,8 +266,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                                 }
                             }
                             view += scrollView
-                            val scrollbarView = YFlatScrollbarView().configure {
-                                view.scrollbarColor = 0xA0FFFFFF.toInt()
+                            val scrollbarView = YScrollbarView(ScrollbarStyle.Flat(0xA0FFFFFF.toInt())).configure {
                                 view.keyboardFocusable = false
                             }
                             view += scrollbarView

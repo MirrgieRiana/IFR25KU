@@ -8,6 +8,7 @@ import miragefairy2024.client.mod.recipeviewer.common.TextViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TooltipViewRenderer
 import miragefairy2024.client.util.LayeredImageButton
 import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.offset
@@ -16,16 +17,15 @@ import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.LayeredImageButtonView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
+import miragefairy2024.mod.recipeviewer.views.ScrollbarView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
-import miragefairy2024.mod.recipeviewer.views.XFlatScrollbarView
-import miragefairy2024.mod.recipeviewer.views.XInventoryScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
-import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
-import miragefairy2024.mod.recipeviewer.views.YInventoryScrollbarView
+import miragefairy2024.mod.recipeviewer.views.XScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.fire
 import miragefairy2024.util.observe
@@ -94,7 +94,8 @@ fun initVanillaViewPlacers() {
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YScrollContainerView, bounds ->
         placeScrollContainerView(context, VanillaYScrollContainerViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
     }
-    fun placeScrollbarView(context: VanillaViewPlacerContext, widget: VanillaScrollbarViewWidget<*>): ViewController {
+    fun placeScrollbarView(context: VanillaViewPlacerContext, view: ScrollbarView, bounds: IntRectangle): ViewController {
+        val widget = VanillaScrollbarViewWidget(view, bounds)
         val controller = context place widget
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {
@@ -111,17 +112,11 @@ fun initVanillaViewPlacers() {
             }
         }
     }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XFlatScrollbarView, bounds ->
-        placeScrollbarView(context, VanillaXFlatScrollbarViewWidget(view, bounds))
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XScrollbarView, bounds ->
+        placeScrollbarView(context, view, bounds)
     }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YFlatScrollbarView, bounds ->
-        placeScrollbarView(context, VanillaYFlatScrollbarViewWidget(view, bounds))
-    }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XInventoryScrollbarView, bounds ->
-        placeScrollbarView(context, VanillaXInventoryScrollbarViewWidget(view, bounds))
-    }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YInventoryScrollbarView, bounds ->
-        placeScrollbarView(context, VanillaYInventoryScrollbarViewWidget(view, bounds))
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YScrollbarView, bounds ->
+        placeScrollbarView(context, view, bounds)
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: MenuSlotView, bounds ->
         if (!context.canPlaceMenuSlots) throw UnsupportedOperationException("MenuSlotView cannot be placed in this context")

@@ -4,9 +4,10 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.x2
 import miragefairy2024.mod.recipeviewer.view.y2
-import miragefairy2024.mod.recipeviewer.views.InventoryScrollbarView
-import miragefairy2024.mod.recipeviewer.views.XInventoryScrollbarView
-import miragefairy2024.mod.recipeviewer.views.YInventoryScrollbarView
+import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
+import miragefairy2024.mod.recipeviewer.views.ScrollbarView
+import miragefairy2024.mod.recipeviewer.views.XScrollbarView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.resources.ResourceLocation
@@ -66,14 +67,9 @@ private class ScrollbarGraphics : GuiGraphics(Minecraft.getInstance(), null) {
 
 class VanillaInventoryScrollbarViewWidgetTest {
 
-    private fun createScrollbar(horizontal: Boolean, bounds: IntRectangle): Pair<InventoryScrollbarView, VanillaInventoryScrollbarViewWidget> {
-        return if (horizontal) {
-            val view = XInventoryScrollbarView()
-            Pair(view, VanillaXInventoryScrollbarViewWidget(view, bounds))
-        } else {
-            val view = YInventoryScrollbarView()
-            Pair(view, VanillaYInventoryScrollbarViewWidget(view, bounds))
-        }
+    private fun createScrollbar(horizontal: Boolean, bounds: IntRectangle): Pair<ScrollbarView, VanillaScrollbarViewWidget> {
+        val view = if (horizontal) XScrollbarView(ScrollbarStyle.Inventory) else YScrollbarView(ScrollbarStyle.Inventory)
+        return Pair(view, VanillaScrollbarViewWidget(view, bounds))
     }
 
     @Test

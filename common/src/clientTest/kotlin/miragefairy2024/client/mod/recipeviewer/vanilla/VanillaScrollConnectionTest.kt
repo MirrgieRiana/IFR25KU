@@ -8,8 +8,9 @@ import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.views.FixedView
-import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
+import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import org.junit.jupiter.api.Assertions
@@ -38,8 +39,8 @@ class VanillaScrollConnectionTest {
             val context = Mockito.mock(VanillaViewPlacerContext::class.java)
             val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
             val scroll = VanillaYScrollContainerViewWidget(scrollView, IntRectangle(10, 20, 100, 100), context, registry)
-            val barView = YFlatScrollbarView()
-            val bar = VanillaYFlatScrollbarViewWidget(barView, IntRectangle(250, 20, 5, 100))
+            val barView = YScrollbarView(ScrollbarStyle.Flat())
+            val bar = VanillaScrollbarViewWidget(barView, IntRectangle(250, 20, 5, 100))
             try {
                 Assertions.assertTrue(scroll.mouseScrolled(50.0, 50.0, 0.0, -1.0))
                 val connection = connectScrollbar(scrollView, barView)

@@ -14,8 +14,8 @@ import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.views.ClickableView
 import miragefairy2024.mod.recipeviewer.views.ImageView
-import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.Slot
@@ -105,7 +105,7 @@ class TraitListViewTest {
         try {
             Assertions.assertEquals(IntPoint(176, 210), rootView.evaluateActualSize())
             val scrollViews = placements.keys.filterIsInstance<YScrollContainerView>()
-            val scrollbarViews = placements.keys.filterIsInstance<YFlatScrollbarView>()
+            val scrollbarViews = placements.keys.filterIsInstance<YScrollbarView>()
             val (bodyScrollView, listScrollView) = scrollViews
             val (bodyScrollbarView, listScrollbarView) = scrollbarViews
             val bodyBounds = placements.getValue(bodyScrollView)

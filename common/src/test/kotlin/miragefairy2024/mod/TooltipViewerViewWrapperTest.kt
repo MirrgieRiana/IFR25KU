@@ -12,8 +12,8 @@ import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
-import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.util.empty
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
@@ -104,7 +104,7 @@ class TooltipViewerViewWrapperTest {
         try {
             val field = placements.mapNotNull { it.first as? TextFieldView }.single()
             val scrollView = placements.mapNotNull { it.first as? YScrollContainerView }.single()
-            val scrollbarView = placements.mapNotNull { it.first as? YFlatScrollbarView }.single()
+            val scrollbarView = placements.mapNotNull { it.first as? YScrollbarView }.single()
             listOf(
                 "0,1,3" to listOf("title", "first", "third"),
                 "1,3" to listOf("first", "third"),
@@ -149,7 +149,7 @@ class TooltipViewerViewWrapperTest {
         try {
             val field = placements.mapNotNull { it.first as? TextFieldView }.single()
             val scroll = placements.mapNotNull { it.first as? YScrollContainerView }.single()
-            val scrollbar = placements.mapNotNull { it.first as? YFlatScrollbarView }.single()
+            val scrollbar = placements.mapNotNull { it.first as? YScrollbarView }.single()
             Assertions.assertTrue(scrollbar.contentLength > scrollbar.viewportLength)
             scroll.scrollOffsetY.value = 300.0
             field.text.value = "1"
@@ -205,9 +205,9 @@ class TooltipViewerViewWrapperTest {
                 val scroll = placements.single { it.first is YScrollContainerView }
                 val scrollView = scroll.first as YScrollContainerView
                 Assertions.assertEquals(IntRectangle((size.x - 240) / 2, 33, 235, size.y - 44), scroll.second)
-                val scrollbar = placements.single { it.first is YFlatScrollbarView }
+                val scrollbar = placements.single { it.first is YScrollbarView }
                 Assertions.assertEquals(IntRectangle((size.x - 240) / 2 + 235, 33, 5, size.y - 44), scrollbar.second)
-                Assertions.assertEquals(5, (scrollbar.first as YFlatScrollbarView).scrollbarThickness)
+                Assertions.assertEquals(5, (scrollbar.first as YScrollbarView).scrollbarThickness)
                 Assertions.assertTrue(scrollView.childView.evaluateActualSizeY() > scroll.second.sizeY)
                 val line = placements.single { it.first is MultiLineTextView }
                 Assertions.assertEquals(205, line.second.sizeX)

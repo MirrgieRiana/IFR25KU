@@ -11,8 +11,9 @@ import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
-import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
+import miragefairy2024.mod.recipeviewer.views.ScrollbarStyle
+import miragefairy2024.mod.recipeviewer.views.YScrollbarView
 import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
 import miragefairy2024.util.register
@@ -65,11 +66,11 @@ class FairyQuestMessageViewWrapperTest {
         val scrollView = scroll.first as YScrollContainerView
         Assertions.assertTrue(scrollView.childView.evaluateActualSizeY() > scroll.second.sizeY)
         Assertions.assertEquals(250, scrollView.childView.evaluateActualSizeX())
-        val scrollbar = placements.single { it.first is YFlatScrollbarView }
+        val scrollbar = placements.single { it.first is YScrollbarView }
         Assertions.assertEquals(IntRectangle(325, 10, 10, 196), scrollbar.second)
-        val scrollbarView = scrollbar.first as YFlatScrollbarView
+        val scrollbarView = scrollbar.first as YScrollbarView
         Assertions.assertEquals(10, scrollbarView.scrollbarThickness)
-        Assertions.assertEquals(0xA0FFFFFF.toInt(), scrollbarView.scrollbarColor)
+        Assertions.assertEquals(0xA0FFFFFF.toInt(), (scrollbarView.style as ScrollbarStyle.Flat).color)
 
         val texts = placements.mapNotNull { it.first as? MultiLineTextView }
         Assertions.assertEquals(listOf("title", "message".repeat(200), "client"), texts.map { it.text.value.string })
