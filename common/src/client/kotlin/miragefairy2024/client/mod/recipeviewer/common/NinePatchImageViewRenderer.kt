@@ -14,16 +14,9 @@ object NinePatchImageViewRenderer : ViewRenderer<NinePatchImageView, Unit> {
         graphics.renderNinePatchImage(
             bounds,
             view.textureId,
-            view.textureWidth,
-            view.xStartSize,
-            view.xMiddleSize,
-            view.xEndSize,
-            view.textureHeight,
-            view.yStartSize,
-            view.yMiddleSize,
-            view.yEndSize,
-            view.repeatX,
-            view.repeatY,
+            view.textureWidth, view.xStartSize, view.xMiddleSize, view.xEndSize,
+            view.textureHeight, view.yStartSize, view.yMiddleSize, view.yEndSize,
+            view.repeatX, view.repeatY,
         )
     }
 }
