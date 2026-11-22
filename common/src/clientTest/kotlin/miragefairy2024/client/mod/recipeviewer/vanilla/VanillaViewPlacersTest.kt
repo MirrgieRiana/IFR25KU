@@ -35,6 +35,7 @@ import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
 import miragefairy2024.util.register
 import miragefairy2024.util.text
+import net.minecraft.Util
 import net.minecraft.client.DeltaTracker
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
@@ -51,6 +52,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.lwjgl.glfw.GLFW
 import org.mockito.Mockito
 import kotlin.math.roundToInt
 
@@ -523,6 +525,80 @@ class VanillaViewPlacersTest {
                     connection.remove()
                 }
                 Assertions.assertTrue(context.onBeforeRender.toList().isEmpty())
+            }
+        }
+    }
+
+    @Test
+    fun `スクロール操作とホバーで表示し操作方法ごとの待機時間でフェードアウトするのだ`() {
+        GuiTestEnvironment().use {
+            Mockito.mockStatic(Util::class.java, Mockito.CALLS_REAL_METHODS).use { clock ->
+                var now = 1000L
+                clock.`when`<Long> { Util.getMillis() }.thenAnswer { now }
+                val widgets = mutableListOf<AbstractWidget>()
+                val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
+                    override val origin = IntPoint.ZERO
+                    override val canPlaceMenuSlots = false
+                    override val onBeforeRender = EventRegistry<() -> Unit>()
+                    override fun addRenderableWidget(widget: AbstractWidget): Remover {
+                        widgets += widget
+                        return Remover { widgets.remove(widget) }
+                    }
+                    override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("Unexpected render-only widget")
+                    override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
+                }
+                val scrollView = YScrollContainerView()
+                scrollView += SpaceView(IntPoint(100, 300))
+                scrollView.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
+                val scrollbarView = YFlatScrollbarView()
+                scrollbarView.scrollbarColor = 0xA0FFFFFF.toInt()
+                val connection = connectScrollbar(scrollView, scrollbarView)
+                val scrollController = scrollView.attachTo(context.origin) { view, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds) }
+                val scrollbarController = VANILLA_VIEW_PLACER_REGISTRY.place(context, scrollbarView, IntRectangle(200, 20, 5, 100))
+                val scrollWidget = widgets.filterIsInstance<VanillaYScrollContainerViewWidget>().single()
+                val scrollbarWidget = widgets.filterIsInstance<VanillaYFlatScrollbarViewWidget>().single()
+                val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+
+                fun assertColor(at: Long, mouseX: Int, color: Int) {
+                    now = at
+                    Mockito.clearInvocations(graphics)
+                    scrollbarWidget.render(graphics, mouseX, 25, 0.0F)
+                    Mockito.verify(graphics).fill(200, 20, 205, 53, color)
+                }
+
+                try {
+                    assertColor(1000L, 50, 0x00FFFFFF)
+                    Assertions.assertFalse(scrollWidget.mouseScrolled(50.0, 25.0, 0.0, 1.0))
+                    assertColor(1500L, 50, scrollbarView.scrollbarColor)
+                    assertColor(1875L, 50, 0x50FFFFFF)
+                    assertColor(2250L, 50, 0x00FFFFFF)
+
+                    assertColor(2250L, 202, scrollbarView.scrollbarColor)
+                    assertColor(3000L, 50, scrollbarView.scrollbarColor)
+                    assertColor(3375L, 50, 0x50FFFFFF)
+                    assertColor(3750L, 50, 0x00FFFFFF)
+
+                    Assertions.assertFalse(scrollbarWidget.mouseScrolled(202.0, 25.0, 0.0, 1.0))
+                    assertColor(3750L, 50, scrollbarView.scrollbarColor)
+                    Assertions.assertTrue(scrollbarWidget.mouseClicked(202.0, 25.0, 0))
+                    assertColor(5500L, 50, scrollbarView.scrollbarColor)
+                    Assertions.assertTrue(scrollbarWidget.mouseReleased(50.0, 25.0, 0))
+                    assertColor(7000L, 50, 0x00FFFFFF)
+
+                    listOf(scrollWidget, scrollbarWidget).forEach { widget ->
+                        widget.isFocused = true
+                        Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
+                        Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
+                        assertColor(7000L, 50, 0x00FFFFFF)
+                        widget.isFocused = false
+                    }
+                } finally {
+                    scrollbarController.dispose()
+                    scrollbarController.detach()
+                    scrollController.dispose()
+                    scrollController.detach()
+                    connection.remove()
+                }
             }
         }
     }
