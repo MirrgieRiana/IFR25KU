@@ -20,6 +20,6 @@ infix fun IntPoint.min(other: IntPoint) = IntPoint(x min other.x, y min other.y)
 infix fun IntPoint.atLeast(other: IntPoint) = this max other
 infix fun IntPoint.atMost(other: IntPoint) = this min other
 fun IntPoint.sized(size: IntPoint): IntRectangle {
-    val dimensions = size atLeast IntPoint.ZERO
-    return IntRectangle(this.x, this.y, dimensions.x, dimensions.y)
+    val size2 = size atLeast IntPoint.ZERO
+    return IntRectangle(this.x, this.y, size2.x, size2.y)
 }
