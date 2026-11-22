@@ -33,10 +33,6 @@ class AbsoluteView(private val size: IntPoint) : ContainerView<AbsoluteView.Posi
     }
 
     data class Bounds(val bounds: IntRectangle) : Position() {
-        init {
-            require(bounds.sizeX >= 0 && bounds.sizeY >= 0) { "Child bounds dimensions must be non-negative" }
-        }
-
         override fun evaluateSizeX(contentSizeXProvider: () -> Int, regionSizeXProvider: () -> Int) = bounds.sizeX
         override fun evaluateSizeY(contentSizeYProvider: () -> Int, regionSizeYProvider: () -> Int) = bounds.sizeY
         override fun getOffset() = bounds.offset
