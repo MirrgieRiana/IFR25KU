@@ -33,7 +33,7 @@ import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.network.chat.Component
 
-private infix fun VanillaViewPlacerContext.place(widget: AbstractWidget): ViewController {
+internal infix fun VanillaViewPlacerContext.place(widget: AbstractWidget): ViewController {
     val onDetached = EventRegistry<() -> Unit>()
     addRenderableWidget(widget).removeOn(onDetached)
     return object : ViewController {
