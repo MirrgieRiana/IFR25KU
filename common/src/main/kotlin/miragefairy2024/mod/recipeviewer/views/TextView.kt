@@ -9,6 +9,7 @@ import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.util.ObservableValue
+import mirrg.kotlin.helium.atLeast
 import net.minecraft.network.chat.Component
 import net.minecraft.util.FormattedCharSequence
 
@@ -20,7 +21,7 @@ class TextView : AbstractView(), PlaceableView {
     var shadow = true
     var alignmentX = Alignment.START
     var scroll = false
-    override fun evaluateContentSizeXImpl() = renderingProxy.calculateTextWidth(text.value)
+    override fun evaluateContentSizeXImpl() = renderingProxy.calculateTextWidth(text.value) atLeast 0
     override fun evaluateContentSizeYImpl() = renderingProxy.getTextHeight()
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
 }
