@@ -13,7 +13,7 @@ import net.minecraft.client.gui.GuiGraphics
 import org.lwjgl.glfw.GLFW
 import kotlin.math.roundToInt
 
-private val TRACK_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_background.png")
+private val BACKGROUND_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_background.png")
 private val SCROLLER_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_scroller.png")
 private val DISABLED_SCROLLER_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_scroller_disabled.png")
 
@@ -27,7 +27,7 @@ abstract class VanillaInventoryScrollbarViewWidget(view: InventoryScrollbarView,
 
         guiGraphics.drawNinePatchImage(
             IntRectangle(x, y, scrollbarThickness, scrollbarLength),
-            TRACK_TEXTURE,
+            BACKGROUND_TEXTURE,
             16, 1, 13, 1,
             16, 1, 13, 1,
             repeatX = false, repeatY = false,

@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 import org.lwjgl.glfw.GLFW
 import kotlin.math.roundToInt
 
-private val TRACK_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_background.png")
+private val BACKGROUND_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_background.png")
 private val THUMB_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_scroller.png")
 private val DISABLED_THUMB_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_scroller_disabled.png")
 
@@ -39,7 +39,7 @@ private class ScrollbarGraphics : GuiGraphics(Minecraft.getInstance(), null) {
         blits += Pair(atlasLocation, IntRectangle(left, top, right - left, bottom - top))
     }
 
-    fun assertTrackAndThumb(track: IntRectangle, thumb: IntRectangle, thumbTexture: ResourceLocation) {
+    fun assertBackgroundAndThumb(background: IntRectangle, thumb: IntRectangle, thumbTexture: ResourceLocation) {
         fun assertPaintedBounds(bounds: IntRectangle, rectangles: List<IntRectangle>) {
             Assertions.assertEquals(bounds.x, rectangles.minOf { it.x })
             Assertions.assertEquals(bounds.y, rectangles.minOf { it.y })
@@ -48,11 +48,11 @@ private class ScrollbarGraphics : GuiGraphics(Minecraft.getInstance(), null) {
             Assertions.assertEquals(bounds.sizeX * bounds.sizeY, rectangles.sumOf { it.sizeX * it.sizeY })
         }
 
-        Assertions.assertEquals(listOf(TRACK_TEXTURE, thumbTexture), blits.map { it.first }.distinct())
-        val trackBlits = blits.takeWhile { it.first == TRACK_TEXTURE }
-        val thumbBlits = blits.drop(trackBlits.size)
+        Assertions.assertEquals(listOf(BACKGROUND_TEXTURE, thumbTexture), blits.map { it.first }.distinct())
+        val backgroundBlits = blits.takeWhile { it.first == BACKGROUND_TEXTURE }
+        val thumbBlits = blits.drop(backgroundBlits.size)
         Assertions.assertTrue(thumbBlits.all { it.first == thumbTexture })
-        assertPaintedBounds(track, trackBlits.map { it.second })
+        assertPaintedBounds(background, backgroundBlits.map { it.second })
         assertPaintedBounds(thumb, thumbBlits.map { it.second })
         Assertions.assertTrue(pose().clear())
     }
@@ -87,7 +87,7 @@ class VanillaInventoryScrollbarViewWidgetTest {
                     graphics.blits.clear()
                     widget.render(graphics, mouseX.toInt(), mouseY.toInt(), 0F)
                     val thumb = if (horizontal) IntRectangle(11 + position, 21, 31, 16) else IntRectangle(11, 21 + position, 16, 31)
-                    graphics.assertTrackAndThumb(bounds, thumb, THUMB_TEXTURE)
+                    graphics.assertBackgroundAndThumb(bounds, thumb, THUMB_TEXTURE)
                 }
 
                 assertScrollbar(0)
@@ -125,7 +125,7 @@ class VanillaInventoryScrollbarViewWidgetTest {
                 view.viewportLength = 100
                 widget.render(graphics, 12, 22, 0F)
                 val disabledThumb = if (horizontal) IntRectangle(11, 21, 98, 16) else IntRectangle(11, 21, 16, 98)
-                graphics.assertTrackAndThumb(bounds, disabledThumb, DISABLED_THUMB_TEXTURE)
+                graphics.assertBackgroundAndThumb(bounds, disabledThumb, DISABLED_THUMB_TEXTURE)
                 Assertions.assertFalse(widget.mouseClicked(12.0, 22.0, 0))
 
                 graphics.blits.clear()
@@ -139,7 +139,7 @@ class VanillaInventoryScrollbarViewWidgetTest {
                     graphics.blits.clear()
                     widget.setSize(size, size)
                     widget.render(graphics, 12, 22, 0F)
-                    graphics.assertTrackAndThumb(IntRectangle(10, 20, size, size), IntRectangle(11, 21, size - 2, size - 2), THUMB_TEXTURE)
+                    graphics.assertBackgroundAndThumb(IntRectangle(10, 20, size, size), IntRectangle(11, 21, size - 2, size - 2), THUMB_TEXTURE)
                     Assertions.assertFalse(widget.mouseClicked(12.0, 22.0, 0))
                     Assertions.assertFalse(widget.hasMouseCapture(0))
                 }
