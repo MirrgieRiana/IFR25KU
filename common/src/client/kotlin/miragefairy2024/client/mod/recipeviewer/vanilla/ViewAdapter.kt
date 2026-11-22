@@ -52,7 +52,7 @@ interface ViewAdapterHost {
  * ホストを初期化するときは [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter.init] を呼ぶのだ～🌱
  * ホストが表示終了を通知できる場合は、最後の描画を終えてから [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter.removed] を呼ぶのだ～🌱
  */
-class ViewAdapter(val host: ViewAdapterHost, private val getRootViewOffset: () -> IntPoint = host::getUiOffset) {
+class ViewAdapter(val host: ViewAdapterHost, private val getRootViewOffset: () -> IntPoint) {
 
     private var isInitialized = false
     private var viewController: ViewController? = null

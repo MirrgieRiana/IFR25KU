@@ -51,7 +51,7 @@ class ViewToast(rootView: View) : Toast {
 
         override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
 
-    })
+    }) { IntPoint.ZERO }
 
     init {
         viewAdapter.init()

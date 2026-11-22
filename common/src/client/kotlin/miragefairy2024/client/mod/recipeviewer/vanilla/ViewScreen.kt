@@ -52,7 +52,7 @@ abstract class ViewScreen(title: Component) : Screen(title) {
 
         override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
 
-    })
+    }) { IntPoint.ZERO }
 
     override fun init() = viewAdapter.init()
 

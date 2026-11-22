@@ -81,7 +81,7 @@ open class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Co
             }
         }
 
-    }, ::getRootViewOffset)
+    }) { getRootViewOffset() }
 
     override fun init() = viewAdapter.init()
 
