@@ -18,11 +18,12 @@ class LayeredImageButton(
     (it as LayeredImageButton).onClick.fire()
 }, DEFAULT_NARRATION) {
     val onClick = EventRegistry<() -> Unit>()
+    var selected = false
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTick)
-        guiGraphics.blitSprite(backgroundSprites.get(false, isHoveredOrFocused), x, y, width, height)
-        guiGraphics.blitSprite(foregroundSprites.get(false, isHoveredOrFocused), x, y, width, height)
+        guiGraphics.blitSprite(backgroundSprites.get(selected, isHoveredOrFocused), x, y, width, height)
+        guiGraphics.blitSprite(foregroundSprites.get(selected, isHoveredOrFocused), x, y, width, height)
     }
 }
 
