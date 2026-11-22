@@ -21,8 +21,8 @@ class MenuSlotView(val slot: Slot) : AbstractView(), PlaceableView {
     var margin = IntPoint(1, 1)
     override val sizingX = Sizing.WRAP
     override val sizingY = Sizing.WRAP
-    override fun evaluateContentSizeXImpl() = margin.x + 16 + margin.x
-    override fun evaluateContentSizeYImpl() = margin.y + 16 + margin.y
+    override fun evaluateContentSizeXImpl() = (16L + 2L * margin.x).coerceIn(0L, Int.MAX_VALUE.toLong()).toInt()
+    override fun evaluateContentSizeYImpl() = (16L + 2L * margin.y).coerceIn(0L, Int.MAX_VALUE.toLong()).toInt()
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
 }
 

@@ -1,14 +1,15 @@
 package miragefairy2024.mod.recipeviewer.views
 
+import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.max
 import mirrg.kotlin.helium.min
 
 class MaxContentSizeXView(private val sizeX: Int) : WrapperView() {
-    override fun evaluateContentSizeXImpl() = super.evaluateContentSizeXImpl() min sizeX
+    override fun evaluateContentSizeXImpl() = (super.evaluateContentSizeXImpl() min sizeX) atLeast 0
 }
 
 class MaxContentSizeYView(private val sizeY: Int) : WrapperView() {
-    override fun evaluateContentSizeYImpl() = super.evaluateContentSizeYImpl() min sizeY
+    override fun evaluateContentSizeYImpl() = (super.evaluateContentSizeYImpl() min sizeY) atLeast 0
 }
 
 fun <P> Child<P, *>.maxContentSizeX(x: Int) = this.wrap(MaxContentSizeXView(x))

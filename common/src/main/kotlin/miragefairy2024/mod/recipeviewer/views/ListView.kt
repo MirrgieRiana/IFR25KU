@@ -47,7 +47,7 @@ class XListView : ListView() {
         childRegionSizesX.reset()
     }
 
-    override fun evaluateContentSizeXImpl() = children.sumOf { it.evaluateReservedSizeX() }
+    override fun evaluateContentSizeXImpl() = children.sumOf { it.evaluateReservedSizeX().toLong() }.coerceIn(0L, Int.MAX_VALUE.toLong()).toInt()
     override fun evaluateContentSizeYImpl() = children.maxOfOrNull { it.evaluateReservedSizeY() } ?: 0
 
     private var totalWeight = CachingEvaluator { children.sumOf { it.position.weight } }
@@ -107,7 +107,7 @@ class YListView : ListView() {
     }
 
     override fun evaluateContentSizeXImpl() = children.maxOfOrNull { it.evaluateReservedSizeX() } ?: 0
-    override fun evaluateContentSizeYImpl() = children.sumOf { it.evaluateReservedSizeY() }
+    override fun evaluateContentSizeYImpl() = children.sumOf { it.evaluateReservedSizeY().toLong() }.coerceIn(0L, Int.MAX_VALUE.toLong()).toInt()
 
     override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX()
 

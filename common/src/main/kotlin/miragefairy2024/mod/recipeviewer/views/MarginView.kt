@@ -8,8 +8,8 @@ import miragefairy2024.mod.recipeviewer.view.offset
 
 class MarginView(private val xMin: Int, private val xMax: Int, private val yMin: Int, private val yMax: Int) : WrapperView() {
 
-    override fun evaluateContentSizeXImpl() = super.evaluateContentSizeXImpl() + xMin + xMax
-    override fun evaluateContentSizeYImpl() = super.evaluateContentSizeYImpl() + yMin + yMax
+    override fun evaluateContentSizeXImpl() = (super.evaluateContentSizeXImpl().toLong() + xMin + xMax).coerceIn(0L, Int.MAX_VALUE.toLong()).toInt()
+    override fun evaluateContentSizeYImpl() = (super.evaluateContentSizeYImpl().toLong() + yMin + yMax).coerceIn(0L, Int.MAX_VALUE.toLong()).toInt()
 
     override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX() - xMin - xMax
     override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY() - yMin - yMax
