@@ -6,6 +6,7 @@ import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
+import miragefairy2024.util.fire
 import miragefairy2024.util.register
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -47,6 +48,36 @@ class ScrollConnectionTest {
         connectScrollbar(scroll, bar).remove()
         scroll.scrollOffsetX.value = 80.0
         Assertions.assertEquals(120.5, bar.scrollOffset.value)
+    }
+
+    @Test
+    fun `接続中だけ領域のスクロール操作をバーに通知するのだ`() {
+        val scroll = XScrollContainerView()
+        val bar = XFlatScrollbarView()
+        var scrollInputs = 0
+        var barInputs = 0
+        scroll.onScrollInput.register {
+            scrollInputs++
+        }
+        bar.onScrollInput.register {
+            barInputs++
+        }
+
+        val connection = connectScrollbar(scroll, bar)
+        try {
+            scroll.onScrollInput.fire()
+            Assertions.assertEquals(1, scrollInputs)
+            Assertions.assertEquals(1, barInputs)
+            bar.onScrollInput.fire()
+            Assertions.assertEquals(1, scrollInputs)
+            Assertions.assertEquals(2, barInputs)
+        } finally {
+            connection.remove()
+        }
+
+        scroll.onScrollInput.fire()
+        Assertions.assertEquals(2, scrollInputs)
+        Assertions.assertEquals(2, barInputs)
     }
 
     @Test

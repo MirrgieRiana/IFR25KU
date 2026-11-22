@@ -78,6 +78,7 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
             val label = TextView(condition.getDisplayName()).configure {
                 position.alignmentY = Alignment.CENTER
                 position.weight = 1.0
+                position.ignoreLayoutX = true
                 view.sizingX = Sizing.FILL
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
