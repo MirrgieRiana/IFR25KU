@@ -95,7 +95,35 @@ fun initVanillaViewPlacers() {
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YScrollContainerView, bounds ->
         placeScrollContainerView(context, VanillaYScrollContainerViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
     }
-    fun placeScrollbarView(context: VanillaViewPlacerContext, widget: VanillaScrollbarViewWidget<*>, onClosed: EventRegistry<() -> Unit>?): ViewController {
+    fun placeFlatScrollbarView(context: VanillaViewPlacerContext, view: FlatScrollbarView, widget: VanillaFlatScrollbarViewWidget): ViewController {
+        val controller = context place widget
+        val onClosed = EventRegistry<() -> Unit>()
+        view.onScrollInput.observe(onClosed) {
+            widget.showThumbAfterScrollInput()
+        }
+        return object : ViewController {
+            override fun setOffset(offset: IntPoint) {
+                controller.setOffset(offset)
+            }
+
+            override fun detach() {
+                controller.detach()
+            }
+
+            override fun dispose() {
+                onClosed.fire()
+                widget.dispose()
+                controller.dispose()
+            }
+        }
+    }
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XFlatScrollbarView, bounds ->
+        placeFlatScrollbarView(context, view, VanillaXFlatScrollbarViewWidget(view, bounds))
+    }
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YFlatScrollbarView, bounds ->
+        placeFlatScrollbarView(context, view, VanillaYFlatScrollbarViewWidget(view, bounds))
+    }
+    fun placeInventoryScrollbarView(context: VanillaViewPlacerContext, widget: VanillaInventoryScrollbarViewWidget): ViewController {
         val controller = context place widget
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {
@@ -107,31 +135,16 @@ fun initVanillaViewPlacers() {
             }
 
             override fun dispose() {
-                onClosed?.fire()
                 widget.dispose()
                 controller.dispose()
             }
         }
     }
-    fun placeFlatScrollbarView(context: VanillaViewPlacerContext, view: FlatScrollbarView, widget: VanillaFlatScrollbarViewWidget): ViewController {
-        val onClosed = EventRegistry<() -> Unit>()
-        val controller = placeScrollbarView(context, widget, onClosed)
-        view.onScrollInput.observe(onClosed) {
-            widget.showThumbAfterScrollInput()
-        }
-        return controller
-    }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XFlatScrollbarView, bounds ->
-        placeFlatScrollbarView(context, view, VanillaXFlatScrollbarViewWidget(view, bounds))
-    }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YFlatScrollbarView, bounds ->
-        placeFlatScrollbarView(context, view, VanillaYFlatScrollbarViewWidget(view, bounds))
-    }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: XInventoryScrollbarView, bounds ->
-        placeScrollbarView(context, VanillaXInventoryScrollbarViewWidget(view, bounds), null)
+        placeInventoryScrollbarView(context, VanillaXInventoryScrollbarViewWidget(view, bounds))
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: YInventoryScrollbarView, bounds ->
-        placeScrollbarView(context, VanillaYInventoryScrollbarViewWidget(view, bounds), null)
+        placeInventoryScrollbarView(context, VanillaYInventoryScrollbarViewWidget(view, bounds))
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: MenuSlotView, bounds ->
         if (!context.canPlaceMenuSlots) throw UnsupportedOperationException("MenuSlotView cannot be placed in this context")
