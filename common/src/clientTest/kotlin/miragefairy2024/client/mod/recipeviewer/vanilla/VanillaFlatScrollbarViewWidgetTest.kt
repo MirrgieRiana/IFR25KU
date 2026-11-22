@@ -1,5 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.XFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
@@ -78,15 +79,15 @@ class VanillaFlatScrollbarViewWidgetTest {
                     val bounds = if (horizontal) IntRectangle(10, 20, 100, 7) else IntRectangle(10, 20, 7, 100)
                     val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
                     val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
-                    widget.render(graphics, if (horizontal) 20 else 12, if (horizontal) 22 else 30, 0.0F)
+                    val mouseX = if (horizontal) 20.0 else 12.0
+                    val mouseY = if (horizontal) 22.0 else 30.0
+                    widget.render(graphics, mouseX.toInt(), mouseY.toInt(), 0.0F)
                     if (horizontal) {
                         Mockito.verify(graphics).fill(10, 20, 43, 27, view.scrollbarColor)
                     } else {
                         Mockito.verify(graphics).fill(10, 20, 17, 53, view.scrollbarColor)
                     }
                     Assertions.assertFalse(widget.mouseClicked(if (horizontal) 20.0 else 17.0, if (horizontal) 27.0 else 30.0, 0))
-                    val mouseX = if (horizontal) 20.0 else 12.0
-                    val mouseY = if (horizontal) 22.0 else 30.0
                     Assertions.assertTrue(widget.mouseClicked(mouseX, mouseY, 0))
                     Assertions.assertTrue(widget.hasMouseCapture(0))
                     Assertions.assertTrue(widget.mouseReleased(mouseX, mouseY, 0))
@@ -109,40 +110,51 @@ class VanillaFlatScrollbarViewWidgetTest {
     }
 
     @Test
-    fun `ホバーとドラッグが終わってから待機してフェードアウトするのだ`() {
-        GuiTestEnvironment().use {
-            Mockito.mockStatic(Util::class.java, Mockito.CALLS_REAL_METHODS).use { clock ->
-                var now = 1000L
-                clock.`when`<Long> { Util.getMillis() }.thenAnswer { now }
-                val view = YFlatScrollbarView()
-                view.scrollbarColor = 0xA0FFFFFF.toInt()
-                view.contentLength = 300
-                view.viewportLength = 100
-                val widget = VanillaYFlatScrollbarViewWidget(view, IntRectangle(10, 20, 7, 100))
-                val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+    fun `縦横のバーはホバーとドラッグで表示されその後フェードアウトするのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            GuiTestEnvironment().use {
+                Mockito.mockStatic(Util::class.java, Mockito.CALLS_REAL_METHODS).use { clock ->
+                    var now = 1000L
+                    clock.`when`<Long> { Util.getMillis() }.thenAnswer { now }
+                    val view = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
+                    view.scrollbarColor = 0xA0FFFFFF.toInt()
+                    view.contentLength = 300
+                    view.viewportLength = 100
+                    val bounds = if (horizontal) IntRectangle(10, 20, 100, 7) else IntRectangle(10, 20, 7, 100)
+                    val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
+                    val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+                    val inside = if (horizontal) IntPoint(20, 22) else IntPoint(12, 30)
+                    val outside = IntPoint.ZERO
 
-                fun assertColor(at: Long, mouseX: Int, color: Int) {
-                    now = at
-                    Mockito.clearInvocations(graphics)
-                    widget.render(graphics, mouseX, 25, 0.0F)
-                    Mockito.verify(graphics).fill(10, 20, 17, 53, color)
-                }
+                    fun assertColor(at: Long, mouse: IntPoint, color: Int) {
+                        now = at
+                        Mockito.clearInvocations(graphics)
+                        widget.render(graphics, mouse.x, mouse.y, 0.0F)
+                        if (horizontal) {
+                            Mockito.verify(graphics).fill(10, 20, 43, 27, color)
+                        } else {
+                            Mockito.verify(graphics).fill(10, 20, 17, 53, color)
+                        }
+                    }
 
-                try {
-                    assertColor(1000L, 50, 0x00FFFFFF)
-                    assertColor(1000L, 12, view.scrollbarColor)
-                    assertColor(1750L, 50, view.scrollbarColor)
-                    assertColor(2125L, 50, 0x50FFFFFF)
-                    assertColor(2500L, 50, 0x00FFFFFF)
+                    try {
+                        assertColor(1000L, outside, 0x00FFFFFF)
+                        assertColor(1000L, inside, view.scrollbarColor)
+                        assertColor(3000L, inside, view.scrollbarColor)
+                        assertColor(3750L, outside, view.scrollbarColor)
+                        assertColor(4125L, outside, 0x50FFFFFF)
+                        assertColor(4500L, outside, 0x00FFFFFF)
 
-                    Assertions.assertTrue(widget.mouseClicked(12.0, 30.0, 0))
-                    assertColor(4000L, 50, view.scrollbarColor)
-                    Assertions.assertTrue(widget.mouseReleased(50.0, 25.0, 0))
-                    assertColor(4750L, 50, view.scrollbarColor)
-                    assertColor(5125L, 50, 0x50FFFFFF)
-                    assertColor(5500L, 50, 0x00FFFFFF)
-                } finally {
-                    widget.dispose()
+                        Assertions.assertTrue(widget.mouseClicked(inside.x.toDouble(), inside.y.toDouble(), 0))
+                        assertColor(6500L, outside, view.scrollbarColor)
+                        assertColor(8500L, outside, view.scrollbarColor)
+                        Assertions.assertTrue(widget.mouseReleased(outside.x.toDouble(), outside.y.toDouble(), 0))
+                        assertColor(9250L, outside, view.scrollbarColor)
+                        assertColor(9625L, outside, 0x50FFFFFF)
+                        assertColor(10000L, outside, 0x00FFFFFF)
+                    } finally {
+                        widget.dispose()
+                    }
                 }
             }
         }
