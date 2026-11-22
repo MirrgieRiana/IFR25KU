@@ -1,5 +1,6 @@
 package miragefairy2024.mod.recipeviewer.view
 
+import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.max
 import mirrg.kotlin.helium.min
 
@@ -22,12 +23,7 @@ val IntRectangle.size get() = IntPoint(sizeX, sizeY)
 fun IntRectangle.offset(dx: Int, dy: Int) = IntRectangle(x + dx, y + dy, sizeX, sizeY)
 fun IntRectangle.grow(d: Int) = this.grow(d, d)
 fun IntRectangle.grow(dx: Int, dy: Int) = this.grow(dx, dx, dy, dy)
-fun IntRectangle.grow(dxMin: Int, dxMax: Int, dyMin: Int, dyMax: Int) = IntRectangle(
-    Math.toIntExact(this.x.toLong() - dxMin),
-    Math.toIntExact(this.y.toLong() - dyMin),
-    Math.toIntExact((this.sizeX.toLong() + dxMin + dxMax).coerceAtLeast(0L)),
-    Math.toIntExact((this.sizeY.toLong() + dyMin + dyMax).coerceAtLeast(0L)),
-)
+fun IntRectangle.grow(dxMin: Int, dxMax: Int, dyMin: Int, dyMax: Int) = IntRectangle(this.x - dxMin, this.y - dyMin, this.sizeX + dxMin + dxMax atLeast 0, this.sizeY + dyMin + dyMax atLeast 0)
 operator fun IntRectangle.plus(point: IntPoint) = IntRectangle(x + point.x, y + point.y, sizeX, sizeY)
 operator fun IntRectangle.minus(point: IntPoint) = IntRectangle(x - point.x, y - point.y, sizeX, sizeY)
 fun IntRectangle.contains(x: Int, y: Int) = x >= this.x1 && x < this.x2 && y >= this.y1 && y < this.y2
@@ -38,16 +34,16 @@ operator fun IntRectangle.contains(point: IntPoint) = this.contains(point.x, poi
 fun IntRectangle.intersect(other: IntRectangle): IntRectangle {
     val x1 = this.x1 max other.x1
     val y1 = this.y1 max other.y1
-    val x2 = minOf(this.x.toLong() + this.sizeX, other.x.toLong() + other.sizeX)
-    val y2 = minOf(this.y.toLong() + this.sizeY, other.y.toLong() + other.sizeY)
-    return IntRectangle(x1, y1, Math.toIntExact((x2 - x1).coerceAtLeast(0L)), Math.toIntExact((y2 - y1).coerceAtLeast(0L)))
+    val x2 = this.x2 min other.x2
+    val y2 = this.y2 min other.y2
+    return IntRectangle(x1, y1, x2 - x1 atLeast 0, y2 - y1 atLeast 0)
 }
 
 /** 大きさが 0 の矩形もカバーされる。 */
 fun IntRectangle.union(other: IntRectangle): IntRectangle {
     val x1 = this.x1 min other.x1
     val y1 = this.y1 min other.y1
-    val x2 = maxOf(this.x.toLong() + this.sizeX, other.x.toLong() + other.sizeX)
-    val y2 = maxOf(this.y.toLong() + this.sizeY, other.y.toLong() + other.sizeY)
-    return IntRectangle(x1, y1, Math.toIntExact(x2 - x1), Math.toIntExact(y2 - y1))
+    val x2 = this.x2 max other.x2
+    val y2 = this.y2 max other.y2
+    return IntRectangle(x1, y1, x2 - x1, y2 - y1)
 }

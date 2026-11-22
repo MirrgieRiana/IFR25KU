@@ -16,10 +16,9 @@ class IntRectangleTest {
     @Test
     fun `余分に縮小した軸と交差しない軸の寸法は 0 なのだ`() {
         assertEquals(IntRectangle(6, 6, 0, 0), IntRectangle(0, 0, 10, 10).grow(-6))
-        val first = IntRectangle(Int.MIN_VALUE, 0, 1, 1)
-        val second = IntRectangle(Int.MAX_VALUE, 0, 1, 1)
-        assertEquals(IntRectangle(Int.MAX_VALUE, 0, 0, 1), first.intersect(second))
-        assertThrows(ArithmeticException::class.java) { first.union(second) }
+        val first = IntRectangle(0, 0, 10, 10)
+        val second = IntRectangle(12, 0, 10, 10)
+        assertEquals(IntRectangle(12, 0, 0, 10), first.intersect(second))
     }
 
 }
