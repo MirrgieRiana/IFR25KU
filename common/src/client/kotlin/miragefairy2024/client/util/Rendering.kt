@@ -122,7 +122,7 @@ fun GuiGraphics.drawScrollingString(
     }
 }
 
-fun GuiGraphics.renderNinePatchImage(
+fun GuiGraphics.drawNinePatchImage(
     bounds: IntRectangle,
     textureId: ResourceLocation,
     textureWidth: Int,
