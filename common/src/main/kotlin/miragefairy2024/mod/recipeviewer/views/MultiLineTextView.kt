@@ -25,7 +25,7 @@ class MultiLineTextView : AbstractView(), PlaceableView {
     var alignmentX = Alignment.START
     var lineSpacing = 2
         set(value) {
-            require(value >= 0) { "Line spacing must be non-negative" }
+            if (value < 0) throw IllegalArgumentException("Line spacing must be non-negative")
             field = value
         }
 
