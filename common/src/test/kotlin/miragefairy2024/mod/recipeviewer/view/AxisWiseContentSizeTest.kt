@@ -19,6 +19,8 @@ import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.WrapperView
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.YListView
+import miragefairy2024.mod.recipeviewer.views.fixedContentSizeX
+import miragefairy2024.mod.recipeviewer.views.fixedContentSizeY
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -168,6 +170,19 @@ class AxisWiseContentSizeTest {
                 assertEquals(IntPoint(10, 20), childView.evaluateContentSize())
                 assertEquals(if (xFirst) listOf("contentX", "contentY") else listOf("contentY", "contentX"), events)
             }
+        }
+    }
+
+    @Test
+    fun `内容寸法を固定すると指定された軸だけが固定値になるのだ`() {
+        listOf(0, 6, 30).forEach { size ->
+            val widthFixedView = Child(Unit, SpaceView(IntPoint(10, 20))).fixedContentSizeX(size).view
+            widthFixedView.initSizeCalculation(TEST_RENDERING_PROXY, { throw UnsupportedOperationException() }, { throw UnsupportedOperationException() })
+            assertEquals(IntPoint(size, 20), widthFixedView.evaluateContentSize())
+
+            val heightFixedView = Child(Unit, SpaceView(IntPoint(10, 20))).fixedContentSizeY(size).view
+            heightFixedView.initSizeCalculation(TEST_RENDERING_PROXY, { throw UnsupportedOperationException() }, { throw UnsupportedOperationException() })
+            assertEquals(IntPoint(10, size), heightFixedView.evaluateContentSize())
         }
     }
 

@@ -4,7 +4,6 @@ import miragefairy2024.ModContext
 
 context(_: ModContext)
 fun initFairyClientModule() {
-    initMotifTableClientModule()
     initSoulStreamClientModule()
     initCollectionEnabledClientModule()
 }
