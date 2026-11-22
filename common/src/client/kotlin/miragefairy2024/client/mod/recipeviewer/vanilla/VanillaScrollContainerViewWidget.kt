@@ -360,8 +360,8 @@ abstract class VanillaScrollContainerViewWidget(
             forwardKey -> scrollBy(view.scrollStep.toDouble())
             GLFW.GLFW_KEY_PAGE_UP -> scrollBy(-viewportLength * 0.8)
             GLFW.GLFW_KEY_PAGE_DOWN -> scrollBy(viewportLength * 0.8)
-            GLFW.GLFW_KEY_HOME -> return updateScroll(0.0)
-            GLFW.GLFW_KEY_END -> return updateScroll(evaluateMaxScrollOffset().toDouble())
+            GLFW.GLFW_KEY_HOME -> updateScroll(0.0)
+            GLFW.GLFW_KEY_END -> updateScroll(evaluateMaxScrollOffset().toDouble())
             else -> return false
         }
         view.onScrollInput.fire()

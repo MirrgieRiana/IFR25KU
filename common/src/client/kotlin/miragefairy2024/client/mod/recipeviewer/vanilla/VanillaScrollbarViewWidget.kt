@@ -195,8 +195,8 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
             forwardKey -> view.scrollOffset.value + view.scrollStep
             GLFW.GLFW_KEY_PAGE_UP -> view.scrollOffset.value - view.viewportLength * 0.8
             GLFW.GLFW_KEY_PAGE_DOWN -> view.scrollOffset.value + view.viewportLength * 0.8
-            GLFW.GLFW_KEY_HOME -> return updateScroll(evaluateScrollRange().start)
-            GLFW.GLFW_KEY_END -> return updateScroll(evaluateScrollRange().endInclusive)
+            GLFW.GLFW_KEY_HOME -> evaluateScrollRange().start
+            GLFW.GLFW_KEY_END -> evaluateScrollRange().endInclusive
             else -> return false
         }
         val handled = updateScroll(offset)

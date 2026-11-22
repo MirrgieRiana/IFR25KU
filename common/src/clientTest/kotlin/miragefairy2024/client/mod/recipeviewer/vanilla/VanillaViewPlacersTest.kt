@@ -559,11 +559,11 @@ class VanillaViewPlacersTest {
                 val scrollbarWidget = widgets.filterIsInstance<VanillaYFlatScrollbarViewWidget>().single()
                 val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
 
-                fun assertColor(at: Long, mouseX: Int, color: Int) {
+                fun assertColor(at: Long, mouseX: Int, color: Int, thumbY: Int = 20) {
                     now = at
                     Mockito.clearInvocations(graphics)
                     scrollbarWidget.render(graphics, mouseX, 25, 0.0F)
-                    Mockito.verify(graphics).fill(200, 20, 205, 53, color)
+                    Mockito.verify(graphics).fill(200, thumbY, 205, thumbY + 33, color)
                 }
 
                 try {
@@ -588,8 +588,11 @@ class VanillaViewPlacersTest {
                     listOf(scrollWidget, scrollbarWidget).forEach { widget ->
                         widget.isFocused = true
                         Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
+                        assertColor(now, 50, scrollbarView.scrollbarColor, thumbY = 87)
+                        assertColor(now + 1250L, 50, 0x00FFFFFF, thumbY = 87)
                         Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
-                        assertColor(7000L, 50, 0x00FFFFFF)
+                        assertColor(now, 50, scrollbarView.scrollbarColor)
+                        assertColor(now + 1250L, 50, 0x00FFFFFF)
                         widget.isFocused = false
                     }
                 } finally {
