@@ -14,8 +14,8 @@ abstract class ScrollbarView(initialScrollbarThickness: Int) : AbstractView(), P
         require(initialScrollbarThickness >= 0) { "Scrollbar thickness must be non-negative" }
     }
 
-    val scrollOffset = ObservableValue(0.0)
     var focusable = true
+    val scrollOffset = ObservableValue(0.0)
 
     var contentLength = 0
         set(value) {
