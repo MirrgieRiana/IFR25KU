@@ -27,6 +27,7 @@ import miragefairy2024.util.fire
 import miragefairy2024.util.observeAndInitialize
 import miragefairy2024.util.register
 import miragefairy2024.util.removeOn
+import mirrg.kotlin.helium.atLeast
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.Button
@@ -147,7 +148,12 @@ fun initVanillaViewPlacers() {
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextFieldView, bounds ->
         val onClosed = EventRegistry<() -> Unit>()
-        val editBox = EditBox(Minecraft.getInstance().font, bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty())
+        val editBox: EditBox = object : EditBox(Minecraft.getInstance().font, bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty()) {
+            override fun getInnerWidth(): Int {
+                val padding = if (isBordered()) 8 else 0
+                return (width atLeast padding) - padding
+            }
+        }
         editBox.setMaxLength(Int.MAX_VALUE)
         // 初期化による変更通知を拾わないよう、初期値は responder の登録前に設定するのだ～🌱
         view.text.observeAndInitialize(onClosed) { _, text ->
