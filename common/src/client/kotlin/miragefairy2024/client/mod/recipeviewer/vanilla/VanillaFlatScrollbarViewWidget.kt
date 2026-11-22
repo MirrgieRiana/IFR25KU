@@ -26,12 +26,17 @@ abstract class VanillaFlatScrollbarViewWidget(view: FlatScrollbarView, bounds: I
     }
 
     protected fun getScrollbarColor(now: Long): Int {
-        // owo と同じく、表示期限までの残り 750 ms で透明にするのだ～🌱
-        val remainingTime = (fadeEndTime?.minus(now) ?: 0L) atLeast 0L atMost 750L
-        val progress = remainingTime / 750.0F
-        val opacity = (sin(progress * PI - PI / 2) * 0.5 + 0.5).toFloat()
         val color = view.scrollbarColor
-        val alpha = (opacity * color.alphaOfArgb).toInt()
+        val endTime = fadeEndTime
+        val alpha = if (endTime == null) {
+            0
+        } else {
+            // owo と同じく、表示期限までの残り 750 ms で透明にするのだ～🌱
+            val remainingTime = (endTime - now) atLeast 0L atMost 750L
+            val progress = remainingTime / 750.0F
+            val opacity = (sin(progress * PI - PI / 2) * 0.5 + 0.5).toFloat()
+            (opacity * color.alphaOfArgb).toInt()
+        }
         return argbOf(alpha, color)
     }
 
