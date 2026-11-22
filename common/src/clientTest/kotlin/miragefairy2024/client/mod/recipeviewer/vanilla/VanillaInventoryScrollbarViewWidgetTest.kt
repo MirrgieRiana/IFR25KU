@@ -1,6 +1,9 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.x2
+import miragefairy2024.mod.recipeviewer.view.y2
+import miragefairy2024.mod.recipeviewer.views.InventoryScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XInventoryScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YInventoryScrollbarView
 import net.minecraft.client.Minecraft
@@ -13,12 +16,12 @@ import org.junit.jupiter.api.Test
 import org.lwjgl.glfw.GLFW
 import kotlin.math.roundToInt
 
-private const val TRACK_TEXTURE = "minecraft:textures/gui/container/creative_inventory/tab_items.png"
-private const val THUMB_TEXTURE = "minecraft:textures/gui/sprites/container/creative_inventory/scroller.png"
-private const val DISABLED_THUMB_TEXTURE = "minecraft:textures/gui/sprites/container/creative_inventory/scroller_disabled.png"
+private val TRACK_TEXTURE: ResourceLocation = ResourceLocation.withDefaultNamespace("textures/gui/container/creative_inventory/tab_items.png")
+private val THUMB_TEXTURE: ResourceLocation = ResourceLocation.withDefaultNamespace("textures/gui/sprites/container/creative_inventory/scroller.png")
+private val DISABLED_THUMB_TEXTURE: ResourceLocation = ResourceLocation.withDefaultNamespace("textures/gui/sprites/container/creative_inventory/scroller_disabled.png")
 
 private class ScrollbarGraphics : GuiGraphics(Minecraft.getInstance(), null) {
-    val blits = mutableListOf<Pair<String, IntRectangle>>()
+    val blits = mutableListOf<Pair<ResourceLocation, IntRectangle>>()
 
     override fun blit(atlasLocation: ResourceLocation, x: Int, y: Int, width: Int, height: Int, uOffset: Float, vOffset: Float, uWidth: Int, vHeight: Int, textureWidth: Int, textureHeight: Int) {
         val matrix: Matrix4f = pose().last().pose()
@@ -28,15 +31,15 @@ private class ScrollbarGraphics : GuiGraphics(Minecraft.getInstance(), null) {
         val top = minOf(start.y, end.y).roundToInt()
         val right = maxOf(start.x, end.x).roundToInt()
         val bottom = maxOf(start.y, end.y).roundToInt()
-        blits += Pair(atlasLocation.toString(), IntRectangle(left, top, right - left, bottom - top))
+        blits += Pair(atlasLocation, IntRectangle(left, top, right - left, bottom - top))
     }
 
-    fun assertTrackAndThumb(track: IntRectangle, thumb: IntRectangle, thumbTexture: String) {
+    fun assertTrackAndThumb(track: IntRectangle, thumb: IntRectangle, thumbTexture: ResourceLocation) {
         fun assertPaintedBounds(bounds: IntRectangle, rectangles: List<IntRectangle>) {
             Assertions.assertEquals(bounds.x, rectangles.minOf { it.x })
             Assertions.assertEquals(bounds.y, rectangles.minOf { it.y })
-            Assertions.assertEquals(bounds.x + bounds.sizeX, rectangles.maxOf { it.x + it.sizeX })
-            Assertions.assertEquals(bounds.y + bounds.sizeY, rectangles.maxOf { it.y + it.sizeY })
+            Assertions.assertEquals(bounds.x2, rectangles.maxOf { it.x2 })
+            Assertions.assertEquals(bounds.y2, rectangles.maxOf { it.y2 })
             Assertions.assertEquals(bounds.sizeX * bounds.sizeY, rectangles.sumOf { it.sizeX * it.sizeY })
         }
 
@@ -51,13 +54,23 @@ private class ScrollbarGraphics : GuiGraphics(Minecraft.getInstance(), null) {
 }
 
 class VanillaInventoryScrollbarViewWidgetTest {
+
+    private fun createScrollbar(horizontal: Boolean, bounds: IntRectangle): Pair<InventoryScrollbarView, VanillaInventoryScrollbarViewWidget> {
+        return if (horizontal) {
+            val view = XInventoryScrollbarView()
+            Pair(view, VanillaXInventoryScrollbarViewWidget(view, bounds))
+        } else {
+            val view = YInventoryScrollbarView()
+            Pair(view, VanillaYInventoryScrollbarViewWidget(view, bounds))
+        }
+    }
+
     @Test
     fun `両軸でバニラの背景とつまみを描きスクロール位置を読み書きするのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use {
-                val view = if (horizontal) XInventoryScrollbarView() else YInventoryScrollbarView()
                 val bounds = if (horizontal) IntRectangle(10, 20, 100, 18) else IntRectangle(10, 20, 18, 100)
-                val widget = if (view is XInventoryScrollbarView) VanillaXInventoryScrollbarViewWidget(view, bounds) else VanillaYInventoryScrollbarViewWidget(view as YInventoryScrollbarView, bounds)
+                val (view, widget) = createScrollbar(horizontal, bounds)
                 val scrollOffset = view.scrollOffset
                 view.contentLength = 300
                 view.viewportLength = 100
@@ -101,9 +114,8 @@ class VanillaInventoryScrollbarViewWidgetTest {
     fun `両軸で空内容では無効なつまみを描き軸長ゼロでは描画しないのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use {
-                val view = if (horizontal) XInventoryScrollbarView() else YInventoryScrollbarView()
                 val bounds = if (horizontal) IntRectangle(10, 20, 100, 18) else IntRectangle(10, 20, 18, 100)
-                val widget = if (horizontal) VanillaXInventoryScrollbarViewWidget(view as XInventoryScrollbarView, bounds) else VanillaYInventoryScrollbarViewWidget(view as YInventoryScrollbarView, bounds)
+                val (view, widget) = createScrollbar(horizontal, bounds)
                 val graphics = ScrollbarGraphics()
                 view.viewportLength = 100
                 widget.render(graphics, 12, 22, 0F)
