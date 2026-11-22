@@ -141,7 +141,7 @@ fun initSoulStreamClientModule() {
 
 class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : AbstractViewContainerScreen<SoulStreamScreenHandler>(handler, playerInventory, title) {
 
-    private val viewWrapper = SoulStreamViewWrapper(handler, title, enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, toggleCollectionEnabledKeyMappingCard()) {
+    private val viewWrapper = SoulStreamViewWrapper(handler, title, enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, text { toggleCollectionEnabledKeyMappingCard() }) {
         SetCollectionEnabledChannel.sendToServer(it)
     }
     private var isFirstRender = true
