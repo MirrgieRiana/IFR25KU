@@ -147,6 +147,7 @@ class VanillaFlatScrollbarViewWidgetTest {
                         assertColor(1000L, inside, view.scrollbarColor)
                         assertColor(3000L, inside, view.scrollbarColor)
                         assertColor(3750L, clipped, view.scrollbarColor)
+                        assertColor(3938L, clipped, 0x88FFFFFF)
                         assertColor(4125L, clipped, 0x50FFFFFF)
                         assertColor(4500L, clipped, 0x00FFFFFF)
 
