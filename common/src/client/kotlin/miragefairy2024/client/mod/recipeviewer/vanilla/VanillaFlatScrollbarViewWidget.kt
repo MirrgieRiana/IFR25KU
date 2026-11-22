@@ -19,6 +19,10 @@ abstract class VanillaFlatScrollbarViewWidget(view: FlatScrollbarView, bounds: I
 
     private var fadeEndTime: Long? = null
 
+    override fun onScrollInput() {
+        fadeEndTime = Util.getMillis() + 1250L
+    }
+
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         fun getScrollbarColor(now: Long): Int {
             val color = view.scrollbarColor
