@@ -26,6 +26,8 @@ import miragefairy2024.client.util.invoke
 import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.client.util.sendToServer
 import miragefairy2024.client.util.slotContainer
+import miragefairy2024.client.util.nonnegativeHorizontalFlow
+import miragefairy2024.client.util.nonnegativeVerticalFlow
 import miragefairy2024.client.util.tooltipContainer
 import miragefairy2024.client.util.verticalScroll
 import miragefairy2024.client.util.verticalSpace
@@ -196,7 +198,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
         super.render(vanillaContext, mouseX, mouseY, delta)
     }
 
-    override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::horizontalFlow)
+    override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, ::nonnegativeHorizontalFlow)
     override fun build(rootComponent: FlowLayout) {
         rootComponent.apply {
             surface(Surface.flat(0xFFC6C6C6.toInt()))
@@ -205,7 +207,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
             gap(4)
 
             // 左ペイン
-            child(Containers.verticalFlow(Sizing.expand(50), Sizing.fill()).apply {
+            child(nonnegativeVerticalFlow(Sizing.expand(50), Sizing.fill()).apply {
                 padding(Insets.of(0, 20, 0, 0)) // レシピMOD用に下部を保護
                 gap(2)
 
@@ -360,7 +362,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
             })
 
             // 右ペイン
-            child(Containers.verticalFlow(Sizing.expand(50), Sizing.fill()).apply {
+            child(nonnegativeVerticalFlow(Sizing.expand(50), Sizing.fill()).apply {
                 padding(Insets.of(0, 20, 0, 0)) // レシピMOD用に下部を保護
                 gap(2)
 

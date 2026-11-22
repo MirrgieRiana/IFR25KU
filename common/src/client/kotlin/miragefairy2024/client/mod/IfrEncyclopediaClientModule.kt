@@ -14,6 +14,7 @@ import io.wispforest.owo.ui.core.Surface
 import io.wispforest.owo.ui.core.VerticalAlignment
 import miragefairy2024.ModContext
 import miragefairy2024.client.util.horizontalSpace
+import miragefairy2024.client.util.nonnegativeVerticalFlow
 import miragefairy2024.client.util.slotContainer
 import miragefairy2024.client.util.verticalScroll
 import miragefairy2024.client.util.verticalSpace
@@ -38,7 +39,7 @@ fun initIfrEncyclopediaClientModule() {
 }
 
 class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: IfrEncyclopediaEntryCard) : BaseOwoScreen<FlowLayout>(text { card.titleTranslation() }) {
-    override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::verticalFlow)
+    override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, ::nonnegativeVerticalFlow)
 
     override fun build(rootComponent: FlowLayout) {
         rootComponent.apply {
@@ -47,7 +48,7 @@ class IfrEncyclopediaPageScreen(private val parent: Screen?, private val card: I
             verticalAlignment(VerticalAlignment.CENTER)
             horizontalAlignment(HorizontalAlignment.CENTER)
 
-            child(Containers.verticalFlow(Sizing.fixed(200), Sizing.expand()).apply { // カード外枠
+            child(nonnegativeVerticalFlow(Sizing.fixed(200), Sizing.expand()).apply { // カード外枠
                 surface(NinePatchTextureCard.IFR_ENCYCLOPEDIA_BACKGROUND.surface)
                 padding(Insets.of(10, 5, 5, 5))
 

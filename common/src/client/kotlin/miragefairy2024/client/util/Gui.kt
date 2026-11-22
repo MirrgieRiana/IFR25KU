@@ -12,18 +12,34 @@ import io.wispforest.owo.ui.core.Size
 import io.wispforest.owo.ui.core.Sizing
 import io.wispforest.owo.ui.core.Surface
 import miragefairy2024.mod.common.SlotType
+import mirrg.kotlin.helium.atLeast
 import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.client.gui.components.events.ContainerEventHandler
 import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.util.Mth
 
 typealias OwoComponent = io.wispforest.owo.ui.core.Component
 typealias FocusSource = io.wispforest.owo.ui.core.Component.FocusSource
 typealias DismountReason = io.wispforest.owo.ui.core.Component.DismountReason
 
+private class NonnegativeFlowLayout(horizontalSizing: Sizing, verticalSizing: Sizing, algorithm: FlowLayout.Algorithm) : FlowLayout(horizontalSizing, verticalSizing, algorithm) {
+    override fun calculateChildSpace(thisSpace: Size): Size {
+        val padding = padding.get()
+        return Size.of(
+            Mth.lerpInt(horizontalSizing.get().contentFactor(), width() - padding.horizontal(), thisSpace.width() - padding.horizontal()) atLeast 0,
+            Mth.lerpInt(verticalSizing.get().contentFactor(), height() - padding.vertical(), thisSpace.height() - padding.vertical()) atLeast 0,
+        )
+    }
+}
+
+fun nonnegativeHorizontalFlow(horizontalSizing: Sizing, verticalSizing: Sizing): FlowLayout = NonnegativeFlowLayout(horizontalSizing, verticalSizing, FlowLayout.Algorithm.HORIZONTAL)
+
+fun nonnegativeVerticalFlow(horizontalSizing: Sizing, verticalSizing: Sizing): FlowLayout = NonnegativeFlowLayout(horizontalSizing, verticalSizing, FlowLayout.Algorithm.VERTICAL)
+
 fun slotContainer(slotComponent: OwoComponent, type: SlotType? = SlotType.NORMAL): FlowLayout {
-    return Containers.verticalFlow(Sizing.content(), Sizing.content()).apply {
+    return nonnegativeVerticalFlow(Sizing.content(), Sizing.content()).apply {
         padding(Insets.of(1))
         if (type != null) surface(Surface.tiled(type.viewTexture.id, 18, 18))
         allowOverflow(true)
@@ -43,7 +59,7 @@ fun inventoryNameLabel(name: Component, horizontalTextAlignment: HorizontalAlign
 }
 
 fun verticalScroll(horizontalSizing: Sizing, verticalSizing: Sizing, scrollbarThiccness: Int, overlapped: Boolean = false): ScrollContainer<FlowLayout> {
-    return Containers.verticalScroll(horizontalSizing, verticalSizing, Containers.verticalFlow(horizontalSizing, Sizing.content()).apply {
+    return Containers.verticalScroll(horizontalSizing, verticalSizing, nonnegativeVerticalFlow(horizontalSizing, Sizing.content()).apply {
         if (!overlapped) padding(Insets.of(0, 0, 0, scrollbarThiccness))
     }).apply {
         scrollbarThiccness(scrollbarThiccness)
@@ -59,8 +75,10 @@ fun horizontalScroll(horizontalSizing: Sizing, verticalSizing: Sizing, scrollbar
 }
 
 fun tooltipContainer(horizontalSizing: Sizing, verticalSizing: Sizing): FlowLayout {
-    return Containers.verticalFlow(horizontalSizing, verticalSizing).apply {
-        surface(Surface.TOOLTIP)
+    return nonnegativeVerticalFlow(horizontalSizing, verticalSizing).apply {
+        surface { context, component ->
+            if (component.width() >= 8 && component.height() >= 8) Surface.TOOLTIP.draw(context, component)
+        }
         padding(Insets.of(4))
         allowOverflow(true)
     }
