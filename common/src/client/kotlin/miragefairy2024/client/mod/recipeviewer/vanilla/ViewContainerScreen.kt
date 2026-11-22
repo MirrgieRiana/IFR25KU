@@ -31,6 +31,13 @@ abstract class AbstractViewContainerScreen<T : AbstractContainerMenu>(menu: T, p
 
     protected abstract fun createRootView(): View
 
+    protected open fun getRootViewOffset() = IntPoint(leftPos, topPos)
+
+    protected open fun setMenuSize(size: IntPoint) {
+        imageWidth = size.x
+        imageHeight = size.y
+    }
+
     private class SlotPlacement(val clipBounds: () -> IntRectangle?)
 
     /**
@@ -52,10 +59,7 @@ abstract class AbstractViewContainerScreen<T : AbstractContainerMenu>(menu: T, p
         override fun createRootView() = this@AbstractViewContainerScreen.createRootView()
 
         override fun getUiOffset() = IntPoint(this@AbstractViewContainerScreen.leftPos, this@AbstractViewContainerScreen.topPos)
-        override fun setUiSize(uiSize: IntPoint) {
-            this@AbstractViewContainerScreen.imageWidth = uiSize.x
-            this@AbstractViewContainerScreen.imageHeight = uiSize.y
-        }
+        override fun setUiSize(uiSize: IntPoint) = setMenuSize(uiSize)
 
         override fun init() {
             slotPlacementMap.clear()
@@ -86,7 +90,7 @@ abstract class AbstractViewContainerScreen<T : AbstractContainerMenu>(menu: T, p
             }
         }
 
-    })
+    }, ::getRootViewOffset)
 
     override fun init() = viewAdapter.init()
 

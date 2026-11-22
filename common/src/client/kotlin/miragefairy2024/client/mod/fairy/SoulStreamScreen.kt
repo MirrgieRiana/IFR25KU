@@ -128,6 +128,10 @@ var enableGlobalFairyHighlight = ObservableValue(false)
 
 private val FILTER_OVERLAY_TEXTURE = MirageFairy2024.identifier("textures/gui/sprites/filter_overlay.png")
 
+private const val PANE_MARGIN = 4
+private const val PANE_GAP = 4
+private const val RECIPE_VIEWER_MARGIN = 20
+
 val BUTTON_14_BACKGROUND = WidgetSprites(
     MirageFairy2024.identifier("button_14/background_on"),
     MirageFairy2024.identifier("button_14/background"),
@@ -225,6 +229,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
     private var effectScrollView: YScrollContainerView? = null
     private var refreshEffects: (() -> Unit)? = null
     private var lastUpdateEventNanoTime = 0L
+    private var panes = emptyList<View>()
 
     override fun init() {
         onViewClosed.fire()
@@ -237,6 +242,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
     override fun removed() {
         onViewClosed.fire()
         refreshEffects = null
+        panes = emptyList()
         super.removed()
     }
 
@@ -251,7 +257,27 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
         super.render(guiGraphics, mouseX, mouseY, partialTick)
     }
 
+    override fun getRootViewOffset() = IntPoint.ZERO
+
+    // レシピビューワーが使うバニラのコンテナー矩形を画面全体に広げないのだ～🌱
+    override fun setMenuSize(size: IntPoint) = Unit
+
+    internal fun getRecipeViewerExclusionAreas(): List<IntRectangle> {
+        var x = PANE_MARGIN
+        return panes.map { pane ->
+            val size = pane.evaluateActualSize()
+            val bounds = IntRectangle(x, PANE_MARGIN, size.x, size.y)
+            x += size.x + PANE_GAP
+            bounds
+        }
+    }
+
     override fun createRootView(): View {
+        val filterPane = createFilterPane()
+        val inventoryPane = createInventoryPane()
+        val effectPane = createEffectPane()
+        panes = listOf(filterPane, inventoryPane, effectPane)
+
         return View {
             view += StackView().configure {
                 view.sizingX = Sizing.FILL
@@ -265,19 +291,19 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                     view.sizingY = Sizing.FILL
 
                     // レシピビューワー用に左右の下部を空けるのだ～🌱
-                    view += createFilterPane().configure {
+                    view += filterPane.configure {
                         position.weight = 1.0
                         position.ignoreLayoutX = true
-                    }.margin(0, 0, 0, 20)
-                    view += XSpaceView(4)
-                    view += createInventoryPane()
-                    view += XSpaceView(4)
-                    view += createEffectPane().configure {
+                    }.margin(0, 0, 0, RECIPE_VIEWER_MARGIN)
+                    view += XSpaceView(PANE_GAP)
+                    view += inventoryPane
+                    view += XSpaceView(PANE_GAP)
+                    view += effectPane.configure {
                         position.weight = 1.0
                         position.ignoreLayoutX = true
-                    }.margin(0, 0, 0, 20)
+                    }.margin(0, 0, 0, RECIPE_VIEWER_MARGIN)
 
-                }.margin(4)
+                }.margin(PANE_MARGIN)
 
             }
         }
@@ -425,6 +451,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                 view += createSlotRow(inventorySlotCount until soulStreamSlotIndexOffset, SlotType.NORMAL)
                 view += YSpaceView(5)
                 view += TextView(title).configure {
+                    position.ignoreLayoutX = true
                     view.sizingX = Sizing.FILL
                     view.color = ColorPair.DARK_GRAY
                     view.shadow = false
