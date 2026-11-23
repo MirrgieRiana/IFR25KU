@@ -546,6 +546,36 @@ class SoulStreamViewWrapper(
                                 view.sizingX = Sizing.FILL
                                 view.sizingY = Sizing.FILL
 
+                                    fun collectPassiveSkillTexts(): List<Component> {
+                                        val passiveSkillProviders = player.findPassiveSkillProviders()
+                                        val result = PassiveSkillResult()
+                                        result.collect(passiveSkillProviders.passiveSkills, player, ManaBoostPassiveSkillEffect.Value(mapOf()), true)
+                                        val manaBoostValue = result[ManaBoostPassiveSkillEffect]
+                                        result.collect(passiveSkillProviders.passiveSkills, player, manaBoostValue, false)
+                                        return result.map.keys.sortedBy { passiveSkillEffectRegistry.getKey(it) }.flatMap { effect ->
+                                            fun <T : Any> getTexts(effect: PassiveSkillEffect<T>) = effect.getTexts(result[effect]).map { it.gold }
+                                            getTexts(effect)
+                                        }
+                                    }
+
+                                    fun createEffectList(effects: List<Component>): View {
+                                        return View {
+                                            view += YListView().configure {
+                                                if (effects.isEmpty()) {
+                                                    view += TextView(text { SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION().red }).configure {
+                                                        view.shadow = false
+                                                    }
+                                                } else {
+                                                    effects.forEach {
+                                                        view += TextView(it).configure {
+                                                            view.shadow = false
+                                                        }.tooltip(it)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
                                     var effects = collectPassiveSkillTexts()
                                     val effectList = DynamicView(createEffectList(effects))
                             val scrollView = YScrollContainerView().also {
@@ -583,6 +613,7 @@ class SoulStreamViewWrapper(
 
                     })
 
+        }
                             */
                             }.margin(4)
                         }
@@ -599,36 +630,6 @@ class SoulStreamViewWrapper(
     fun dispose() {
         onViewClosed.fire()
         refreshEffects = null
-    }
-
-    private fun createEffectList(effects: List<Component>): View {
-        return View {
-            view += YListView().configure {
-                if (effects.isEmpty()) {
-                    view += TextView(text { SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION().red }).configure {
-                        view.shadow = false
-                    }
-                } else {
-                    effects.forEach {
-                        view += TextView(it).configure {
-                            view.shadow = false
-                        }.tooltip(it)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun collectPassiveSkillTexts(): List<Component> {
-        val passiveSkillProviders = player.findPassiveSkillProviders()
-        val result = PassiveSkillResult()
-        result.collect(passiveSkillProviders.passiveSkills, player, ManaBoostPassiveSkillEffect.Value(mapOf()), true)
-        val manaBoostValue = result[ManaBoostPassiveSkillEffect]
-        result.collect(passiveSkillProviders.passiveSkills, player, manaBoostValue, false)
-        return result.map.keys.sortedBy { passiveSkillEffectRegistry.getKey(it) }.flatMap { effect ->
-            fun <T : Any> getTexts(effect: PassiveSkillEffect<T>) = effect.getTexts(result[effect]).map { it.gold }
-            getTexts(effect)
-        }
     }
 
 }
