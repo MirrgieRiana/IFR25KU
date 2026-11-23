@@ -8,7 +8,7 @@ import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.components.AbstractWidget
 
-class WidgetRegistration(val widget: AbstractWidget, val interactive: Boolean, val renderOverflow: () -> WidgetRenderOverflow)
+class WidgetRegistration(val widget: AbstractWidget, val interactive: Boolean, val renderOverflowGetter: () -> WidgetRenderOverflow)
 
 interface VanillaViewPlacerContext {
     /** バニラの GUI が座標の原点として使う点の、画面の左上からの絶対座標なのだ～🌱 */

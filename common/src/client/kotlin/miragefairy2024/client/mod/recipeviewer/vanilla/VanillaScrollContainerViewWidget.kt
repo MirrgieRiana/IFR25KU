@@ -198,7 +198,7 @@ abstract class VanillaScrollContainerViewWidget(
                     // 親要素自体が潰れているのだ～🌱
                     if (xMin == xMax || yMin == yMax) return@skip
 
-                    val overflow = widgetRegistration.renderOverflow()
+                    val overflow = widgetRegistration.renderOverflowGetter()
 
                     // 子要素が潰れているのだ～🌱
                     if (widget.width == 0 && overflow.xMin == 0 && overflow.xMax == 0) return@skip
