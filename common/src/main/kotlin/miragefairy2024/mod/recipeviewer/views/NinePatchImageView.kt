@@ -8,7 +8,7 @@ import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
 
-class NinePatchImageView(val textureCard: NinePatchTextureCard) : AbstractView(), PlaceableView {
+class NinePatchImageView(val ninePatchTextureCard: NinePatchTextureCard) : AbstractView(), PlaceableView {
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.FILL
     override fun evaluateContentSizeXImpl() = 0

@@ -19,8 +19,8 @@ class NinePatchImageViewRendererTest {
     private val stretchedY = intArrayOf(0, 1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 5, 6)
 
     private fun check(repeatX: Boolean, repeatY: Boolean, expectedX: IntArray, expectedY: IntArray) {
-        val textureCard = NinePatchTextureCard("test/nine_patch", 9, 7, 2, 3, 4, 1, 4, 2, repeatX, repeatY)
-        val view = textureCard.createView()
+        val ninePatchTextureCard = NinePatchTextureCard("test/nine_patch", 9, 7, 2, 3, 4, 1, 4, 2, repeatX, repeatY)
+        val view = ninePatchTextureCard.createView()
         val bounds = IntRectangle(10, 20, expectedX.size, expectedY.size)
         val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
 
@@ -30,7 +30,7 @@ class NinePatchImageViewRendererTest {
         Mockito.mockingDetails(graphics).invocations.forEach { invocation ->
             Assertions.assertEquals("blit", invocation.method.name)
             val arguments: Array<Any> = invocation.arguments
-            Assertions.assertEquals(textureCard.texture, arguments[0])
+            Assertions.assertEquals(ninePatchTextureCard.texture, arguments[0])
             val x = arguments[1] as Int
             val y = arguments[2] as Int
             val stretched = arguments.size == 11

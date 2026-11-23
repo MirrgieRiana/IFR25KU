@@ -25,14 +25,14 @@ abstract class VanillaInventoryScrollbarViewWidget(view: InventoryScrollbarView,
         guiGraphics.drawNinePatchImage(IntRectangle(x, y, scrollbarThickness, scrollbarLength), NinePatchTextureCard.INVENTORY_SCROLLBAR_BACKGROUND)
 
         // つまみの描画
-        val textureCard = if (scrollable) NinePatchTextureCard.INVENTORY_SCROLLBAR_SCROLLER else NinePatchTextureCard.INVENTORY_SCROLLBAR_SCROLLER_DISABLED
+        val ninePatchTextureCard = if (scrollable) NinePatchTextureCard.INVENTORY_SCROLLBAR_SCROLLER else NinePatchTextureCard.INVENTORY_SCROLLBAR_SCROLLER_DISABLED
         val thumbX = x + 1
         val thumbY = y + start + 1
         val thumbWidth = scrollbarThickness - 2
         val thumbHeight = length - 2
         // 狭すぎる場合はつまみを描画しないのだ～🌱
         if (thumbWidth >= 4 && thumbHeight >= 4) {
-            guiGraphics.drawNinePatchImage(IntRectangle(thumbX, thumbY, thumbWidth, thumbHeight), textureCard)
+            guiGraphics.drawNinePatchImage(IntRectangle(thumbX, thumbY, thumbWidth, thumbHeight), ninePatchTextureCard)
         }
 
     }
