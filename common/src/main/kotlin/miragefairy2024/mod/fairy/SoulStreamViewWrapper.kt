@@ -102,7 +102,9 @@ class SoulStreamViewWrapper(
 
                         val scrollView = YScrollContainerView()
 
+                        // 左ペインボタン
                         view += XListView().configure {
+                            // ハイライトリセットボタン
                             view += LayeredImageButtonView(IntPoint(14, 14)).configure {
                                 view.backgroundSprites = BUTTON_14_BACKGROUND
                                 view.foregroundSprites = LayeredImageButtonView.Sprites.of(MirageFairy2024.identifier("button_14/clear_foreground"))
@@ -112,6 +114,8 @@ class SoulStreamViewWrapper(
                                 }
                             }
                             view += XSpaceView(2)
+
+                            // グローバル検索トグルボタン
                             view += LayeredImageButtonView(IntPoint(14, 14)).configure {
                                 view.backgroundSprites = BUTTON_14_BACKGROUND
                                 view.foregroundSprites = LayeredImageButtonView.Sprites.of(MirageFairy2024.identifier("button_14/global_search_foreground"))
@@ -125,6 +129,8 @@ class SoulStreamViewWrapper(
                             }
                         }
                         view += YSpaceView(2)
+
+                        // ハイライトフィルタ
                         view += StackView().configure {
                             view.sizingX = Sizing.FILL
                             view.sizingY = Sizing.FILL
@@ -227,6 +233,8 @@ class SoulStreamViewWrapper(
                             connectScrollbar(scrollView, scrollbarView)
                         }
                         view += YSpaceView(4)
+
+                        // プレイヤーインベントリ
                         (0 until hotbarSlotIndex).chunked(columnCount).forEach {
                             view += createSlotRow(it, SlotType.NORMAL)
                         }
@@ -252,6 +260,8 @@ class SoulStreamViewWrapper(
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL
 
+                        // 右ペインボタン
+                        // 収集効果の有効化切り替えボタン
                         view += LayeredImageButtonView(IntPoint(14, 14)).configure {
                             view.backgroundSprites = BUTTON_14_BACKGROUND
                             view.foregroundSprites = LayeredImageButtonView.Sprites(
@@ -281,6 +291,8 @@ class SoulStreamViewWrapper(
                             }
                         }
                         view += YSpaceView(2)
+
+                        // 効果欄
                         view += StackView().configure {
                             view.sizingX = Sizing.FILL
                             view.sizingY = Sizing.FILL
