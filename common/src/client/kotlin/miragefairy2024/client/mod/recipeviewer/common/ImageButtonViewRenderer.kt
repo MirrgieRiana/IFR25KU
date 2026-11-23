@@ -1,7 +1,7 @@
 package miragefairy2024.client.mod.recipeviewer.common
 
+import miragefairy2024.client.mod.recipeviewer.RenderOverflow
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
-import miragefairy2024.client.mod.recipeviewer.WidgetRenderOverflow
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.views.ImageButtonView
@@ -29,7 +29,7 @@ object ImageButtonViewRenderer : ViewRenderer<ImageButtonView, Unit> {
         return false
     }
 
-    override fun getRenderOverflow(view: ImageButtonView, bounds: IntRectangle) = WidgetRenderOverflow(0, Int.MAX_VALUE, 0, Int.MAX_VALUE)
+    override fun getRenderOverflow(view: ImageButtonView, bounds: IntRectangle) = RenderOverflow(0, Int.MAX_VALUE, 0, Int.MAX_VALUE)
 
     override fun render(view: ImageButtonView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         if (!view.enabled.value) {

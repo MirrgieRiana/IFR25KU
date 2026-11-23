@@ -2,9 +2,9 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.SlotPositionSetter
+import miragefairy2024.client.mod.recipeviewer.RenderOverflow
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
-import miragefairy2024.client.mod.recipeviewer.WidgetRenderOverflow
 import miragefairy2024.client.mod.recipeviewer.common.ImageViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TextViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TooltipViewRenderer
@@ -57,7 +57,7 @@ private infix fun VanillaViewPlacerContext.place(registration: WidgetRegistratio
 context(_: ModContext)
 fun initVanillaViewPlacers() {
     fun placeScrollContainerView(context: VanillaViewPlacerContext, widget: VanillaScrollContainerViewWidget): ViewController {
-        val controller = context place WidgetRegistration(widget, true) { WidgetRenderOverflow.NONE }
+        val controller = context place WidgetRegistration(widget, true) { RenderOverflow.NONE }
         // 子の差し替えだけで全長が変わった場合も、描画前に寸法を通知するのだ～🌱
         val boundsRemover = context.onBeforeRender.register(widget::updateScrollBounds)
         return object : ViewController {
@@ -85,7 +85,7 @@ fun initVanillaViewPlacers() {
         placeScrollContainerView(context, VanillaYScrollContainerViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
     }
     fun placeScrollbarView(context: VanillaViewPlacerContext, widget: VanillaScrollbarViewWidget<*>): ViewController {
-        val controller = context place WidgetRegistration(widget, true) { WidgetRenderOverflow.NONE }
+        val controller = context place WidgetRegistration(widget, true) { RenderOverflow.NONE }
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {
                 controller.setOffset(offset)
@@ -146,7 +146,7 @@ fun initVanillaViewPlacers() {
         ) {
             override fun getMessage() = view.message
         }
-        context place WidgetRegistration(TextButtonWidget(), true) { WidgetRenderOverflow.UNBOUNDED }
+        context place WidgetRegistration(TextButtonWidget(), true) { RenderOverflow.UNBOUNDED }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: LayeredImageButtonView, bounds ->
         fun LayeredImageButtonView.Sprites.toWidgetSprites() = WidgetSprites(this.selected, this.unselected, this.selectedFocused, this.unselectedFocused)
@@ -163,7 +163,7 @@ fun initVanillaViewPlacers() {
         widget.onClick.observe(onClosed) {
             view.onClick.fire()
         }
-        val controller = context place WidgetRegistration(widget, true) { WidgetRenderOverflow.NONE }
+        val controller = context place WidgetRegistration(widget, true) { RenderOverflow.NONE }
         object : ViewController {
             override fun setOffset(offset: IntPoint) {
                 controller.setOffset(offset)
@@ -192,7 +192,7 @@ fun initVanillaViewPlacers() {
         editBox.setResponder {
             view.text.value = it
         }
-        val controller = context place WidgetRegistration(editBox, true) { WidgetRenderOverflow.UNBOUNDED }
+        val controller = context place WidgetRegistration(editBox, true) { RenderOverflow.UNBOUNDED }
         object : ViewController {
             override fun setOffset(offset: IntPoint): Unit {
                 controller.setOffset(offset)

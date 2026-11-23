@@ -1,7 +1,7 @@
 package miragefairy2024.client.mod.recipeviewer.common
 
+import miragefairy2024.client.mod.recipeviewer.RenderOverflow
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
-import miragefairy2024.client.mod.recipeviewer.WidgetRenderOverflow
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.view.x2
@@ -16,7 +16,7 @@ import net.minecraft.client.gui.GuiGraphics
 object ProgressViewRenderer : ViewRenderer<ProgressView, Unit> {
     override fun createState(view: ProgressView) = Unit
 
-    override fun getRenderOverflow(view: ProgressView, bounds: IntRectangle) = WidgetRenderOverflow(0, view.foreground.bounds.sizeX - bounds.sizeX atLeast 0, 0, view.foreground.bounds.sizeY - bounds.sizeY atLeast 0)
+    override fun getRenderOverflow(view: ProgressView, bounds: IntRectangle) = RenderOverflow(0, view.foreground.bounds.sizeX - bounds.sizeX atLeast 0, 0, view.foreground.bounds.sizeY - bounds.sizeY atLeast 0)
 
     override fun render(view: ProgressView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         fun blit(texture: ViewTexture, x: Int, y: Int, source: IntRectangle) {
