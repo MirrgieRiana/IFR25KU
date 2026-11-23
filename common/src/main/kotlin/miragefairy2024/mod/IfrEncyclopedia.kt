@@ -202,7 +202,7 @@ class IfrEncyclopediaEntryCard(
  * 図鑑の文字色なのだ～🌱
  * 背景のテクスチャはダークモードでも替わらないから、暗い側も同じ色にするのだ～🌱
  */
-internal val IFR_ENCYCLOPEDIA_TEXT_COLOR = ColorPair(0xFF493208.toInt(), 0xFF493208.toInt())
+val IFR_ENCYCLOPEDIA_TEXT_COLOR = ColorPair(0xFF493208.toInt(), 0xFF493208.toInt())
 
 /** 段落の間に挟む縦の隙間なのだ～🌱 */
 private val PARAGRAPH_SPACE_CHILDREN_GENERATOR = ChildrenGenerator { _, _ ->

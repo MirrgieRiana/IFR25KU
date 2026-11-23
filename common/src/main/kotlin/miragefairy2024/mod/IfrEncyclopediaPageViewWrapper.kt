@@ -74,13 +74,13 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, tit
             view.sizingX = Sizing.FILL
             view.sizingY = Sizing.FILL
 
-            // カード部分なのだ～🌱
+            // カード部分
             view += XListView().configure {
                 position.weight = 1.0
                 position.alignmentX = Alignment.CENTER
                 view.sizingY = Sizing.FILL
 
-                // カード外枠なのだ～🌱
+                // カード外枠
                 view += StackView().configure {
                     view.sizingX = Sizing.FILL
                     view.sizingY = Sizing.FILL
@@ -90,9 +90,9 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, tit
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL
 
-                        // タイトルなのだ～🌱
+                        // タイトル
                         view += MultiLineTextView().configure {
-                            view.text.value = title
+                            view.text.value = text { card.titleTranslation() }
                             view.alignmentX = Alignment.CENTER
                             view.color = IFR_ENCYCLOPEDIA_TEXT_COLOR
                             view.shadow = false
@@ -100,7 +100,7 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, tit
 
                         view += YSpaceView(5)
 
-                        // 掲げられたアイテムなのだ～🌱
+                        // 掲げられたアイテム
                         view += StackView().configure {
                             position.alignmentX = Alignment.CENTER
 
@@ -113,7 +113,7 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, tit
 
                         view += YSpaceView(5)
 
-                        // 本文なのだ～🌱
+                        // 本文
                         view += StackView().configure {
                             position.weight = 1.0
                             view.sizingX = Sizing.FILL
@@ -135,13 +135,14 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, tit
                             }
                             connectScrollbar(scrollView.view, scrollbarView.view)
                         }
+
                     }.margin(5, 5, 10, 5)
                 }.fixedContentSizeX(200)
             }
 
             view += YSpaceView(10)
 
-            // 下部ボタンなのだ～🌱
+            // 下部ボタン
             view += XListView().configure {
                 position.alignmentX = Alignment.CENTER
 
