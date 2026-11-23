@@ -12,6 +12,7 @@ import miragefairy2024.client.mod.recipeviewer.common.ProgressViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TextViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TooltipBackgroundViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TooltipViewRenderer
+import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
@@ -23,11 +24,11 @@ import miragefairy2024.mod.recipeviewer.views.ImageButtonView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.ItemView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
-import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.ProgressView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
+import miragefairy2024.mod.recipeviewer.views.createView
 import mirrg.kotlin.helium.Slot
 import net.minecraft.SharedConstants
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
@@ -62,7 +63,7 @@ class VanillaViewRendererWidgetTest {
         val texture = ViewTexture(textureId, IntPoint(16, 16))
         check(TooltipBackgroundView(), TooltipBackgroundViewRenderer)
         check(FilledRectangleView(), FilledRectangleViewRenderer)
-        check(NinePatchImageView(textureId, 16, 16, 4, 8, 4, 4, 8, 4, false, false), NinePatchImageViewRenderer)
+        check(NinePatchTextureCard.PANEL.createView(), NinePatchImageViewRenderer)
         check(ImageView(texture), ImageViewRenderer)
         check(ItemView(ItemStack.EMPTY), ItemViewRenderer)
         check(TextView(), TextViewRenderer)
