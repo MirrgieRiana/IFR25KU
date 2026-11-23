@@ -40,9 +40,12 @@ import net.minecraft.client.gui.components.Tooltip
 import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.network.chat.Component
 
-private infix fun VanillaViewPlacerContext.place(widget: AbstractWidget): ViewController {
+private infix fun VanillaViewPlacerContext.place(widget: AbstractWidget) = this.place(widget, null)
+
+private fun VanillaViewPlacerContext.place(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow?): ViewController {
     val onDetached = EventRegistry<() -> Unit>()
-    addRenderableWidget(widget).removeOn(onDetached)
+    val remover = if (renderOverflow == null) this.addRenderableWidget(widget) else this.addRenderableWidget(widget, renderOverflow)
+    remover.removeOn(onDetached)
     return object : ViewController {
         override fun setOffset(offset: IntPoint) {
             widget.setPosition(offset.x, offset.y)
@@ -52,9 +55,12 @@ private infix fun VanillaViewPlacerContext.place(widget: AbstractWidget): ViewCo
     }
 }
 
-private infix fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidget): ViewController {
+private infix fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidget) = this.placeRenderable(widget, null)
+
+private fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow?): ViewController {
     val onDetached = EventRegistry<() -> Unit>()
-    addRenderableOnly(widget).removeOn(onDetached)
+    val remover = if (renderOverflow == null) this.addRenderableOnly(widget) else this.addRenderableOnly(widget, renderOverflow)
+    remover.removeOn(onDetached)
     return object : ViewController {
         override fun setOffset(offset: IntPoint) {
             widget.setPosition(offset.x, offset.y)
