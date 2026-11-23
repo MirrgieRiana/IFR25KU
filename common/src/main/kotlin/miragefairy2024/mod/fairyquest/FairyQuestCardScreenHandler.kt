@@ -5,6 +5,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.SlotType
 import miragefairy2024.mod.common.guiFullScreenTranslation
+import miragefairy2024.mod.createView
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
@@ -15,7 +16,6 @@ import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.GhostRecipeItemView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
-import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.ProgressView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.View
@@ -46,7 +46,6 @@ import miragefairy2024.util.registerViewScreen
 import miragefairy2024.util.set
 import miragefairy2024.util.size
 import miragefairy2024.util.text
-import miragefairy2024.util.times
 import miragefairy2024.util.toItemStacks
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
 import net.minecraft.core.registries.BuiltInRegistries
@@ -127,7 +126,6 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
         val inputSlotIndexOffset = hotbarSlotIndexOffset + playerInventoryWidth
         val outputSlotIndexOffset = inputSlotIndexOffset + tradeSlotCount
 
-        val panelTexture = "textures/gui/" * MirageFairy2024.identifier("panel") * ".png"
         val panelMargin = 7
         val sectionSpace = 3
         val playerInventoryNameSpace = 1
@@ -138,7 +136,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
 
         return View {
             view += StackView().configure { // 外枠なのだ～🌱
-                view += NinePatchImageView(panelTexture, 16, 16, 5, 5, 5, 5, 5, 5, false, false)
+                view += NinePatchTextureCard.PANEL.createView()
                 view += YListView().configure { // 内枠なのだ～🌱
 
                     view += MultiLineTextView().configure {
@@ -156,7 +154,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                         view.sizingY = Sizing.FILL
 
                         // 外枠装飾用パネルなのだ～🌱
-                        view += NinePatchImageView(NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.texture, 66, 66, 22, 22, 22, 22, 22, 22, true, true)
+                        view += NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.createView()
 
                         // スクロールコンテナなのだ～🌱
                         view += XListView().configure {
@@ -168,7 +166,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                                     view.sizingX = Sizing.FILL
 
                                     // 罫線装飾用パネルなのだ～🌱
-                                    view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/fairy_quest_card_line.png"), 11, 11, 0, 11, 0, 0, 11, 0, true, true)
+                                    view += NinePatchTextureCard.FAIRY_QUEST_CARD_LINE.createView()
 
                                     // メッセージテキストラベルなのだ～🌱
                                     view += MultiLineTextView().configure {

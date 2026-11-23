@@ -194,10 +194,10 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                                 "texture" to card.texture.string.jsonElement,
                                 "texture_width" to card.textureWidth.jsonElement,
                                 "texture_height" to card.textureHeight.jsonElement,
-                                "repeat" to card.repeat.jsonElement,
+                                "repeat" to card.repeatX.jsonElement,
                                 "patch_size" to jsonObject(
-                                    "width" to card.patchWidth.jsonElement,
-                                    "height" to card.patchHeight.jsonElement,
+                                    "width" to card.xStartSize.jsonElement,
+                                    "height" to card.yStartSize.jsonElement,
                                 ),
                             )
                             futures.add(DataProvider.saveStable(writer, data, pathResolver.json(identifier)))

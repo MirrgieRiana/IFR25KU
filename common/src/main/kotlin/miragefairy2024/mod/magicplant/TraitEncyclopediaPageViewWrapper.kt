@@ -6,6 +6,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.clientProxy
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.guiBackToGameTranslation
+import miragefairy2024.mod.createView
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.Sizing
@@ -13,7 +14,6 @@ import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.views.AlignView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
-import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.View
@@ -84,7 +84,7 @@ class TraitEncyclopediaPageViewWrapper(trait: Trait) {
                     view.sizingX = Sizing.FILL
                     view.sizingY = Sizing.FILL
 
-                    view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22, true, true)
+                    view += NinePatchTextureCard.TRAIT_BACKGROUND.createView()
                     view += YListView().configure {
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL

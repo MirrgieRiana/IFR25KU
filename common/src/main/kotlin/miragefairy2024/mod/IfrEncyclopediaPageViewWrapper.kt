@@ -13,7 +13,6 @@ import miragefairy2024.mod.recipeviewer.views.AlignView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.ItemView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
-import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.View
@@ -84,7 +83,7 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard) {
                     view.sizingX = Sizing.FILL
                     view.sizingY = Sizing.FILL
 
-                    view += NinePatchImageView(NinePatchTextureCard.IFR_ENCYCLOPEDIA_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22, true, true)
+                    view += NinePatchTextureCard.IFR_ENCYCLOPEDIA_BACKGROUND.createView()
                     view += YListView().configure {
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL

@@ -1,6 +1,7 @@
 package miragefairy2024.client.util
 
 import com.mojang.blaze3d.vertex.PoseStack
+import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.atMost
@@ -10,7 +11,6 @@ import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.locale.Language
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.FormattedText
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.FormattedCharSequence
 import net.minecraft.util.Mth
 import org.joml.Vector3f
@@ -122,29 +122,19 @@ fun GuiGraphics.drawScrollingString(
     }
 }
 
-fun GuiGraphics.drawNinePatchImage(
-    bounds: IntRectangle,
-    textureId: ResourceLocation,
-    textureWidth: Int,
-    xStartSize: Int,
-    xMiddleSize: Int,
-    xEndSize: Int,
-    textureHeight: Int,
-    yStartSize: Int,
-    yMiddleSize: Int,
-    yEndSize: Int,
-    repeatX: Boolean,
-    repeatY: Boolean,
-) {
+fun GuiGraphics.drawNinePatchImage(bounds: IntRectangle, textureCard: NinePatchTextureCard) {
 
-    val sw0 = textureWidth
-    val sw1 = xStartSize
-    val sw2 = xMiddleSize
-    val sw3 = xEndSize
-    val sh0 = textureHeight
-    val sh1 = yStartSize
-    val sh2 = yMiddleSize
-    val sh3 = yEndSize
+    val textureId = textureCard.texture
+    val repeatX = textureCard.repeatX
+    val repeatY = textureCard.repeatY
+    val sw0 = textureCard.textureWidth
+    val sw1 = textureCard.xStartSize
+    val sw2 = textureCard.xMiddleSize
+    val sw3 = textureCard.xEndSize
+    val sh0 = textureCard.textureHeight
+    val sh1 = textureCard.yStartSize
+    val sh2 = textureCard.yMiddleSize
+    val sh3 = textureCard.yEndSize
     val sx0 = 0
     val sx1 = sw1
     val sx2 = sw1 + sw2

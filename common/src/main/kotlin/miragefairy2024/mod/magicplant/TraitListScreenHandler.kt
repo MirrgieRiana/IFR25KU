@@ -3,6 +3,7 @@ package miragefairy2024.mod.magicplant
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.NinePatchTextureCard
+import miragefairy2024.mod.createView
 import miragefairy2024.mod.magicplant.contents.getTraitPower
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.Alignment
@@ -16,7 +17,6 @@ import miragefairy2024.mod.recipeviewer.views.DynamicView
 import miragefairy2024.mod.recipeviewer.views.EmptyView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
-import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
@@ -45,7 +45,6 @@ import miragefairy2024.util.register
 import miragefairy2024.util.registerViewScreen
 import miragefairy2024.util.style
 import miragefairy2024.util.text
-import miragefairy2024.util.times
 import mirrg.kotlin.hydrogen.formatAs
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
 import net.minecraft.core.BlockPos
@@ -190,7 +189,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
         return View {
             // 外枠
             view += StackView().configure {
-                view += NinePatchImageView("textures/gui/" * MirageFairy2024.identifier("panel") * ".png", 16, 16, 5, 5, 5, 5, 5, 5, false, false)
+                view += NinePatchTextureCard.PANEL.createView()
                 // 内枠
                 view += YListView().configure {
                     view.sizingX = Sizing.FILL
@@ -214,7 +213,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL
 
-                        view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22, true, true)
+                        view += NinePatchTextureCard.TRAIT_BACKGROUND.createView()
                         view += cardContent.configure().margin(5)
                     }.fixedContentSizeY(18 * 6)
 

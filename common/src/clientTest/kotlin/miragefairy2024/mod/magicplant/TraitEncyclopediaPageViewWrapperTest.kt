@@ -102,7 +102,7 @@ class TraitEncyclopediaPageViewWrapperTest {
         val placements = view.place()
         val background = placements.single { it.first is NinePatchImageView }
         Assertions.assertEquals(IntRectangle(120, 20, 160, 186), background.second)
-        Assertions.assertEquals(NinePatchTextureCard.TRAIT_BACKGROUND.texture, (background.first as NinePatchImageView).textureId)
+        Assertions.assertSame(NinePatchTextureCard.TRAIT_BACKGROUND, (background.first as NinePatchImageView).textureCard)
         val icon = placements.single { it.first is ImageView }
         Assertions.assertEquals(IntRectangle(184, 50, 32, 32), icon.second)
         Assertions.assertEquals(MirageFairy2024.identifier("textures/gui/traits/test_trait.png"), (icon.first as ImageView).texture.id)
