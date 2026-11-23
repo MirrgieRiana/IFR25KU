@@ -41,7 +41,7 @@ abstract class FairyLogisticsCard<B : FairyLogisticsBlock, E : FairyLogisticsBlo
 
     override fun createBlockSettings(): BlockBehaviour.Properties = BlockBehaviour.Properties.of().noCollission().strength(1.0F).pushReaction(PushReaction.DESTROY)
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 

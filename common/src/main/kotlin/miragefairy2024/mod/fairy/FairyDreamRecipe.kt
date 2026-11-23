@@ -18,6 +18,7 @@ import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.plusAssign
+import miragefairy2024.mod.recipeviewer.views.tooltip
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.IngredientStack
 import miragefairy2024.util.darkRed
@@ -57,7 +58,7 @@ object FairyDreamRecipes {
     val ENTITY_TYPE = FairyDreamTable<EntityType<*>>(BuiltInRegistries.ENTITY_TYPE)
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyDreamRecipe() {
     ItemFairyDreamRecipeRecipeViewerCategoryCard.init()
     BlockFairyDreamRecipeRecipeViewerCategoryCard.init()
@@ -130,12 +131,12 @@ abstract class FairyDreamRecipeRecipeViewerCategoryCard<T> : RecipeViewerCategor
             view += TextView(text).configure {
                 position.alignmentY = Alignment.CENTER
                 position.weight = 1.0
+                position.ignoreLayoutX = true
                 view.sizingX = Sizing.FILL
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
                 view.scroll = true
-                view.tooltip = recipeEntry.recipe.second.map { getName(it) }
-            }
+            }.tooltip(recipeEntry.recipe.second.map { getName(it) })
             view += XSpaceView(2)
             view += OutputSlotView(recipeEntry.recipe.first.createFairyItemStack())
         }

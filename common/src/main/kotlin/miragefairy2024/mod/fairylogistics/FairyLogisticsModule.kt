@@ -7,7 +7,7 @@ val fairyLogisticsCards: List<FairyLogisticsCard<*, *, *>> = listOf(
     FairyActiveConsumerCard,
 )
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyLogisticsModule() {
     fairyLogisticsCards.forEach {
         it.init()

@@ -11,6 +11,7 @@ import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
+import miragefairy2024.mod.recipeviewer.views.EmptyView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.SpaceView
@@ -22,7 +23,6 @@ import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.menuSlotView
-import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
@@ -54,7 +54,6 @@ import miragefairy2024.util.set
 import miragefairy2024.util.text
 import miragefairy2024.util.times
 import miragefairy2024.util.toItemTag
-import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.castOrNull
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
@@ -142,7 +141,7 @@ enum class BagCard(
 }
 
 
-context(ModContext)
+context(_: ModContext)
 fun initBagModule() {
     BagCard.BAG_ITEM_TAG.enJa(EnJa("Bag", "カバン"))
 
@@ -436,9 +435,9 @@ open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenH
     open val card: BagCard? = null
 
     override fun createView(title: Component, playerInventoryTitle: Component): View {
-        val card = card ?: return SpaceView()
+        val card = card ?: return EmptyView()
 
-        /** 持ち物の名前なのだ～🌱 */
+        /** インベントリの名前なのだ～🌱 */
         fun inventoryNameView(name: Component) = MultiLineTextView().also {
             it.text.value = name
             it.color = ColorPair.DARK_GRAY
@@ -459,32 +458,32 @@ open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenH
         }
 
         return View {
-            // 外枠なのだ～🌱
-            view += StackView().configure {
-
-                view += NinePatchImageView(PANEL_TEXTURE, 16, 16, 5, 5, 5, 5, 5, 5, false)
-
-                // 内枠なのだ～🌱
-                view += YListView().configure {
+            view += StackView().configure { // 外枠なのだ～🌱
+                view += NinePatchImageView(PANEL_TEXTURE, 16, 16, 5, 5, 5, 5, 5, 5, false, false)
+                view += YListView().configure { // 内枠なのだ～🌱
                     view.sizingX = Sizing.FILL
 
                     // 枠の横幅はスロットの個数で決まるため、名前の長さを混ぜないのだ～🌱
-                    view += inventoryNameView(title).configure { position.ignoreLayoutX = true }.margin(INVENTORY_NAME_MARGIN_X, 0)
+                    view += inventoryNameView(title).configure {
+                        position.ignoreLayoutX = true
+                    }.margin(INVENTORY_NAME_MARGIN_X, 0)
 
                     view += YSpaceView(INVENTORY_NAME_SPACE)
 
-                    // カバンの持ち物なのだ～🌱
+                    // カバンのインベントリなのだ～🌱
                     repeat(card.inventoryHeight) { r ->
                         view += slotRowView(card.inventoryWidth) { c -> PLAYER_INVENTORY_WIDTH * (PLAYER_INVENTORY_HEIGHT + 1) + card.inventoryWidth * r + c }
                     }
 
                     view += YSpaceView(INVENTORY_NAME_SPACE)
 
-                    view += inventoryNameView(playerInventoryTitle).configure { position.ignoreLayoutX = true }.margin(INVENTORY_NAME_MARGIN_X, 0)
+                    view += inventoryNameView(playerInventoryTitle).configure {
+                        position.ignoreLayoutX = true
+                    }.margin(INVENTORY_NAME_MARGIN_X, 0)
 
                     view += YSpaceView(PLAYER_INVENTORY_NAME_SPACE)
 
-                    // プレイヤーの持ち物なのだ～🌱
+                    // プレイヤーのインベントリなのだ～🌱
                     repeat(PLAYER_INVENTORY_HEIGHT) { r ->
                         view += slotRowView(PLAYER_INVENTORY_WIDTH) { c -> PLAYER_INVENTORY_WIDTH * r + c }
                     }
@@ -493,7 +492,8 @@ open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenH
 
                     // ホットバーなのだ～🌱
                     view += slotRowView(PLAYER_INVENTORY_WIDTH) { c -> PLAYER_INVENTORY_WIDTH * PLAYER_INVENTORY_HEIGHT + c }
-                }.minContentSizeX(SlotType.NORMAL.viewTexture.bounds.sizeX * (card.inventoryWidth atLeast PLAYER_INVENTORY_WIDTH)).margin(PANEL_MARGIN)
+
+                }.margin(PANEL_MARGIN)
             }
         }
     }

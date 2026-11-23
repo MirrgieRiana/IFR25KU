@@ -19,7 +19,7 @@ fun <T : ToolConfiguration> T.collection() = this.merge(CollectionToolEffectType
 object CollectionToolEffectType : BooleanToolEffectType<ToolConfiguration>() {
     private val TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("fairy_mining_tool").toLanguageKey()}.collection" }, "Collect drop items when killed", "撃破時にドロップ品を回収")
 
-    context(ModContext)
+    context(_: ModContext)
     fun init() {
         TRANSLATION.enJa()
     }

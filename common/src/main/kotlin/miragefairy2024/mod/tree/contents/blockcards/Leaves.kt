@@ -11,7 +11,7 @@ import net.minecraft.data.models.model.TexturedModel
 import net.minecraft.world.item.Item
 
 class TreeLeavesBlockCard(configuration: TreeBlockConfiguration, sapling: () -> TreeBlockCard, extraDrop: (() -> Item)?) : AbstractTreeLeavesBlockCard(configuration, sapling, extraDrop) {
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
         block.registerSingletonBlockStateGeneration()

@@ -3,17 +3,20 @@ package miragefairy2024.client.mod.recipeviewer.common
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.ViewTexture
-import miragefairy2024.mod.recipeviewer.view.contains
 import miragefairy2024.mod.recipeviewer.views.ImageButtonView
 import miragefairy2024.util.fire
+import mirrg.kotlin.helium.Slot
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.resources.sounds.SimpleSoundInstance
 import net.minecraft.sounds.SoundEvents
 
-object ImageButtonViewRenderer : ViewRenderer<ImageButtonView> {
+object ImageButtonViewRenderer : ViewRenderer<ImageButtonView, Unit> {
+    override fun createState(view: ImageButtonView) = Unit
 
-    override fun mouseClicked(view: ImageButtonView, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int): Boolean {
+    override fun isFocusable(view: ImageButtonView, state: Slot<Unit>) = view.enabled.value
+
+    override fun mouseClicked(view: ImageButtonView, state: Slot<Unit>, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int): Boolean {
         if (!view.enabled.value) return false
         if (button != 0) return false
         view.onClick.fire {
@@ -25,10 +28,10 @@ object ImageButtonViewRenderer : ViewRenderer<ImageButtonView> {
         return false
     }
 
-    override fun render(view: ImageButtonView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(view: ImageButtonView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         if (!view.enabled.value) {
             drawTexture(bounds, graphics, view.disabledTexture ?: view.texture!!)
-        } else if (bounds.contains(mouseX, mouseY)) {
+        } else if (isHovered) {
             drawTexture(bounds, graphics, view.hoveredTexture ?: view.texture!!)
         } else {
             drawTexture(bounds, graphics, view.texture!!)

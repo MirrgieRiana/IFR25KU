@@ -36,7 +36,7 @@ private val UNKNOWN_TRAIT_TRANSLATION = Translation({ IDENTIFIER.toLanguageKey("
 private val INVALID_BITS_FORMAT_TRANSLATION = Translation({ IDENTIFIER.toLanguageKey("commands", "invalid_bits_format") }, "Invalid bits format: %s", "ビットの形式が無効です: %s")
 private val SUCCESS_TRANSLATION = Translation({ IDENTIFIER.toLanguageKey("commands", "success") }, "Set negative trait bits for %s = %s", "特性 %s のネガティブビットを %s に設定しました")
 
-context(ModContext)
+context(_: ModContext)
 fun initNegativeTraitBits() {
     UNKNOWN_TRAIT_TRANSLATION.enJa()
     INVALID_BITS_FORMAT_TRANSLATION.enJa()

@@ -65,7 +65,7 @@ object FermentationBarrelCard : SimpleMachineCard<FermentationBarrelBlock, Ferme
         type = AdvancementCardType.NORMAL,
     )
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 

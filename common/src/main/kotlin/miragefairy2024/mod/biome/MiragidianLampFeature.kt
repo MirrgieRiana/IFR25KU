@@ -26,7 +26,7 @@ object MiragidianLampFeatureCard {
     val feature = MiragidianLampFeature(NoneFeatureConfiguration.CODEC)
     val placedFeatureKey = Registries.PLACED_FEATURE with identifier
 
-    context(ModContext)
+    context(_: ModContext)
     fun init() {
         Registration(BuiltInRegistries.FEATURE, identifier) { feature }.register()
         feature.generator(identifier) {

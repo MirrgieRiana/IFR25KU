@@ -409,7 +409,7 @@ val SET_FAIRY_QUEST_RECIPE_LOOT_FUNCTION_TYPE = LootItemFunctionType(SetFairyQue
 
 val FAIRY_QUEST_CARD_FEATURE = FairyQuestCardFeature(NoneFeatureConfiguration.CODEC)
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyQuestRecipe() {
     FairyQuestRecipeCard.entries.forEach { card ->
         Registration(fairyQuestRecipeRegistry, card.identifier) { card }.register()
@@ -551,6 +551,7 @@ object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Fairy
                 view += TextView(recipeEntry.recipe.title).configure {
                     position.alignmentY = Alignment.CENTER
                     position.weight = 1.0
+                    position.ignoreLayoutX = true
                     view.sizingX = Sizing.FILL
                     view.color = ColorPair.DARK_GRAY
                     view.shadow = false

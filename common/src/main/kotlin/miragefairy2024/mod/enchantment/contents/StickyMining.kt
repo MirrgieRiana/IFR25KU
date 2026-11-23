@@ -25,7 +25,7 @@ import net.minecraft.world.phys.AABB
 
 val STICKY_MINING_BLOCK_TAG = MirageFairy2024.identifier("sticky_mining_block").toBlockTag()
 
-context(ModContext)
+context(_: ModContext)
 fun initStickyMining() {
     STICKY_MINING_BLOCK_TAG.enJa(EnJa("Sticky Mining Block", "粘着採掘ブロック"))
 

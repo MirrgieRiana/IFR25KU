@@ -16,13 +16,12 @@ import miragefairy2024.mod.fairybuilding.FairyHouseCard
 import miragefairy2024.mod.fairybuilding.FairyHouseScreenHandler
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
-import mirrg.kotlin.helium.atMost
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin
 import net.minecraft.client.gui.GuiGraphics
 import java.util.Optional
 import kotlin.math.roundToInt
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyBuildingClientModule() {
     ModelLoadingPlugin.register {
         FairyBuildingModelCard.entries.forEach { card ->
@@ -43,7 +42,7 @@ open class FairyBuildingScreen<H : FairyBuildingScreenHandler>(card: FairyBuildi
 open class FairyFactoryScreen<H : FairyFactoryScreenHandler>(private val card: FairyFactoryCard<*, *, *>, arguments: Arguments<H>) : FairyBuildingScreen<H>(card, arguments) {
     override fun renderBg(context: GuiGraphics, delta: Float, mouseX: Int, mouseY: Int) {
         super.renderBg(context, delta, mouseX, mouseY)
-        val h = (9.0 * (menu.folia / card.maxFolia.toDouble() atMost 1.0)).roundToInt()
+        val h = (9.0 * (menu.folia / card.maxFolia.toDouble()).coerceIn(0.0, 1.0)).roundToInt()
         context.blit(SPRITES_TEXTURE, leftPos + 164, topPos + imageHeight - 94 + (9 - h), 32F, 0F + (9 - h).toFloat(), 5, h, 64, 64)
     }
 
@@ -66,8 +65,8 @@ class FairyHouseScreen(card: FairyHouseCard, arguments: Arguments<FairyHouseScre
 class FairyCollectorScreen(card: FairyCollectorCard, arguments: Arguments<FairyCollectorScreenHandler>) : FairyFactoryScreen<FairyCollectorScreenHandler>(card, arguments) {
     override fun renderBg(context: GuiGraphics, delta: Float, mouseX: Int, mouseY: Int) {
         super.renderBg(context, delta, mouseX, mouseY)
-        context.blit(SPRITES_TEXTURE, leftPos + 14, topPos + 28, 0F, 0F, (18.0 * (menu.collectionProgress / 10000.0 atMost 1.0)).roundToInt(), 4, 64, 64)
-        context.blit(SPRITES_TEXTURE, leftPos + 80, topPos + 28, 0F, 0F, (18.0 * (menu.sortProgress / 10000.0 atMost 1.0)).roundToInt(), 4, 64, 64)
+        context.blit(SPRITES_TEXTURE, leftPos + 14, topPos + 28, 0F, 0F, (18.0 * (menu.collectionProgress / 10000.0).coerceIn(0.0, 1.0)).roundToInt(), 4, 64, 64)
+        context.blit(SPRITES_TEXTURE, leftPos + 80, topPos + 28, 0F, 0F, (18.0 * (menu.sortProgress / 10000.0).coerceIn(0.0, 1.0)).roundToInt(), 4, 64, 64)
     }
 
     override fun renderTooltip(context: GuiGraphics, x: Int, y: Int) {

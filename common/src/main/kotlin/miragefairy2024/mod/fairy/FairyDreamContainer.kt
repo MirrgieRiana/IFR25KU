@@ -46,7 +46,7 @@ val FAIRY_DREAM_CONTAINER_ATTACHMENT_TYPE: AttachmentType<FairyDreamContainer> =
 
 val Entity.fairyDreamContainer get() = this[FAIRY_DREAM_CONTAINER_ATTACHMENT_TYPE]
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyDreamContainer() {
 
     FAIRY_DREAM_CONTAINER_ATTACHMENT_TYPE.register()

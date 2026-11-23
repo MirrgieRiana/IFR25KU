@@ -23,11 +23,11 @@ import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator
 
-inline fun <T> T.configure(block: T.() -> Unit) = this.apply(block)
+inline fun <T> T.apply2(block: T.() -> Unit) = this.apply(block)
 
 
 @Suppress("FunctionName")
-fun LootTable(vararg pools: LootPool.Builder, initializer: LootTable.Builder.() -> Unit = {}): LootTable.Builder = LootTable.lootTable().configure {
+fun LootTable(vararg pools: LootPool.Builder, initializer: LootTable.Builder.() -> Unit = {}): LootTable.Builder = LootTable.lootTable().apply2 {
     pools.forEach {
         this.withPool(it)
     }
@@ -35,7 +35,7 @@ fun LootTable(vararg pools: LootPool.Builder, initializer: LootTable.Builder.() 
 }
 
 @Suppress("FunctionName")
-fun LootPool(vararg entries: LootPoolEntryContainer.Builder<*>, initializer: LootPool.Builder.() -> Unit = {}): LootPool.Builder = LootPool.lootPool().configure {
+fun LootPool(vararg entries: LootPoolEntryContainer.Builder<*>, initializer: LootPool.Builder.() -> Unit = {}): LootPool.Builder = LootPool.lootPool().apply2 {
     entries.forEach {
         this.add(it)
     }
@@ -43,57 +43,57 @@ fun LootPool(vararg entries: LootPoolEntryContainer.Builder<*>, initializer: Loo
 }
 
 @Suppress("FunctionName")
-fun EmptyLootPoolEntry(initializer: LootPoolSingletonContainer.Builder<*>.() -> Unit = {}): LootPoolSingletonContainer.Builder<*> = EmptyLootItem.emptyItem().configure {
+fun EmptyLootPoolEntry(initializer: LootPoolSingletonContainer.Builder<*>.() -> Unit = {}): LootPoolSingletonContainer.Builder<*> = EmptyLootItem.emptyItem().apply2 {
     initializer.invoke(this)
 }
 
 @Suppress("FunctionName")
-fun ItemLootPoolEntry(item: Item, initializer: LootPoolSingletonContainer.Builder<*>.() -> Unit = {}): LootPoolSingletonContainer.Builder<*> = LootItem.lootTableItem(item).configure {
+fun ItemLootPoolEntry(item: Item, initializer: LootPoolSingletonContainer.Builder<*>.() -> Unit = {}): LootPoolSingletonContainer.Builder<*> = LootItem.lootTableItem(item).apply2 {
     initializer.invoke(this)
 }
 
 @Suppress("FunctionName")
-fun AlternativeLootPoolEntry(vararg children: LootPoolEntryContainer.Builder<*>, initializer: AlternativesEntry.Builder.() -> Unit = {}): AlternativesEntry.Builder = AlternativesEntry.alternatives(*children).configure {
+fun AlternativeLootPoolEntry(vararg children: LootPoolEntryContainer.Builder<*>, initializer: AlternativesEntry.Builder.() -> Unit = {}): AlternativesEntry.Builder = AlternativesEntry.alternatives(*children).apply2 {
     initializer.invoke(this)
 }
 
 @Suppress("FunctionName")
-fun GroupLootPoolEntry(vararg children: LootPoolEntryContainer.Builder<*>, initializer: EntryGroup.Builder.() -> Unit = {}): EntryGroup.Builder = EntryGroup.list(*children).configure {
+fun GroupLootPoolEntry(vararg children: LootPoolEntryContainer.Builder<*>, initializer: EntryGroup.Builder.() -> Unit = {}): EntryGroup.Builder = EntryGroup.list(*children).apply2 {
     initializer.invoke(this)
 }
 
 @Suppress("FunctionName")
-fun SequenceLootPoolEntry(vararg children: LootPoolEntryContainer.Builder<*>, initializer: SequentialEntry.Builder.() -> Unit = {}): SequentialEntry.Builder = SequentialEntry.sequential(*children).configure {
+fun SequenceLootPoolEntry(vararg children: LootPoolEntryContainer.Builder<*>, initializer: SequentialEntry.Builder.() -> Unit = {}): SequentialEntry.Builder = SequentialEntry.sequential(*children).apply2 {
     initializer.invoke(this)
 }
 
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Block).registerLootTableGeneration(initializer: (FabricBlockLootTableProvider, HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateBlockLootTable { it, registries ->
     it.add(this(), initializer(it, registries).setRandomSequence(this().lootTable.location()))
 }
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Block).registerDefaultLootTableGeneration() = this.registerLootTableGeneration { it, _ ->
     it.createSingleItemTable(this())
 }
 
-context(ModContext)
+context(_: ModContext)
 fun registerChestLootTableGeneration(lootTableId: ResourceKey<LootTable>, initializer: (HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateChestLootTable { it, registries ->
     it(lootTableId, initializer(registries).setRandomSequence(lootTableId.location()))
 }
 
-context(ModContext)
+context(_: ModContext)
 fun registerArchaeologyLootTableGeneration(lootTableId: ResourceKey<LootTable>, initializer: (HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateArchaeologyLootTable { it, registries ->
     it(lootTableId, initializer(registries).setRandomSequence(lootTableId.location()))
 }
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> EntityType<*>).registerLootTableGeneration(initializer: (HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateEntityLootTable { it, registries ->
     it(this(), initializer(registries).setRandomSequence(this().defaultLootTable.location()))
 }
 
-context(ModContext)
+context(_: ModContext)
 fun registerAdvancementRewardLootTableGeneration(lootTableId: ResourceKey<LootTable>, initializer: (HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateAdvancementRewardLootTable { it, registries ->
     it(lootTableId, initializer(registries).setRandomSequence(lootTableId.location()))
 }
@@ -104,7 +104,7 @@ enum class FortuneEffect {
     UNIFORM,
 }
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Block).registerOreLootTableGeneration(drop: () -> Item, additionalCount: ClosedFloatingPointRange<Float>? = null, fortuneEffect: FortuneEffect = FortuneEffect.ORE) = this.registerLootTableGeneration { it, registries ->
     it.createSilkTouchDispatchTable(this(), it.applyExplosionDecay(this(), ItemLootPoolEntry(drop()) {
         if (additionalCount != null) apply(SetItemCountFunction.setCount(UniformGenerator.between(additionalCount.start, additionalCount.endInclusive)))

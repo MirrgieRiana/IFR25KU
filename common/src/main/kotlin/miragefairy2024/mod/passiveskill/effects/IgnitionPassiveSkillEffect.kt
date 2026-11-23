@@ -22,7 +22,7 @@ object IgnitionPassiveSkillEffect : AbstractBooleanPassiveSkillEffect("ignition"
 
     override fun getFilters(samples: List<Boolean>): List<PassiveSkillEffectFilter<Boolean>> = listOf(PassiveSkillEffectFilter(this, identifier, text { translation() }) { true })
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
         translation.enJa()

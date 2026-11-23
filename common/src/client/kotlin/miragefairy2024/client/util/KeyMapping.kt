@@ -16,7 +16,7 @@ class KeyMappingCard(
 ) {
     lateinit var keyMapping: KeyMapping
 
-    context(ModContext)
+    context(_: ModContext)
     fun init() {
         keyMapping = KeyMapping(nameTranslationKey, defaultKeyCode, category)
         inputEventsHandlers += {
@@ -28,5 +28,5 @@ class KeyMappingCard(
     }
 }
 
-context(TextScope)
+context(_: TextScope)
 operator fun KeyMappingCard.invoke(): Component = Component.keybind(this@invoke.nameTranslationKey)

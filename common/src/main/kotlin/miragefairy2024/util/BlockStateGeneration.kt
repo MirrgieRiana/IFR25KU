@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.state.properties.Property
 
 // registerBlockStateGeneration
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Block).registerBlockStateGeneration(creator: () -> JsonElement) = DataGenerationEvents.onGenerateBlockModel {
     it.blockStateOutput.accept(object : BlockStateGenerator {
         override fun get() = creator()
@@ -26,7 +26,7 @@ fun (() -> Block).registerBlockStateGeneration(creator: () -> JsonElement) = Dat
     })
 }
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Block).registerVariantsBlockStateGeneration(entriesGetter: VariantsBlockStateGenerationRegistrationScope.() -> List<BlockStateVariantEntry>) = this.registerBlockStateGeneration {
     jsonObject(
         "variants" to jsonObject(
@@ -45,7 +45,7 @@ fun (() -> Block).registerVariantsBlockStateGeneration(entriesGetter: VariantsBl
     )
 }
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Block).registerSingletonBlockStateGeneration() = DataGenerationEvents.onGenerateBlockModel {
     it.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(this(), "block/" * this().getIdentifier()))
 }
@@ -122,10 +122,10 @@ fun propertiesOf(vararg properties: PropertyEntry<*>) = listOf(*properties)
 
 object VariantsBlockStateGenerationRegistrationScope
 
-context(VariantsBlockStateGenerationRegistrationScope)
+context(_: VariantsBlockStateGenerationRegistrationScope)
 fun normal(model: ResourceLocation) = listOf(propertiesOf() with BlockStateVariant(model = model))
 
-context(VariantsBlockStateGenerationRegistrationScope)
+context(_: VariantsBlockStateGenerationRegistrationScope)
 fun <T : Comparable<T>> List<BlockStateVariantEntry>.with(property: Property<T>, modelFunction: (ResourceLocation, PropertyEntry<T>) -> ResourceLocation): List<BlockStateVariantEntry> {
     return property.possibleValues.flatMap { value ->
         this.map { (properties, variant) ->
@@ -135,12 +135,12 @@ fun <T : Comparable<T>> List<BlockStateVariantEntry>.with(property: Property<T>,
     }
 }
 
-context(VariantsBlockStateGenerationRegistrationScope)
+context(_: VariantsBlockStateGenerationRegistrationScope)
 infix fun <T : Comparable<T>> List<BlockStateVariantEntry>.with(property: Property<T>): List<BlockStateVariantEntry> {
     return this.with(property) { model, entry -> model * "_${entry.keyName}${entry.valueName}" }
 }
 
-context(VariantsBlockStateGenerationRegistrationScope)
+context(_: VariantsBlockStateGenerationRegistrationScope)
 fun List<BlockStateVariantEntry>.withHorizontalRotation(property: Property<Direction>): List<BlockStateVariantEntry> {
     return property.possibleValues.flatMap { value ->
         this.map { (properties, variant) ->

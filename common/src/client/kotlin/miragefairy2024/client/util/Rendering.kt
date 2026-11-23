@@ -1,13 +1,26 @@
 package miragefairy2024.client.util
 
+import com.mojang.blaze3d.systems.RenderSystem
+import com.mojang.blaze3d.vertex.BufferBuilder
+import com.mojang.blaze3d.vertex.BufferUploader
+import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
+import com.mojang.blaze3d.vertex.Tesselator
+import com.mojang.blaze3d.vertex.VertexFormat
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import mirrg.kotlin.helium.atLeast
+import mirrg.kotlin.helium.atMost
 import mirrg.kotlin.helium.max
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.renderer.GameRenderer
+import net.minecraft.locale.Language
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.FormattedText
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.FormattedCharSequence
 import net.minecraft.util.Mth
+import org.joml.Matrix4f
 import org.joml.Vector3f
 import kotlin.math.PI
 import kotlin.math.cos
@@ -21,6 +34,20 @@ inline fun <T> PoseStack.stack(block: () -> T): T {
     } finally {
         this.popPose()
     }
+}
+
+/** 単一行の本文が幅を超える場合、省略記号の実測幅を確保して文字単位で切り詰めるのだ～🌱 */
+fun Font.ellipsize(text: FormattedText, maxWidth: Int, ellipsis: FormattedText): FormattedCharSequence {
+    if (maxWidth <= 0) return FormattedCharSequence.EMPTY
+    // componentStyleAtWidth は初めて幅を超えたときの Style を返すから、null の場合は幅に収まってるのだ～🌱
+    if (this.splitter.componentStyleAtWidth(text, maxWidth) == null) return Language.getInstance().getVisualOrder(text)
+    val ellipsisWidth = this.width(ellipsis)
+    val result = if (ellipsisWidth > maxWidth) {
+        this.substrByWidth(ellipsis, maxWidth)
+    } else {
+        FormattedText.composite(this.substrByWidth(text, maxWidth - ellipsisWidth), ellipsis)
+    }
+    return Language.getInstance().getVisualOrder(result)
 }
 
 fun GuiGraphics.drawRightText(textRenderer: Font, text: String, rightX: Int, y: Int, color: Int, shadow: Boolean) {
@@ -101,4 +128,121 @@ fun GuiGraphics.drawScrollingString(
     } finally {
         this.disableScissor()
     }
+}
+
+fun GuiGraphics.drawNinePatchImage(
+    bounds: IntRectangle,
+    textureId: ResourceLocation,
+    textureWidth: Int,
+    xStartSize: Int,
+    xMiddleSize: Int,
+    xEndSize: Int,
+    textureHeight: Int,
+    yStartSize: Int,
+    yMiddleSize: Int,
+    yEndSize: Int,
+    repeatX: Boolean,
+    repeatY: Boolean,
+) {
+
+    val sw0 = textureWidth
+    val sw1 = xStartSize
+    val sw2 = xMiddleSize
+    val sw3 = xEndSize
+    val sh0 = textureHeight
+    val sh1 = yStartSize
+    val sh2 = yMiddleSize
+    val sh3 = yEndSize
+    val sx0 = 0
+    val sx1 = sw1
+    val sx2 = sw1 + sw2
+    val sy0 = 0
+    val sy1 = sh1
+    val sy2 = sh1 + sh2
+    val dx0 = bounds.x
+    val dx1 = bounds.x + sw1
+    val dx2 = bounds.x + bounds.sizeX - sw3
+    // val dx3 = bounds.x + bounds.sizeX
+    val dy0 = bounds.y
+    val dy1 = bounds.y + sh1
+    val dy2 = bounds.y + bounds.sizeY - sh3
+    // val dy3 = bounds.y + bounds.sizeY
+
+    RenderSystem.setShaderTexture(0, textureId)
+    RenderSystem.setShader(GameRenderer::getPositionTexShader)
+    val matrix: Matrix4f = this.pose().last().pose()
+    val bufferBuilder: BufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
+
+    fun addQuad(x: Int, y: Int, width: Int, height: Int, u: Int, v: Int, uWidth: Int, vHeight: Int) {
+        val minU = u.toFloat() / sw0
+        val maxU = (u.toFloat() + uWidth) / sw0
+        val minV = v.toFloat() / sh0
+        val maxV = (v.toFloat() + vHeight) / sh0
+        bufferBuilder.addVertex(matrix, x.toFloat(), y.toFloat(), 0.0F).setUv(minU, minV)
+        bufferBuilder.addVertex(matrix, x.toFloat(), (y + height).toFloat(), 0.0F).setUv(minU, maxV)
+        bufferBuilder.addVertex(matrix, (x + width).toFloat(), (y + height).toFloat(), 0.0F).setUv(maxU, maxV)
+        bufferBuilder.addVertex(matrix, (x + width).toFloat(), y.toFloat(), 0.0F).setUv(maxU, minV)
+    }
+
+    // 角
+    addQuad(dx0, dy0, sw1, sh1, sx0, sy0, sw1, sh1)
+    addQuad(dx2, dy0, sw3, sh1, sx2, sy0, sw3, sh1)
+    addQuad(dx0, dy2, sw1, sh3, sx0, sy2, sw1, sh3)
+    addQuad(dx2, dy2, sw3, sh3, sx2, sy2, sw3, sh3)
+
+    // 上下
+    run {
+        var dx = dx1
+        while (true) {
+            if (dx >= dx2) break
+            val dw = if (repeatX) sw2 atMost dx2 - dx else dx2 - dx
+            val sw = if (repeatX) dw else sw2
+
+            addQuad(dx, dy0, dw, sh1, sx1, sy0, sw, sh1)
+            addQuad(dx, dy2, dw, sh3, sx1, sy2, sw, sh3)
+
+            dx += dw
+        }
+    }
+
+    // 左右
+    run {
+        var dy = dy1
+        while (true) {
+            if (dy >= dy2) break
+            val dh = if (repeatY) sh2 atMost dy2 - dy else dy2 - dy
+            val sh = if (repeatY) dh else sh2
+
+            addQuad(dx0, dy, sw1, dh, sx0, sy1, sw1, sh)
+            addQuad(dx2, dy, sw3, dh, sx2, sy1, sw3, sh)
+
+            dy += dh
+        }
+    }
+
+    // 中央
+    run {
+        var dx = dx1
+        while (true) {
+            if (dx >= dx2) break
+            val dw = if (repeatX) sw2 atMost dx2 - dx else dx2 - dx
+            val sw = if (repeatX) dw else sw2
+
+            var dy = dy1
+            while (true) {
+                if (dy >= dy2) break
+                val dh = if (repeatY) sh2 atMost dy2 - dy else dy2 - dy
+                val sh = if (repeatY) dh else sh2
+
+                addQuad(dx, dy, dw, dh, sx1, sy1, sw, sh)
+
+                dy += dh
+            }
+
+            dx += dw
+        }
+    }
+
+    BufferUploader.drawWithShader(bufferBuilder.buildOrThrow())
+
 }

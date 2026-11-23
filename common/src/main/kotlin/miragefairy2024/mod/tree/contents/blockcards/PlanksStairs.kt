@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.Block
 class TreePlanksStairsBlockCard(configuration: TreeBlockConfiguration, private val baseBlock: () -> Registration<*, out Block>) : TreeBlockCard(configuration) {
     override fun createSettings() = createPlankSettings()
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 

@@ -9,7 +9,7 @@ val TOOLTIP_VIEWER_KEY_TRANSLATION = Translation({ "container.${MirageFairy2024.
 val TOOLTIP_VIEWER_EXAMPLE_KEY_TRANSLATION = Translation({ "gui.${MirageFairy2024.MOD_ID}.tooltip_viewer.example" }, "Example: %s", "例: %s")
 val OPEN_TOOLTIP_VIEWER_KEY_TRANSLATION = Translation({ "key.${MirageFairy2024.MOD_ID}.open_tooltip_viewer" }, "Open Tooltip Viewer", "ツールチップビューワーを開く")
 
-context(ModContext)
+context(_: ModContext)
 fun initTooltipViewerModule() {
     TOOLTIP_VIEWER_KEY_TRANSLATION.enJa()
     TOOLTIP_VIEWER_EXAMPLE_KEY_TRANSLATION.enJa()
