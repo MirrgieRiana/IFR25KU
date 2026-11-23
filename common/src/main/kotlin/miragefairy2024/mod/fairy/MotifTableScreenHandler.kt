@@ -3,6 +3,7 @@ package miragefairy2024.mod.fairy
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.clientProxy
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenContent
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
@@ -85,8 +86,8 @@ fun initMotifTableScreenHandler() {
 
 class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifChance>) : AbstractContainerMenu(motifTableScreenHandlerType(), syncId), ViewProviderMenu {
 
-    override fun createView(title: Component, playerInventoryTitle: Component): View {
-        return View {
+    override fun createScreenContent(title: Component, playerInventoryTitle: Component): ScreenContent {
+        val rootView = View {
             // 外枠
             view += StackView().configure {
                 view.sizingY = Sizing.FILL
@@ -141,6 +142,7 @@ class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifC
                 }.margin(7)
             }.margin(0, 4)
         }
+        return ScreenContent(rootView)
     }
 
     override fun stillValid(player: Player) = true

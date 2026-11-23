@@ -6,6 +6,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.clientProxy
 import miragefairy2024.mod.common.SlotType
 import miragefairy2024.mod.common.guiBackToGameTranslation
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenContent
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.Sizing
@@ -48,27 +49,27 @@ private fun IfrEncyclopediaEntryCard.openIfrEncyclopediaPageScreen() {
         val parent = proxy.getCurrentScreen()
         val title = text { this@openIfrEncyclopediaPageScreen.titleTranslation() }
         proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(title) {
-            IfrEncyclopediaPageViewWrapper(this).also { view ->
-                view.onBackToGame.register {
+            IfrEncyclopediaPageScreenContent(this).also { screenContent ->
+                screenContent.onBackToGame.register {
                     proxy.setCurrentScreen(null)
                     true
                 }
-                view.onBack.register {
+                screenContent.onBack.register {
                     proxy.setCurrentScreen(parent)
                     true
                 }
-            }.view
+            }
         }))
     }
     openScreen(clientProxy!!)
 }
 
-private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard) {
+private class IfrEncyclopediaPageScreenContent(card: IfrEncyclopediaEntryCard) : ScreenContent {
 
     val onBackToGame = EventRegistry<() -> Boolean>()
     val onBack = EventRegistry<() -> Boolean>()
 
-    val view = View {
+    override val view = View {
         view += YListView().configure {
             view.sizingX = Sizing.FILL
             view.sizingY = Sizing.FILL

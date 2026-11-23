@@ -1,9 +1,9 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.client.mod.recipeviewer.renderingProxy
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenContent
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
@@ -16,7 +16,7 @@ import org.lwjgl.glfw.GLFW
 /** 中身を View のツリーで構築する画面なのだ～🌱 */
 abstract class ViewScreen(title: Component) : Screen(title) {
 
-    protected abstract fun createRootView(): View
+    protected abstract fun createScreenContent(): ScreenContent
 
     private val viewAdapter = ViewAdapter(object : ViewAdapterHost {
 
@@ -28,7 +28,7 @@ abstract class ViewScreen(title: Component) : Screen(title) {
         override fun getRegionSizeX() = this@ViewScreen.width
         override fun getRegionSizeY() = this@ViewScreen.height
 
-        override fun createRootView() = this@ViewScreen.createRootView()
+        override fun createRootView() = this@ViewScreen.createScreenContent().view
 
         override fun getUiOffset() = IntPoint.ZERO
         override fun setUiSize(uiSize: IntPoint) = Unit

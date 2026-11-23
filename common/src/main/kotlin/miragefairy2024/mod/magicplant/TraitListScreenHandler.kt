@@ -4,6 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.magicplant.contents.getTraitPower
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenContent
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
@@ -89,7 +90,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
     override fun stillValid(player: Player) = true
     override fun quickMoveStack(player: Player, slot: Int): ItemStack = slots[slot].item
 
-    override fun createView(title: Component, playerInventoryTitle: Component): View {
+    override fun createScreenContent(title: Component, playerInventoryTitle: Component): ScreenContent {
         val level: Level = playerInventory.player.level()
 
         fun createTraitCardView(traitStack: TraitStack): View {
@@ -187,7 +188,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
             }
         }
 
-        return View {
+        val rootView = View {
             // 外枠
             view += StackView().configure {
                 view += NinePatchImageView("textures/gui/" * MirageFairy2024.identifier("panel") * ".png", 16, 16, 5, 5, 5, 5, 5, 5, false, false)
@@ -276,6 +277,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                 }.fixedContentSizeX(18 * 9).margin(7)
             }
         }
+        return ScreenContent(rootView)
     }
 
 }

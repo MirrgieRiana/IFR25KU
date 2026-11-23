@@ -45,7 +45,7 @@ class TooltipViewerScreenTest {
     @Test
     fun `画面を開くと検索欄が空でスクロール位置は先頭になるのだ`() {
         fun withViews(definition: MessageViewScreenDefinition, block: (TextFieldView, YScrollContainerView) -> Unit) {
-            val view = definition.rootViewFactory()
+            val view = definition.screenContentFactory().view
             view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
             val textFields = mutableListOf<TextFieldView>()
             val scrollViews = mutableListOf<YScrollContainerView>()

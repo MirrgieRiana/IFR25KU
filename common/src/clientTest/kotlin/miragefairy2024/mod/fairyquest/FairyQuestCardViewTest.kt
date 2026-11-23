@@ -64,7 +64,7 @@ class FairyQuestCardViewTest {
         val inventory = Inventory(Mockito.mock(Player::class.java))
         val menu = FairyQuestCardScreenHandler(0, inventory, recipe, ContainerLevelAccess.NULL)
         val slots = menu.slots
-        val rootView = menu.createView(cardTitle, text { "inventory"() })
+        val rootView = menu.createScreenContent(cardTitle, text { "inventory"() }).view
         val proxy: RenderingProxy = object : RenderingProxy {
             override fun calculateTextWidth(text: FormattedText) = text.string.length * 6
             override fun calculateTextWidth(text: FormattedCharSequence) = throw UnsupportedOperationException()

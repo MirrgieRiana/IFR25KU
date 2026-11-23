@@ -80,7 +80,7 @@ class TraitListViewTest {
         val level: Level = Mockito.mock(Level::class.java)
         Mockito.`when`(player.level()).thenReturn(level)
         val menu = TraitListScreenHandler(0, Inventory(player), ContainerLevelAccess.NULL, traitStacks, BlockPos.ZERO)
-        val rootView = menu.createView(text { "Traits"() }, text { "Inventory"() })
+        val rootView = menu.createScreenContent(text { "Traits"() }, text { "Inventory"() }).view
         val proxy: RenderingProxy = object : RenderingProxy {
             override fun calculateTextWidth(text: FormattedText) = text.string.length * 6
             override fun calculateTextWidth(text: FormattedCharSequence) = throw UnsupportedOperationException()

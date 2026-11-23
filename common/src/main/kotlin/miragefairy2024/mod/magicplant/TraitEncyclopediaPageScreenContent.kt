@@ -6,6 +6,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.clientProxy
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.guiBackToGameTranslation
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenContent
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.Sizing
@@ -48,27 +49,27 @@ private fun Trait.openTraitEncyclopediaPageScreen() {
     fun <S : Any> openScreen(proxy: ClientProxy<S>) {
         val parent = proxy.getCurrentScreen()
         proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(this.getName()) {
-            TraitEncyclopediaPageViewWrapper(this).also { view ->
-                view.onBackToGame.register {
+            TraitEncyclopediaPageScreenContent(this).also { screenContent ->
+                screenContent.onBackToGame.register {
                     proxy.setCurrentScreen(null)
                     true
                 }
-                view.onBack.register {
+                screenContent.onBack.register {
                     proxy.setCurrentScreen(parent)
                     true
                 }
-            }.view
+            }
         }))
     }
     openScreen(clientProxy!!)
 }
 
-class TraitEncyclopediaPageViewWrapper(trait: Trait) {
+class TraitEncyclopediaPageScreenContent(trait: Trait) : ScreenContent {
 
     val onBackToGame = EventRegistry<() -> Boolean>()
     val onBack = EventRegistry<() -> Boolean>()
 
-    val view = View {
+    override val view = View {
         view += YListView().configure {
             view.sizingX = Sizing.FILL
             view.sizingY = Sizing.FILL

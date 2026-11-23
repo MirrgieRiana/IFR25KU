@@ -40,7 +40,7 @@ open class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Co
         override fun getRegionSizeX() = this@ViewContainerScreen.width
         override fun getRegionSizeY() = this@ViewContainerScreen.height
 
-        override fun createRootView() = menu.createView(title, playerInventoryTitle)
+        override fun createRootView() = menu.createScreenContent(title, playerInventoryTitle).view
 
         override fun getUiOffset() = IntPoint(this@ViewContainerScreen.leftPos, this@ViewContainerScreen.topPos)
         override fun setUiSize(uiSize: IntPoint) {

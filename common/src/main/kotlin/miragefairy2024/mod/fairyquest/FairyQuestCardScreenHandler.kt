@@ -5,6 +5,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.SlotType
 import miragefairy2024.mod.common.guiFullScreenTranslation
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenContent
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
@@ -119,7 +120,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
         addDataSlots(propertyDelegate)
     }
 
-    override fun createView(title: Component, playerInventoryTitle: Component): View {
+    override fun createScreenContent(title: Component, playerInventoryTitle: Component): ScreenContent {
         val playerInventoryWidth = 9
         val playerInventoryHeight = 3
         val tradeSlotCount = 4
@@ -136,7 +137,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
 
         val onBeforeRender = EventRegistry<() -> Unit>()
 
-        return View {
+        val rootView = View {
             view += StackView().configure { // 外枠なのだ～🌱
                 view += NinePatchImageView(panelTexture, 16, 16, 5, 5, 5, 5, 5, 5, false, false)
                 view += YListView().configure { // 内枠なのだ～🌱
@@ -278,6 +279,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
                 }
             }
         }
+        return ScreenContent(rootView)
     }
 
     override fun stillValid(player: Player) = true
