@@ -173,6 +173,7 @@ fun GuiGraphics.drawNinePatchImage(
     val matrix: Matrix4f = this.pose().last().pose()
     val bufferBuilder: BufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
 
+    /** 9 分割画像のパッチ 1 枚を描くための 4 頂点をバッファに追加するのだ～🌱 */
     fun addQuad(x: Int, y: Int, width: Int, height: Int, u: Int, v: Int, uWidth: Int, vHeight: Int) {
         val minU = u.toFloat() / sw0
         val maxU = (u.toFloat() + uWidth) / sw0
