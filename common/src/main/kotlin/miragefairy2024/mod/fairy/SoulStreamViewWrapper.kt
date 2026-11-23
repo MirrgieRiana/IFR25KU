@@ -138,7 +138,41 @@ class SoulStreamViewWrapper(
                                 view += scrollView.configure {
                                     position.weight = 1.0
                                     position.ignoreLayoutX = true
-                                    view += createFilterList()
+                                    view += YListView().configure {
+                                        view.sizingX = Sizing.FILL
+
+                                        view += TextView(text { SOUL_STREAM_PASSIVE_SKILL_EFFECT_TRANSLATION().blue.bold }).configure {
+                                            view.sizingX = Sizing.FILL
+                                            view.alignmentX = Alignment.CENTER
+                                            view.shadow = false
+                                        }
+                                        passiveSkillEffectRegistry.entrySet().sortedBy { it.key.location() }.forEach { (_, effect) ->
+                                            fun <T : Any> addFilters(effect: PassiveSkillEffect<T>) {
+                                                val samples = motifRegistry.entrySet()
+                                                    .flatMap { it.value.passiveSkillSpecifications }
+                                                    .mapNotNull { if (it.effect == effect) effect.castOrNull(it.valueProvider(10.0)) else null }
+                                                effect.getFilters(samples).sortedBy { it.identifier }.forEach { filter ->
+                                                    fun label(filters: Map<ResourceLocation, PassiveSkillEffectFilter<*>>) = if (filter.identifier in filters) filter.text.gold else filter.text
+
+                                                    view += AlignView().configure {
+                                                        view.sizingY = Sizing.WRAP
+
+                                                        view += TextView().configure {
+                                                            view.shadow = false
+                                                            enabledPassiveSkillEffectFilters.observeAndInitialize(onViewClosed) { _, filters ->
+                                                                view.text.value = label(filters).visualOrderText
+                                                            }
+                                                        }.tooltip { _, _ -> listOf(label(enabledPassiveSkillEffectFilters.value)) }
+                                                    }.onClick {
+                                                        val filters = enabledPassiveSkillEffectFilters.value
+                                                        enabledPassiveSkillEffectFilters.value = if (filter.identifier in filters) filters - filter.identifier else filters + (filter.identifier to filter)
+                                                        true
+                                                    }
+                                                }
+                                            }
+                                            addFilters(effect)
+                                        }
+                                    }
                                 }
                                 val scrollbarView = YFlatScrollbarView().also {
                                     it.scrollbarColor = 0xA0FFFFFF.toInt()
@@ -298,46 +332,6 @@ class SoulStreamViewWrapper(
     fun dispose() {
         onViewClosed.fire()
         refreshEffects = null
-    }
-
-    private fun createFilterList(): View {
-        return View {
-            view += YListView().configure {
-                view.sizingX = Sizing.FILL
-
-                view += TextView(text { SOUL_STREAM_PASSIVE_SKILL_EFFECT_TRANSLATION().blue.bold }).configure {
-                    view.sizingX = Sizing.FILL
-                    view.alignmentX = Alignment.CENTER
-                    view.shadow = false
-                }
-                passiveSkillEffectRegistry.entrySet().sortedBy { it.key.location() }.forEach { (_, effect) ->
-                    fun <T : Any> addFilters(effect: PassiveSkillEffect<T>) {
-                        val samples = motifRegistry.entrySet()
-                            .flatMap { it.value.passiveSkillSpecifications }
-                            .mapNotNull { if (it.effect == effect) effect.castOrNull(it.valueProvider(10.0)) else null }
-                        effect.getFilters(samples).sortedBy { it.identifier }.forEach { filter ->
-                            fun label(filters: Map<ResourceLocation, PassiveSkillEffectFilter<*>>) = if (filter.identifier in filters) filter.text.gold else filter.text
-
-                            view += AlignView().configure {
-                                view.sizingY = Sizing.WRAP
-
-                                view += TextView().configure {
-                                    view.shadow = false
-                                    enabledPassiveSkillEffectFilters.observeAndInitialize(onViewClosed) { _, filters ->
-                                        view.text.value = label(filters).visualOrderText
-                                    }
-                                }.tooltip { _, _ -> listOf(label(enabledPassiveSkillEffectFilters.value)) }
-                            }.onClick {
-                                val filters = enabledPassiveSkillEffectFilters.value
-                                enabledPassiveSkillEffectFilters.value = if (filter.identifier in filters) filters - filter.identifier else filters + (filter.identifier to filter)
-                                true
-                            }
-                        }
-                    }
-                    addFilters(effect)
-                }
-            }
-        }
     }
 
     private fun createEffectList(effects: List<Component>): View {
