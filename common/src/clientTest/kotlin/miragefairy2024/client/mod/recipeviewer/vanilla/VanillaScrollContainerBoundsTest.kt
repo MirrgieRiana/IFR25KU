@@ -55,8 +55,8 @@ class VanillaScrollContainerBoundsTest {
                 override val origin = IntPoint(5, 10)
                 override val canPlaceMenuSlots = true
                 override val onBeforeRender = EventRegistry<() -> Unit>()
-                override fun addRenderableWidget(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow?) = throw AssertionError("No widget should be registered")
-                override fun addRenderableOnly(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow?) = throw AssertionError("No widget should be registered")
+                override fun addRenderableWidget(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow) = throw AssertionError("No widget should be registered")
+                override fun addRenderableOnly(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow) = throw AssertionError("No widget should be registered")
                 override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover {
                     placements[slotId] = clipBounds
                     return remover

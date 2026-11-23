@@ -40,9 +40,9 @@ import net.minecraft.client.gui.components.Tooltip
 import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.network.chat.Component
 
-private infix fun VanillaViewPlacerContext.place(widget: AbstractWidget) = this.place(widget, null)
+private infix fun VanillaViewPlacerContext.place(widget: AbstractWidget) = this.place(widget, WidgetRenderOverflow.Unbounded)
 
-private fun VanillaViewPlacerContext.place(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow?): ViewController {
+private fun VanillaViewPlacerContext.place(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow): ViewController {
     val onDetached = EventRegistry<() -> Unit>()
     this.addRenderableWidget(widget, renderOverflow).removeOn(onDetached)
     return object : ViewController {
@@ -54,9 +54,9 @@ private fun VanillaViewPlacerContext.place(widget: AbstractWidget, renderOverflo
     }
 }
 
-private infix fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidget) = this.placeRenderable(widget, null)
+private infix fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidget) = this.placeRenderable(widget, WidgetRenderOverflow.Unbounded)
 
-private fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow?): ViewController {
+private fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow): ViewController {
     val onDetached = EventRegistry<() -> Unit>()
     this.addRenderableOnly(widget, renderOverflow).removeOn(onDetached)
     return object : ViewController {
