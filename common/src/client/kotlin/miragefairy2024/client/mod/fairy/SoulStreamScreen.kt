@@ -181,7 +181,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
         }
     }
 
-    internal fun getRecipeViewerExclusionAreas() = viewWrapper.getRecipeViewerExclusionAreas()
+    fun getRecipeViewerExclusionAreas() = viewWrapper.getRecipeViewerExclusionAreas()
 
     override fun containerTick() {
         super.containerTick()

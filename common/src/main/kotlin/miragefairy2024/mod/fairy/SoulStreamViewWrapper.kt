@@ -161,21 +161,17 @@ class SoulStreamViewWrapper(
 
                 view += XListView().configure {
 
-                    view += LayeredImageButtonView(
-                        IntPoint(14, 14),
-                        BUTTON_14_BACKGROUND,
-                        LayeredImageButtonView.Sprites(MirageFairy2024.identifier("button_14/clear_foreground")),
-                        text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() },
-                    ).configure {
+                    view += LayeredImageButtonView(IntPoint(14, 14)).configure {
+                        view.backgroundSprites = BUTTON_14_BACKGROUND
+                        view.foregroundSprites = LayeredImageButtonView.Sprites.of(MirageFairy2024.identifier("button_14/clear_foreground"))
+                        view.tooltip.value = text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() }
                         view.onClick.register { enabledPassiveSkillEffectFilters.value = emptyMap() }
                     }
                     view += XSpaceView(2)
-                    view += LayeredImageButtonView(
-                        IntPoint(14, 14),
-                        BUTTON_14_BACKGROUND,
-                        LayeredImageButtonView.Sprites(MirageFairy2024.identifier("button_14/global_search_foreground")),
-                        text { SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION() },
-                    ).configure {
+                    view += LayeredImageButtonView(IntPoint(14, 14)).configure {
+                        view.backgroundSprites = BUTTON_14_BACKGROUND
+                        view.foregroundSprites = LayeredImageButtonView.Sprites.of(MirageFairy2024.identifier("button_14/global_search_foreground"))
+                        view.tooltip.value = text { SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION() }
                         enableGlobalFairyHighlight.observeAndInitialize(onViewClosed) { _, enabled -> view.selected.value = enabled }
                         view.onClick.register { enableGlobalFairyHighlight.value = !enableGlobalFairyHighlight.value }
                     }
@@ -337,17 +333,15 @@ class SoulStreamViewWrapper(
                     }
                 }
 
-                view += LayeredImageButtonView(
-                    IntPoint(14, 14),
-                    BUTTON_14_BACKGROUND,
-                    LayeredImageButtonView.Sprites(
+                view += LayeredImageButtonView(IntPoint(14, 14)).configure {
+                    view.backgroundSprites = BUTTON_14_BACKGROUND
+                    view.foregroundSprites = LayeredImageButtonView.Sprites(
                         MirageFairy2024.identifier("button_14/collection_enabled_foreground"),
                         MirageFairy2024.identifier("button_14/collection_disabled_foreground"),
                         MirageFairy2024.identifier("button_14/collection_enabled_foreground"),
                         MirageFairy2024.identifier("button_14/collection_disabled_foreground"),
-                    ),
-                    collectionTooltip(collectionEnabled),
-                ).configure {
+                    )
+                    view.tooltip.value = collectionTooltip(collectionEnabled)
                     view.selected.value = collectionEnabled
                     AttachmentChangedEvent.eventRegistry.observe(onViewClosed) { identifier ->
                         if (identifier == COLLECTION_ENABLED_ATTACHMENT_TYPE.identifier()) {

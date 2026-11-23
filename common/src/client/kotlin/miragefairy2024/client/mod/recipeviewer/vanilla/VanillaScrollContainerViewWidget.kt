@@ -130,7 +130,7 @@ abstract class VanillaScrollContainerViewWidget(
     }
 
     fun updateScrollBounds() {
-        if (!disposed) view.scrollBounds.value = ScrollBounds(evaluateContentLength() atLeast 0, viewportLength atLeast 0)
+        if (!disposed) view.scrollBounds.value = ScrollBounds(evaluateContentLength(), viewportLength)
     }
 
     override fun setWidth(width: Int) {
@@ -161,8 +161,8 @@ abstract class VanillaScrollContainerViewWidget(
     private fun containsViewport(mouseX: Double, mouseY: Double): Boolean {
         if (mouseX < x) return false
         if (mouseY < y) return false
-        if (mouseX >= x + (width atLeast 0)) return false
-        if (mouseY >= y + (height atLeast 0)) return false
+        if (mouseX >= x + width) return false
+        if (mouseY >= y + height) return false
         return true
     }
 
@@ -180,7 +180,7 @@ abstract class VanillaScrollContainerViewWidget(
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
 
         // 子要素の描画なのだ～🌱
-        guiGraphics.enableScissor(x, y, x + (width atLeast 0), y + (height atLeast 0))
+        guiGraphics.enableScissor(x, y, x + width, y + height)
         try {
             widgetRegistrations.forEach { widgetRegistration ->
                 widgetRegistration.widget.render(guiGraphics, mouseX, mouseY, partialTick)
@@ -267,7 +267,11 @@ abstract class VanillaScrollContainerViewWidget(
             }
             if (handled) return true
         }
-        return scrollBy(-getScrollAmount(scrollX, scrollY) * view.scrollStep)
+        val amount = getScrollAmount(scrollX, scrollY)
+        if (amount == 0.0) return false
+        val handled = scrollBy(-amount * view.scrollStep)
+        view.onScrollInput.fire()
+        return handled
     }
 
 
@@ -351,15 +355,17 @@ abstract class VanillaScrollContainerViewWidget(
         if (listener != null && listener.keyPressed(keyCode, scanCode, modifiers)) return true
         // 子が選択されている間は、矢印キーをスクロールで消費せず、Screen のフォーカス移動へ渡すのだ～🌱
         if (listener != null && (keyCode == backwardKey || keyCode == forwardKey)) return false
-        return when (keyCode) {
+        val handled = when (keyCode) {
             backwardKey -> scrollBy(-view.scrollStep.toDouble())
             forwardKey -> scrollBy(view.scrollStep.toDouble())
             GLFW.GLFW_KEY_PAGE_UP -> scrollBy(-viewportLength * 0.8)
             GLFW.GLFW_KEY_PAGE_DOWN -> scrollBy(viewportLength * 0.8)
             GLFW.GLFW_KEY_HOME -> updateScroll(0.0)
             GLFW.GLFW_KEY_END -> updateScroll(evaluateMaxScrollOffset().toDouble())
-            else -> false
+            else -> return false
         }
+        view.onScrollInput.fire()
+        return handled
     }
 
     override fun keyReleased(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
@@ -420,7 +426,7 @@ abstract class VanillaScrollContainerViewWidget(
             override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false)
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover {
                 return context.registerMenuSlotPlacement(slotId) {
-                    val viewportBounds = IntRectangle(x, y, width atLeast 0, height atLeast 0)
+                    val viewportBounds = IntRectangle(x, y, width, height)
                     val childClipBounds = clipBounds()
                     if (childClipBounds == null) viewportBounds else viewportBounds.intersect(childClipBounds)
                 }

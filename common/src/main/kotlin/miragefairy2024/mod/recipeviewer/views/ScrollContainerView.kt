@@ -7,8 +7,10 @@ import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
+import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Remover
+import miragefairy2024.util.fire
 import miragefairy2024.util.plus
 import miragefairy2024.util.register
 import mirrg.kotlin.helium.atLeast
@@ -39,6 +41,8 @@ abstract class ScrollContainerView : WrapperView(), PlaceableView {
 
     val scrollBounds = ObservableValue(ScrollBounds(0, 0))
 
+    val onScrollInput = EventRegistry<() -> Unit>()
+
     protected abstract fun evaluateContentLength(): Int
     protected abstract fun evaluateViewportLength(): Int
 
@@ -51,7 +55,7 @@ abstract class ScrollContainerView : WrapperView(), PlaceableView {
     }
 
     fun updateScrollBounds() {
-        scrollBounds.value = ScrollBounds(evaluateContentLength() atLeast 0, evaluateViewportLength() atLeast 0)
+        scrollBounds.value = ScrollBounds(evaluateContentLength(), evaluateViewportLength())
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
@@ -70,7 +74,7 @@ class XScrollContainerView : ScrollContainerView() {
     override fun evaluateContentSizeYImpl() = childView.evaluateContentSizeY()
 
     override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX() max childView.evaluateContentSizeX()
-    override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY() atLeast 0
+    override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY()
 
     override fun evaluateContentLength() = childView.evaluateActualSizeX()
     override fun evaluateViewportLength() = evaluateActualSizeX()
@@ -89,7 +93,7 @@ class YScrollContainerView : ScrollContainerView() {
     override fun evaluateContentSizeXImpl() = childView.evaluateContentSizeX()
     override fun evaluateContentSizeYImpl() = 0
 
-    override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX() atLeast 0
+    override fun evaluateChildRegionSizeX(index: Int) = evaluateActualSizeX()
     override fun evaluateChildRegionSizeY(index: Int) = evaluateActualSizeY() max childView.evaluateContentSizeY()
 
     override fun evaluateContentLength() = childView.evaluateActualSizeY()
@@ -105,7 +109,7 @@ class YScrollContainerView : ScrollContainerView() {
  * X 軸の領域とバーを接続し、その間のコンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
  * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
  */
-fun connectScrollbar(scrollView: XScrollContainerView, scrollbarView: XFlatScrollbarView): Remover {
+fun connectScrollbar(scrollView: XScrollContainerView, scrollbarView: ScrollbarView): Remover {
     return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetX)
 }
 
@@ -113,13 +117,13 @@ fun connectScrollbar(scrollView: XScrollContainerView, scrollbarView: XFlatScrol
  * Y 軸の領域とバーを接続し、その間のコンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
  * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
  */
-fun connectScrollbar(scrollView: YScrollContainerView, scrollbarView: YFlatScrollbarView): Remover {
+fun connectScrollbar(scrollView: YScrollContainerView, scrollbarView: ScrollbarView): Remover {
     return connectScrollbarImpl(scrollView, scrollbarView, scrollView.scrollOffsetY)
 }
 
 private fun connectScrollbarImpl(
     scrollView: ScrollContainerView,
-    scrollbarView: FlatScrollbarView,
+    scrollbarView: ScrollbarView,
     scrollViewOffset: ObservableValue<Double>,
 ): Remover {
     val initialScrollViewOffset = scrollViewOffset.value
@@ -131,6 +135,9 @@ private fun connectScrollbarImpl(
     remover += scrollView.scrollBounds.register { _, bounds ->
         scrollbarView.contentLength = bounds.contentLength
         scrollbarView.viewportLength = bounds.viewportLength
+    }
+    remover += scrollView.onScrollInput.register {
+        scrollbarView.onScrollInput.fire()
     }
 
     fun connectOffset(offset: ObservableValue<Double>) {

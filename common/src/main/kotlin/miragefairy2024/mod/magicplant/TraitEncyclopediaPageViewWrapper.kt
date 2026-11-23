@@ -10,6 +10,7 @@ import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewTexture
+import miragefairy2024.mod.recipeviewer.views.AlignView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
@@ -24,9 +25,8 @@ import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
+import miragefairy2024.mod.recipeviewer.views.fixedContentSizeX
 import miragefairy2024.mod.recipeviewer.views.margin
-import miragefairy2024.mod.recipeviewer.views.maxContentSizeX
-import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.fire
@@ -106,13 +106,11 @@ class TraitEncyclopediaPageViewWrapper(trait: Trait) {
                         view += YSpaceView(5)
 
                         // 特性ポエム
-                        view += XListView().configure {
+                        view += StackView().configure {
                             position.weight = 1.0
                             view.sizingX = Sizing.FILL
                             view.sizingY = Sizing.FILL
                             val scrollView = YScrollContainerView().configure {
-                                position.weight = 1.0
-
                                 view += MultiLineTextView().configure {
                                     view.text.value = trait.text
                                     view.shadow = false
@@ -121,12 +119,16 @@ class TraitEncyclopediaPageViewWrapper(trait: Trait) {
                             view += scrollView
                             val scrollbarView = YFlatScrollbarView().configure {
                                 view.scrollbarColor = 0xA0FFFFFF.toInt()
+                                view.keyboardFocusable = false
                             }
-                            view += scrollbarView
+                            view += AlignView().configure {
+                                view.alignmentX = Alignment.END
+                                view += scrollbarView
+                            }
                             connectScrollbar(scrollView.view, scrollbarView.view)
                         }
                     }.margin(5)
-                }.minContentSizeX(160).maxContentSizeX(160)
+                }.fixedContentSizeX(160)
             }
 
             view += YSpaceView(10)

@@ -28,11 +28,9 @@ import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
+import miragefairy2024.mod.recipeviewer.views.fixedContentSizeX
+import miragefairy2024.mod.recipeviewer.views.fixedContentSizeY
 import miragefairy2024.mod.recipeviewer.views.margin
-import miragefairy2024.mod.recipeviewer.views.maxContentSizeX
-import miragefairy2024.mod.recipeviewer.views.maxContentSizeY
-import miragefairy2024.mod.recipeviewer.views.minContentSizeX
-import miragefairy2024.mod.recipeviewer.views.minContentSizeY
 import miragefairy2024.mod.recipeviewer.views.onClick
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.mod.recipeviewer.views.tooltip
@@ -156,7 +154,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                             }
                         }
 
-                    }.minContentSizeY(32).maxContentSizeY(32)
+                    }.fixedContentSizeY(32)
 
                     view += YSpaceView(5)
 
@@ -176,6 +174,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                         view += scrollView
                         val scrollbarView = YFlatScrollbarView().configure {
                             view.scrollbarColor = 0xA0FFFFFF.toInt()
+                            view.keyboardFocusable = false
                         }
                         view += AlignView().configure {
                             view.alignmentX = Alignment.END
@@ -217,7 +216,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
 
                         view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22, true, true)
                         view += cardContent.configure().margin(5)
-                    }.minContentSizeY(18 * 6).maxContentSizeY(18 * 6)
+                    }.fixedContentSizeY(18 * 6)
 
                     view += YSpaceView(4)
 
@@ -267,13 +266,14 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                             view += scrollView
                             val scrollbarView = YFlatScrollbarView().configure {
                                 view.scrollbarColor = 0xA0FFFFFF.toInt()
+                                view.keyboardFocusable = false
                             }
                             view += scrollbarView
                             connectScrollbar(scrollView.view, scrollbarView.view)
                         }.margin(4)
-                    }.minContentSizeY(18 * 4).maxContentSizeY(18 * 4)
+                    }.fixedContentSizeY(18 * 4)
 
-                }.minContentSizeX(18 * 9).maxContentSizeX(18 * 9).margin(7)
+                }.fixedContentSizeX(18 * 9).margin(7)
             }
         }
     }
