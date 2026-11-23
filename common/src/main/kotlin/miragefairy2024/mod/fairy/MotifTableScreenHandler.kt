@@ -20,9 +20,8 @@ import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
+import miragefairy2024.mod.recipeviewer.views.fixedContentSizeX
 import miragefairy2024.mod.recipeviewer.views.margin
-import miragefairy2024.mod.recipeviewer.views.maxContentSizeX
-import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.mod.recipeviewer.views.tooltip
 import miragefairy2024.util.Chance
@@ -116,7 +115,7 @@ class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifC
                                             view.alignmentX = alignment
                                             view.color = ColorPair.DARK_GRAY
                                             view.shadow = false
-                                        }.minContentSizeX(width).maxContentSizeX(width)
+                                        }.fixedContentSizeX(width)
                                     }
 
                                     view += textView(chance.showingItemStack.hoverName, 150, Alignment.START).configure {

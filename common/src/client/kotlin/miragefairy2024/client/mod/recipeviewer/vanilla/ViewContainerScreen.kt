@@ -20,7 +20,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.Slot
 
 /** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
-class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title), SlotHovering where T : AbstractContainerMenu, T : ViewProviderMenu {
+open class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title), SlotHovering where T : AbstractContainerMenu, T : ViewProviderMenu {
 
     private class SlotPlacement(val clipBounds: () -> IntRectangle?)
 

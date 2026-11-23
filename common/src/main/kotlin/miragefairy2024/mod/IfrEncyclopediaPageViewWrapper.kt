@@ -7,7 +7,6 @@ import miragefairy2024.clientProxy
 import miragefairy2024.mod.common.SlotType
 import miragefairy2024.mod.common.guiBackToGameTranslation
 import miragefairy2024.mod.recipeviewer.view.Alignment
-import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.views.AlignView
@@ -26,9 +25,8 @@ import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
+import miragefairy2024.mod.recipeviewer.views.fixedContentSizeX
 import miragefairy2024.mod.recipeviewer.views.margin
-import miragefairy2024.mod.recipeviewer.views.maxContentSizeX
-import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.fire
@@ -36,7 +34,6 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.register
 import miragefairy2024.util.text
 import net.minecraft.network.chat.CommonComponents
-import net.minecraft.network.chat.Component
 
 context(_: ModContext)
 fun initIfrEncyclopediaPageScreen() {
@@ -51,7 +48,7 @@ private fun IfrEncyclopediaEntryCard.openIfrEncyclopediaPageScreen() {
         val parent = proxy.getCurrentScreen()
         val title = text { this@openIfrEncyclopediaPageScreen.titleTranslation() }
         proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(title) {
-            IfrEncyclopediaPageViewWrapper(this, title).also { view ->
+            IfrEncyclopediaPageViewWrapper(this).also { view ->
                 view.onBackToGame.register {
                     proxy.setCurrentScreen(null)
                     true
@@ -66,24 +63,24 @@ private fun IfrEncyclopediaEntryCard.openIfrEncyclopediaPageScreen() {
     openScreen(clientProxy!!)
 }
 
-private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, title: Component) {
+private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard) {
 
     val onBackToGame = EventRegistry<() -> Boolean>()
     val onBack = EventRegistry<() -> Boolean>()
 
     val view = View {
-        val textColor = ColorPair(0xFF493208.toInt(), 0xFF493208.toInt())
-
         view += YListView().configure {
             view.sizingX = Sizing.FILL
             view.sizingY = Sizing.FILL
 
+            // カード部分
             view += XListView().configure {
                 position.weight = 1.0
                 position.alignmentX = Alignment.CENTER
                 view.sizingY = Sizing.FILL
 
-                view += StackView().configure { // カードなのだ～🌱
+                // カード外枠
+                view += StackView().configure {
                     view.sizingX = Sizing.FILL
                     view.sizingY = Sizing.FILL
 
@@ -92,17 +89,17 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, tit
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL
 
-                        // タイトルなのだ～🌱
+                        // タイトル
                         view += MultiLineTextView().configure {
-                            view.text.value = title
+                            view.text.value = text { card.titleTranslation() }
                             view.alignmentX = Alignment.CENTER
-                            view.color = textColor
+                            view.color = IFR_ENCYCLOPEDIA_TEXT_COLOR
                             view.shadow = false
                         }
 
                         view += YSpaceView(5)
 
-                        // 掲げられたアイテムなのだ～🌱
+                        // 掲げられたアイテム
                         view += StackView().configure {
                             position.alignmentX = Alignment.CENTER
 
@@ -115,7 +112,7 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, tit
 
                         view += YSpaceView(5)
 
-                        // 本文なのだ～🌱
+                        // 本文
                         view += StackView().configure {
                             position.weight = 1.0
                             view.sizingX = Sizing.FILL
@@ -123,13 +120,12 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, tit
                             val scrollView = YScrollContainerView().configure {
                                 view += MultiLineTextView().configure {
                                     view.text.value = text { card.textTranslation() }
-                                    view.color = textColor
+                                    view.color = IFR_ENCYCLOPEDIA_TEXT_COLOR
                                     view.shadow = false
                                 }
                             }
                             view += scrollView
                             val scrollbarView = YFlatScrollbarView().configure {
-                                view.scrollbarColor = 0xA0000000.toInt()
                                 view.keyboardFocusable = false
                             }
                             view += AlignView().configure {
@@ -138,13 +134,14 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, tit
                             }
                             connectScrollbar(scrollView.view, scrollbarView.view)
                         }
+
                     }.margin(5, 5, 10, 5)
-                }.minContentSizeX(200).maxContentSizeX(200)
+                }.fixedContentSizeX(200)
             }
 
             view += YSpaceView(10)
 
-            // ボタン部分なのだ～🌱
+            // 下部ボタン
             view += XListView().configure {
                 position.alignmentX = Alignment.CENTER
 
@@ -168,6 +165,7 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, tit
                     }
                 }
             }
+
         }.margin(0, 0, 20, 4)
     }
 

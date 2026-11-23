@@ -199,10 +199,10 @@ class IfrEncyclopediaEntryCard(
 }
 
 /**
- * タイトルと本文の文字色なのだ～🌱
+ * 図鑑の文字色なのだ～🌱
  * 背景のテクスチャはダークモードでも替わらないから、暗い側も同じ色にするのだ～🌱
  */
-private val TEXT_COLOR = ColorPair(0xFF493208.toInt(), 0xFF493208.toInt())
+val IFR_ENCYCLOPEDIA_TEXT_COLOR = ColorPair(0xFF493208.toInt(), 0xFF493208.toInt())
 
 /** 段落の間に挟む縦の隙間なのだ～🌱 */
 private val PARAGRAPH_SPACE_CHILDREN_GENERATOR = ChildrenGenerator { _, _ ->
@@ -259,7 +259,7 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
                 view += TextView(text { recipeEntry.recipe.titleTranslation() }).configure {
                     view.sizingX = Sizing.FILL
                     view.alignmentX = Alignment.CENTER
-                    view.color = TEXT_COLOR
+                    view.color = IFR_ENCYCLOPEDIA_TEXT_COLOR
                     view.shadow = false
                     view.scroll = true
                 }.tooltip(text { recipeEntry.recipe.titleTranslation() })
@@ -280,7 +280,7 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
                         if (index > 0) view += PARAGRAPH_SPACE_CHILDREN_GENERATOR
                         view += MultiLineTextChildrenGenerator(paragraph) { Alignment.START }.also { childrenGenerator ->
                             childrenGenerator.onTextViewCreated.register {
-                                it.color = TEXT_COLOR
+                                it.color = IFR_ENCYCLOPEDIA_TEXT_COLOR
                                 it.shadow = false
                             }
                         }
@@ -335,7 +335,7 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
                         position.alignmentY = Alignment.CENTER
                         view.sizingX = Sizing.FILL
                         view.alignmentX = Alignment.CENTER
-                        view.color = TEXT_COLOR
+                        view.color = IFR_ENCYCLOPEDIA_TEXT_COLOR
                         view.shadow = false
 
                         pageIndex.registerAndInitialize { _, _ ->
