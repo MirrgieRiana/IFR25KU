@@ -7,6 +7,7 @@ import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.views.ImageButtonView
 import miragefairy2024.util.fire
 import mirrg.kotlin.helium.Slot
+import mirrg.kotlin.helium.atLeast
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.resources.sounds.SimpleSoundInstance
@@ -29,7 +30,14 @@ object ImageButtonViewRenderer : ViewRenderer<ImageButtonView, Unit> {
         return false
     }
 
-    override fun getRenderOverflow(view: ImageButtonView, bounds: IntRectangle) = RenderOverflow(0, Int.MAX_VALUE, 0, Int.MAX_VALUE)
+    override fun getRenderOverflow(view: ImageButtonView, bounds: IntRectangle): RenderOverflow {
+        val textureBounds = view.texture?.bounds
+        val hoveredTextureBounds = view.hoveredTexture?.bounds
+        val disabledTextureBounds = view.disabledTexture?.bounds
+        val width = maxOf(textureBounds?.sizeX ?: 0, hoveredTextureBounds?.sizeX ?: 0, disabledTextureBounds?.sizeX ?: 0)
+        val height = maxOf(textureBounds?.sizeY ?: 0, hoveredTextureBounds?.sizeY ?: 0, disabledTextureBounds?.sizeY ?: 0)
+        return RenderOverflow(0, width - bounds.sizeX atLeast 0, 0, height - bounds.sizeY atLeast 0)
+    }
 
     override fun render(view: ImageButtonView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         if (!view.enabled.value) {
