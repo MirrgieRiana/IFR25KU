@@ -47,6 +47,7 @@ import miragefairy2024.util.gold
 import miragefairy2024.util.invoke
 import miragefairy2024.util.observe
 import miragefairy2024.util.observeAndInitialize
+import miragefairy2024.util.plus
 import miragefairy2024.util.red
 import miragefairy2024.util.register
 import miragefairy2024.util.removeOn
