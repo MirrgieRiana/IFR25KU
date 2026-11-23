@@ -27,7 +27,6 @@ import mirrg.kotlin.helium.min
 import net.minecraft.client.gui.ComponentPath
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractContainerWidget
-import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.narration.NarratableEntry
 import net.minecraft.client.gui.narration.NarratedElementType
@@ -52,13 +51,11 @@ abstract class VanillaScrollContainerViewWidget(
 
     // Widget の登録なのだ～🌱
 
-    private class WidgetRegistration(val widget: AbstractWidget, val interactive: Boolean, val renderOverflow: WidgetRenderOverflow?)
-
     // mutableSetOf が返す Set の登録順を、描画順と入力順に利用するのだ～🌱
     private val widgetRegistrations = mutableSetOf<WidgetRegistration>()
 
-    private fun register(widget: AbstractWidget, interactive: Boolean, renderOverflow: WidgetRenderOverflow?): Remover {
-        val widgetRegistration = WidgetRegistration(widget, interactive, renderOverflow)
+    private fun register(widgetRegistration: WidgetRegistration): Remover {
+        val widget = widgetRegistration.widget
         widgetRegistrations += widgetRegistration
         return Remover {
 
@@ -180,24 +177,41 @@ abstract class VanillaScrollContainerViewWidget(
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
 
         // 子要素の描画なのだ～🌱
-        guiGraphics.enableScissor(x, y, x + width, y + height)
+        val xMin = x
+        val xMax = xMin + width
+        val yMin = y
+        val yMax = yMin + height
+        guiGraphics.enableScissor(xMin, yMin, xMax, yMax)
         try {
-            widgetRegistrations.forEach { widgetRegistration ->
+            widgetRegistrations.forEach skip@{ widgetRegistration ->
                 val widget = widgetRegistration.widget
 
-                // 前回のホバー状態を解除するため、領域外でも描画呼び出しを通すのだ～🌱
-                if (!widget.isHovered) {
-                    if (width <= 0 || height <= 0) return@forEach
-                    val renderOverflow = widgetRegistration.renderOverflow
-                    if (renderOverflow != null) {
-                        val xMin = widget.x + renderOverflow.xMin
-                        val xMax = widget.x + widget.width + renderOverflow.xMax
-                        val yMin = widget.y + renderOverflow.yMin
-                        val yMax = widget.y + widget.height + renderOverflow.yMax
-                        if (xMin >= xMax || yMin >= yMax) return@forEach
-                        if (xMin >= x + width || xMax <= x || yMin >= y + height || yMax <= y) return@forEach
-                    }
+                run force@{
+
+                    // 前回のホバー状態を解除するために、ホバーフラグが立っている要素は描画を呼び出すのだ～🌱
+                    if (widget.isHovered) return@force
+                    // キーボードフォーカスによって生じるツールチップを予約するために、フォーカス中の要素は描画を呼び出すのだ～🌱
+                    if (focused === widget) return@force
+                    // ドラッグに反応する要素のために、ドラッグ中の要素は描画を呼び出すのだ～🌱
+                    if (widgetRegistration in pressedWidgetRegistrations.values) return@force
+
+                    // 親要素自体が潰れているのだ～🌱
+                    if (xMin == xMax || yMin == yMax) return@skip
+
+                    val overflow = widgetRegistration.renderOverflow
+
+                    // 子要素が潰れているのだ～🌱
+                    if (widget.width == 0 && overflow.xMin == 0 && overflow.xMax == 0) return@skip
+                    if (widget.height == 0 && overflow.yMin == 0 && overflow.yMax == 0) return@skip
+
+                    // はみ出しが無限でなく、その方向に見切れている場合は、描画を飛ばすのだ～🌱
+                    if (overflow.xMin != Int.MAX_VALUE && widget.x - overflow.xMin >= xMax) return@skip
+                    if (overflow.yMin != Int.MAX_VALUE && widget.y - overflow.yMin >= yMax) return@skip
+                    if (overflow.xMax != Int.MAX_VALUE && widget.x + widget.width + overflow.xMax <= xMin) return@skip
+                    if (overflow.yMax != Int.MAX_VALUE && widget.y + widget.height + overflow.yMax <= yMin) return@skip
+
                 }
+
                 widget.render(guiGraphics, mouseX, mouseY, partialTick)
             }
         } finally {
@@ -437,10 +451,7 @@ abstract class VanillaScrollContainerViewWidget(
             override val origin = context.origin
             override val canPlaceMenuSlots = context.canPlaceMenuSlots
             override val onBeforeRender = context.onBeforeRender
-            override fun addRenderableWidget(widget: AbstractWidget) = register(widget, true, null)
-            override fun addRenderableWidget(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow) = register(widget, true, renderOverflow)
-            override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false, null)
-            override fun addRenderableOnly(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow) = register(widget, false, renderOverflow)
+            override fun addRenderable(registration: WidgetRegistration) = register(registration)
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover {
                 return context.registerMenuSlotPlacement(slotId) {
                     val viewportBounds = IntRectangle(x, y, width, height)

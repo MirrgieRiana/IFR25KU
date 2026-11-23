@@ -14,7 +14,6 @@ import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import miragefairy2024.util.register
-import net.minecraft.client.gui.components.AbstractWidget
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -55,8 +54,7 @@ class VanillaScrollContainerBoundsTest {
                 override val origin = IntPoint(5, 10)
                 override val canPlaceMenuSlots = true
                 override val onBeforeRender = EventRegistry<() -> Unit>()
-                override fun addRenderableWidget(widget: AbstractWidget) = throw AssertionError("No widget should be registered")
-                override fun addRenderableOnly(widget: AbstractWidget) = throw AssertionError("No widget should be registered")
+                override fun addRenderable(registration: WidgetRegistration) = throw AssertionError("No widget should be registered")
                 override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover {
                     placements[slotId] = clipBounds
                     return remover

@@ -2,9 +2,18 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.SlotPositionSetter
+import miragefairy2024.client.mod.BlueFuelViewRenderer
+import miragefairy2024.client.mod.FuelViewRenderer
+import miragefairy2024.client.mod.TexturedArrowViewRenderer
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
+import miragefairy2024.client.mod.recipeviewer.common.ClickableViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.FilledRectangleViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.ImageButtonViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.ImageViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.NinePatchImageViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.ProgressViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TextViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.TooltipBackgroundViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TooltipViewRenderer
 import miragefairy2024.client.util.LayeredImageButton
 import miragefairy2024.mod.recipeviewer.view.IntPoint
@@ -16,6 +25,8 @@ import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.LayeredImageButtonView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
+import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
+import miragefairy2024.mod.recipeviewer.views.ProgressView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.TextView
@@ -32,34 +43,20 @@ import miragefairy2024.util.observe
 import miragefairy2024.util.observeAndInitialize
 import miragefairy2024.util.register
 import miragefairy2024.util.removeOn
+import mirrg.kotlin.helium.atLeast
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.components.Tooltip
 import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.network.chat.Component
 
-private fun VanillaViewPlacerContext.place(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow? = null): ViewController {
+private infix fun VanillaViewPlacerContext.place(registration: WidgetRegistration): ViewController {
     val onDetached = EventRegistry<() -> Unit>()
-    val remover = if (renderOverflow == null) this.addRenderableWidget(widget) else this.addRenderableWidget(widget, renderOverflow)
-    remover.removeOn(onDetached)
+    this.addRenderable(registration).removeOn(onDetached)
     return object : ViewController {
         override fun setOffset(offset: IntPoint) {
-            widget.setPosition(offset.x, offset.y)
-        }
-
-        override fun detach() = onDetached.fire()
-    }
-}
-
-private fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow? = null): ViewController {
-    val onDetached = EventRegistry<() -> Unit>()
-    val remover = if (renderOverflow == null) this.addRenderableOnly(widget) else this.addRenderableOnly(widget, renderOverflow)
-    remover.removeOn(onDetached)
-    return object : ViewController {
-        override fun setOffset(offset: IntPoint) {
-            widget.setPosition(offset.x, offset.y)
+            registration.widget.setPosition(offset.x, offset.y)
         }
 
         override fun detach() = onDetached.fire()
@@ -69,7 +66,7 @@ private fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidget, ren
 context(_: ModContext)
 fun initVanillaViewPlacers() {
     fun placeScrollContainerView(context: VanillaViewPlacerContext, widget: VanillaScrollContainerViewWidget): ViewController {
-        val controller = context.place(widget)
+        val controller = context place WidgetRegistration(widget, true, WidgetRenderOverflow.NONE)
         // 子の差し替えだけで全長が変わった場合も、描画前に寸法を通知するのだ～🌱
         val boundsRemover = context.onBeforeRender.register(widget::updateScrollBounds)
         return object : ViewController {
@@ -97,7 +94,7 @@ fun initVanillaViewPlacers() {
         placeScrollContainerView(context, VanillaYScrollContainerViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
     }
     fun placeScrollbarView(context: VanillaViewPlacerContext, widget: VanillaScrollbarViewWidget<*>): ViewController {
-        val controller = context.place(widget)
+        val controller = context place WidgetRegistration(widget, true, WidgetRenderOverflow.NONE)
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {
                 controller.setOffset(offset)
@@ -158,7 +155,7 @@ fun initVanillaViewPlacers() {
         ) {
             override fun getMessage() = view.message
         }
-        context.place(TextButtonWidget())
+        context place WidgetRegistration(TextButtonWidget(), true, WidgetRenderOverflow.UNBOUNDED)
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: LayeredImageButtonView, bounds ->
         fun LayeredImageButtonView.Sprites.toWidgetSprites() = WidgetSprites(this.selected, this.unselected, this.selectedFocused, this.unselectedFocused)
@@ -175,7 +172,7 @@ fun initVanillaViewPlacers() {
         widget.onClick.observe(onClosed) {
             view.onClick.fire()
         }
-        val controller = context.place(widget)
+        val controller = context place WidgetRegistration(widget, true, WidgetRenderOverflow.NONE)
         object : ViewController {
             override fun setOffset(offset: IntPoint) {
                 controller.setOffset(offset)
@@ -204,7 +201,7 @@ fun initVanillaViewPlacers() {
         editBox.setResponder {
             view.text.value = it
         }
-        val controller = context.place(editBox)
+        val controller = context place WidgetRegistration(editBox, true, WidgetRenderOverflow.UNBOUNDED)
         object : ViewController {
             override fun setOffset(offset: IntPoint): Unit {
                 controller.setOffset(offset)
@@ -221,18 +218,39 @@ fun initVanillaViewPlacers() {
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextView, bounds ->
-        context.place(VanillaViewRendererWidget(TextViewRenderer, view, bounds))
+        context place WidgetRegistration(VanillaViewRendererWidget(TextViewRenderer, view, bounds), true, WidgetRenderOverflow.UNBOUNDED)
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: ImageView, bounds ->
-        context.place(VanillaViewRendererWidget(ImageViewRenderer, view, bounds), WidgetRenderOverflow(0, 0, 0, 0))
+        context place WidgetRegistration(VanillaViewRendererWidget(ImageViewRenderer, view, bounds), true, WidgetRenderOverflow.NONE)
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TooltipView, bounds ->
-        context.placeRenderable(VanillaViewRendererWidget(TooltipViewRenderer, view, bounds))
+        context place WidgetRegistration(VanillaViewRendererWidget(TooltipViewRenderer, view, bounds), false, WidgetRenderOverflow.NONE)
     }
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView, S> f(entry: ViewRendererRegistry.Entry<V, S>) {
             VANILLA_VIEW_PLACER_REGISTRY.register(entry.viewClass) { context, view, bounds ->
-                context.place(VanillaViewRendererWidget(entry.viewRenderer, view, bounds))
+                val renderOverflow = when (entry.viewRenderer) {
+                    ClickableViewRenderer, FilledRectangleViewRenderer, TooltipBackgroundViewRenderer -> WidgetRenderOverflow.NONE
+                    FuelViewRenderer, BlueFuelViewRenderer -> WidgetRenderOverflow(1, 0, 1, 0)
+                    ImageButtonViewRenderer -> WidgetRenderOverflow(0, Int.MAX_VALUE, 0, Int.MAX_VALUE)
+                    NinePatchImageViewRenderer -> {
+                        view as NinePatchImageView
+                        WidgetRenderOverflow(
+                            view.xEndSize - bounds.sizeX atLeast 0,
+                            view.xStartSize - bounds.sizeX atLeast 0,
+                            view.yEndSize - bounds.sizeY atLeast 0,
+                            view.yStartSize - bounds.sizeY atLeast 0,
+                        )
+                    }
+                    ProgressViewRenderer -> {
+                        view as ProgressView
+                        WidgetRenderOverflow(0, view.foreground.bounds.sizeX - bounds.sizeX atLeast 0, 0, view.foreground.bounds.sizeY - bounds.sizeY atLeast 0)
+                    }
+                    // 時刻の剰余が負のとき、前景は左へ描画されるのだ～🌱
+                    TexturedArrowViewRenderer -> WidgetRenderOverflow(bounds.sizeX, 0, 0, 0)
+                    else -> WidgetRenderOverflow.UNBOUNDED
+                }
+                context place WidgetRegistration(VanillaViewRendererWidget(entry.viewRenderer, view, bounds), true, renderOverflow)
             }
         }
         f(entry)
