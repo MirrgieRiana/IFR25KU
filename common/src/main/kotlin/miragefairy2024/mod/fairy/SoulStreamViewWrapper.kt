@@ -50,7 +50,6 @@ import miragefairy2024.util.observeAndInitialize
 import miragefairy2024.util.plus
 import miragefairy2024.util.red
 import miragefairy2024.util.register
-import miragefairy2024.util.registerAndInitialize
 import miragefairy2024.util.text
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
@@ -257,16 +256,7 @@ class SoulStreamViewWrapper(
                         it.scrollStep = scrollView.scrollStep
                     }
                     view += scrollbarView
-                    scrollView.scrollBounds.registerAndInitialize { _, bounds ->
-                        scrollbarView.contentLength = bounds.contentLength
-                        scrollbarView.viewportLength = bounds.viewportLength
-                    }
-                    scrollView.scrollOffsetY.registerAndInitialize { _, offset ->
-                        scrollbarView.scrollOffset.value = offset
-                    }
-                    scrollbarView.scrollOffset.register { _, offset ->
-                        scrollView.scrollOffsetY.value = offset
-                    }
+                    connectScrollbar(scrollView, scrollbarView)
                 }
                 view += YSpaceView(4)
                 (0 until hotbarSlotIndex).chunked(columnCount).forEach {

@@ -3,6 +3,7 @@ package miragefairy2024.mod.recipeviewer.view
 import miragefairy2024.mod.recipeviewer.views.Child
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.ListView
+import miragefairy2024.mod.recipeviewer.views.MarginView
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import net.minecraft.network.chat.FormattedText
@@ -49,6 +50,30 @@ class ListViewTest {
                 controller.dispose()
                 controller.detach()
             }
+        }
+    }
+
+    @Test
+    fun `負の余白で予約寸法が0になると次の子は原点に配置されるのだ`() {
+        listOf(true, false).forEach { horizontal ->
+            val view = if (horizontal) XListView() else YListView()
+            val marginView = MarginView(-6, -6, -6, -6)
+            marginView.add(Child(Unit, object : FixedWidgetView(IntPoint(10, 10)) {}))
+            view.add(Child(view.createDefaultPosition(), marginView))
+            view.add(Child(view.createDefaultPosition(), object : FixedWidgetView(IntPoint(30, 7)) {}))
+            view.initSizeCalculation(LIST_VIEW_RENDERING_PROXY, { 100 }, { 100 })
+
+            assertEquals(IntPoint.ZERO, marginView.evaluateContentSize())
+            assertEquals(IntPoint(30, 7), view.evaluateContentSize())
+
+            val bounds = mutableListOf<IntRectangle>()
+            val controller = view.attachTo(IntPoint.ZERO) { _, rectangle ->
+                bounds += rectangle
+                ViewController.NONE
+            }
+            assertEquals(listOf(IntRectangle(-6, -6, 10, 10), IntRectangle(0, 0, 30, 7)), bounds)
+            controller.dispose()
+            controller.detach()
         }
     }
 

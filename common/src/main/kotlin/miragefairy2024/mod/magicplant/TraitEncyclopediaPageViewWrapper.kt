@@ -25,9 +25,8 @@ import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
+import miragefairy2024.mod.recipeviewer.views.fixedContentSizeX
 import miragefairy2024.mod.recipeviewer.views.margin
-import miragefairy2024.mod.recipeviewer.views.maxContentSizeX
-import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.fire
@@ -129,7 +128,7 @@ class TraitEncyclopediaPageViewWrapper(trait: Trait) {
                             connectScrollbar(scrollView.view, scrollbarView.view)
                         }
                     }.margin(5)
-                }.minContentSizeX(160).maxContentSizeX(160)
+                }.fixedContentSizeX(160)
             }
 
             view += YSpaceView(10)

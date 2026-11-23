@@ -64,8 +64,8 @@ class SizeEvaluationTest {
     }
 
     @Test
-    fun `ゼロと負数を含む計算結果を再利用し再初期化で破棄するのだ`() {
-        listOf(IntPoint.ZERO, IntPoint(-1, -2)).forEach { size ->
+    fun `ゼロと正の寸法の計算結果を再利用し再初期化で破棄するのだ`() {
+        listOf(IntPoint.ZERO, IntPoint(1, 2)).forEach { size ->
             val view = SizeEvaluationView({ size.x }, { size.y })
             view.initSizeCalculation(TEST_RENDERING_PROXY, { throw UnsupportedOperationException() }, { throw UnsupportedOperationException() })
             assertEquals(0, view.contentSizeXCalculationCount)

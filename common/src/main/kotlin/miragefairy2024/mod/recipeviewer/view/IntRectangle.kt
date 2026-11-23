@@ -5,6 +5,10 @@ import mirrg.kotlin.helium.max
 import mirrg.kotlin.helium.min
 
 data class IntRectangle(val x: Int, val y: Int, val sizeX: Int, val sizeY: Int) {
+    init {
+        require(sizeX >= 0 && sizeY >= 0) { "Rectangle dimensions must be non-negative" }
+    }
+
     companion object {
         val ZERO = IntRectangle(0, 0, 0, 0)
     }
@@ -19,7 +23,7 @@ val IntRectangle.size get() = IntPoint(sizeX, sizeY)
 fun IntRectangle.offset(dx: Int, dy: Int) = IntRectangle(x + dx, y + dy, sizeX, sizeY)
 fun IntRectangle.grow(d: Int) = this.grow(d, d)
 fun IntRectangle.grow(dx: Int, dy: Int) = this.grow(dx, dx, dy, dy)
-fun IntRectangle.grow(dxMin: Int, dxMax: Int, dyMin: Int, dyMax: Int) = IntRectangle(x - dxMin, y - dyMin, sizeX + dxMin + dxMax, sizeY + dyMin + dyMax)
+fun IntRectangle.grow(dxMin: Int, dxMax: Int, dyMin: Int, dyMax: Int) = IntRectangle(this.x - dxMin, this.y - dyMin, this.sizeX + dxMin + dxMax atLeast 0, this.sizeY + dyMin + dyMax atLeast 0)
 operator fun IntRectangle.plus(point: IntPoint) = IntRectangle(x + point.x, y + point.y, sizeX, sizeY)
 operator fun IntRectangle.minus(point: IntPoint) = IntRectangle(x - point.x, y - point.y, sizeX, sizeY)
 fun IntRectangle.contains(x: Int, y: Int) = x >= this.x1 && x < this.x2 && y >= this.y1 && y < this.y2

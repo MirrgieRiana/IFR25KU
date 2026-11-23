@@ -10,6 +10,10 @@ import miragefairy2024.mod.recipeviewer.view.offset
 
 class AbsoluteView(private val size: IntPoint) : ContainerView<AbsoluteView.Position>() {
 
+    init {
+        require(size.x >= 0 && size.y >= 0) { "Absolute view dimensions must be non-negative" }
+    }
+
     sealed class Position {
         abstract fun evaluateSizeX(contentSizeXProvider: () -> Int, regionSizeXProvider: () -> Int): Int
         abstract fun evaluateSizeY(contentSizeYProvider: () -> Int, regionSizeYProvider: () -> Int): Int
