@@ -22,7 +22,6 @@ import miragefairy2024.mod.fairy.SoulStreamScreenHandler
 import miragefairy2024.mod.fairy.getFairyMotif
 import miragefairy2024.mod.fairy.soulStreamScreenHandlerType
 import miragefairy2024.mod.passiveskill.PassiveSkillEffectFilter
-import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.invoke
@@ -166,19 +165,6 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
             }
         }
         super.render(guiGraphics, mouseX, mouseY, partialTick)
-    }
-
-    override fun getRootViewOffset() = IntPoint.ZERO
-
-    // レシピビューワーが使うバニラのコンテナー矩形を画面全体に広げないのだ～🌱
-    override fun setMenuSize(size: IntPoint) = Unit
-
-    override fun hasClickedOutside(mouseX: Double, mouseY: Double, guiLeft: Int, guiTop: Int, mouseButton: Int): Boolean {
-        if (!super.hasClickedOutside(mouseX, mouseY, guiLeft, guiTop, mouseButton)) return false
-        // バニラはコンテナー矩形の外でスロットをクリックすると、スロット番号を投棄用の番号で上書きするのだ～🌱
-        return menu.slots.none { slot ->
-            slot.isActive && `mirageFairy2024$isHovering`(slot, mouseX, mouseY, isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY))
-        }
     }
 
     fun getRecipeViewerExclusionAreas() = viewWrapper.getRecipeViewerExclusionAreas()

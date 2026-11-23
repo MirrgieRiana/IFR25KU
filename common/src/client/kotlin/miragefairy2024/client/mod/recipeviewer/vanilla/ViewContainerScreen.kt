@@ -22,13 +22,6 @@ import net.minecraft.world.inventory.Slot
 /** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
 open class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title), SlotHovering where T : AbstractContainerMenu, T : ViewProviderMenu {
 
-    protected open fun getRootViewOffset() = IntPoint(leftPos, topPos)
-
-    protected open fun setMenuSize(size: IntPoint) {
-        imageWidth = size.x
-        imageHeight = size.y
-    }
-
     private class SlotPlacement(val clipBounds: () -> IntRectangle?)
 
     /**
@@ -50,7 +43,10 @@ open class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Co
         override fun createRootView() = menu.createView(title, playerInventoryTitle)
 
         override fun getUiOffset() = IntPoint(this@ViewContainerScreen.leftPos, this@ViewContainerScreen.topPos)
-        override fun setUiSize(uiSize: IntPoint) = setMenuSize(uiSize)
+        override fun setUiSize(uiSize: IntPoint) {
+            this@ViewContainerScreen.imageWidth = uiSize.x
+            this@ViewContainerScreen.imageHeight = uiSize.y
+        }
 
         override fun init() {
             slotPlacementMap.clear()
@@ -81,7 +77,7 @@ open class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Co
             }
         }
 
-    }, ::getRootViewOffset)
+    })
 
     override fun init() = viewAdapter.init()
 
