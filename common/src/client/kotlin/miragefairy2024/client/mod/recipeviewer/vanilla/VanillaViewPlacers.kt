@@ -2,9 +2,18 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.SlotPositionSetter
+import miragefairy2024.client.mod.BlueFuelViewRenderer
+import miragefairy2024.client.mod.FuelViewRenderer
+import miragefairy2024.client.mod.TexturedArrowViewRenderer
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
+import miragefairy2024.client.mod.recipeviewer.common.ClickableViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.FilledRectangleViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.ImageButtonViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.ImageViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.NinePatchImageViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.ProgressViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TextViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.TooltipBackgroundViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TooltipViewRenderer
 import miragefairy2024.client.util.LayeredImageButton
 import miragefairy2024.mod.recipeviewer.view.IntPoint
@@ -16,6 +25,8 @@ import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.LayeredImageButtonView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
+import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
+import miragefairy2024.mod.recipeviewer.views.ProgressView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.TextView
@@ -32,6 +43,7 @@ import miragefairy2024.util.observe
 import miragefairy2024.util.observeAndInitialize
 import miragefairy2024.util.register
 import miragefairy2024.util.removeOn
+import mirrg.kotlin.helium.atLeast
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.EditBox
@@ -160,7 +172,7 @@ fun initVanillaViewPlacers() {
         widget.onClick.observe(onClosed) {
             view.onClick.fire()
         }
-        val controller = context place WidgetRegistration(widget, true, WidgetRenderOverflow.UNBOUNDED)
+        val controller = context place WidgetRegistration(widget, true, WidgetRenderOverflow.NONE)
         object : ViewController {
             override fun setOffset(offset: IntPoint) {
                 controller.setOffset(offset)
@@ -212,12 +224,33 @@ fun initVanillaViewPlacers() {
         context place WidgetRegistration(VanillaViewRendererWidget(ImageViewRenderer, view, bounds), true, WidgetRenderOverflow.NONE)
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TooltipView, bounds ->
-        context place WidgetRegistration(VanillaViewRendererWidget(TooltipViewRenderer, view, bounds), false, WidgetRenderOverflow.UNBOUNDED)
+        context place WidgetRegistration(VanillaViewRendererWidget(TooltipViewRenderer, view, bounds), false, WidgetRenderOverflow.NONE)
     }
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView, S> f(entry: ViewRendererRegistry.Entry<V, S>) {
             VANILLA_VIEW_PLACER_REGISTRY.register(entry.viewClass) { context, view, bounds ->
-                context place WidgetRegistration(VanillaViewRendererWidget(entry.viewRenderer, view, bounds), true, WidgetRenderOverflow.UNBOUNDED)
+                val renderOverflow = when (entry.viewRenderer) {
+                    ClickableViewRenderer, FilledRectangleViewRenderer, TooltipBackgroundViewRenderer -> WidgetRenderOverflow.NONE
+                    FuelViewRenderer, BlueFuelViewRenderer -> WidgetRenderOverflow(1, 0, 1, 0)
+                    ImageButtonViewRenderer -> WidgetRenderOverflow(0, Int.MAX_VALUE, 0, Int.MAX_VALUE)
+                    NinePatchImageViewRenderer -> {
+                        view as NinePatchImageView
+                        WidgetRenderOverflow(
+                            view.xEndSize - bounds.sizeX atLeast 0,
+                            view.xStartSize - bounds.sizeX atLeast 0,
+                            view.yEndSize - bounds.sizeY atLeast 0,
+                            view.yStartSize - bounds.sizeY atLeast 0,
+                        )
+                    }
+                    ProgressViewRenderer -> {
+                        view as ProgressView
+                        WidgetRenderOverflow(0, view.foreground.bounds.sizeX - bounds.sizeX atLeast 0, 0, view.foreground.bounds.sizeY - bounds.sizeY atLeast 0)
+                    }
+                    // 時刻の剰余が負のとき、前景は左へ描画されるのだ～🌱
+                    TexturedArrowViewRenderer -> WidgetRenderOverflow(bounds.sizeX, 0, 0, 0)
+                    else -> WidgetRenderOverflow.UNBOUNDED
+                }
+                context place WidgetRegistration(VanillaViewRendererWidget(entry.viewRenderer, view, bounds), true, renderOverflow)
             }
         }
         f(entry)
