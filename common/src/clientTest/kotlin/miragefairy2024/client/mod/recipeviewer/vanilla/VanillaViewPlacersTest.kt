@@ -2,6 +2,7 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.SlotPositionSetter
+import miragefairy2024.client.mod.recipeviewer.WidgetRenderOverflow
 import miragefairy2024.client.util.ViewToast
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
@@ -85,7 +86,7 @@ class VanillaViewPlacersTest {
                 }
                 override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
             }
-            val remover = context.addRenderable(WidgetRegistration(widget, true, WidgetRenderOverflow.UNBOUNDED))
+            val remover = context.addRenderable(WidgetRegistration(widget, true) { WidgetRenderOverflow.UNBOUNDED })
             object : ViewController {
                 override fun setOffset(offset: IntPoint) = widget.setPosition(offset.x, offset.y)
                 override fun detach() {

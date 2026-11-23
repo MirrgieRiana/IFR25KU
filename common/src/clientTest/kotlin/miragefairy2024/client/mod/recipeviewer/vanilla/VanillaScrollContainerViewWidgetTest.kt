@@ -1,5 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import miragefairy2024.client.mod.recipeviewer.WidgetRenderOverflow
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
@@ -137,7 +138,7 @@ class VanillaScrollContainerViewWidgetTest {
                             return false
                         }
                     }
-                    val remover = childContext.addRenderable(WidgetRegistration(child, true, WidgetRenderOverflow.UNBOUNDED))
+                    val remover = childContext.addRenderable(WidgetRegistration(child, true) { WidgetRenderOverflow.UNBOUNDED })
                     object : ViewController {
                         override fun setOffset(offset: IntPoint) = child.setPosition(offset.x, offset.y)
                         override fun detach() = remover.remove()
@@ -191,6 +192,7 @@ class VanillaScrollContainerViewWidgetTest {
             val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
             val children = mutableListOf<AbstractWidget>()
             val renderedChildren = mutableListOf<Int>()
+            val renderOverflows = cases.map { it.second }.toMutableList()
             registry.register { childContext, _: ScrollContainerTestView, bounds ->
                 val index = children.size
                 val child = object : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {
@@ -201,7 +203,7 @@ class VanillaScrollContainerViewWidgetTest {
                     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
                 }
                 children += child
-                val remover = childContext.addRenderable(WidgetRegistration(child, true, cases[index].second))
+                val remover = childContext.addRenderable(WidgetRegistration(child, true) { renderOverflows[index] })
                 object : ViewController {
                     override fun setOffset(offset: IntPoint) = child.setPosition(offset.x, offset.y)
                     override fun detach() = remover.remove()
@@ -229,6 +231,11 @@ class VanillaScrollContainerViewWidgetTest {
                 renderedChildren.clear()
                 widget.render(environment.graphics, 12, 22, 0.0F)
                 Assertions.assertFalse(0 in renderedChildren)
+
+                renderedChildren.clear()
+                renderOverflows[0] = WidgetRenderOverflow(0, 1, 0, 0)
+                widget.render(environment.graphics, 12, 22, 0.0F)
+                Assertions.assertTrue(0 in renderedChildren)
             } finally {
                 widget.dispose()
                 widget.detach()
@@ -298,7 +305,7 @@ class VanillaScrollContainerViewWidgetTest {
                     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
                 }
                 children += child
-                val remover = childContext.addRenderable(WidgetRegistration(child, true, WidgetRenderOverflow.UNBOUNDED))
+                val remover = childContext.addRenderable(WidgetRegistration(child, true) { WidgetRenderOverflow.UNBOUNDED })
                 object : ViewController {
                     override fun setOffset(offset: IntPoint) = child.setPosition(offset.x, offset.y)
                     override fun detach() = remover.remove()

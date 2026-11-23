@@ -1,6 +1,7 @@
 package miragefairy2024.client.mod.recipeviewer.common
 
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
+import miragefairy2024.client.mod.recipeviewer.WidgetRenderOverflow
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.x2
 import miragefairy2024.mod.recipeviewer.view.y2
@@ -15,6 +16,8 @@ import net.minecraft.world.item.ItemStack
 
 object GhostRecipeItemViewRenderer : ViewRenderer<GhostRecipeItemView, Double> {
     override fun createState(view: GhostRecipeItemView) = 0.0
+
+    override fun getRenderOverflow(view: GhostRecipeItemView, bounds: IntRectangle) = WidgetRenderOverflow.UNBOUNDED
 
     override fun render(view: GhostRecipeItemView, state: Slot<Double>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val minecraft: Minecraft = Minecraft.getInstance()
