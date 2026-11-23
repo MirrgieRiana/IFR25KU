@@ -29,7 +29,7 @@ fun Item.toTextureSource() = TextureSource { TextureMapping.layer0(this) }
 fun Block.toTextureSource() = TextureSource { TextureMapping.layer0(this) }
 fun ResourceLocation.toTextureSource() = TextureSource { TextureMapping.layer0(this) }
 
-context(ModContext)
+context(_: ModContext)
 fun registerDebugItem(path: String, icon: TextureSource = Items.BOOK.toTextureSource(), color: Int = 0xFF888888.toInt(), action: (Level, Player, InteractionHand, ItemStack) -> Unit) {
     val item = Registration(BuiltInRegistries.ITEM, MirageFairy2024.identifier(path)) {
         object : Item(Properties()) {
@@ -46,7 +46,7 @@ fun registerDebugItem(path: String, icon: TextureSource = Items.BOOK.toTextureSo
     item.registerColorProvider { _, _ -> color }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun registerClientDebugItem(path: String, icon: TextureSource = Items.BOOK.toTextureSource(), color: Int = 0xFF888888.toInt(), action: (Level, Player, InteractionHand, ItemStack) -> Unit) {
     registerDebugItem(path, icon, color) { level, player, hand, itemStack ->
         if (level.isServer) return@registerDebugItem
@@ -54,7 +54,7 @@ fun registerClientDebugItem(path: String, icon: TextureSource = Items.BOOK.toTex
     }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun registerServerDebugItem(path: String, icon: TextureSource = Items.BOOK.toTextureSource(), color: Int = 0xFF888888.toInt(), action: (ServerLevel, ServerPlayer, InteractionHand, ItemStack) -> Unit) {
     registerDebugItem(path, icon, color) { level, player, hand, itemStack ->
         if (level.isClientSide) return@registerDebugItem

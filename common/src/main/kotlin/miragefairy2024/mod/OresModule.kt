@@ -263,7 +263,7 @@ object OreModelCard {
     val model = Model(identifier, TextureSlot.BACK, TextureSlot.FRONT)
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initOresModule() {
 
     Registration(BuiltInRegistries.BLOCK_TYPE, MirageFairy2024.identifier("ore")) { OreBlock.CODEC }.register()

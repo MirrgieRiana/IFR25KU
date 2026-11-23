@@ -119,7 +119,7 @@ enum class EnchantmentCard(
     val identifier = MirageFairy2024.identifier(path)
     val key = Registries.ENCHANTMENT with identifier
 
-    context(ModContext)
+    context(_: ModContext)
     fun init() {
         registerDynamicGeneration(key) {
             Enchantment.enchantment(

@@ -1574,7 +1574,7 @@ val MIRAGE_FLOUR_TAG = MirageFairy2024.identifier("mirage_flour").toItemTag()
 val APPEARANCE_RATE_BONUS_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("mirage_flour").toLanguageKey()}.appearance_rate_bonus" }, "Appearance Rate Bonus", "出現率ボーナス")
 val MINA_DESCRIPTION_TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("mina").toLanguageKey()}.description" }, "Can exchange for Minia with apostle's wand", "使徒のステッキでミーニャと両替可能")
 
-context(ModContext)
+context(modContext: ModContext)
 fun initMaterialsModule() {
     MaterialCard.entries.forEach { card ->
         card.item.register()
@@ -1597,7 +1597,7 @@ fun initMaterialsModule() {
             card.ore.tag.generator.registerChild(card.item)
             card.ore.shape.tag.generator.registerChild(card.ore.tag)
         }
-        card.initializer(this@ModContext, card)
+        card.initializer(modContext, card)
     }
 
     MIRAGE_FLOUR_TAG.enJa(EnJa("Mirage Flour", "ミラージュの花粉"))

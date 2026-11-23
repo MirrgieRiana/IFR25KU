@@ -5,6 +5,7 @@ import miragefairy2024.client.mod.recipeviewer.vanilla.VANILLA_VIEW_PLACER_REGIS
 import miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter
 import miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapterHost
 import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.util.Remover
 import net.minecraft.client.Minecraft
@@ -13,7 +14,7 @@ import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.toasts.Toast
 import net.minecraft.client.gui.components.toasts.ToastComponent
 
-/** View を Screen なしで表示し、非表示への切り替え時にイベント購読を解除するトーストなのだ～🌱 */
+/** View を Screen なしで表示するトーストなのだ～🌱 */
 class ViewToast(rootView: View) : Toast {
 
     private class WidgetSlot(val widget: AbstractWidget)
@@ -27,6 +28,7 @@ class ViewToast(rootView: View) : Toast {
         override fun getViewPlacerRegistry() = VANILLA_VIEW_PLACER_REGISTRY
 
         override fun getScreen() = null
+        override fun canPlaceMenuSlots() = false
         override fun getRegionSizeX() = 1000
         override fun getRegionSizeY() = 1000
 
@@ -47,6 +49,8 @@ class ViewToast(rootView: View) : Toast {
 
         override fun addRenderableOnly(widget: AbstractWidget) = addRenderableWidget(widget)
 
+        override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
+
     })
 
     init {
@@ -57,16 +61,12 @@ class ViewToast(rootView: View) : Toast {
     override fun height() = size.y
 
     override fun render(guiGraphics: GuiGraphics, toastComponent: ToastComponent, timeSinceLastVisible: Long): Toast.Visibility {
+        viewAdapter.beforeRender()
         val partialTick = Minecraft.getInstance().timer.getGameTimeDeltaPartialTick(true)
         widgetSlots.forEach {
             it.widget.render(guiGraphics, -1000, -1000, partialTick)
         }
-        if (timeSinceLastVisible >= 5000.0 * toastComponent.notificationDisplayTimeMultiplier) {
-            // 非表示アニメーション中にも描画されるため、購読を解除しても描画要素は保持するのだ～🌱
-            viewAdapter.removed()
-            return Toast.Visibility.HIDE
-        }
-        return Toast.Visibility.SHOW
+        return if (timeSinceLastVisible >= 5000.0 * toastComponent.notificationDisplayTimeMultiplier) Toast.Visibility.HIDE else Toast.Visibility.SHOW
     }
 
 }

@@ -1,18 +1,24 @@
 package miragefairy2024.client.mod.recipeviewer.common
 
+import miragefairy2024.client.mod.recipeviewer.RenderOverflow
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.client.util.drawScrollingString
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.TextView
+import mirrg.kotlin.helium.Slot
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 
-object TextViewRenderer : ViewRenderer<TextView> {
+object TextViewRenderer : ViewRenderer<TextView, Unit> {
 
     private val startNanoTime by lazy { System.nanoTime() }
 
-    override fun render(view: TextView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun createState(view: TextView) = Unit
+
+    override fun getRenderOverflow(view: TextView, bounds: IntRectangle) = RenderOverflow.UNBOUNDED
+
+    override fun render(view: TextView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val font = Minecraft.getInstance().font
         val color = view.color.lightModeArgb
         if (view.scroll && font.width(view.text.value) > view.evaluateActualSizeX()) {
@@ -42,12 +48,6 @@ object TextViewRenderer : ViewRenderer<TextView> {
                 color,
                 view.shadow,
             )
-        }
-        if (isHovered) {
-            val tooltip = view.tooltip
-            if (tooltip != null && tooltip.isNotEmpty()) {
-                Minecraft.getInstance().screen?.setTooltipForNextRenderPass(tooltip.map { it.visualOrderText })
-            }
         }
     }
 

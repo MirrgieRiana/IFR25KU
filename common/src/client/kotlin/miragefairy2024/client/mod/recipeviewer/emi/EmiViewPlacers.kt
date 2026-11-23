@@ -23,7 +23,7 @@ import miragefairy2024.util.toEmiIngredient
 import miragefairy2024.util.toEmiStack
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 
-context(ModContext)
+context(_: ModContext)
 fun initEmiViewPlacers() {
     EMI_VIEW_PLACER_REGISTRY.register { context, view: InputSlotView, bounds ->
         context.containerWidget place SlotWidget(view.ingredientStack.toEmiIngredient(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
@@ -102,7 +102,7 @@ fun initEmiViewPlacers() {
         }, bounds.x, bounds.y, bounds.sizeX, bounds.sizeY)
     }
     ViewRendererRegistry.registry.subscribe { entry ->
-        fun <V : PlaceableView> f(entry: ViewRendererRegistry.Entry<V>) {
+        fun <V : PlaceableView, S> f(entry: ViewRendererRegistry.Entry<V, S>) {
             EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { context, view, bounds ->
                 context.containerWidget place EmiViewRendererWidget(entry.viewRenderer, view, bounds)
             }

@@ -6,7 +6,7 @@ class InitializationEventRegistry<T> {
     private val list = mutableListOf<T>()
     private var frozen = false
 
-    context(ModContext)
+    context(_: ModContext)
     operator fun invoke(listener: T) {
         check(!frozen) { "Cannot register listener to already fired initialization event." }
         list += listener
@@ -25,7 +25,7 @@ class ReusableInitializationEventRegistry<T> {
     private val list = mutableListOf<T>()
     private var frozen = false
 
-    context(ModContext)
+    context(_: ModContext)
     operator fun invoke(listener: T) {
         check(!frozen) { "Cannot register listener to already fired initialization event." }
         list += listener
@@ -43,7 +43,7 @@ object Modules {
     private val lock = Any()
     private var initialized = false
 
-    context(ModContext)
+    context(_: ModContext)
     fun init() {
         synchronized(lock) {
             if (initialized) return

@@ -10,13 +10,16 @@ interface View {
      * サイズ計算に使用する [renderingProxy] と、割り当て領域を取得する [regionSizeXProvider]・[regionSizeYProvider] を格納するのだ～🌱
      * 計算済みのサイズを破棄し、既に存在する子 View も初期化するのだ～🌱
      * 初期化自体ではサイズを計算しないのだ～🌱
+     *
+     * @param regionSizeXProvider 割り当て領域の幅を 0 以上の値で返すのだ～🌱
+     * @param regionSizeYProvider 割り当て領域の高さを 0 以上の値で返すのだ～🌱
      */
     fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int)
 
     /**
      * この View のコンテンツが占有する最小のサイズの X 成分を返すのだ～🌱
      * 未計算なら計算して内部状態に格納し、計算済みならその値を返すのだ～🌱
-     * 戻り値は、親 View のレイアウトを決定するための値なのだ～🌱
+     * 戻り値は 0 以上で、親 View のレイアウトを決定するための値なのだ～🌱
      * この値はこの View が実際に機能的に占有するサイズの X 成分より大きくても小さくてもかまわないのだ～🌱
      * [miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] の後に呼び出さなければならないのだ～🌱
      */
@@ -25,7 +28,7 @@ interface View {
     /**
      * この View のコンテンツが占有する最小のサイズの Y 成分を返すのだ～🌱
      * 未計算なら計算して内部状態に格納し、計算済みならその値を返すのだ～🌱
-     * 戻り値は、親 View のレイアウトを決定するための値なのだ～🌱
+     * 戻り値は 0 以上で、親 View のレイアウトを決定するための値なのだ～🌱
      * この値はこの View が実際に機能的に占有するサイズの Y 成分より大きくても小さくてもかまわないのだ～🌱
      * [miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] の後に呼び出さなければならないのだ～🌱
      */
@@ -34,7 +37,7 @@ interface View {
     /**
      * この View 自身の実際のサイズの X 成分を返すのだ～🌱
      * 未計算なら必要な依存先とともに計算して内部状態に格納し、計算済みならその値を返すのだ～🌱
-     * 実際のサイズは初期化時に登録した X 軸の割り当て領域より大きくてもかまわないのだ～🌱
+     * 戻り値は 0 以上で、初期化時に登録した X 軸の割り当て領域より大きくてもかまわないのだ～🌱
      * [miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] の後に呼び出さなければならないのだ～🌱
      */
     fun evaluateActualSizeX(): Int
@@ -42,7 +45,7 @@ interface View {
     /**
      * この View 自身の実際のサイズの Y 成分を返すのだ～🌱
      * 未計算なら必要な依存先とともに計算して内部状態に格納し、計算済みならその値を返すのだ～🌱
-     * 実際のサイズは初期化時に登録した Y 軸の割り当て領域より大きくてもかまわないのだ～🌱
+     * 戻り値は 0 以上で、初期化時に登録した Y 軸の割り当て領域より大きくてもかまわないのだ～🌱
      * [miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] の後に呼び出さなければならないのだ～🌱
      */
     fun evaluateActualSizeY(): Int

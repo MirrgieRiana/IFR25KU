@@ -2,7 +2,7 @@ package miragefairy2024.mod.fairy
 
 import miragefairy2024.ModContext
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyModule() {
     initFairyItem()
     initFairyCondensationRecipe()

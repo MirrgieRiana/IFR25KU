@@ -19,7 +19,7 @@ fun <T : ToolConfiguration> T.effective(vararg blockTags: TagKey<Block>) = this.
 object EffectiveToolEffectType : ToolEffectType<ToolConfiguration, EffectiveToolEffectType.Value> {
     private val TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("fairy_mining_tool").toLanguageKey()}.effective" }, "Mineable: %s", "採掘可能: %s")
 
-    context(ModContext)
+    context(_: ModContext)
     fun init() {
         TRANSLATION.enJa()
     }

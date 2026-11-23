@@ -163,7 +163,7 @@ enum class TraitConditionCard(
     }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initTraitConditionCard() {
     TraitConditionCard.entries.forEach {
         it.translation.enJa()

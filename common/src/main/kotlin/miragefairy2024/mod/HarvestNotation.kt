@@ -67,15 +67,15 @@ class HarvestNotation(val seed: ItemStack, val crops: List<Crop>) {
     }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Item).registerHarvestNotation(vararg crops: () -> HarvestNotation.Crop) = this.registerHarvestNotation(crops.asIterable())
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Item).registerHarvestNotation(crops: Iterable<() -> HarvestNotation.Crop>) = ModEvents.onInitialize {
     HarvestNotation.register(this().getIdentifier(), HarvestNotation(this().createItemStack(), crops.map { it() }))
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initHarvestNotationModule() {
     HarvestNotationRecipeViewerCategoryCard.init()
 }

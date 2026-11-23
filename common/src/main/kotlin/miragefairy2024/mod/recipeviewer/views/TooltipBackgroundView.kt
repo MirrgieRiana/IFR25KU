@@ -7,7 +7,6 @@ import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
 
-/** ツールチップと同じ背景を敷く View なのだ～🌱 */
 class TooltipBackgroundView : AbstractView(), PlaceableView {
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.FILL

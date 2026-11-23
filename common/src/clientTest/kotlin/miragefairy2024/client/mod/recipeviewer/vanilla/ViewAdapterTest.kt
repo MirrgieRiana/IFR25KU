@@ -1,5 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import miragefairy2024.client.mod.recipeviewer.RenderOverflow
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
@@ -12,7 +13,9 @@ import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
+import miragefairy2024.util.register
 import miragefairy2024.util.text
+import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractContainerWidget
 import net.minecraft.client.gui.components.AbstractWidget
@@ -41,7 +44,7 @@ private val ADAPTER_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
     override fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence> = throw UnsupportedOperationException()
 }
 
-private class TestView(val interactive: Boolean) : FixedWidgetView(IntPoint(10, 20))
+private class TestView(val interactive: Boolean, val beforeRender: (() -> Unit)? = null) : FixedWidgetView(IntPoint(10, 20))
 
 private class RecordingWidget(bounds: IntRectangle) : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty()) {
     var onClick: () -> Unit = { }
@@ -80,6 +83,7 @@ private class AdapterFixture(vararg views: TestView) {
     var onDispose: () -> Unit = { }
     val host: ViewAdapterHost = object : ViewAdapterHost {
         override fun getScreen() = this@AdapterFixture.screen
+        override fun canPlaceMenuSlots() = false
         override fun getRegionSizeX() = screen.width
         override fun getRegionSizeY() = screen.height
         override fun getUiOffset() = IntPoint(30, 40)
@@ -93,8 +97,9 @@ private class AdapterFixture(vararg views: TestView) {
             it.register(TestView::class.java) { context, view, bounds ->
                 val widget = RecordingWidget(bounds)
                 widgets += widget
-                val remover = if (view.interactive) context.addRenderableWidget(widget) else context.addRenderableOnly(widget)
+                val remover = context.addRenderable(WidgetRegistration(widget, view.interactive) { RenderOverflow.UNBOUNDED })
                 removers += remover
+                view.beforeRender?.let { listener -> context.onBeforeRender.register { listener() } }
                 object : ViewController {
                     override fun setOffset(offset: IntPoint) = widget.setPosition(offset.x, offset.y)
                     override fun detach() = throw UnsupportedOperationException()
@@ -141,6 +146,7 @@ private class AdapterFixture(vararg views: TestView) {
                 adapter.removeWidget(widget)
             }
         }
+        override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
     }
     val adapter = ViewAdapter(host)
 
@@ -152,6 +158,43 @@ private class AdapterFixture(vararg views: TestView) {
 }
 
 class ViewAdapterTest {
+
+    @Test
+    fun `ホイールを未消費の背景から次の子へ渡し消費後は止めるのだ`() {
+        val fixture = AdapterFixture()
+        val calls = mutableListOf<String>()
+        var consume = true
+        fun widget(label: String, x: Int, handles: () -> Boolean): AbstractWidget {
+            return object : AbstractWidget(x, 40, 20, 20, text { empty() }) {
+                override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+                override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+                override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
+                    Assertions.assertEquals(listOf(35.0, 45.0, 2.0, -3.0), listOf(mouseX, mouseY, scrollX, scrollY))
+                    calls += label
+                    return handles()
+                }
+            }
+        }
+        fixture.interactiveWidgets += widget("outside", 100) { true }
+        fixture.interactiveWidgets += widget("background", 30) { false }
+        fixture.interactiveWidgets += widget("scroll", 30) { consume }
+        fixture.interactiveWidgets += widget("behind", 30) { false }
+        try {
+            Assertions.assertTrue(fixture.adapter.mouseScrolled(35.0, 45.0, 2.0, -3.0))
+            Assertions.assertEquals(listOf("background", "scroll"), calls)
+            calls.clear()
+            consume = false
+            Assertions.assertFalse(fixture.adapter.mouseScrolled(35.0, 45.0, 2.0, -3.0))
+            Assertions.assertEquals(listOf("background", "scroll", "behind"), calls)
+            calls.clear()
+            fixture.adapter.removed()
+            Assertions.assertFalse(fixture.adapter.mouseScrolled(35.0, 45.0, 2.0, -3.0))
+            Assertions.assertTrue(calls.isEmpty())
+        } finally {
+            fixture.adapter.removed()
+        }
+    }
+
     @Test
     fun `複数行入力欄のキー消費と有効時の入力保護と無効なコンテナを検証するのだ`() {
         val fixture = AdapterFixture()
@@ -215,7 +258,7 @@ class ViewAdapterTest {
             it.register(TestView::class.java) { context, view, bounds ->
                 val widget = RecordingWidget(bounds)
                 widgets += widget
-                if (view.interactive) context.addRenderableWidget(widget) else context.addRenderableOnly(widget)
+                context.addRenderable(WidgetRegistration(widget, view.interactive) { RenderOverflow.UNBOUNDED })
                 object : ViewController {
                     override fun setOffset(offset: IntPoint) = widget.setPosition(offset.x, offset.y)
                     override fun detach() = throw UnsupportedOperationException()
@@ -235,6 +278,7 @@ class ViewAdapterTest {
             override fun getRenderingProxy() = ADAPTER_RENDERING_PROXY
             override fun getViewPlacerRegistry() = registry
             override fun getScreen() = null
+            override fun canPlaceMenuSlots() = false
             override fun getRegionSizeX() = 300
             override fun getRegionSizeY() = 80
             override fun createRootView() = rootView
@@ -248,6 +292,7 @@ class ViewAdapterTest {
                 return Remover { renderableWidgets.remove(widget) }
             }
             override fun addRenderableOnly(widget: AbstractWidget) = addRenderableWidget(widget)
+            override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
         })
         adapter.init()
         assertEquals(IntPoint(300, 80), size)
@@ -255,7 +300,7 @@ class ViewAdapterTest {
         assertFalse(adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
         assertFalse(adapter.mouseDragged(0.0, 0.0, 0, 1.0, 1.0))
         assertFalse(adapter.mouseReleased(0.0, 0.0, 0))
-        adapter.mouseClicked()
+        adapter.mouseClicked(0.0, 0.0)
         adapter.removeWidget(widgets[0])
 
         adapter.setOffset(IntPoint(30, 40))
@@ -266,6 +311,38 @@ class ViewAdapterTest {
         adapter.removed()
         assertEquals(2, disposals)
         assertThrows(IllegalStateException::class.java) { adapter.setOffset(IntPoint.ZERO) }
+    }
+
+    @Test
+    fun `配置コンテキストからホストへスロット番号と矩形取得関数を中継するのだ`() {
+        val contexts = mutableListOf<VanillaViewPlacerContext>()
+        val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
+        registry.register(TestView::class.java) { context, _, _ ->
+            contexts += context
+            object : ViewController {
+                override fun setOffset(offset: IntPoint) = Unit
+                override fun detach() = Unit
+            }
+        }
+        val host: ViewAdapterHost = Mockito.mock(ViewAdapterHost::class.java)
+        Mockito.`when`(host.getRenderingProxy()).thenReturn(ADAPTER_RENDERING_PROXY)
+        Mockito.`when`(host.getViewPlacerRegistry()).thenReturn(registry)
+        Mockito.`when`(host.createRootView()).thenReturn(TestView(false))
+        Mockito.`when`(host.getUiOffset()).thenReturn(IntPoint.ZERO)
+        Mockito.`when`(host.canPlaceMenuSlots()).thenReturn(true)
+        val slotId = 3
+        val clipBounds = { IntRectangle(10, 20, 30, 40) }
+        val remover = Remover { }
+        Mockito.`when`(host.registerMenuSlotPlacement(slotId, clipBounds)).thenReturn(remover)
+        val adapter = ViewAdapter(host)
+        adapter.init()
+        try {
+            Assertions.assertTrue(contexts.single().canPlaceMenuSlots)
+            Assertions.assertSame(remover, contexts.single().registerMenuSlotPlacement(slotId, clipBounds))
+            Mockito.verify(host).registerMenuSlotPlacement(slotId, clipBounds)
+        } finally {
+            adapter.removed()
+        }
     }
 
     @Test
@@ -280,6 +357,24 @@ class ViewAdapterTest {
         assertEquals(listOf(fixture.widgets[1]), fixture.interactiveWidgets)
         assertEquals(IntPoint(30, 40), IntPoint(fixture.widgets[1].x, fixture.widgets[1].y))
         fixture.adapter.removed()
+    }
+
+    @Test
+    fun `再初期化と破棄で前の配置の描画前登録を解除するのだ`() {
+        var calls = 0
+        val fixture = AdapterFixture(TestView(true) { calls += 1 })
+        val adapter = fixture.adapter
+
+        adapter.beforeRender()
+        assertEquals(1, calls)
+
+        fixture.init()
+        adapter.beforeRender()
+        assertEquals(2, calls)
+
+        adapter.removed()
+        adapter.beforeRender()
+        assertEquals(2, calls)
     }
 
     @Test
@@ -370,7 +465,7 @@ class ViewAdapterTest {
         fixture.widgets[0].onClick = { fixture.removers[0].remove() }
 
         assertTrue(fixture.screen.mouseClicked(31.0, 41.0, 0))
-        fixture.adapter.mouseClicked()
+        fixture.adapter.mouseClicked(31.0, 41.0)
 
         assertNull(fixture.screen.focused)
         assertFalse(fixture.screen.isDragging)
@@ -466,7 +561,7 @@ class ViewAdapterTest {
             val editBox: EditBox = object : EditBox(null, 10, 20, text { empty() }) {
                 override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = consumeKeys
             }
-            val nextEditBox = EditBox(null, 10, 50, text { empty() })
+            val nextEditBox = EditBox(Mockito.mock(Font::class.java), 10, 50, text { empty() })
             fixture.interactiveWidgets += editBox
             fixture.interactiveWidgets += nextEditBox
             fixture.screen.focused = editBox

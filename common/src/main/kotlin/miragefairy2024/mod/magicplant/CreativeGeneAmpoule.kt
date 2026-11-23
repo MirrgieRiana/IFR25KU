@@ -50,7 +50,7 @@ object CreativeGeneAmpouleCard {
     val item = Registration(BuiltInRegistries.ITEM, identifier) { CreativeGeneAmpouleItem(Item.Properties().stacksTo(1)) }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initCreativeGeneAmpoule() {
     creativeGeneAmpouleItemGroupCard.init()
     CreativeGeneAmpouleCard.let { card ->

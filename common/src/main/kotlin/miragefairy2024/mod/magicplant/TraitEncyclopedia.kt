@@ -45,6 +45,7 @@ import miragefairy2024.util.gold
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.register
+import miragefairy2024.util.registerAndInitialize
 import miragefairy2024.util.sortedEntrySet
 import miragefairy2024.util.style
 import miragefairy2024.util.text
@@ -57,7 +58,7 @@ private val identifier = MirageFairy2024.identifier("trait_encyclopedia")
 private val DEFAULT_TRAIT_TRANSLATION = Translation({ identifier.toLanguageKey("gui", "default_trait") }, EnJa("Default Trait", "初期状態で発現"))
 private val RANDOM_TRAIT_TRANSLATION = Translation({ identifier.toLanguageKey("gui", "random_trait") }, EnJa("Random Trait", "ランダムで発現"))
 
-context(ModContext)
+context(_: ModContext)
 fun initTraitEncyclopedia() {
     TraitEncyclopediaRecipeViewerCategoryCard.init()
 
@@ -89,7 +90,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
             view.sizingY = Sizing.FILL
 
             // 背景
-            view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22, true)
+            view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22, true, true)
 
             view += YListView().configure {
                 view.sizingX = Sizing.FILL
@@ -100,8 +101,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                     view.sizingX = Sizing.FILL
                     view.alignmentX = Alignment.CENTER
                     view.scroll = true
-                    view.tooltip = listOf(recipeEntry.recipe.getName())
-                }
+                }.tooltip(recipeEntry.recipe.getName())
 
                 view += YSpaceView(5)
 
@@ -116,9 +116,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                         position.ignoreLayoutX = true
                         view.sizingX = Sizing.FILL
                         recipeEntry.recipe.conditions.forEach {
-                            view += TextView(it.emoji).configure {
-                                view.tooltip = listOf(it.name)
-                            }
+                            view += TextView(it.emoji).configure().tooltip(it.name)
                         }
                     }
 
@@ -137,8 +135,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                         recipeEntry.recipe.traitEffectKeyEntries.forEach {
                             view += TextView(text { (it.factor * 100.0 formatAs "%.1f%%")() + " "() + it.traitEffectKey.emoji.style(it.traitEffectKey.style) }).configure {
                                 position.alignmentX = Alignment.END
-                                view.tooltip = listOf(it.traitEffectKey.name)
-                            }
+                            }.tooltip(it.traitEffectKey.name)
                         }
                     }
 
@@ -195,10 +192,9 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                         // デフォルト特性ラベル
                         view += TextView(Emoji.NATURAL().style(TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.style)).configure {
                             position.alignmentY = Alignment.END
-                            view.tooltip = listOf(text { DEFAULT_TRAIT_TRANSLATION().gold }) + defaultTraitProducerMagicPlants.map { text { it.second.toString(2)() + " "() + it.first.block().name } }
                             // TODO 項目数が増えたら省略
                             // TODO クリックで大きな表を表示
-                        }
+                        }.tooltip(listOf(text { DEFAULT_TRAIT_TRANSLATION().gold }) + defaultTraitProducerMagicPlants.map { text { it.second.toString(2)() + " "() + it.first.block().name } })
 
                     }
 
@@ -209,11 +205,9 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                         view.hoveredTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_left.png"), IntPoint(12, 36), IntRectangle(0, 12, 12, 12))
                         view.disabledTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_left.png"), IntPoint(12, 36), IntRectangle(0, 24, 12, 12))
 
-                        fun update() {
+                        pageIndex.registerAndInitialize { _, _ ->
                             view.enabled.value = pageIndex.value > 0
                         }
-                        pageIndex.register { _, _ -> update() }
-                        update()
 
                         view.onClick.register {
                             pageIndex.value -= 1
@@ -227,11 +221,9 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                         view.sizingX = Sizing.FILL
                         view.alignmentX = Alignment.CENTER
 
-                        fun update() {
+                        pageIndex.registerAndInitialize { _, _ ->
                             view.text.value = text { "${pageIndex.value + 1}"() }.visualOrderText
                         }
-                        pageIndex.register { _, _ -> update() }
-                        update()
                     }.minContentSizeX(32)
 
                     // 右ボタン
@@ -244,9 +236,8 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                         fun update() {
                             view.enabled.value = pageIndex.value < pageCount.value - 1
                         }
-                        pageIndex.register { _, _ -> update() }
-                        pageCount.register { _, _ -> update() }
-                        update()
+                        pageIndex.registerAndInitialize { _, _ -> update() }
+                        pageCount.registerAndInitialize { _, _ -> update() }
 
                         view.onClick.register {
                             pageIndex.value += 1
@@ -268,10 +259,9 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                         // ランダム特性ラベル
                         view += TextView(Emoji.MUTATION().style(TraitEffectKeyCard.MUTATION.traitEffectKey.style)).configure {
                             position.alignmentY = Alignment.END
-                            view.tooltip = listOf(text { RANDOM_TRAIT_TRANSLATION().gold }) + randomTraitProducerMagicPlants.map { text { (it.second * 100.0 formatAs "%.0f%%")() + " "() + it.first.block().name } }
                             // TODO 項目数が増えたら省略
                             // TODO クリックで大きな表を表示
-                        }
+                        }.tooltip(listOf(text { RANDOM_TRAIT_TRANSLATION().gold }) + randomTraitProducerMagicPlants.map { text { (it.second * 100.0 formatAs "%.0f%%")() + " "() + it.first.block().name } })
 
                         view += XSpaceView(2)
 

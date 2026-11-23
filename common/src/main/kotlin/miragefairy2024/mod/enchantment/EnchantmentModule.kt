@@ -21,7 +21,7 @@ val UNCREATION_ROD_ITEM_TAG = MirageFairy2024.identifier("uncreation_rod").toIte
 val NONE_ITEM_TAG = MirageFairy2024.identifier("none").toItemTag()
 val AREA_MINING_ENCHANTABLE_ITEM_TAG = MirageFairy2024.identifier("enchantable/area_mining").toItemTag()
 
-context(ModContext)
+context(_: ModContext)
 fun initEnchantmentModule() {
 
     EnchantmentCard.entries.forEach { card ->

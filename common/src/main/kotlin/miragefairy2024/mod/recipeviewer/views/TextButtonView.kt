@@ -2,12 +2,11 @@ package miragefairy2024.mod.recipeviewer.views
 
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.util.EventRegistry
+import miragefairy2024.util.empty
+import miragefairy2024.util.text
 import net.minecraft.network.chat.Component
 
-/**
- * 文字の書かれた、押せるボタンの View なのだ～🌱
- * ボタンのウィジェットそのものは、この View を受け取ったバックエンドが用意するのだ～🌱
- */
-class TextButtonView(size: IntPoint, val message: Component) : FixedWidgetView(size) {
-    val onPress = EventRegistry<() -> Unit>()
+class TextButtonView(size: IntPoint) : FixedWidgetView(size) {
+    var message: Component = text { empty() }
+    val onClick = EventRegistry<() -> Boolean>()
 }

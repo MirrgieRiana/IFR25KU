@@ -5,7 +5,7 @@ import miragefairy2024.mod.tree.contents.haimeviska.initHaimeviska
 import miragefairy2024.mod.tree.contents.plastictree.initPlasticTree
 import miragefairy2024.mod.tree.contents.plastictreefamily.initPlasticTreeFamily
 
-context(ModContext)
+context(_: ModContext)
 fun initTreeModule() {
 
     initTreeBlocks()

@@ -37,7 +37,7 @@ val PASSIVE_SKILL_OVERFLOWED_TRANSLATION = Translation({ "gui.${identifier.toLan
 val PASSIVE_SKILL_SUPPORTING_TRANSLATION = Translation({ "gui.${identifier.toLanguageKey()}.supporting" }, "Supporting other item", "他のアイテムを支援中")
 val PASSIVE_SKILL_EFFECTIVE_TRANSLATION = Translation({ "gui.${identifier.toLanguageKey()}.effective" }, "Effective", "発動中")
 
-context(ModContext)
+context(_: ModContext)
 fun initPassiveSkillExecution() {
 
     // プレイヤー追加データ登録

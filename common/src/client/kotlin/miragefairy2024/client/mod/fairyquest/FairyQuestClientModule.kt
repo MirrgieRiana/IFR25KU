@@ -2,24 +2,20 @@ package miragefairy2024.client.mod.fairyquest
 
 import com.mojang.math.Axis
 import miragefairy2024.ModContext
-import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.client.util.stack
 import miragefairy2024.mixin.client.api.RenderItemHandler
 import miragefairy2024.mod.fairyquest.FairyQuestCardCard
-import miragefairy2024.mod.fairyquest.fairyQuestCardScreenHandlerType
 import miragefairy2024.mod.fairyquest.getFairyQuestRecipe
-import miragefairy2024.mod.fairyquest.onOpenFairyQuestMessageScreen
 import miragefairy2024.util.ResourceLocation
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.isNotIn
-import miragefairy2024.util.register
 import net.minecraft.client.Minecraft
 import net.minecraft.client.resources.model.ModelResourceLocation
 import net.minecraft.util.Mth
 import net.minecraft.world.item.ItemDisplayContext
 import net.minecraft.world.item.Items
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyQuestClientModule() {
     RenderItemHandler.listeners += RenderItemHandler { stack, renderMode, leftHanded, matrices, vertexConsumers, light, overlay, model ->
         if (stack isNotIn FairyQuestCardCard.item()) return@RenderItemHandler
@@ -52,11 +48,5 @@ fun initFairyQuestClientModule() {
             }
 
         }
-    }
-    fairyQuestCardScreenHandlerType.registerHandledScreen { gui, inventory, title -> FairyQuestCardScreen(gui, inventory, title) }
-
-    onOpenFairyQuestMessageScreen.register { recipe ->
-        Minecraft.getInstance().setScreen(FairyQuestMessageScreen(Minecraft.getInstance().screen, recipe.title, recipe.message, recipe.client, recipe.title))
-        true
     }
 }

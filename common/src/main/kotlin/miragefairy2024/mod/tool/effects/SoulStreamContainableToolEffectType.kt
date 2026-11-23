@@ -17,7 +17,7 @@ fun <T : ToolConfiguration> T.soulStreamContainable() = this.merge(SoulStreamCon
 object SoulStreamContainableToolEffectType : BooleanToolEffectType<ToolConfiguration>() {
     private val TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("fairy_mining_tool").toLanguageKey()}.soul_stream_containable" }, "Soul Stream Containable", "ソウルストリームに格納可能")
 
-    context(ModContext)
+    context(_: ModContext)
     fun init() {
         TRANSLATION.enJa()
     }
