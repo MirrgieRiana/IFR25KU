@@ -81,17 +81,21 @@ class SoulStreamViewWrapper(
     fun createView(title: Component): View {
         dispose()
 
+        /*
+        rootComponent.apply {
+        */
         return View {
             view += StackView().configure {
                 view.sizingX = Sizing.FILL
                 view.sizingY = Sizing.FILL
 
+            /*
+            surface(Surface.flat(0xFFC6C6C6.toInt()))
+            */
             view += FilledRectangleView().configure {
             view.color.value = 0xFFC6C6C6.toInt()
             }
         /*
-        rootComponent.apply {
-            surface(Surface.flat(0xFFC6C6C6.toInt()))
             allowOverflow(true) // expandの端数処理の不具合で1pxだけはみ出すことがある
             padding(Insets.of(4))
             gap(4)
@@ -101,40 +105,43 @@ class SoulStreamViewWrapper(
                     view.sizingY = Sizing.FILL
 
                     // 左ペイン
-                    view += YListView().configure {
-                    position.weight = 1.0
-                        position.ignoreLayoutX = true
-                    view.sizingX = Sizing.FILL
-                    view.sizingY = Sizing.FILL
                     /*
                     child(Containers.verticalFlow(Sizing.expand(50), Sizing.fill()).apply {
                         padding(Insets.of(0, 20, 0, 0)) // レシピMOD用に下部を保護
                         gap(2)
                     */
+                    view += YListView().configure {
+                    position.weight = 1.0
+                        position.ignoreLayoutX = true
+                    view.sizingX = Sizing.FILL
+                    view.sizingY = Sizing.FILL
 
-                            /*
-                        // 左ペインボタン
-                        child(Containers.horizontalFlow(Sizing.fill(), Sizing.content()).apply {
-                            gap(2)
-                            */
                             val scrollView = YScrollContainerView()
 
                         // 左ペインボタン
+                        /*
+                        child(Containers.horizontalFlow(Sizing.fill(), Sizing.content()).apply {
+                            gap(2)
+                        */
                         view += XListView().configure {
                             // ハイライトリセットボタン
                             /*
                             child(LayeredImageButton(14, 14, BUTTON_14_BACKGROUND, run {
                                 WidgetSprites(MirageFairy2024.identifier("button_14/clear_foreground"))
                             }).apply {
-                                tooltip(text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() })
-
-                                onClick.register {
-                                    enabledPassiveSkillEffectFilters.value = mapOf()
                             */
                             view += LayeredImageButtonView(IntPoint(14, 14)).configure {
                             view.backgroundSprites = BUTTON_14_BACKGROUND
                                 view.foregroundSprites = LayeredImageButtonView.Sprites.of(MirageFairy2024.identifier("button_14/clear_foreground"))
+                                /*
+                                tooltip(text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() })
+                                */
                                 view.tooltip.value = text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() }
+                                /*
+
+                                onClick.register {
+                                    enabledPassiveSkillEffectFilters.value = mapOf()
+                                */
                                 view.onClick.register {
                                     enabledPassiveSkillEffectFilters.value = emptyMap()
                                 }
@@ -149,15 +156,19 @@ class SoulStreamViewWrapper(
                             child(LayeredImageToggleButton(14, 14, BUTTON_14_BACKGROUND, run {
                                 WidgetSprites(MirageFairy2024.identifier("button_14/global_search_foreground"))
                             }).apply {
-                                tooltip(text { SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION() })
-
-                                enableGlobalFairyHighlight.observeAndInitialize(onClose) { _, _ ->
-                                    value.value = enableGlobalFairyHighlight.value
                             */
                             view += LayeredImageButtonView(IntPoint(14, 14)).configure {
                             view.backgroundSprites = BUTTON_14_BACKGROUND
                                 view.foregroundSprites = LayeredImageButtonView.Sprites.of(MirageFairy2024.identifier("button_14/global_search_foreground"))
+                                /*
+                                tooltip(text { SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION() })
+                                */
                                 view.tooltip.value = text { SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION() }
+                                /*
+
+                                enableGlobalFairyHighlight.observeAndInitialize(onClose) { _, _ ->
+                                    value.value = enableGlobalFairyHighlight.value
+                                */
                                 enableGlobalFairyHighlight.observeAndInitialize(onViewClosed) { _, enabled ->
                                     view.selected.value = enabled
                                 }
@@ -170,19 +181,18 @@ class SoulStreamViewWrapper(
                                 }
                             /*
                             })
-
-                        })
                             */
                             }
+                        /*
+
+                        })
+                        */
                         }
                         view += YSpaceView(2)
 
                         // ハイライトフィルタ
                         /*
                         child(tooltipContainer(Sizing.fill(), Sizing.expand(100)).apply {
-                            child(verticalScroll(Sizing.fill(), Sizing.fill(), 5).apply {
-                                scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0FFFFFF.toInt())))
-                                child().apply {
                         */
                         view += StackView().configure {
                         view.sizingX = Sizing.FILL
@@ -194,9 +204,16 @@ class SoulStreamViewWrapper(
                                 view.sizingX = Sizing.FILL
                                 view.sizingY = Sizing.FILL
 
+                            /*
+                            child(verticalScroll(Sizing.fill(), Sizing.fill(), 5).apply {
+                                scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0FFFFFF.toInt())))
+                            */
                             view += scrollView.configure {
                                     position.weight = 1.0
                                     position.ignoreLayoutX = true
+                                    /*
+                                child().apply {
+                                    */
                                     view += YListView().configure {
                                     view.sizingX = Sizing.FILL
 
@@ -209,13 +226,15 @@ class SoulStreamViewWrapper(
 
                                     /*
                                     child().child(Components.label(text { SOUL_STREAM_PASSIVE_SKILL_EFFECT_TRANSLATION().blue.bold }).horizontalTextAlignment(HorizontalAlignment.CENTER).horizontalSizing(Sizing.fill()))
-                                    child().child(Containers.verticalFlow(Sizing.fill(), Sizing.content()).apply {
                                     */
                                     view += TextView(text { SOUL_STREAM_PASSIVE_SKILL_EFFECT_TRANSLATION().blue.bold }).configure {
                                     view.sizingX = Sizing.FILL
                                     view.alignmentX = Alignment.CENTER
                                             view.shadow = false
                                     }
+                                        /*
+                                    child().child(Containers.verticalFlow(Sizing.fill(), Sizing.content()).apply {
+                                        */
                                         passiveSkillEffectRegistry.entrySet().sortedBy { it.key.location() }.forEach { (_, effect) ->
                                             /*
                                             fun <T : Any> f(effect: PassiveSkillEffect<T>) {
@@ -227,31 +246,8 @@ class SoulStreamViewWrapper(
                                                 effect.getFilters(samples).sortedBy { it.identifier }.forEach { filter ->
                                                             /*
                                                     lateinit var updateLabel: () -> Unit
-                                                    child(ClickableContainer(Sizing.fill(), Sizing.content()).apply {
-                                                        onClick.register {
-                                                            if (filter.identifier in enabledPassiveSkillEffectFilters.value) {
-                                                                enabledPassiveSkillEffectFilters.value = enabledPassiveSkillEffectFilters.value - filter.identifier
-                                                            } else {
-                                                                enabledPassiveSkillEffectFilters.value = enabledPassiveSkillEffectFilters.value + (filter.identifier to filter)
                                                             */
-                                                            fun label(filters: Map<ResourceLocation, PassiveSkillEffectFilter<*>>) = if (filter.identifier in filters) filter.text.gold else filter.text
-
-                                                    view += AlignView().configure {
-                                                    view.sizingY = Sizing.WRAP
-
-                                                        view += TextView().configure {
-                                                            view.shadow = false
-                                                            enabledPassiveSkillEffectFilters.observeAndInitialize(onViewClosed) { _, filters ->
-                                                                view.text.value = label(filters).visualOrderText
-                                                            }
-                                                                    }.tooltip { _, _ -> listOf(label(enabledPassiveSkillEffectFilters.value)) }
-                                                        }.onClick {
-                                                            val filters = enabledPassiveSkillEffectFilters.value
-                                                                enabledPassiveSkillEffectFilters.value = if (filter.identifier in filters) filters - filter.identifier else filters + (filter.identifier to filter)
-                                                            true
-                                                        }
-                                                /*
-                                                        child(Components.label(Component.empty()).apply {
+                                                            /*
                                                             updateLabel = {
                                                                 if (filter.identifier in enabledPassiveSkillEffectFilters.value) {
                                                                     text(filter.text.gold)
@@ -261,10 +257,48 @@ class SoulStreamViewWrapper(
                                                                     tooltip(filter.text)
                                                                 }
                                                             }
+                                                            */
+                                                            fun label(filters: Map<ResourceLocation, PassiveSkillEffectFilter<*>>) = if (filter.identifier in filters) filter.text.gold else filter.text
+
+                                                    /*
+                                                    child(ClickableContainer(Sizing.fill(), Sizing.content()).apply {
+                                                    */
+                                                    view += AlignView().configure {
+                                                    view.sizingY = Sizing.WRAP
+
+                                                        /*
+                                                        child(Components.label(Component.empty()).apply {
+                                                        */
+                                                        view += TextView().configure {
+                                                            view.shadow = false
+                                                            /*
                                                             enabledPassiveSkillEffectFilters.observeAndInitialize(onClose) { _, _ ->
                                                                 updateLabel()
                                                             }
+                                                            */
+                                                            enabledPassiveSkillEffectFilters.observeAndInitialize(onViewClosed) { _, filters ->
+                                                                view.text.value = label(filters).visualOrderText
+                                                            }
+                                                                    /*
                                                         })
+                                                                    */
+                                                                    }.tooltip { _, _ -> listOf(label(enabledPassiveSkillEffectFilters.value)) }
+                                                        /*
+                                                        onClick.register {
+                                                        */
+                                                        }.onClick {
+                                                            val filters = enabledPassiveSkillEffectFilters.value
+                                                                /*
+                                                            if (filter.identifier in enabledPassiveSkillEffectFilters.value) {
+                                                                enabledPassiveSkillEffectFilters.value = enabledPassiveSkillEffectFilters.value - filter.identifier
+                                                            } else {
+                                                                enabledPassiveSkillEffectFilters.value = enabledPassiveSkillEffectFilters.value + (filter.identifier to filter)
+                                                            }
+                                                                */
+                                                                enabledPassiveSkillEffectFilters.value = if (filter.identifier in filters) filters - filter.identifier else filters + (filter.identifier to filter)
+                                                            true
+                                                        }
+                                                /*
                                                     })
                                                 */
                                                 }
@@ -277,8 +311,12 @@ class SoulStreamViewWrapper(
                                     /*
                                     })
 
+                                }
                                     */
                                     }
+                            /*
+                            })
+                            */
                             }
                                 val scrollbarView = YFlatScrollbarView().also {
                                 it.scrollbarColor = 0xA0FFFFFF.toInt()
@@ -286,16 +324,15 @@ class SoulStreamViewWrapper(
                                 view += scrollbarView
                                 connectScrollbar(scrollView, scrollbarView)
                             }.margin(4)
-                        }
-                        }.margin(0, 0, 0, RECIPE_VIEWER_MARGIN) // レシピMOD用に下部を保護
-                                /*
-                            })
+                        /*
                         })
-                                */
-
-            /*
+                        */
+                        }
+                        /*
                     })
-            */
+                        */
+                        }.margin(0, 0, 0, RECIPE_VIEWER_MARGIN) // レシピMOD用に下部を保護
+
             view += XSpaceView(PANE_GAP)
 
                     // メインコンテナ
@@ -306,23 +343,6 @@ class SoulStreamViewWrapper(
 
                         //child(verticalSpace(3))
 
-                        child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-                            surface(Surface.tiled(SlotType.FAIRY.viewTexture.id, 18, 18))
-                            repeat(9) { index ->
-                                child(slotContainer(slotAsComponent(9 * 3 + 9 + index), type = null))
-                            }
-                        })
-
-                        child(verticalSpace(4))
-
-                        child(verticalScroll(Sizing.fill(100), Sizing.expand(), 18).apply {
-                            surface(Surface.tiled(SlotType.NORMAL.viewTexture.id, 18, 18))
-                            scrollbar(ScrollContainer.Scrollbar.vanilla())
-                            scrollStep(18)
-                            (9 until menu.soulStream.size).chunked(9).forEach { indices ->
-                                child().child(Containers.horizontalFlow(Sizing.fill(100), Sizing.content()).apply {
-                                    indices.forEach { index ->
-                                        child(slotContainer(slotAsComponent(9 * 3 + 9 + index), type = null))
                     */
                     view += YListView().configure {
                     view.sizingY = Sizing.FILL
@@ -338,46 +358,85 @@ class SoulStreamViewWrapper(
                                     slotIndices.forEach {
                                         view += menuSlotView(menu.slots[it], slotType)
                                     }
-                                /*
-                                })
-                                */
                                 }
                             }
-                        /*
-                        })
-
-                        child(verticalSpace(4))
-
-                        //child(inventoryNameLabel(menu.playerInventory.name))
-
-                        //child(verticalSpace(1))
-                        */
                         }
 
+                        /*
+                        child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
+                            surface(Surface.tiled(SlotType.FAIRY.viewTexture.id, 18, 18))
+                            repeat(9) { index ->
+                                child(slotContainer(slotAsComponent(9 * 3 + 9 + index), type = null))
+                            }
+                        })
+
+                        */
                         view += createSlotRow(passiveSkillSlotIndex until storageSlotIndex, SlotType.FAIRY)
+                        /*
+                        child(verticalSpace(4))
+
+                        */
                         view += YSpaceView(4)
+                        /*
+                        child(verticalScroll(Sizing.fill(100), Sizing.expand(), 18).apply {
+                        */
                         view += XListView().configure {
                             view.sizingY = Sizing.FILL
                             position.weight = 1.0
 
                         val scrollView = YScrollContainerView().also {
+                            /*
+                            scrollStep(18)
+                            */
                             it.scrollStep = SlotType.NORMAL.viewTexture.size.y
                         }
                         view += scrollView.configure {
                                 view += YListView().configure {
+                            /*
+                            (9 until menu.soulStream.size).chunked(9).forEach { indices ->
+                            */
                             (storageSlotIndex until menu.slots.size).chunked(columnCount).forEach {
+                                /*
+                            surface(Surface.tiled(SlotType.NORMAL.viewTexture.id, 18, 18))
+                                */
+                                /*
+                                child().child(Containers.horizontalFlow(Sizing.fill(100), Sizing.content()).apply {
+                                    indices.forEach { index ->
+                                        child(slotContainer(slotAsComponent(9 * 3 + 9 + index), type = null))
+                                    }
+                                })
+                                */
                                 view += createSlotRow(it, SlotType.NORMAL)
+                            /*
+                            }
+                            */
                             }
                                 }
                         }
+                            /*
+                            scrollbar(ScrollContainer.Scrollbar.vanilla())
+                            */
                             val scrollbarView = YInventoryScrollbarView().also {
                                 it.scrollStep = scrollView.scrollStep
                             }
                             view += scrollbarView
                             connectScrollbar(scrollView, scrollbarView)
+                        /*
+                        })
+
+                        */
                         }
+                        /*
+                        child(verticalSpace(4))
+
+                        */
                         view += YSpaceView(4)
 
+                        /*
+                        //child(inventoryNameLabel(menu.playerInventory.name))
+
+                        //child(verticalSpace(1))
+                        */
                         // プレイヤーインベントリ
                             /*
                         child(Containers.verticalFlow(Sizing.content(), Sizing.content()).apply {
@@ -395,6 +454,9 @@ class SoulStreamViewWrapper(
                         /*
                         })
                         child(verticalSpace(4))
+                        */
+                        view += YSpaceView(4)
+                        /*
                         child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
                             surface(Surface.tiled(SlotType.NORMAL.viewTexture.id, 18, 18))
                             repeat(9) { c ->
@@ -402,18 +464,16 @@ class SoulStreamViewWrapper(
                             }
                         })
                         */
-                        view += YSpaceView(4)
                         view += createSlotRow(hotbarSlotIndex until passiveSkillSlotIndex, SlotType.NORMAL)
 
                         // GUIタイトルはレシピMOD用の保護領域に持ってくる
                         /*
                         child(verticalSpace(5))
-                        child(inventoryNameLabel(title).horizontalTextAlignment(HorizontalAlignment.CENTER))
-                        child(verticalSpace(5))
-
-                    })
                         */
                         view += YSpaceView(5)
+                        /*
+                        child(inventoryNameLabel(title).horizontalTextAlignment(HorizontalAlignment.CENTER))
+                        */
                         view += TextView(title).configure {
                             position.ignoreLayoutX = true
                             view.sizingX = Sizing.FILL
@@ -421,7 +481,14 @@ class SoulStreamViewWrapper(
                             view.shadow = false
                         view.alignmentX = Alignment.CENTER
                         }
+                        /*
+                        child(verticalSpace(5))
+                        */
                         view += YSpaceView(5)
+                    /*
+
+                    })
+                    */
                     }
 
             view += XSpaceView(PANE_GAP)
@@ -447,10 +514,12 @@ class SoulStreamViewWrapper(
                             // 収集効果の有効化切り替えボタン
                             /*
                             child(LayeredImageToggleButton(14, 14, BUTTON_14_BACKGROUND, run {
-                                WidgetSprites(
                             */
                             view += LayeredImageButtonView(IntPoint(14, 14)).configure {
                             view.backgroundSprites = BUTTON_14_BACKGROUND
+                                /*
+                                WidgetSprites(
+                                */
                                 view.foregroundSprites = LayeredImageButtonView.Sprites(
                                     MirageFairy2024.identifier("button_14/collection_enabled_foreground"),
                                     MirageFairy2024.identifier("button_14/collection_disabled_foreground"),
@@ -461,12 +530,16 @@ class SoulStreamViewWrapper(
                             }).apply {
                                 val player = Minecraft.getInstance().player ?: return@apply
                                 fun update() {
-                                    value.value = player.collectionEnabled.getOrDefault()
-                                    tooltip(text { (if (value.value) COLLECTION_ENABLED_TRANSLATION() else COLLECTION_DISABLED_TRANSLATION()) + " ("() + toggleCollectionEnabledKeyMappingCard() + ")"() })
                                 */
                                 fun updateButton() {
+                                    /*
+                                    value.value = player.collectionEnabled.getOrDefault()
+                                    */
                                     val enabled = player.collectionEnabled.getOrDefault()
                                     view.selected.value = enabled
+                                    /*
+                                    tooltip(text { (if (value.value) COLLECTION_ENABLED_TRANSLATION() else COLLECTION_DISABLED_TRANSLATION()) + " ("() + toggleCollectionEnabledKeyMappingCard() + ")"() })
+                                    */
                                     view.tooltip.value = text {
                                     val message = if (enabled) COLLECTION_ENABLED_TRANSLATION() else COLLECTION_DISABLED_TRANSLATION()
                                     message + " ("() + collectionToggleKeyText + ")"()
@@ -485,15 +558,19 @@ class SoulStreamViewWrapper(
                                 }
                                 /*
                                 update()
-                                value.register { _, _ ->
-                                    if (player.collectionEnabled.getOrDefault() != value.value) {
-                                        SetCollectionEnabledChannel.sendToServer(value.value)
-                                    }
                                 */
                                 updateButton()
+                                /*
+                                value.register { _, _ ->
+                                */
                                 view.onClick.register {
                                 val enabled = !view.selected.value
                                 view.selected.value = enabled
+                                    /*
+                                    if (player.collectionEnabled.getOrDefault() != value.value) {
+                                        SetCollectionEnabledChannel.sendToServer(value.value)
+                                    }
+                                    */
                                     if (player.collectionEnabled.getOrDefault() != enabled) setCollectionEnabled(enabled)
                                 }
                             /*
@@ -507,34 +584,6 @@ class SoulStreamViewWrapper(
                         // 効果欄
                         /*
                         child(tooltipContainer(Sizing.fill(), Sizing.fill()).apply {
-                            child(verticalScroll(Sizing.fill(), Sizing.fill(), 5, overlapped = true).apply {
-                                scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0FFFFFF.toInt())))
-                                child().apply {
-                                    val container = this
-
-                                    fun refresh() {
-                                        container.clearChildren()
-
-                                        val player = Minecraft.getInstance().player ?: return
-                                        val passiveSkillProviders = player.findPassiveSkillProviders()
-                                        val result = PassiveSkillResult()
-                                        result.collect(passiveSkillProviders.passiveSkills, player, ManaBoostPassiveSkillEffect.Value(mapOf()), true)
-                                        val manaBoostValue = result[ManaBoostPassiveSkillEffect]
-                                        result.collect(passiveSkillProviders.passiveSkills, player, manaBoostValue, false)
-
-                                        if (result.map.isEmpty()) {
-                                            container.child(Components.label(text { SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION().red }))
-                                        } else {
-                                            result.map.keys.sortedBy { passiveSkillEffectRegistry.getKey(it) }.forEach { effect ->
-                                                fun <T : Any> f(effect: PassiveSkillEffect<T>) {
-                                                    val value = result[effect]
-                                                    effect.getTexts(value).forEach {
-                                                        container.child(Components.label(it.gold).tooltip(it.gold))
-                                                    }
-                                                }
-                                                f(effect)
-                                            }
-                                        }
                         */
                         view += StackView().configure {
                         view.sizingX = Sizing.FILL
@@ -547,41 +596,89 @@ class SoulStreamViewWrapper(
                                 view.sizingY = Sizing.FILL
 
                                     fun collectPassiveSkillTexts(): List<Component> {
+                                        /*
+                                        val player = Minecraft.getInstance().player ?: return
+                                        */
                                         val passiveSkillProviders = player.findPassiveSkillProviders()
                                         val result = PassiveSkillResult()
                                         result.collect(passiveSkillProviders.passiveSkills, player, ManaBoostPassiveSkillEffect.Value(mapOf()), true)
                                         val manaBoostValue = result[ManaBoostPassiveSkillEffect]
                                         result.collect(passiveSkillProviders.passiveSkills, player, manaBoostValue, false)
+                                        /*
+                                            result.map.keys.sortedBy { passiveSkillEffectRegistry.getKey(it) }.forEach { effect ->
+                                        */
                                         return result.map.keys.sortedBy { passiveSkillEffectRegistry.getKey(it) }.flatMap { effect ->
+                                            /*
+                                                fun <T : Any> f(effect: PassiveSkillEffect<T>) {
+                                                    val value = result[effect]
+                                                    effect.getTexts(value).forEach {
+                                            */
                                             fun <T : Any> getTexts(effect: PassiveSkillEffect<T>) = effect.getTexts(result[effect]).map { it.gold }
+                                            /*
+                                                f(effect)
+                                            }
+                                            */
                                             getTexts(effect)
                                         }
                                     }
 
+                                    /*
+                                child().apply {
+                                    val container = this
+
+                                    */
                                     fun createEffectList(effects: List<Component>): View {
                                         return View {
                                             view += YListView().configure {
+                                                /*
+
+                                        if (result.map.isEmpty()) {
+                                            container.child(Components.label(text { SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION().red }))
+                                                */
                                                 if (effects.isEmpty()) {
                                                     view += TextView(text { SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION().red }).configure {
                                                         view.shadow = false
                                                     }
+                                                /*
+                                        } else {
+                                                */
                                                 } else {
                                                     effects.forEach {
+                                                        /*
+                                                        container.child(Components.label(it.gold).tooltip(it.gold))
+                                                    }
+                                                }
+                                                        */
                                                         view += TextView(it).configure {
                                                             view.shadow = false
                                                         }.tooltip(it)
                                                     }
+                                                /*
+                                        }
+                                                */
                                                 }
                                             }
                                         }
                                     }
 
+                                    /*
+                                    refresh()
+                                    */
                                     var effects = collectPassiveSkillTexts()
                                     val effectList = DynamicView(createEffectList(effects))
+                            /*
+                            child(verticalScroll(Sizing.fill(), Sizing.fill(), 5, overlapped = true).apply {
+                            */
                             val scrollView = YScrollContainerView().also {
                                 it += effectList
+                            /*
+                                }
+                            */
                             }
                             view += scrollView
+                                /*
+                                scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0FFFFFF.toInt())))
+                                */
                                 val scrollbarView = YFlatScrollbarView().also {
                                 it.scrollbarColor = 0xA0FFFFFF.toInt()
                                 }
@@ -591,7 +688,19 @@ class SoulStreamViewWrapper(
                                 }
                                 connectScrollbar(scrollView, scrollbarView)
 
+                                    /*
+                                    fun refresh() {
+                                        container.clearChildren()
+
+                                    */
+                                    /*
+
+                                    onUpdateListeners += {
+                                    */
                                     refreshEffects = {
+                                        /*
+                                        refresh()
+                                        */
                                         val newEffects = collectPassiveSkillTexts()
                                     if (effects != newEffects) {
                                         effects = newEffects
@@ -600,26 +709,31 @@ class SoulStreamViewWrapper(
                                         scrollView.clampScrollOffset()
                                     }
                                     /*
-
-                                    onUpdateListeners += {
-                                        refresh()
+                                    }
+                                    */
+                                    /*
+                                    }
                                     */
                                     }
                             /*
-                                    refresh()
-                                }
                             })
-                        })
-
-                    })
-
-        }
                             */
                             }.margin(4)
+                        /*
+                        })
+
+                        */
                         }
+                        /*
+                    })
+                        */
                         }.margin(0, 0, 0, RECIPE_VIEWER_MARGIN) // レシピMOD用に下部を保護
             }.margin(PANE_MARGIN)
             }
+        /*
+
+        }
+        */
         }
     }
 
