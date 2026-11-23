@@ -167,8 +167,6 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
         super.render(guiGraphics, mouseX, mouseY, partialTick)
     }
 
-    fun getRecipeViewerExclusionAreas() = viewWrapper.getRecipeViewerExclusionAreas()
-
     override fun containerTick() {
         super.containerTick()
 

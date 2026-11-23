@@ -14,7 +14,6 @@ import me.shedaniel.rei.api.common.util.EntryIngredients
 import me.shedaniel.rei.plugin.client.BuiltinClientPlugin
 import miragefairy2024.ModContext
 import miragefairy2024.ReusableInitializationEventRegistry
-import miragefairy2024.client.mod.fairy.SoulStreamScreen
 import miragefairy2024.client.mod.recipeviewer.ScreenClassRegistry
 import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
@@ -55,12 +54,6 @@ fun hasClientRei(): Boolean {
 
 context(_: ModContext)
 fun initReiClientSupport() {
-    ReiClientEvents.onRegisterScreens { registry ->
-        registry.exclusionZones().register(SoulStreamScreen::class.java) { screen: SoulStreamScreen ->
-            screen.getRecipeViewerExclusionAreas().map { Rectangle(it.x, it.y, it.sizeX, it.sizeY) }
-        }
-    }
-
     RecipeViewerEvents.informationEntries.subscribe { informationEntry ->
         ReiClientEvents.onRegisterDisplays { _ ->
             BuiltinClientPlugin.getInstance().registerInformation(

@@ -8,12 +8,10 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory
 import dev.emi.emi.api.stack.Comparison
 import dev.emi.emi.api.stack.EmiIngredient
 import dev.emi.emi.api.stack.EmiStack
-import dev.emi.emi.api.widget.Bounds
 import dev.emi.emi.api.widget.Widget
 import dev.emi.emi.api.widget.WidgetHolder
 import miragefairy2024.ModContext
 import miragefairy2024.ReusableInitializationEventRegistry
-import miragefairy2024.client.mod.fairy.SoulStreamScreen
 import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCardRecipeManagerBridge
@@ -59,14 +57,6 @@ fun initEmiClientSupport() {
     EmiClientEvents.onRegister { register ->
         EmiClientEvents.onRegisterDefaultComparison.fire { it(register) } // 先に登録しないとEmiIngredientで妖精の種類がマージされてしまう
         EmiClientEvents.onRegisterGeneral.fire { it(register) }
-    }
-
-    EmiClientEvents.onRegisterGeneral { registry ->
-        registry.addExclusionArea(SoulStreamScreen::class.java) { screen, consumer ->
-            screen.getRecipeViewerExclusionAreas().forEach {
-                consumer.accept(Bounds(it.x, it.y, it.sizeX, it.sizeY))
-            }
-        }
     }
 
     RecipeViewerEvents.informationEntries.subscribe { informationEntry ->

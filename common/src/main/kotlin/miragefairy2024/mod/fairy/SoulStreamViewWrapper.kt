@@ -13,7 +13,6 @@ import miragefairy2024.mod.passiveskill.passiveSkillEffectRegistry
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
-import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
@@ -88,7 +87,6 @@ class SoulStreamViewWrapper(
     private var storageScrollView: YScrollContainerView? = null
     private var effectScrollView: YScrollContainerView? = null
     private var refreshEffects: (() -> Unit)? = null
-    private var panes = emptyList<View>()
 
     fun clampScrollOffsets() {
         filterScrollView?.clampScrollOffset()
@@ -103,24 +101,12 @@ class SoulStreamViewWrapper(
     fun dispose() {
         onViewClosed.fire()
         refreshEffects = null
-        panes = emptyList()
-    }
-
-    fun getRecipeViewerExclusionAreas(): List<IntRectangle> {
-        var x = PANE_MARGIN
-        return panes.map { pane ->
-            val size = pane.evaluateActualSize()
-            val bounds = IntRectangle(x, PANE_MARGIN, size.x, size.y)
-            x += size.x + PANE_GAP
-            bounds
-        }
     }
 
     fun createView(title: Component): View {
         val filterPane = createFilterPane()
         val inventoryPane = createInventoryPane(title)
         val effectPane = createEffectPane()
-        panes = listOf(filterPane, inventoryPane, effectPane)
 
         return View {
             view += StackView().configure {
