@@ -52,13 +52,13 @@ abstract class VanillaScrollContainerViewWidget(
 
     // Widget の登録なのだ～🌱
 
-    private class WidgetRegistration(val widget: AbstractWidget, val interactive: Boolean)
+    private class WidgetRegistration(val widget: AbstractWidget, val interactive: Boolean, val renderOverflow: WidgetRenderOverflow?)
 
     // mutableSetOf が返す Set の登録順を、描画順と入力順に利用するのだ～🌱
     private val widgetRegistrations = mutableSetOf<WidgetRegistration>()
 
-    private fun register(widget: AbstractWidget, interactive: Boolean): Remover {
-        val widgetRegistration = WidgetRegistration(widget, interactive)
+    private fun register(widget: AbstractWidget, interactive: Boolean, renderOverflow: WidgetRenderOverflow?): Remover {
+        val widgetRegistration = WidgetRegistration(widget, interactive, renderOverflow)
         widgetRegistrations += widgetRegistration
         return Remover {
 
@@ -182,22 +182,21 @@ abstract class VanillaScrollContainerViewWidget(
         // 子要素の描画なのだ～🌱
         guiGraphics.enableScissor(x, y, x + width, y + height)
         try {
-            widgetRegistrations.forEach skip@{ widgetRegistration ->
+            widgetRegistrations.forEach { widgetRegistration ->
                 val widget = widgetRegistration.widget
 
-                run force@{
-
-                    if (widget.isHovered) return@force
-
-                    if (width <= 0) return@skip
-                    if (height <= 0) return@skip
-                    if (widget.width <= 0) return@skip
-                    if (widget.height <= 0) return@skip
-                    if (widget.x >= x + width) return@skip
-                    if (widget.x + widget.width <= x) return@skip
-                    if (widget.y >= y + height) return@skip
-                    if (widget.y + widget.height <= y) return@skip
-
+                // 前回のホバー状態を解除するため、領域外でも描画呼び出しを通すのだ～🌱
+                if (!widget.isHovered) {
+                    if (width <= 0 || height <= 0) return@forEach
+                    val renderOverflow = widgetRegistration.renderOverflow
+                    if (renderOverflow != null) {
+                        val xMin = widget.x + renderOverflow.xMin
+                        val xMax = widget.x + widget.width + renderOverflow.xMax
+                        val yMin = widget.y + renderOverflow.yMin
+                        val yMax = widget.y + widget.height + renderOverflow.yMax
+                        if (xMin >= xMax || yMin >= yMax) return@forEach
+                        if (xMin >= x + width || xMax <= x || yMin >= y + height || yMax <= y) return@forEach
+                    }
                 }
                 widget.render(guiGraphics, mouseX, mouseY, partialTick)
             }
@@ -438,8 +437,10 @@ abstract class VanillaScrollContainerViewWidget(
             override val origin = context.origin
             override val canPlaceMenuSlots = context.canPlaceMenuSlots
             override val onBeforeRender = context.onBeforeRender
-            override fun addRenderableWidget(widget: AbstractWidget) = register(widget, true)
-            override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false)
+            override fun addRenderableWidget(widget: AbstractWidget) = register(widget, true, null)
+            override fun addRenderableWidget(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow) = register(widget, true, renderOverflow)
+            override fun addRenderableOnly(widget: AbstractWidget) = register(widget, false, null)
+            override fun addRenderableOnly(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow) = register(widget, false, renderOverflow)
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover {
                 return context.registerMenuSlotPlacement(slotId) {
                     val viewportBounds = IntRectangle(x, y, width, height)

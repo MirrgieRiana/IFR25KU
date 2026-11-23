@@ -166,11 +166,11 @@ class VanillaScrollContainerViewWidgetTest {
     }
 
     @Test
-    fun `表示領域と交差する子だけを描画するのだ`() {
+    fun `描画範囲とホバー状態に応じて子の描画を省くのだ`() {
         GuiTestEnvironment().use { environment ->
             val view = YScrollContainerView()
             view += YListView().also { listView ->
-                repeat(3) {
+                repeat(4) {
                     listView += ScrollContainerTestView(IntPoint(20, 10))
                 }
             }
@@ -179,9 +179,9 @@ class VanillaScrollContainerViewWidgetTest {
             Mockito.`when`(context.origin).thenReturn(IntPoint.ZERO)
             val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
             val renderedChildren = mutableListOf<Int>()
-            var nextIndex = 0
+            val children = mutableListOf<AbstractWidget>()
             registry.register { childContext, _: ScrollContainerTestView, bounds ->
-                val index = nextIndex++
+                val index = children.size
                 val child = object : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {
                     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
                         renderedChildren += index
@@ -189,7 +189,13 @@ class VanillaScrollContainerViewWidgetTest {
 
                     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
                 }
-                val remover = childContext.addRenderableWidget(child)
+                children += child
+                val remover = when (index) {
+                    0 -> childContext.addRenderableWidget(child, WidgetRenderOverflow(0, 0, 0, 1))
+                    1 -> childContext.addRenderableOnly(child, WidgetRenderOverflow(0, 0, 0, 0))
+                    2 -> childContext.addRenderableWidget(child, WidgetRenderOverflow(0, 0, 0, 0))
+                    else -> childContext.addRenderableOnly(child)
+                }
                 object : ViewController {
                     override fun setOffset(offset: IntPoint) = child.setPosition(offset.x, offset.y)
                     override fun detach() = remover.remove()
@@ -197,24 +203,38 @@ class VanillaScrollContainerViewWidgetTest {
             }
             val widget = VanillaYScrollContainerViewWidget(view, IntRectangle(10, 20, 20, 20), context, registry)
             try {
-                widget.render(environment.graphics, 10, 20, 0.0F)
-                Assertions.assertEquals(listOf(0, 1), renderedChildren)
+                widget.render(environment.graphics, 0, 0, 0.0F)
+                Assertions.assertEquals(listOf(0, 1, 3), renderedChildren)
 
                 renderedChildren.clear()
-                view.scrollOffsetY.value = 5.0
-                widget.render(environment.graphics, 10, 20, 0.0F)
-                Assertions.assertEquals(listOf(0, 1, 2), renderedChildren)
+                view.scrollOffsetY.value = 10.0
+                widget.render(environment.graphics, 0, 0, 0.0F)
+                Assertions.assertEquals(listOf(0, 1, 2, 3), renderedChildren)
 
                 renderedChildren.clear()
-                environment.renderSystem.clearInvocations()
+                view.scrollOffsetY.value = 11.0
+                widget.render(environment.graphics, 0, 0, 0.0F)
+                Assertions.assertEquals(listOf(1, 2, 3), renderedChildren)
+
                 listOf(IntPoint(0, 20), IntPoint(20, 0)).forEach { size ->
+                    widget.setSize(20, 20)
+                    widget.render(environment.graphics, 10, 30, 0.0F)
+                    Assertions.assertTrue(children[2].isHovered)
+
+                    renderedChildren.clear()
+                    environment.renderSystem.clearInvocations()
                     widget.setSize(size.x, size.y)
-                    widget.render(environment.graphics, 10, 20, 0.0F)
+                    widget.render(environment.graphics, 10, 30, 0.0F)
+                    Assertions.assertEquals(listOf(2), renderedChildren)
+                    Assertions.assertFalse(children[2].isHovered)
+
+                    renderedChildren.clear()
+                    widget.render(environment.graphics, 10, 30, 0.0F)
+                    Assertions.assertTrue(renderedChildren.isEmpty())
+                    environment.renderSystem.verify({
+                        RenderSystem.enableScissor(10, 280 - size.y, size.x, size.y)
+                    }, Mockito.times(2))
                 }
-                Assertions.assertTrue(renderedChildren.isEmpty())
-                environment.renderSystem.verify({
-                    RenderSystem.enableScissor(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt())
-                }, Mockito.never())
             } finally {
                 widget.dispose()
                 widget.detach()
