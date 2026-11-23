@@ -54,7 +54,7 @@ private infix fun VanillaViewPlacerContext.place(registration: WidgetRegistratio
 context(_: ModContext)
 fun initVanillaViewPlacers() {
     fun placeScrollContainerView(context: VanillaViewPlacerContext, widget: VanillaScrollContainerViewWidget): ViewController {
-        val controller = context place WidgetRegistration(widget, true, WidgetRenderOverflow.Unbounded)
+        val controller = context place WidgetRegistration(widget, true, WidgetRenderOverflow.None)
         // 子の差し替えだけで全長が変わった場合も、描画前に寸法を通知するのだ～🌱
         val boundsRemover = context.onBeforeRender.register(widget::updateScrollBounds)
         return object : ViewController {
@@ -82,7 +82,7 @@ fun initVanillaViewPlacers() {
         placeScrollContainerView(context, VanillaYScrollContainerViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
     }
     fun placeScrollbarView(context: VanillaViewPlacerContext, widget: VanillaScrollbarViewWidget<*>): ViewController {
-        val controller = context place WidgetRegistration(widget, true, WidgetRenderOverflow.Unbounded)
+        val controller = context place WidgetRegistration(widget, true, WidgetRenderOverflow.None)
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {
                 controller.setOffset(offset)
@@ -209,7 +209,7 @@ fun initVanillaViewPlacers() {
         context place WidgetRegistration(VanillaViewRendererWidget(TextViewRenderer, view, bounds), true, WidgetRenderOverflow.Unbounded)
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: ImageView, bounds ->
-        context place WidgetRegistration(VanillaViewRendererWidget(ImageViewRenderer, view, bounds), true, WidgetRenderOverflow.Unbounded)
+        context place WidgetRegistration(VanillaViewRendererWidget(ImageViewRenderer, view, bounds), true, WidgetRenderOverflow.None)
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TooltipView, bounds ->
         context place WidgetRegistration(VanillaViewRendererWidget(TooltipViewRenderer, view, bounds), false, WidgetRenderOverflow.Unbounded)
