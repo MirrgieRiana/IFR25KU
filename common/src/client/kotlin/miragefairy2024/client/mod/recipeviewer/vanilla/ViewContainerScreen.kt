@@ -87,6 +87,11 @@ open class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Co
         super.removed()
     }
 
+    override fun containerTick() {
+        super.containerTick()
+        viewAdapter.tick()
+    }
+
     private var slotScissorEnabled = false
 
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {

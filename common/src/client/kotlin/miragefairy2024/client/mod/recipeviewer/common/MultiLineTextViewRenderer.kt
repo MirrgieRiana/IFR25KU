@@ -1,5 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer.common
 
+import miragefairy2024.client.mod.recipeviewer.RenderOverflow
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
@@ -10,6 +11,8 @@ import net.minecraft.client.gui.GuiGraphics
 
 object MultiLineTextViewRenderer : ViewRenderer<MultiLineTextView, Unit> {
     override fun createState(view: MultiLineTextView) = Unit
+
+    override fun getRenderOverflow(view: MultiLineTextView, bounds: IntRectangle) = RenderOverflow.UNBOUNDED
 
     override fun render(view: MultiLineTextView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val font = Minecraft.getInstance().font

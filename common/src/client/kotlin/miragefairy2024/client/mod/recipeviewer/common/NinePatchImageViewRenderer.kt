@@ -9,6 +9,7 @@ import net.minecraft.client.gui.GuiGraphics
 
 object NinePatchImageViewRenderer : ViewRenderer<NinePatchImageView, Unit> {
     override fun createState(view: NinePatchImageView) = Unit
+
     override fun render(view: NinePatchImageView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         graphics.drawNinePatchImage(
             bounds,
