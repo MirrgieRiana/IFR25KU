@@ -1,14 +1,5 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
-import com.mojang.blaze3d.systems.RenderSystem
-import com.mojang.blaze3d.vertex.BufferBuilder
-import com.mojang.blaze3d.vertex.BufferUploader
-import com.mojang.blaze3d.vertex.ByteBufferBuilder
-import com.mojang.blaze3d.vertex.DefaultVertexFormat
-import com.mojang.blaze3d.vertex.MeshData
-import com.mojang.blaze3d.vertex.Tesselator
-import com.mojang.blaze3d.vertex.VertexFormat
-import com.mojang.blaze3d.vertex.VertexFormatElement
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.x2
@@ -22,56 +13,39 @@ import net.minecraft.resources.ResourceLocation
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.lwjgl.glfw.GLFW
-import org.mockito.Mockito
-import java.nio.ByteOrder
 import kotlin.math.roundToInt
 
 private val BACKGROUND_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_background.png")
 private val THUMB_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_scroller.png")
 private val DISABLED_THUMB_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_scroller_disabled.png")
 
-private class ScrollbarGraphics : GuiGraphics(Minecraft.getInstance(), null) {
-    val draws = mutableListOf<Pair<ResourceLocation, List<IntRectangle>>>()
-
-    fun recordDraw(texture: ResourceLocation, mesh: MeshData) {
-        val state = mesh.drawState()
-        val format = state.format()
-        Assertions.assertEquals(VertexFormat.Mode.QUADS, state.mode())
-        Assertions.assertEquals(DefaultVertexFormat.POSITION_TEX, format)
-        val vertices = mesh.vertexBuffer().order(ByteOrder.nativeOrder())
-        val quads = (0 until state.vertexCount()).chunked(4).map { quad ->
-            Assertions.assertEquals(4, quad.size)
-            val positions = quad.map { index ->
-                val vertex = index * format.vertexSize
-                val uv = vertex + format.getOffset(VertexFormatElement.UV0)
-                Assertions.assertTrue(vertices.getFloat(uv) in 0F..(15F / 16F))
-                Assertions.assertTrue(vertices.getFloat(uv + Float.SIZE_BYTES) in 0F..(15F / 16F))
-                val position = vertex + format.getOffset(VertexFormatElement.POSITION)
-                Pair(vertices.getFloat(position).roundToInt(), vertices.getFloat(position + Float.SIZE_BYTES).roundToInt())
-            }
-            val left = positions.minOf { it.first }
-            val top = positions.minOf { it.second }
-            val right = positions.maxOf { it.first }
-            val bottom = positions.maxOf { it.second }
-            IntRectangle(left, top, right - left, bottom - top)
-        }
-        draws += Pair(texture, quads)
-    }
+private class ScrollbarGraphics(val draws: MutableList<GuiTestEnvironment.TexturedDraw>) : GuiGraphics(Minecraft.getInstance(), null) {
 
     fun assertBackgroundOnly(background: IntRectangle) {
-        Assertions.assertEquals(listOf(BACKGROUND_TEXTURE), draws.map { it.first })
-        assertPaintedBounds(background, draws[0].second)
+        Assertions.assertEquals(listOf(BACKGROUND_TEXTURE), draws.map { it.texture })
+        assertPaintedBounds(background, draws[0])
         Assertions.assertTrue(pose().clear())
     }
 
     fun assertBackgroundAndThumb(background: IntRectangle, thumb: IntRectangle, thumbTexture: ResourceLocation) {
-        Assertions.assertEquals(listOf(BACKGROUND_TEXTURE, thumbTexture), draws.map { it.first })
-        assertPaintedBounds(background, draws[0].second)
-        assertPaintedBounds(thumb, draws[1].second)
+        Assertions.assertEquals(listOf(BACKGROUND_TEXTURE, thumbTexture), draws.map { it.texture })
+        assertPaintedBounds(background, draws[0])
+        assertPaintedBounds(thumb, draws[1])
         Assertions.assertTrue(pose().clear())
     }
 
-    private fun assertPaintedBounds(bounds: IntRectangle, rectangles: List<IntRectangle>) {
+    private fun assertPaintedBounds(bounds: IntRectangle, draw: GuiTestEnvironment.TexturedDraw) {
+        val rectangles = draw.quads.map { quad ->
+            quad.forEach { vertex ->
+                Assertions.assertTrue(vertex.u in 0F..(15F / 16F))
+                Assertions.assertTrue(vertex.v in 0F..(15F / 16F))
+            }
+            val left = quad.minOf { it.x }.roundToInt()
+            val top = quad.minOf { it.y }.roundToInt()
+            val right = quad.maxOf { it.x }.roundToInt()
+            val bottom = quad.maxOf { it.y }.roundToInt()
+            IntRectangle(left, top, right - left, bottom - top)
+        }
         Assertions.assertEquals(bounds.x, rectangles.minOf { it.x })
         Assertions.assertEquals(bounds.y, rectangles.minOf { it.y })
         Assertions.assertEquals(bounds.x2, rectangles.maxOf { it.x2 })
@@ -82,27 +56,8 @@ private class ScrollbarGraphics : GuiGraphics(Minecraft.getInstance(), null) {
 
 private fun withScrollbarGraphics(block: (ScrollbarGraphics) -> Unit) {
     GuiTestEnvironment().use { environment ->
-        ByteBufferBuilder(1024).use { buffer ->
-            val tesselator: Tesselator = Mockito.mock(Tesselator::class.java)
-            val mode = VertexFormat.Mode.QUADS
-            val format = DefaultVertexFormat.POSITION_TEX
-            Mockito.`when`(tesselator.begin(mode, format)).thenAnswer { BufferBuilder(buffer, mode, format) }
-            Mockito.mockStatic(Tesselator::class.java).use { tesselators ->
-                tesselators.`when`<Tesselator> { Tesselator.getInstance() }.thenReturn(tesselator)
-                Mockito.mockStatic(BufferUploader::class.java).use { uploader ->
-                    val graphics = ScrollbarGraphics()
-                    var texture: ResourceLocation? = null
-                    environment.renderSystem.`when`<Unit> { RenderSystem.setShaderTexture(Mockito.eq(0), Mockito.any(ResourceLocation::class.java)) }.thenAnswer {
-                        texture = it.getArgument(1)
-                        null
-                    }
-                    uploader.`when`<Unit> { BufferUploader.drawWithShader(Mockito.any(MeshData::class.java)) }.thenAnswer {
-                        it.getArgument<MeshData>(0).use { mesh -> graphics.recordDraw(checkNotNull(texture), mesh) }
-                        null
-                    }
-                    block(graphics)
-                }
-            }
+        environment.withTexturedDraws { draws ->
+            block(ScrollbarGraphics(draws))
         }
     }
 }
