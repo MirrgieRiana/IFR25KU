@@ -178,22 +178,27 @@ abstract class VanillaScrollContainerViewWidget(
     }
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        if (width <= 0) return
-        if (height <= 0) return
 
         // 子要素の描画なのだ～🌱
         guiGraphics.enableScissor(x, y, x + width, y + height)
         try {
-            widgetRegistrations.forEach { widgetRegistration ->
+            widgetRegistrations.forEach skip@{ widgetRegistration ->
                 val widget = widgetRegistration.widget
 
-                if (widget.width <= 0) return@forEach
-                if (widget.height <= 0) return@forEach
-                if (widget.x >= x + width) return@forEach
-                if (widget.x + widget.width <= x) return@forEach
-                if (widget.y >= y + height) return@forEach
-                if (widget.y + widget.height <= y) return@forEach
+                run force@{
 
+                    if (widget.isHovered) return@force
+
+                    if (width <= 0) return@skip
+                    if (height <= 0) return@skip
+                    if (widget.width <= 0) return@skip
+                    if (widget.height <= 0) return@skip
+                    if (widget.x >= x + width) return@skip
+                    if (widget.x + widget.width <= x) return@skip
+                    if (widget.y >= y + height) return@skip
+                    if (widget.y + widget.height <= y) return@skip
+
+                }
                 widget.render(guiGraphics, mouseX, mouseY, partialTick)
             }
         } finally {
