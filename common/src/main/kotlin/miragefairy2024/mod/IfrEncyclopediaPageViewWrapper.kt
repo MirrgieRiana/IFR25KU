@@ -34,7 +34,6 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.register
 import miragefairy2024.util.text
 import net.minecraft.network.chat.CommonComponents
-import net.minecraft.network.chat.Component
 
 context(_: ModContext)
 fun initIfrEncyclopediaPageScreen() {
@@ -49,7 +48,7 @@ private fun IfrEncyclopediaEntryCard.openIfrEncyclopediaPageScreen() {
         val parent = proxy.getCurrentScreen()
         val title = text { this@openIfrEncyclopediaPageScreen.titleTranslation() }
         proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(title) {
-            IfrEncyclopediaPageViewWrapper(this, title).also { view ->
+            IfrEncyclopediaPageViewWrapper(this).also { view ->
                 view.onBackToGame.register {
                     proxy.setCurrentScreen(null)
                     true
@@ -64,7 +63,7 @@ private fun IfrEncyclopediaEntryCard.openIfrEncyclopediaPageScreen() {
     openScreen(clientProxy!!)
 }
 
-private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard, title: Component) {
+private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard) {
 
     val onBackToGame = EventRegistry<() -> Boolean>()
     val onBack = EventRegistry<() -> Boolean>()
