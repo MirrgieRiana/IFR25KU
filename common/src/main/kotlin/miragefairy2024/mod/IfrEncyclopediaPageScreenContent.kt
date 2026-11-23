@@ -1,15 +1,17 @@
-package miragefairy2024.mod.fairyquest
+package miragefairy2024.mod
 
 import miragefairy2024.ClientProxy
 import miragefairy2024.MessageViewScreenDefinition
 import miragefairy2024.ModContext
 import miragefairy2024.clientProxy
-import miragefairy2024.mod.NinePatchTextureCard
+import miragefairy2024.mod.common.SlotType
 import miragefairy2024.mod.common.guiBackToGameTranslation
 import miragefairy2024.mod.recipeviewer.view.Alignment
-import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.mod.recipeviewer.views.AlignView
+import miragefairy2024.mod.recipeviewer.views.ImageView
+import miragefairy2024.mod.recipeviewer.views.ItemView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
@@ -23,8 +25,8 @@ import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.createView
+import miragefairy2024.mod.recipeviewer.views.fixedContentSizeX
 import miragefairy2024.mod.recipeviewer.views.margin
-import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.fire
@@ -32,21 +34,21 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.register
 import miragefairy2024.util.text
 import net.minecraft.network.chat.CommonComponents
-import net.minecraft.network.chat.Component
 
 context(_: ModContext)
-fun initFairyQuestMessageScreen() {
-    onOpenFairyQuestMessageScreen.register { recipe ->
-        recipe.openMessageScreen()
+fun initIfrEncyclopediaPageScreen() {
+    onOpenIfrEncyclopediaPageScreen.register { card ->
+        card.openIfrEncyclopediaPageScreen()
         true
     }
 }
 
-fun FairyQuestRecipe.openMessageScreen() {
+private fun IfrEncyclopediaEntryCard.openIfrEncyclopediaPageScreen() {
     fun <S : Any> openScreen(proxy: ClientProxy<S>) {
         val parent = proxy.getCurrentScreen()
-        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(this.title) {
-            FairyQuestMessageViewWrapper(this.title, this.message, this.client).also { view ->
+        val title = text { this@openIfrEncyclopediaPageScreen.titleTranslation() }
+        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(title) {
+            IfrEncyclopediaPageScreenContent(this).also { view ->
                 view.onBackToGame.register {
                     proxy.setCurrentScreen(null)
                     true
@@ -61,72 +63,85 @@ fun FairyQuestRecipe.openMessageScreen() {
     openScreen(clientProxy!!)
 }
 
-class FairyQuestMessageViewWrapper(fairyQuestTitle: Component, fairyQuestMessage: Component, fairyQuestClient: Component) {
+private class IfrEncyclopediaPageScreenContent(card: IfrEncyclopediaEntryCard) {
 
     val onBackToGame = EventRegistry<() -> Boolean>()
     val onBack = EventRegistry<() -> Boolean>()
 
     val view = View {
-        val textColor = ColorPair(0xFF6B472E.toInt(), 0xFF6B472E.toInt())
         view += YListView().configure {
             view.sizingX = Sizing.FILL
             view.sizingY = Sizing.FILL
 
-            // メッセージ部分
+            // カード部分
             view += XListView().configure {
-                position.alignmentX = Alignment.CENTER
                 position.weight = 1.0
+                position.alignmentX = Alignment.CENTER
                 view.sizingY = Sizing.FILL
-                val scrollView = YScrollContainerView().configure {
-                    view.sizingX = Sizing.WRAP
 
-                    view += StackView().configure {
+                // カード外枠
+                view += StackView().configure {
+                    view.sizingX = Sizing.FILL
+                    view.sizingY = Sizing.FILL
+
+                    view += NinePatchTextureCard.IFR_ENCYCLOPEDIA_BACKGROUND.createView()
+                    view += YListView().configure {
                         view.sizingX = Sizing.FILL
+                        view.sizingY = Sizing.FILL
 
-                        view += NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.createView()
-                        view += YListView().configure {
+                        // タイトル
+                        view += MultiLineTextView().configure {
+                            view.text.value = text { card.titleTranslation() }
+                            view.alignmentX = Alignment.CENTER
+                            view.color = IFR_ENCYCLOPEDIA_TEXT_COLOR
+                            view.shadow = false
+                        }
+
+                        view += YSpaceView(5)
+
+                        // 掲げられたアイテム
+                        view += StackView().configure {
+                            position.alignmentX = Alignment.CENTER
+
+                            val itemStack = card.itemStacksGetter().firstOrNull()
+                            if (itemStack != null) {
+                                view += ImageView(SlotType.NORMAL.viewTexture)
+                                view += ItemView(itemStack).configure().margin(SlotType.NORMAL.margin.x, SlotType.NORMAL.margin.y)
+                            }
+                        }.margin(0, 5)
+
+                        view += YSpaceView(5)
+
+                        // 本文
+                        view += StackView().configure {
+                            position.weight = 1.0
                             view.sizingX = Sizing.FILL
-
-                            view += MultiLineTextView().configure {
-                                view.text.value = fairyQuestTitle
-                                view.alignmentX = Alignment.CENTER
-                                view.color = textColor
-                                view.shadow = false
-                            }
-                            view += YSpaceView(11)
-                            view += StackView().configure {
-                                view.sizingX = Sizing.FILL
-
-                                view += NinePatchTextureCard.FAIRY_QUEST_CARD_LINE.createView()
+                            view.sizingY = Sizing.FILL
+                            val scrollView = YScrollContainerView().configure {
                                 view += MultiLineTextView().configure {
-                                    view.text.value = fairyQuestMessage
-                                    view.color = textColor
+                                    view.text.value = text { card.textTranslation() }
+                                    view.color = IFR_ENCYCLOPEDIA_TEXT_COLOR
                                     view.shadow = false
-                                }.margin(0, 0, 0, 1)
+                                }
                             }
-                            view += YSpaceView(11)
-                            view += MultiLineTextView().configure {
-                                view.text.value = fairyQuestClient
+                            view += scrollView
+                            val scrollbarView = YFlatScrollbarView().configure {
+                                view.keyboardFocusable = false
+                            }
+                            view += AlignView().configure {
                                 view.alignmentX = Alignment.END
-                                view.color = textColor
-                                view.shadow = false
+                                view += scrollbarView
                             }
-                        }.minContentSizeX(18 * 15 - 10 * 2 - 11 * 2).margin(11)
-                    }
-                }
-                view += scrollView
-                val scrollbarView = YFlatScrollbarView().configure {
-                    view.scrollbarThickness = 10
-                    view.scrollbarColor = 0xA0FFFFFF.toInt()
-                    view.keyboardFocusable = false
-                }
-                view += scrollbarView
-                connectScrollbar(scrollView.view, scrollbarView.view)
-            }.margin(10, 0, 0, 0) // アンチスクロールバーマージン
+                            connectScrollbar(scrollView.view, scrollbarView.view)
+                        }
+
+                    }.margin(5, 5, 10, 5)
+                }.fixedContentSizeX(200)
+            }
 
             view += YSpaceView(10)
 
-            // ボタン部分
+            // 下部ボタン
             view += XListView().configure {
                 position.alignmentX = Alignment.CENTER
 
@@ -151,7 +166,7 @@ class FairyQuestMessageViewWrapper(fairyQuestTitle: Component, fairyQuestMessage
                 }
             }
 
-        }.margin(0, 0, 10, 4)
+        }.margin(0, 0, 20, 4)
     }
 
 }
