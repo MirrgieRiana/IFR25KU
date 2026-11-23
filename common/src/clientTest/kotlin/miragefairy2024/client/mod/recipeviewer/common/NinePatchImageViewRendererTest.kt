@@ -1,9 +1,9 @@
 package miragefairy2024.client.mod.recipeviewer.common
 
 import miragefairy2024.mod.NinePatchTextureCard
-import miragefairy2024.mod.createView
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.views.createView
 import mirrg.kotlin.helium.Slot
 import net.minecraft.client.gui.GuiGraphics
 import org.junit.jupiter.api.Assertions

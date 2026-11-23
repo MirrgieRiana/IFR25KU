@@ -3,7 +3,6 @@ package miragefairy2024.mod
 import miragefairy2024.DataGenerationEvents
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
-import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.util.times
 
 /**
@@ -49,8 +48,6 @@ class NinePatchTextureCard(
     val identifier = MirageFairy2024.identifier(path)
     val texture = "textures/gui/" * identifier * ".png"
 }
-
-fun NinePatchTextureCard.createView() = NinePatchImageView(this)
 
 context(_: ModContext)
 fun initNinePatchTextureModule() {

@@ -15,3 +15,5 @@ class NinePatchImageView(val textureCard: NinePatchTextureCard) : AbstractView()
     override fun evaluateContentSizeYImpl() = 0
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
 }
+
+fun NinePatchTextureCard.createView() = NinePatchImageView(this)

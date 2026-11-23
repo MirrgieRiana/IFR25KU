@@ -6,7 +6,6 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.Emoji
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.guiFullScreenTranslation
-import miragefairy2024.mod.createView
 import miragefairy2024.mod.invoke
 import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
 import miragefairy2024.mod.magicplant.contents.magicplants.MirageFlowerCard
@@ -29,6 +28,7 @@ import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.createView
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.onClick
