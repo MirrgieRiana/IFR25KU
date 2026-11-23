@@ -93,16 +93,198 @@ class SoulStreamViewWrapper(
                     view.sizingX = Sizing.FILL
                     view.sizingY = Sizing.FILL
 
-                    view += createFilterView().configure {
+                    // 左ペイン
+                    view += YListView().configure {
                         position.weight = 1.0
                         position.ignoreLayoutX = true
+                        view.sizingX = Sizing.FILL
+                        view.sizingY = Sizing.FILL
+
+                        val scrollView = YScrollContainerView()
+
+                        view += XListView().configure {
+                            view += LayeredImageButtonView(IntPoint(14, 14)).configure {
+                                view.backgroundSprites = BUTTON_14_BACKGROUND
+                                view.foregroundSprites = LayeredImageButtonView.Sprites.of(MirageFairy2024.identifier("button_14/clear_foreground"))
+                                view.tooltip.value = text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() }
+                                view.onClick.register {
+                                    enabledPassiveSkillEffectFilters.value = emptyMap()
+                                }
+                            }
+                            view += XSpaceView(2)
+                            view += LayeredImageButtonView(IntPoint(14, 14)).configure {
+                                view.backgroundSprites = BUTTON_14_BACKGROUND
+                                view.foregroundSprites = LayeredImageButtonView.Sprites.of(MirageFairy2024.identifier("button_14/global_search_foreground"))
+                                view.tooltip.value = text { SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION() }
+                                enableGlobalFairyHighlight.observeAndInitialize(onViewClosed) { _, enabled ->
+                                    view.selected.value = enabled
+                                }
+                                view.onClick.register {
+                                    enableGlobalFairyHighlight.value = !enableGlobalFairyHighlight.value
+                                }
+                            }
+                        }
+                        view += YSpaceView(2)
+                        view += StackView().configure {
+                            view.sizingX = Sizing.FILL
+                            view.sizingY = Sizing.FILL
+                            position.weight = 1.0
+
+                            view += TooltipBackgroundView()
+                            view += XListView().configure {
+                                view.sizingX = Sizing.FILL
+                                view.sizingY = Sizing.FILL
+
+                                view += scrollView.configure {
+                                    position.weight = 1.0
+                                    position.ignoreLayoutX = true
+                                    view += createFilterList()
+                                }
+                                val scrollbarView = YFlatScrollbarView().also {
+                                    it.scrollbarColor = 0xA0FFFFFF.toInt()
+                                }
+                                view += scrollbarView
+                                connectScrollbar(scrollView, scrollbarView)
+                            }.margin(4)
+                        }
                     }.margin(0, 0, 0, RECIPE_VIEWER_MARGIN)
+
                     view += XSpaceView(PANE_GAP)
-                    view += createInventoryView(title)
+
+                    // メインコンテナ
+                    view += YListView().configure {
+                        view.sizingY = Sizing.FILL
+
+                        val scrollView = YScrollContainerView().also {
+                            it.scrollStep = SlotType.NORMAL.viewTexture.size.y
+                        }
+
+                        val columnCount = 9
+                        val hotbarSlotIndex = columnCount * 3
+                        val passiveSkillSlotIndex = hotbarSlotIndex + columnCount
+                        val storageSlotIndex = passiveSkillSlotIndex + SoulStream.PASSIVE_SKILL_SLOT_COUNT
+
+                        fun createSlotRow(slotIndices: Iterable<Int>, slotType: SlotType): View {
+                            return View {
+                                view += XListView().configure {
+                                    slotIndices.forEach {
+                                        view += menuSlotView(menu.slots[it], slotType)
+                                    }
+                                }
+                            }
+                        }
+
+                        view += createSlotRow(passiveSkillSlotIndex until storageSlotIndex, SlotType.FAIRY)
+                        view += YSpaceView(4)
+                        view += XListView().configure {
+                            view.sizingY = Sizing.FILL
+                            position.weight = 1.0
+
+                            view += scrollView.configure {
+                                view += YListView().configure {
+                                    (storageSlotIndex until menu.slots.size).chunked(columnCount).forEach {
+                                        view += createSlotRow(it, SlotType.NORMAL)
+                                    }
+                                }
+                            }
+                            val scrollbarView = YInventoryScrollbarView().also {
+                                it.scrollStep = scrollView.scrollStep
+                            }
+                            view += scrollbarView
+                            connectScrollbar(scrollView, scrollbarView)
+                        }
+                        view += YSpaceView(4)
+                        (0 until hotbarSlotIndex).chunked(columnCount).forEach {
+                            view += createSlotRow(it, SlotType.NORMAL)
+                        }
+                        view += YSpaceView(4)
+                        view += createSlotRow(hotbarSlotIndex until passiveSkillSlotIndex, SlotType.NORMAL)
+                        view += YSpaceView(5)
+                        view += TextView(title).configure {
+                            position.ignoreLayoutX = true
+                            view.sizingX = Sizing.FILL
+                            view.color = ColorPair.DARK_GRAY
+                            view.shadow = false
+                            view.alignmentX = Alignment.CENTER
+                        }
+                        view += YSpaceView(5)
+                    }
+
                     view += XSpaceView(PANE_GAP)
-                    view += createEffectView().configure {
+
+                    // 右ペイン
+                    view += YListView().configure {
                         position.weight = 1.0
                         position.ignoreLayoutX = true
+                        view.sizingX = Sizing.FILL
+                        view.sizingY = Sizing.FILL
+
+                        var effects = collectPassiveSkillTexts()
+                        val effectList = DynamicView(createEffectList(effects))
+                        val scrollView = YScrollContainerView().also {
+                            it += effectList
+                        }
+
+                        refreshEffects = {
+                            val newEffects = collectPassiveSkillTexts()
+                            if (effects != newEffects) {
+                                effects = newEffects
+                                effectList.content.value = createEffectList(effects)
+                                scrollView.updateScrollBounds()
+                                scrollView.clampScrollOffset()
+                            }
+                        }
+
+                        view += LayeredImageButtonView(IntPoint(14, 14)).configure {
+                            view.backgroundSprites = BUTTON_14_BACKGROUND
+                            view.foregroundSprites = LayeredImageButtonView.Sprites(
+                                MirageFairy2024.identifier("button_14/collection_enabled_foreground"),
+                                MirageFairy2024.identifier("button_14/collection_disabled_foreground"),
+                                MirageFairy2024.identifier("button_14/collection_enabled_foreground"),
+                                MirageFairy2024.identifier("button_14/collection_disabled_foreground"),
+                            )
+                            fun updateButton() {
+                                val enabled = player.collectionEnabled.getOrDefault()
+                                view.selected.value = enabled
+                                view.tooltip.value = text {
+                                    val message = if (enabled) COLLECTION_ENABLED_TRANSLATION() else COLLECTION_DISABLED_TRANSLATION()
+                                    message + " ("() + collectionToggleKeyText + ")"()
+                                }
+                            }
+                            AttachmentChangedEvent.eventRegistry.observe(onViewClosed) { identifier ->
+                                if (identifier == COLLECTION_ENABLED_ATTACHMENT_TYPE.identifier()) {
+                                    updateButton()
+                                }
+                            }
+                            updateButton()
+                            view.onClick.register {
+                                val enabled = !view.selected.value
+                                view.selected.value = enabled
+                                if (player.collectionEnabled.getOrDefault() != enabled) setCollectionEnabled(enabled)
+                            }
+                        }
+                        view += YSpaceView(2)
+                        view += StackView().configure {
+                            view.sizingX = Sizing.FILL
+                            view.sizingY = Sizing.FILL
+                            position.weight = 1.0
+
+                            view += TooltipBackgroundView()
+                            view += StackView().configure {
+                                view.sizingX = Sizing.FILL
+                                view.sizingY = Sizing.FILL
+
+                                view += scrollView
+                                val scrollbarView = YFlatScrollbarView().also {
+                                    it.scrollbarColor = 0xA0FFFFFF.toInt()
+                                }
+                                view += AlignView().configure {
+                                    view.alignmentX = Alignment.END
+                                    view += scrollbarView
+                                }
+                                connectScrollbar(scrollView, scrollbarView)
+                            }.margin(4)
+                        }
                     }.margin(0, 0, 0, RECIPE_VIEWER_MARGIN)
                 }.margin(PANE_MARGIN)
             }
@@ -116,63 +298,6 @@ class SoulStreamViewWrapper(
     fun dispose() {
         onViewClosed.fire()
         refreshEffects = null
-    }
-
-    private fun createFilterView(): View {
-        val scrollView = YScrollContainerView()
-
-        return View {
-            view += YListView().configure {
-                view.sizingX = Sizing.FILL
-                view.sizingY = Sizing.FILL
-
-                view += XListView().configure {
-                    view += LayeredImageButtonView(IntPoint(14, 14)).configure {
-                        view.backgroundSprites = BUTTON_14_BACKGROUND
-                        view.foregroundSprites = LayeredImageButtonView.Sprites.of(MirageFairy2024.identifier("button_14/clear_foreground"))
-                        view.tooltip.value = text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() }
-                        view.onClick.register {
-                            enabledPassiveSkillEffectFilters.value = emptyMap()
-                        }
-                    }
-                    view += XSpaceView(2)
-                    view += LayeredImageButtonView(IntPoint(14, 14)).configure {
-                        view.backgroundSprites = BUTTON_14_BACKGROUND
-                        view.foregroundSprites = LayeredImageButtonView.Sprites.of(MirageFairy2024.identifier("button_14/global_search_foreground"))
-                        view.tooltip.value = text { SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION() }
-                        enableGlobalFairyHighlight.observeAndInitialize(onViewClosed) { _, enabled ->
-                            view.selected.value = enabled
-                        }
-                        view.onClick.register {
-                            enableGlobalFairyHighlight.value = !enableGlobalFairyHighlight.value
-                        }
-                    }
-                }
-                view += YSpaceView(2)
-                view += StackView().configure {
-                    view.sizingX = Sizing.FILL
-                    view.sizingY = Sizing.FILL
-                    position.weight = 1.0
-
-                    view += TooltipBackgroundView()
-                    view += XListView().configure {
-                        view.sizingX = Sizing.FILL
-                        view.sizingY = Sizing.FILL
-
-                        view += scrollView.configure {
-                            position.weight = 1.0
-                            position.ignoreLayoutX = true
-                            view += createFilterList()
-                        }
-                        val scrollbarView = YFlatScrollbarView().also {
-                            it.scrollbarColor = 0xA0FFFFFF.toInt()
-                        }
-                        view += scrollbarView
-                        connectScrollbar(scrollView, scrollbarView)
-                    }.margin(4)
-                }
-            }
-        }
     }
 
     private fun createFilterList(): View {
@@ -210,144 +335,6 @@ class SoulStreamViewWrapper(
                         }
                     }
                     addFilters(effect)
-                }
-            }
-        }
-    }
-
-    private fun createInventoryView(title: Component): View {
-        val scrollView = YScrollContainerView().also {
-            it.scrollStep = SlotType.NORMAL.viewTexture.size.y
-        }
-
-        return View {
-            val columnCount = 9
-            val hotbarSlotIndex = columnCount * 3
-            val passiveSkillSlotIndex = hotbarSlotIndex + columnCount
-            val storageSlotIndex = passiveSkillSlotIndex + SoulStream.PASSIVE_SKILL_SLOT_COUNT
-
-            fun createSlotRow(slotIndices: Iterable<Int>, slotType: SlotType): View {
-                return View {
-                    view += XListView().configure {
-                        slotIndices.forEach {
-                            view += menuSlotView(menu.slots[it], slotType)
-                        }
-                    }
-                }
-            }
-
-            view += YListView().configure {
-                view.sizingY = Sizing.FILL
-
-                view += createSlotRow(passiveSkillSlotIndex until storageSlotIndex, SlotType.FAIRY)
-                view += YSpaceView(4)
-                view += XListView().configure {
-                    view.sizingY = Sizing.FILL
-                    position.weight = 1.0
-
-                    view += scrollView.configure {
-                        view += YListView().configure {
-                            (storageSlotIndex until menu.slots.size).chunked(columnCount).forEach {
-                                view += createSlotRow(it, SlotType.NORMAL)
-                            }
-                        }
-                    }
-                    val scrollbarView = YInventoryScrollbarView().also {
-                        it.scrollStep = scrollView.scrollStep
-                    }
-                    view += scrollbarView
-                    connectScrollbar(scrollView, scrollbarView)
-                }
-                view += YSpaceView(4)
-                (0 until hotbarSlotIndex).chunked(columnCount).forEach {
-                    view += createSlotRow(it, SlotType.NORMAL)
-                }
-                view += YSpaceView(4)
-                view += createSlotRow(hotbarSlotIndex until passiveSkillSlotIndex, SlotType.NORMAL)
-                view += YSpaceView(5)
-                view += TextView(title).configure {
-                    position.ignoreLayoutX = true
-                    view.sizingX = Sizing.FILL
-                    view.color = ColorPair.DARK_GRAY
-                    view.shadow = false
-                    view.alignmentX = Alignment.CENTER
-                }
-                view += YSpaceView(5)
-            }
-        }
-    }
-
-    private fun createEffectView(): View {
-        var effects = collectPassiveSkillTexts()
-        val effectList = DynamicView(createEffectList(effects))
-        val scrollView = YScrollContainerView().also {
-            it += effectList
-        }
-
-        refreshEffects = {
-            val newEffects = collectPassiveSkillTexts()
-            if (effects != newEffects) {
-                effects = newEffects
-                effectList.content.value = createEffectList(effects)
-                scrollView.updateScrollBounds()
-                scrollView.clampScrollOffset()
-            }
-        }
-
-        return View {
-            view += YListView().configure {
-                view.sizingX = Sizing.FILL
-                view.sizingY = Sizing.FILL
-
-                view += LayeredImageButtonView(IntPoint(14, 14)).configure {
-                    view.backgroundSprites = BUTTON_14_BACKGROUND
-                    view.foregroundSprites = LayeredImageButtonView.Sprites(
-                        MirageFairy2024.identifier("button_14/collection_enabled_foreground"),
-                        MirageFairy2024.identifier("button_14/collection_disabled_foreground"),
-                        MirageFairy2024.identifier("button_14/collection_enabled_foreground"),
-                        MirageFairy2024.identifier("button_14/collection_disabled_foreground"),
-                    )
-                    fun updateButton() {
-                        val enabled = player.collectionEnabled.getOrDefault()
-                        view.selected.value = enabled
-                        view.tooltip.value = text {
-                            val message = if (enabled) COLLECTION_ENABLED_TRANSLATION() else COLLECTION_DISABLED_TRANSLATION()
-                            message + " ("() + collectionToggleKeyText + ")"()
-                        }
-                    }
-                    AttachmentChangedEvent.eventRegistry.observe(onViewClosed) { identifier ->
-                        if (identifier == COLLECTION_ENABLED_ATTACHMENT_TYPE.identifier()) {
-                            updateButton()
-                        }
-                    }
-                    updateButton()
-                    view.onClick.register {
-                        val enabled = !view.selected.value
-                        view.selected.value = enabled
-                        if (player.collectionEnabled.getOrDefault() != enabled) setCollectionEnabled(enabled)
-                    }
-                }
-                view += YSpaceView(2)
-                view += StackView().configure {
-                    view.sizingX = Sizing.FILL
-                    view.sizingY = Sizing.FILL
-                    position.weight = 1.0
-
-                    view += TooltipBackgroundView()
-                    view += StackView().configure {
-                        view.sizingX = Sizing.FILL
-                        view.sizingY = Sizing.FILL
-
-                        view += scrollView
-                        val scrollbarView = YFlatScrollbarView().also {
-                            it.scrollbarColor = 0xA0FFFFFF.toInt()
-                        }
-                        view += AlignView().configure {
-                            view.alignmentX = Alignment.END
-                            view += scrollbarView
-                        }
-                        connectScrollbar(scrollView, scrollbarView)
-                    }.margin(4)
                 }
             }
         }
