@@ -50,7 +50,6 @@ import miragefairy2024.util.observeAndInitialize
 import miragefairy2024.util.plus
 import miragefairy2024.util.red
 import miragefairy2024.util.register
-import miragefairy2024.util.registerAndInitialize
 import miragefairy2024.util.text
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
@@ -79,21 +78,8 @@ class SoulStreamViewWrapper(
     private val onViewClosed = EventRegistry<() -> Unit>()
     private var refreshEffects: (() -> Unit)? = null
 
-    fun updateEffects() {
-        refreshEffects?.invoke()
-    }
-
-    fun dispose() {
-        onViewClosed.fire()
-        refreshEffects = null
-    }
-
     fun createView(title: Component): View {
         dispose()
-
-        val filterPane = createFilterPane()
-        val inventoryPane = createInventoryPane(title)
-        val effectPane = createEffectPane()
 
         return View {
             view += StackView().configure {
@@ -107,48 +93,60 @@ class SoulStreamViewWrapper(
                     view.sizingX = Sizing.FILL
                     view.sizingY = Sizing.FILL
 
-                    // レシピビューワー用に左右の下部を空けるのだ～🌱
-                    view += filterPane.configure {
+                    view += createFilterView().configure {
                         position.weight = 1.0
                         position.ignoreLayoutX = true
                     }.margin(0, 0, 0, RECIPE_VIEWER_MARGIN)
                     view += XSpaceView(PANE_GAP)
-                    view += inventoryPane
+                    view += createInventoryView(title)
                     view += XSpaceView(PANE_GAP)
-                    view += effectPane.configure {
+                    view += createEffectView().configure {
                         position.weight = 1.0
                         position.ignoreLayoutX = true
                     }.margin(0, 0, 0, RECIPE_VIEWER_MARGIN)
-
                 }.margin(PANE_MARGIN)
-
             }
         }
     }
 
-    private fun createFilterPane(): View {
+    fun updateEffects() {
+        refreshEffects?.invoke()
+    }
+
+    fun dispose() {
+        onViewClosed.fire()
+        refreshEffects = null
+    }
+
+    private fun createFilterView(): View {
+        val scrollView = YScrollContainerView()
+
         return View {
             view += YListView().configure {
                 view.sizingX = Sizing.FILL
                 view.sizingY = Sizing.FILL
 
                 view += XListView().configure {
-
                     view += LayeredImageButtonView(IntPoint(14, 14)).configure {
                         view.backgroundSprites = BUTTON_14_BACKGROUND
                         view.foregroundSprites = LayeredImageButtonView.Sprites.of(MirageFairy2024.identifier("button_14/clear_foreground"))
                         view.tooltip.value = text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() }
-                        view.onClick.register { enabledPassiveSkillEffectFilters.value = emptyMap() }
+                        view.onClick.register {
+                            enabledPassiveSkillEffectFilters.value = emptyMap()
+                        }
                     }
                     view += XSpaceView(2)
                     view += LayeredImageButtonView(IntPoint(14, 14)).configure {
                         view.backgroundSprites = BUTTON_14_BACKGROUND
                         view.foregroundSprites = LayeredImageButtonView.Sprites.of(MirageFairy2024.identifier("button_14/global_search_foreground"))
                         view.tooltip.value = text { SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION() }
-                        enableGlobalFairyHighlight.observeAndInitialize(onViewClosed) { _, enabled -> view.selected.value = enabled }
-                        view.onClick.register { enableGlobalFairyHighlight.value = !enableGlobalFairyHighlight.value }
+                        enableGlobalFairyHighlight.observeAndInitialize(onViewClosed) { _, enabled ->
+                            view.selected.value = enabled
+                        }
+                        view.onClick.register {
+                            enableGlobalFairyHighlight.value = !enableGlobalFairyHighlight.value
+                        }
                     }
-
                 }
                 view += YSpaceView(2)
                 view += StackView().configure {
@@ -161,22 +159,18 @@ class SoulStreamViewWrapper(
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL
 
-                        val scrollView = YScrollContainerView().configure {
+                        view += scrollView.configure {
                             position.weight = 1.0
                             position.ignoreLayoutX = true
                             view += createFilterList()
                         }
-                        view += scrollView
                         val scrollbarView = YFlatScrollbarView().also {
                             it.scrollbarColor = 0xA0FFFFFF.toInt()
                         }
                         view += scrollbarView
-                        connectScrollbar(scrollView.view, scrollbarView)
-
+                        connectScrollbar(scrollView, scrollbarView)
                     }.margin(4)
-
                 }
-
             }
         }
     }
@@ -197,18 +191,17 @@ class SoulStreamViewWrapper(
                             .flatMap { it.value.passiveSkillSpecifications }
                             .mapNotNull { if (it.effect == effect) effect.castOrNull(it.valueProvider(10.0)) else null }
                         effect.getFilters(samples).sortedBy { it.identifier }.forEach { filter ->
-                            var label = filter.text
+                            fun label(filters: Map<ResourceLocation, PassiveSkillEffectFilter<*>>) = if (filter.identifier in filters) filter.text.gold else filter.text
+
                             view += AlignView().configure {
                                 view.sizingY = Sizing.WRAP
 
                                 view += TextView().configure {
                                     view.shadow = false
-                                    val text = view.text
                                     enabledPassiveSkillEffectFilters.observeAndInitialize(onViewClosed) { _, filters ->
-                                        label = if (filter.identifier in filters) filter.text.gold else filter.text
-                                        text.value = label.visualOrderText
+                                        view.text.value = label(filters).visualOrderText
                                     }
-                                }.tooltip { _, _ -> listOf(label) }
+                                }.tooltip { _, _ -> listOf(label(enabledPassiveSkillEffectFilters.value)) }
                             }.onClick {
                                 val filters = enabledPassiveSkillEffectFilters.value
                                 enabledPassiveSkillEffectFilters.value = if (filter.identifier in filters) filters - filter.identifier else filters + (filter.identifier to filter)
@@ -218,32 +211,43 @@ class SoulStreamViewWrapper(
                     }
                     addFilters(effect)
                 }
-
             }
         }
     }
 
-    private fun createInventoryPane(title: Component): View {
-        val columnCount = 9
-        val inventorySlotCount = columnCount * 3
-        val soulStreamSlotIndexOffset = inventorySlotCount + columnCount
-        val storageSlotIndexOffset = soulStreamSlotIndexOffset + SoulStream.PASSIVE_SKILL_SLOT_COUNT
+    private fun createInventoryView(title: Component): View {
+        val scrollView = YScrollContainerView().also {
+            it.scrollStep = SlotType.NORMAL.viewTexture.size.y
+        }
+
         return View {
+            val columnCount = 9
+            val hotbarSlotIndex = columnCount * 3
+            val passiveSkillSlotIndex = hotbarSlotIndex + columnCount
+            val storageSlotIndex = passiveSkillSlotIndex + SoulStream.PASSIVE_SKILL_SLOT_COUNT
+
+            fun createSlotRow(slotIndices: Iterable<Int>, slotType: SlotType): View {
+                return View {
+                    view += XListView().configure {
+                        slotIndices.forEach {
+                            view += menuSlotView(menu.slots[it], slotType)
+                        }
+                    }
+                }
+            }
+
             view += YListView().configure {
                 view.sizingY = Sizing.FILL
 
-                view += createSlotRow(soulStreamSlotIndexOffset until storageSlotIndexOffset, SlotType.FAIRY)
+                view += createSlotRow(passiveSkillSlotIndex until storageSlotIndex, SlotType.FAIRY)
                 view += YSpaceView(4)
                 view += XListView().configure {
                     view.sizingY = Sizing.FILL
                     position.weight = 1.0
 
-                    val scrollView = YScrollContainerView().also {
-                        it.scrollStep = SlotType.NORMAL.viewTexture.size.y
-                    }
                     view += scrollView.configure {
                         view += YListView().configure {
-                            (storageSlotIndexOffset until menu.slots.size).chunked(columnCount).forEach {
+                            (storageSlotIndex until menu.slots.size).chunked(columnCount).forEach {
                                 view += createSlotRow(it, SlotType.NORMAL)
                             }
                         }
@@ -252,20 +256,14 @@ class SoulStreamViewWrapper(
                         it.scrollStep = scrollView.scrollStep
                     }
                     view += scrollbarView
-                    scrollView.scrollBounds.registerAndInitialize { _, bounds ->
-                        scrollbarView.contentLength = bounds.contentLength
-                        scrollbarView.viewportLength = bounds.viewportLength
-                    }
-                    scrollView.scrollOffsetY.registerAndInitialize { _, offset -> scrollbarView.scrollOffset.value = offset }
-                    scrollbarView.scrollOffset.register { _, offset -> scrollView.scrollOffsetY.value = offset }
-
+                    connectScrollbar(scrollView, scrollbarView)
                 }
                 view += YSpaceView(4)
-                (0 until inventorySlotCount).chunked(columnCount).forEach {
+                (0 until hotbarSlotIndex).chunked(columnCount).forEach {
                     view += createSlotRow(it, SlotType.NORMAL)
                 }
                 view += YSpaceView(4)
-                view += createSlotRow(inventorySlotCount until soulStreamSlotIndexOffset, SlotType.NORMAL)
+                view += createSlotRow(hotbarSlotIndex until passiveSkillSlotIndex, SlotType.NORMAL)
                 view += YSpaceView(5)
                 view += TextView(title).configure {
                     position.ignoreLayoutX = true
@@ -275,34 +273,31 @@ class SoulStreamViewWrapper(
                     view.alignmentX = Alignment.CENTER
                 }
                 view += YSpaceView(5)
-
             }
         }
     }
 
-    private fun createSlotRow(slotIndices: Iterable<Int>, slotType: SlotType): View {
-        return View {
-            view += XListView().configure {
-                slotIndices.forEach {
-                    view += menuSlotView(menu.slots[it], slotType)
-                }
+    private fun createEffectView(): View {
+        var effects = collectPassiveSkillTexts()
+        val effectList = DynamicView(createEffectList(effects))
+        val scrollView = YScrollContainerView().also {
+            it += effectList
+        }
+
+        refreshEffects = {
+            val newEffects = collectPassiveSkillTexts()
+            if (effects != newEffects) {
+                effects = newEffects
+                effectList.content.value = createEffectList(effects)
+                scrollView.updateScrollBounds()
+                scrollView.clampScrollOffset()
             }
         }
-    }
 
-    private fun createEffectPane(): View {
         return View {
             view += YListView().configure {
                 view.sizingX = Sizing.FILL
                 view.sizingY = Sizing.FILL
-
-                val collectionEnabled = player.collectionEnabled.getOrDefault()
-                fun collectionTooltip(enabled: Boolean): Component {
-                    return text {
-                        val message = if (enabled) COLLECTION_ENABLED_TRANSLATION() else COLLECTION_DISABLED_TRANSLATION()
-                        message + " ("() + collectionToggleKeyText + ")"()
-                    }
-                }
 
                 view += LayeredImageButtonView(IntPoint(14, 14)).configure {
                     view.backgroundSprites = BUTTON_14_BACKGROUND
@@ -312,15 +307,20 @@ class SoulStreamViewWrapper(
                         MirageFairy2024.identifier("button_14/collection_enabled_foreground"),
                         MirageFairy2024.identifier("button_14/collection_disabled_foreground"),
                     )
-                    view.tooltip.value = collectionTooltip(collectionEnabled)
-                    view.selected.value = collectionEnabled
-                    AttachmentChangedEvent.eventRegistry.observe(onViewClosed) { identifier ->
-                        if (identifier == COLLECTION_ENABLED_ATTACHMENT_TYPE.identifier()) {
-                            val enabled = player.collectionEnabled.getOrDefault()
-                            view.selected.value = enabled
-                            view.tooltip.value = collectionTooltip(enabled)
+                    fun updateButton() {
+                        val enabled = player.collectionEnabled.getOrDefault()
+                        view.selected.value = enabled
+                        view.tooltip.value = text {
+                            val message = if (enabled) COLLECTION_ENABLED_TRANSLATION() else COLLECTION_DISABLED_TRANSLATION()
+                            message + " ("() + collectionToggleKeyText + ")"()
                         }
                     }
+                    AttachmentChangedEvent.eventRegistry.observe(onViewClosed) { identifier ->
+                        if (identifier == COLLECTION_ENABLED_ATTACHMENT_TYPE.identifier()) {
+                            updateButton()
+                        }
+                    }
+                    updateButton()
                     view.onClick.register {
                         val enabled = !view.selected.value
                         view.selected.value = enabled
@@ -338,11 +338,6 @@ class SoulStreamViewWrapper(
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL
 
-                        var effects = collectPassiveSkillTexts()
-                        val effectList = DynamicView(createEffectList(effects))
-                        val scrollView = YScrollContainerView().also {
-                            it += effectList
-                        }
                         view += scrollView
                         val scrollbarView = YFlatScrollbarView().also {
                             it.scrollbarColor = 0xA0FFFFFF.toInt()
@@ -352,20 +347,8 @@ class SoulStreamViewWrapper(
                             view += scrollbarView
                         }
                         connectScrollbar(scrollView, scrollbarView)
-                        refreshEffects = {
-                            val newEffects = collectPassiveSkillTexts()
-                            if (effects != newEffects) {
-                                effects = newEffects
-                                effectList.content.value = createEffectList(effects)
-                                scrollView.updateScrollBounds()
-                                scrollView.clampScrollOffset()
-                            }
-                        }
-
                     }.margin(4)
-
                 }
-
             }
         }
     }
