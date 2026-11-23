@@ -176,12 +176,6 @@ abstract class VanillaScrollContainerViewWidget(
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
 
-        fun isSeparated(start: Int, end: Int, outset: Int): Boolean {
-            if (outset == Int.MAX_VALUE) return false
-            // start >= end のとき、辺の間隔は UInt で表せるのだ～🌱
-            return start >= end && (start - end).toUInt() >= outset.toUInt()
-        }
-
         // 子要素の描画なのだ～🌱
         val xMin = x
         val xMax = xMin + width
@@ -189,19 +183,33 @@ abstract class VanillaScrollContainerViewWidget(
         val yMax = yMin + height
         guiGraphics.enableScissor(xMin, yMin, xMax, yMax)
         try {
-            widgetRegistrations.forEach { widgetRegistration ->
+            widgetRegistrations.forEach skip@{ widgetRegistration ->
                 val widget = widgetRegistration.widget
 
-                // ホバーの解除やフォーカス中・押下中の処理には、領域外でも描画呼び出しが必要なのだ～🌱
-                if (!widget.isHovered && focused !== widget && widgetRegistration !in pressedWidgetRegistrations.values) {
-                    if (xMin == xMax || yMin == yMax) return@forEach
+                run force@{
+
+                    // 前回のホバー状態を解除するために、ホバーフラグが立っている要素は描画を呼び出すのだ～🌱
+                    if (widget.isHovered) return@force
+                    // キーボードフォーカスによって生じるツールチップを予約するために、フォーカス中の要素は描画を呼び出すのだ～🌱
+                    if (focused === widget) return@force
+                    // ドラッグに反応する要素のために、ドラッグ中の要素は描画を呼び出すのだ～🌱
+                    if (widgetRegistration in pressedWidgetRegistrations.values) return@force
+
+                    // 親要素自体が潰れているのだ～🌱
+                    if (xMin == xMax || yMin == yMax) return@skip
+
                     val overflow = widgetRegistration.renderOverflow
-                    if (widget.width == 0 && overflow.xMin == 0 && overflow.xMax == 0) return@forEach
-                    if (widget.height == 0 && overflow.yMin == 0 && overflow.yMax == 0) return@forEach
-                    if (isSeparated(widget.x, xMax, overflow.xMin)) return@forEach
-                    if (isSeparated(xMin, widget.x + widget.width, overflow.xMax)) return@forEach
-                    if (isSeparated(widget.y, yMax, overflow.yMin)) return@forEach
-                    if (isSeparated(yMin, widget.y + widget.height, overflow.yMax)) return@forEach
+
+                    // 子要素が潰れているのだ～🌱
+                    if (widget.width == 0 && overflow.xMin == 0 && overflow.xMax == 0) return@skip
+                    if (widget.height == 0 && overflow.yMin == 0 && overflow.yMax == 0) return@skip
+
+                    // はみ出しが無限でなく、その方向に見切れている場合は、描画を飛ばすのだ～🌱
+                    if (overflow.xMin != Int.MAX_VALUE && widget.x - overflow.xMin >= xMax) return@skip
+                    if (overflow.yMin != Int.MAX_VALUE && widget.y - overflow.yMin >= yMax) return@skip
+                    if (overflow.xMax != Int.MAX_VALUE && widget.x + widget.width + overflow.xMax <= xMin) return@skip
+                    if (overflow.yMax != Int.MAX_VALUE && widget.y + widget.height + overflow.yMax <= yMin) return@skip
+
                 }
 
                 widget.render(guiGraphics, mouseX, mouseY, partialTick)
