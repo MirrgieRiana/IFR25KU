@@ -56,6 +56,11 @@ abstract class ViewScreen(title: Component) : Screen(title) {
 
     override fun init() = viewAdapter.init()
 
+    override fun tick() {
+        super.tick()
+        viewAdapter.tick()
+    }
+
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         viewAdapter.beforeRender()
         super.render(guiGraphics, mouseX, mouseY, partialTick)
