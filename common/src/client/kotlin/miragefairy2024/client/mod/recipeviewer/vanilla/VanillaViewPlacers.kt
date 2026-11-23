@@ -22,6 +22,7 @@ import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.TextView
+import miragefairy2024.mod.recipeviewer.views.TickView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.mod.recipeviewer.views.XFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XInventoryScrollbarView
@@ -131,6 +132,21 @@ fun initVanillaViewPlacers() {
         object : ViewController {
             override fun setOffset(offset: IntPoint) = Unit
             override fun detach() = remover.remove()
+        }
+    }
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TickView, _ ->
+        var disposed = false
+        val remover = context.onTick.register {
+            // 同じ tick 中に購読を解除しても、発火時に作った購読一覧のコピーには残るのだ～🌱
+            if (!disposed) view.onTick.fire()
+        }
+        object : ViewController {
+            override fun setOffset(offset: IntPoint) = Unit
+            override fun detach() = Unit
+            override fun dispose() {
+                disposed = true
+                remover.remove()
+            }
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextButtonView, bounds ->

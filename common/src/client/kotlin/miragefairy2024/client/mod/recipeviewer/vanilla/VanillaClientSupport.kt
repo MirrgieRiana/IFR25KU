@@ -16,6 +16,7 @@ interface VanillaViewPlacerContext {
 
     val canPlaceMenuSlots: Boolean
     val onBeforeRender: EventRegistry<() -> Unit>
+    val onTick: EventRegistry<() -> Unit>
 
     fun addRenderable(registration: WidgetRegistration): Remover
     fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover
