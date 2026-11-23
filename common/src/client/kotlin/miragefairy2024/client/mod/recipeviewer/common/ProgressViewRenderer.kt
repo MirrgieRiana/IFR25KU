@@ -13,6 +13,7 @@ import net.minecraft.client.gui.GuiGraphics
 
 object ProgressViewRenderer : ViewRenderer<ProgressView, Unit> {
     override fun createState(view: ProgressView) = Unit
+
     override fun render(view: ProgressView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         fun blit(texture: ViewTexture, x: Int, y: Int, source: IntRectangle) {
             graphics.blit(

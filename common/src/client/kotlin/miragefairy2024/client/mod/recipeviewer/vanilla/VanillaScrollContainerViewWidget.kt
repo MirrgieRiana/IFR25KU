@@ -177,10 +177,42 @@ abstract class VanillaScrollContainerViewWidget(
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
 
         // 子要素の描画なのだ～🌱
-        guiGraphics.enableScissor(x, y, x + width, y + height)
+        val xMin = x
+        val xMax = xMin + width
+        val yMin = y
+        val yMax = yMin + height
+        guiGraphics.enableScissor(xMin, yMin, xMax, yMax)
         try {
-            widgetRegistrations.forEach { widgetRegistration ->
-                widgetRegistration.widget.render(guiGraphics, mouseX, mouseY, partialTick)
+            widgetRegistrations.forEach skip@{ widgetRegistration ->
+                val widget = widgetRegistration.widget
+
+                run force@{
+
+                    // 前回のホバー状態を解除するために、ホバーフラグが立っている要素は描画を呼び出すのだ～🌱
+                    if (widget.isHovered) return@force
+                    // キーボードフォーカスによって生じるツールチップを予約するために、フォーカス中の要素は描画を呼び出すのだ～🌱
+                    if (focused === widget) return@force
+                    // ドラッグに反応する要素のために、ドラッグ中の要素は描画を呼び出すのだ～🌱
+                    if (widgetRegistration in pressedWidgetRegistrations.values) return@force
+
+                    // 親要素自体が潰れているのだ～🌱
+                    if (xMin == xMax || yMin == yMax) return@skip
+
+                    val overflow = widgetRegistration.renderOverflowGetter()
+
+                    // 子要素が潰れているのだ～🌱
+                    if (widget.width == 0 && overflow.xMin == 0 && overflow.xMax == 0) return@skip
+                    if (widget.height == 0 && overflow.yMin == 0 && overflow.yMax == 0) return@skip
+
+                    // はみ出しが無限でなく、その方向に見切れている場合は、描画を飛ばすのだ～🌱
+                    if (overflow.xMin != Int.MAX_VALUE && widget.x - overflow.xMin >= xMax) return@skip
+                    if (overflow.yMin != Int.MAX_VALUE && widget.y - overflow.yMin >= yMax) return@skip
+                    if (overflow.xMax != Int.MAX_VALUE && widget.x + widget.width + overflow.xMax <= xMin) return@skip
+                    if (overflow.yMax != Int.MAX_VALUE && widget.y + widget.height + overflow.yMax <= yMin) return@skip
+
+                }
+
+                widget.render(guiGraphics, mouseX, mouseY, partialTick)
             }
         } finally {
             guiGraphics.disableScissor()

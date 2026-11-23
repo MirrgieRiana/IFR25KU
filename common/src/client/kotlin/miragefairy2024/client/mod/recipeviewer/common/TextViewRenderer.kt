@@ -1,5 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer.common
 
+import miragefairy2024.client.mod.recipeviewer.RenderOverflow
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.client.util.drawScrollingString
 import miragefairy2024.mod.recipeviewer.view.Alignment
@@ -14,6 +15,8 @@ object TextViewRenderer : ViewRenderer<TextView, Unit> {
     private val startNanoTime by lazy { System.nanoTime() }
 
     override fun createState(view: TextView) = Unit
+
+    override fun getRenderOverflow(view: TextView, bounds: IntRectangle) = RenderOverflow.UNBOUNDED
 
     override fun render(view: TextView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val font = Minecraft.getInstance().font

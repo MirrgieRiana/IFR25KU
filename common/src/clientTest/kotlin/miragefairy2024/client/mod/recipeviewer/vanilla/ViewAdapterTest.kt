@@ -1,5 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import miragefairy2024.client.mod.recipeviewer.RenderOverflow
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
@@ -96,7 +97,7 @@ private class AdapterFixture(vararg views: TestView) {
             it.register(TestView::class.java) { context, view, bounds ->
                 val widget = RecordingWidget(bounds)
                 widgets += widget
-                val remover = context.addRenderable(WidgetRegistration(widget, view.interactive))
+                val remover = context.addRenderable(WidgetRegistration(widget, view.interactive) { RenderOverflow.UNBOUNDED })
                 removers += remover
                 view.beforeRender?.let { listener -> context.onBeforeRender.register { listener() } }
                 object : ViewController {
@@ -257,7 +258,7 @@ class ViewAdapterTest {
             it.register(TestView::class.java) { context, view, bounds ->
                 val widget = RecordingWidget(bounds)
                 widgets += widget
-                context.addRenderable(WidgetRegistration(widget, view.interactive))
+                context.addRenderable(WidgetRegistration(widget, view.interactive) { RenderOverflow.UNBOUNDED })
                 object : ViewController {
                     override fun setOffset(offset: IntPoint) = widget.setPosition(offset.x, offset.y)
                     override fun detach() = throw UnsupportedOperationException()
