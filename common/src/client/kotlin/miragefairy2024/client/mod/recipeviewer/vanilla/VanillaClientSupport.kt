@@ -7,6 +7,8 @@ import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.components.AbstractWidget
 
+class WidgetRegistration(val widget: AbstractWidget, val interactive: Boolean)
+
 interface VanillaViewPlacerContext {
     /** バニラの GUI が座標の原点として使う点の、画面の左上からの絶対座標なのだ～🌱 */
     val origin: IntPoint
@@ -14,8 +16,7 @@ interface VanillaViewPlacerContext {
     val canPlaceMenuSlots: Boolean
     val onBeforeRender: EventRegistry<() -> Unit>
 
-    fun addRenderableWidget(widget: AbstractWidget): Remover
-    fun addRenderableOnly(widget: AbstractWidget): Remover
+    fun addRenderable(registration: WidgetRegistration): Remover
     fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover
 }
 

@@ -33,31 +33,18 @@ import miragefairy2024.util.observeAndInitialize
 import miragefairy2024.util.register
 import miragefairy2024.util.removeOn
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.components.Tooltip
 import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.network.chat.Component
 
-private infix fun VanillaViewPlacerContext.place(widget: AbstractWidget): ViewController {
+private infix fun VanillaViewPlacerContext.place(registration: WidgetRegistration): ViewController {
     val onDetached = EventRegistry<() -> Unit>()
-    addRenderableWidget(widget).removeOn(onDetached)
+    this.addRenderable(registration).removeOn(onDetached)
     return object : ViewController {
         override fun setOffset(offset: IntPoint) {
-            widget.setPosition(offset.x, offset.y)
-        }
-
-        override fun detach() = onDetached.fire()
-    }
-}
-
-private infix fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidget): ViewController {
-    val onDetached = EventRegistry<() -> Unit>()
-    addRenderableOnly(widget).removeOn(onDetached)
-    return object : ViewController {
-        override fun setOffset(offset: IntPoint) {
-            widget.setPosition(offset.x, offset.y)
+            registration.widget.setPosition(offset.x, offset.y)
         }
 
         override fun detach() = onDetached.fire()
@@ -67,7 +54,7 @@ private infix fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidge
 context(_: ModContext)
 fun initVanillaViewPlacers() {
     fun placeScrollContainerView(context: VanillaViewPlacerContext, widget: VanillaScrollContainerViewWidget): ViewController {
-        val controller = context place widget
+        val controller = context place WidgetRegistration(widget, true)
         // 子の差し替えだけで全長が変わった場合も、描画前に寸法を通知するのだ～🌱
         val boundsRemover = context.onBeforeRender.register(widget::updateScrollBounds)
         return object : ViewController {
@@ -95,7 +82,7 @@ fun initVanillaViewPlacers() {
         placeScrollContainerView(context, VanillaYScrollContainerViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
     }
     fun placeScrollbarView(context: VanillaViewPlacerContext, widget: VanillaScrollbarViewWidget<*>): ViewController {
-        val controller = context place widget
+        val controller = context place WidgetRegistration(widget, true)
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {
                 controller.setOffset(offset)
@@ -156,7 +143,7 @@ fun initVanillaViewPlacers() {
         ) {
             override fun getMessage() = view.message
         }
-        context place TextButtonWidget()
+        context place WidgetRegistration(TextButtonWidget(), true)
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: LayeredImageButtonView, bounds ->
         fun LayeredImageButtonView.Sprites.toWidgetSprites() = WidgetSprites(this.selected, this.unselected, this.selectedFocused, this.unselectedFocused)
@@ -173,7 +160,7 @@ fun initVanillaViewPlacers() {
         widget.onClick.observe(onClosed) {
             view.onClick.fire()
         }
-        val controller = context place widget
+        val controller = context place WidgetRegistration(widget, true)
         object : ViewController {
             override fun setOffset(offset: IntPoint) {
                 controller.setOffset(offset)
@@ -202,7 +189,7 @@ fun initVanillaViewPlacers() {
         editBox.setResponder {
             view.text.value = it
         }
-        val controller = context place editBox
+        val controller = context place WidgetRegistration(editBox, true)
         object : ViewController {
             override fun setOffset(offset: IntPoint): Unit {
                 controller.setOffset(offset)
@@ -219,18 +206,18 @@ fun initVanillaViewPlacers() {
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextView, bounds ->
-        context place VanillaViewRendererWidget(TextViewRenderer, view, bounds)
+        context place WidgetRegistration(VanillaViewRendererWidget(TextViewRenderer, view, bounds), true)
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: ImageView, bounds ->
-        context place VanillaViewRendererWidget(ImageViewRenderer, view, bounds)
+        context place WidgetRegistration(VanillaViewRendererWidget(ImageViewRenderer, view, bounds), true)
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TooltipView, bounds ->
-        context placeRenderable VanillaViewRendererWidget(TooltipViewRenderer, view, bounds)
+        context place WidgetRegistration(VanillaViewRendererWidget(TooltipViewRenderer, view, bounds), false)
     }
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView, S> f(entry: ViewRendererRegistry.Entry<V, S>) {
             VANILLA_VIEW_PLACER_REGISTRY.register(entry.viewClass) { context, view, bounds ->
-                context place VanillaViewRendererWidget(entry.viewRenderer, view, bounds)
+                context place WidgetRegistration(VanillaViewRendererWidget(entry.viewRenderer, view, bounds), true)
             }
         }
         f(entry)
