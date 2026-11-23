@@ -166,11 +166,6 @@ abstract class VanillaScrollContainerViewWidget(
         return true
     }
 
-    private fun intersectsViewport(widget: AbstractWidget): Boolean {
-        if (width <= 0 || height <= 0 || widget.width <= 0 || widget.height <= 0) return false
-        return widget.x < x + width && widget.x + widget.width > x && widget.y < y + height && widget.y + widget.height > y
-    }
-
     override fun isActive() = super.isActive() && !disposed
 
     override fun isMouseOver(mouseX: Double, mouseY: Double) = isActive && super.isMouseOver(mouseX, mouseY)
@@ -183,15 +178,23 @@ abstract class VanillaScrollContainerViewWidget(
     }
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+        if (width <= 0) return
+        if (height <= 0) return
 
         // 子要素の描画なのだ～🌱
         guiGraphics.enableScissor(x, y, x + width, y + height)
         try {
             widgetRegistrations.forEach { widgetRegistration ->
                 val widget = widgetRegistration.widget
-                if (intersectsViewport(widget)) {
-                    widget.render(guiGraphics, mouseX, mouseY, partialTick)
-                }
+
+                if (widget.width <= 0) return@forEach
+                if (widget.height <= 0) return@forEach
+                if (widget.x >= x + width) return@forEach
+                if (widget.x + widget.width <= x) return@forEach
+                if (widget.y >= y + height) return@forEach
+                if (widget.y + widget.height <= y) return@forEach
+
+                widget.render(guiGraphics, mouseX, mouseY, partialTick)
             }
         } finally {
             guiGraphics.disableScissor()
