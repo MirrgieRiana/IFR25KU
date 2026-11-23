@@ -134,6 +134,7 @@ fun initVanillaViewPlacers() {
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TickView, _ ->
         var disposed = false
         val remover = context.onTick.register {
+            // 同じ tick 中に購読を解除しても、発火時に作った購読一覧のコピーには残るのだ～🌱
             if (!disposed) view.onTick.fire()
         }
         object : ViewController {
