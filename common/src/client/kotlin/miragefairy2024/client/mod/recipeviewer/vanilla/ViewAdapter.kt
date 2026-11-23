@@ -94,8 +94,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
             override val origin = host.getUiOffset()
             override val canPlaceMenuSlots = host.canPlaceMenuSlots()
             override val onBeforeRender = this@ViewAdapter.onBeforeRender
-            override fun addRenderableWidget(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow) = host.addRenderableWidget(widget)
-            override fun addRenderableOnly(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow) = host.addRenderableOnly(widget)
+            override fun addRenderable(registration: WidgetRegistration) = if (registration.interactive) host.addRenderableWidget(registration.widget) else host.addRenderableOnly(registration.widget)
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = host.registerMenuSlotPlacement(slotId, clipBounds)
         }
         viewController = rootView.attachTo(host.getUiOffset()) { view, bounds ->

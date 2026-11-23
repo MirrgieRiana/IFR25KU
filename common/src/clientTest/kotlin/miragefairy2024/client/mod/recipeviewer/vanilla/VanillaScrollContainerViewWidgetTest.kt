@@ -137,7 +137,7 @@ class VanillaScrollContainerViewWidgetTest {
                             return false
                         }
                     }
-                    val remover = childContext.addRenderableWidget(child, WidgetRenderOverflow.Unbounded)
+                    val remover = childContext.addRenderable(WidgetRegistration(child, true, WidgetRenderOverflow.Unbounded))
                     object : ViewController {
                         override fun setOffset(offset: IntPoint) = child.setPosition(offset.x, offset.y)
                         override fun detach() = remover.remove()
@@ -226,7 +226,7 @@ class VanillaScrollContainerViewWidgetTest {
                     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
                 }
                 children += child
-                val remover = childContext.addRenderableWidget(child, WidgetRenderOverflow.Unbounded)
+                val remover = childContext.addRenderable(WidgetRegistration(child, true, WidgetRenderOverflow.Unbounded))
                 object : ViewController {
                     override fun setOffset(offset: IntPoint) = child.setPosition(offset.x, offset.y)
                     override fun detach() = remover.remove()

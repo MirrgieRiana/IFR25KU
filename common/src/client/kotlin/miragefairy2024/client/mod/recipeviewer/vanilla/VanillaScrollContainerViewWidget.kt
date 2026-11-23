@@ -27,7 +27,6 @@ import mirrg.kotlin.helium.min
 import net.minecraft.client.gui.ComponentPath
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractContainerWidget
-import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.narration.NarratableEntry
 import net.minecraft.client.gui.narration.NarratedElementType
@@ -52,13 +51,11 @@ abstract class VanillaScrollContainerViewWidget(
 
     // Widget の登録なのだ～🌱
 
-    private class WidgetRegistration(val widget: AbstractWidget, val interactive: Boolean, val renderOverflow: WidgetRenderOverflow)
-
     // mutableSetOf が返す Set の登録順を、描画順と入力順に利用するのだ～🌱
     private val widgetRegistrations = mutableSetOf<WidgetRegistration>()
 
-    private fun register(widget: AbstractWidget, interactive: Boolean, renderOverflow: WidgetRenderOverflow): Remover {
-        val widgetRegistration = WidgetRegistration(widget, interactive, renderOverflow)
+    private fun register(widgetRegistration: WidgetRegistration): Remover {
+        val widget = widgetRegistration.widget
         widgetRegistrations += widgetRegistration
         return Remover {
 
@@ -422,8 +419,7 @@ abstract class VanillaScrollContainerViewWidget(
             override val origin = context.origin
             override val canPlaceMenuSlots = context.canPlaceMenuSlots
             override val onBeforeRender = context.onBeforeRender
-            override fun addRenderableWidget(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow) = register(widget, true, renderOverflow)
-            override fun addRenderableOnly(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow) = register(widget, false, renderOverflow)
+            override fun addRenderable(registration: WidgetRegistration) = register(registration)
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover {
                 return context.registerMenuSlotPlacement(slotId) {
                     val viewportBounds = IntRectangle(x, y, width, height)

@@ -23,6 +23,8 @@ sealed interface WidgetRenderOverflow {
     data object Unbounded : WidgetRenderOverflow
 }
 
+class WidgetRegistration(val widget: AbstractWidget, val interactive: Boolean, val renderOverflow: WidgetRenderOverflow)
+
 interface VanillaViewPlacerContext {
     /** バニラの GUI が座標の原点として使う点の、画面の左上からの絶対座標なのだ～🌱 */
     val origin: IntPoint
@@ -30,8 +32,7 @@ interface VanillaViewPlacerContext {
     val canPlaceMenuSlots: Boolean
     val onBeforeRender: EventRegistry<() -> Unit>
 
-    fun addRenderableWidget(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow): Remover
-    fun addRenderableOnly(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow): Remover
+    fun addRenderable(registration: WidgetRegistration): Remover
     fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover
 }
 
