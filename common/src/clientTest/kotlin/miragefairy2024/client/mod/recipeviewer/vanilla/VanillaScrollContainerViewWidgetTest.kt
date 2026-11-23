@@ -1,5 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import com.mojang.blaze3d.systems.RenderSystem
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
@@ -203,6 +204,17 @@ class VanillaScrollContainerViewWidgetTest {
                 view.scrollOffsetY.value = 5.0
                 widget.render(environment.graphics, 10, 20, 0.0F)
                 Assertions.assertEquals(listOf(0, 1, 2), renderedChildren)
+
+                renderedChildren.clear()
+                environment.renderSystem.clearInvocations()
+                listOf(IntPoint(0, 20), IntPoint(20, 0)).forEach { size ->
+                    widget.setSize(size.x, size.y)
+                    widget.render(environment.graphics, 10, 20, 0.0F)
+                }
+                Assertions.assertTrue(renderedChildren.isEmpty())
+                environment.renderSystem.verify({
+                    RenderSystem.enableScissor(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt())
+                }, Mockito.never())
             } finally {
                 widget.dispose()
                 widget.detach()
