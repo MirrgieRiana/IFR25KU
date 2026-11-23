@@ -6,7 +6,6 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.clientProxy
 import miragefairy2024.mod.common.KeyMappingType
 import miragefairy2024.mod.common.SlotType
-import miragefairy2024.mod.recipeviewer.vanilla.ScreenContent
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
@@ -46,7 +45,7 @@ fun openTooltipViewerScreen() {
         val definition = MessageViewScreenDefinition(text { TOOLTIP_VIEWER_KEY_TRANSLATION() }) {
             val player = proxy.getClientPlayer()
             val itemStacks = if (player != null) (0 until 9).map { player.inventory[it] } else emptyList()
-            TooltipViewerScreenContent(itemStacks, proxy::getItemTooltip)
+            TooltipViewerScreenContent(itemStacks, proxy::getItemTooltip).view
         }.also {
             it.additionalCloseKey = KeyMappingType.OPEN_TOOLTIP_VIEWER
             it.closeOnOutsideClick = false
@@ -56,9 +55,9 @@ fun openTooltipViewerScreen() {
     openScreen(clientProxy!!)
 }
 
-class TooltipViewerScreenContent(itemStacks: List<ItemStack>, tooltipProvider: (ItemStack) -> List<Component>) : ScreenContent {
+class TooltipViewerScreenContent(itemStacks: List<ItemStack>, tooltipProvider: (ItemStack) -> List<Component>) {
 
-    override val view = View {
+    val view = View {
 
         fun createContentView(filter: String): View {
             return View {

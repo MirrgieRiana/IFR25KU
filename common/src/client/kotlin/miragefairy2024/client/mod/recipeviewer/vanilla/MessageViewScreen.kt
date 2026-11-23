@@ -7,7 +7,7 @@ import net.minecraft.client.gui.screens.Screen
 
 class MessageViewScreen(private val parent: Screen?, private val definition: MessageViewScreenDefinition) : ViewScreen(definition.title) {
 
-    override fun createScreenContent() = definition.screenContentFactory()
+    override fun createRootView() = definition.rootViewFactory()
 
     override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         if (definition.transparentBackground) {

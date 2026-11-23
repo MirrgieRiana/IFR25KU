@@ -4,7 +4,6 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.magicplant.contents.getTraitPower
-import miragefairy2024.mod.recipeviewer.vanilla.ScreenContent
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
@@ -90,8 +89,14 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
     override fun stillValid(player: Player) = true
     override fun quickMoveStack(player: Player, slot: Int): ItemStack = slots[slot].item
 
-    override fun createScreenContent(title: Component, playerInventoryTitle: Component): ScreenContent {
-        val level: Level = playerInventory.player.level()
+    override fun createView(title: Component, playerInventoryTitle: Component): View = TraitListScreenContent(this, title, playerInventoryTitle).view
+
+}
+
+private class TraitListScreenContent(menu: TraitListScreenHandler, title: Component, playerInventoryTitle: Component) {
+
+    val view = run {
+        val level: Level = menu.playerInventory.player.level()
 
         fun createTraitCardView(traitStack: TraitStack): View {
             return View {
@@ -100,7 +105,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                     view.sizingY = Sizing.FILL
 
                     val trait = traitStack.trait
-                    val context = TraitConditionContext(level, blockPos, level.getMagicPlantBlockEntity(blockPos))
+                    val context = TraitConditionContext(level, menu.blockPos, level.getMagicPlantBlockEntity(menu.blockPos))
                     val conditionFactors = trait.conditions.map { it.getFactor(context) }
                     val totalConditionFactor = conditionFactors.fold(1.0) { a, b -> a * b }
 
@@ -188,7 +193,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
             }
         }
 
-        val rootView = View {
+        View {
             // 外枠
             view += StackView().configure {
                 view += NinePatchImageView("textures/gui/" * MirageFairy2024.identifier("panel") * ".png", 16, 16, 5, 5, 5, 5, 5, 5, false, false)
@@ -196,7 +201,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                 view += YListView().configure {
                     view.sizingX = Sizing.FILL
 
-                    val traitStackList = traitStacks.traitStackList
+                    val traitStackList = menu.traitStacks.traitStackList
 
                     val cardContent = DynamicView(if (traitStackList.isNotEmpty()) createTraitCardView(traitStackList.first()) else EmptyView())
 
@@ -237,7 +242,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                                 view += YListView().configure {
                                     view.sizingX = Sizing.FILL
 
-                                    val context = TraitConditionContext(level, blockPos, level.getMagicPlantBlockEntity(blockPos))
+                                    val context = TraitConditionContext(level, menu.blockPos, level.getMagicPlantBlockEntity(menu.blockPos))
 
                                     traitStackList.forEach { traitStack ->
                                         val trait = traitStack.trait
@@ -277,7 +282,6 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                 }.fixedContentSizeX(18 * 9).margin(7)
             }
         }
-        return ScreenContent(rootView)
     }
 
 }

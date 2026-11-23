@@ -7,7 +7,6 @@ import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.magicplant.MagicPlantSeedItem
 import miragefairy2024.mod.magicplant.contents.magicplants.MirageFlowerCard
 import miragefairy2024.mod.materials.MaterialCard
-import miragefairy2024.mod.recipeviewer.vanilla.ScreenContent
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.Sizing
@@ -435,8 +434,14 @@ open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenH
     override fun quickMoveStack(player: Player, slot: Int) = EMPTY_ITEM_STACK
     open val card: BagCard? = null
 
-    override fun createScreenContent(title: Component, playerInventoryTitle: Component): ScreenContent {
-        val card = card ?: return ScreenContent(EmptyView())
+    override fun createView(title: Component, playerInventoryTitle: Component): View = BagScreenContent(this, title, playerInventoryTitle).view
+
+}
+
+private class BagScreenContent(menu: BagScreenHandler, title: Component, playerInventoryTitle: Component) {
+
+    val view = run {
+        val card = menu.card ?: return@run EmptyView()
 
         /** インベントリの名前なのだ～🌱 */
         fun inventoryNameView(name: Component) = MultiLineTextView().also {
@@ -452,13 +457,13 @@ open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenH
 
                 view += SpaceView().configure { position.weight = 1.0 }
                 repeat(count) { c ->
-                    view += menuSlotView(slots[slotIndexFunction(c)], SlotType.NORMAL)
+                    view += menuSlotView(menu.slots[slotIndexFunction(c)], SlotType.NORMAL)
                 }
                 view += SpaceView().configure { position.weight = 1.0 }
             }
         }
 
-        val rootView = View {
+        View {
             view += StackView().configure { // 外枠なのだ～🌱
                 view += NinePatchImageView(PANEL_TEXTURE, 16, 16, 5, 5, 5, 5, 5, 5, false, false)
                 view += YListView().configure { // 内枠なのだ～🌱
@@ -497,7 +502,6 @@ open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenH
                 }.margin(PANEL_MARGIN)
             }
         }
-        return ScreenContent(rootView)
     }
 
 }

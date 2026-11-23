@@ -3,7 +3,6 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 import miragefairy2024.MessageViewScreenDefinition
 import miragefairy2024.client.mod.getKeyMapping
 import miragefairy2024.mod.common.KeyMappingType
-import miragefairy2024.mod.recipeviewer.vanilla.ScreenContent
 import miragefairy2024.mod.recipeviewer.views.EmptyView
 import miragefairy2024.util.empty
 import miragefairy2024.util.text
@@ -36,7 +35,7 @@ class MessageViewScreenTest {
             var creations = 0
             val definition = MessageViewScreenDefinition(text { empty() }) {
                 creations++
-                ScreenContent(EmptyView())
+                EmptyView()
             }
             definition.closeOnOutsideClick = false
             val screen = MessageViewScreen(parent, definition)
@@ -63,7 +62,7 @@ class MessageViewScreenTest {
                 val parent: Screen = Mockito.mock(Screen::class.java)
                 val additionalCloseKey: KeyMapping = Mockito.mock(KeyMapping::class.java)
                 Mockito.`when`(additionalCloseKey.matches(70, 10)).thenReturn(true)
-                val definition = MessageViewScreenDefinition(text { empty() }) { ScreenContent(EmptyView()) }
+                val definition = MessageViewScreenDefinition(text { empty() }) { EmptyView() }
                 definition.closeOnInventoryKey = false
                 keyMappings.`when`<KeyMapping> { getKeyMapping(KeyMappingType.OPEN_TOOLTIP_VIEWER) }.thenReturn(additionalCloseKey)
                 val screen: MessageViewScreen = Mockito.spy(MessageViewScreen(parent, definition))
@@ -108,7 +107,7 @@ class MessageViewScreenTest {
         Mockito.mockStatic(Screen::class.java).use {
             val minecraft = createMinecraft()
             val parent: Screen = Mockito.mock(Screen::class.java)
-            val definition = MessageViewScreenDefinition(text { empty() }) { ScreenContent(EmptyView()) }
+            val definition = MessageViewScreenDefinition(text { empty() }) { EmptyView() }
             val screen: MessageViewScreen = Mockito.spy(MessageViewScreen(parent, definition))
             screen.init(minecraft, 200, 200)
             try {
