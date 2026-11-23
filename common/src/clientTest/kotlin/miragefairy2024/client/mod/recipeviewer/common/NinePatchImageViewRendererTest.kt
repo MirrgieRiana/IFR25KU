@@ -1,11 +1,11 @@
 package miragefairy2024.client.mod.recipeviewer.common
 
+import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
+import miragefairy2024.mod.recipeviewer.views.createView
 import mirrg.kotlin.helium.Slot
 import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.resources.ResourceLocation
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -19,8 +19,8 @@ class NinePatchImageViewRendererTest {
     private val stretchedY = intArrayOf(0, 1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 5, 6)
 
     private fun check(repeatX: Boolean, repeatY: Boolean, expectedX: IntArray, expectedY: IntArray) {
-        val textureId: ResourceLocation = ResourceLocation.fromNamespaceAndPath("test", "nine_patch")
-        val view = NinePatchImageView(textureId, 9, 7, 2, 3, 4, 1, 4, 2, repeatX, repeatY)
+        val ninePatchTextureCard = NinePatchTextureCard("test/nine_patch", 9, 7, 2, 3, 4, 1, 4, 2, repeatX, repeatY)
+        val view = ninePatchTextureCard.createView()
         val bounds = IntRectangle(10, 20, expectedX.size, expectedY.size)
         val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
 
@@ -30,7 +30,7 @@ class NinePatchImageViewRendererTest {
         Mockito.mockingDetails(graphics).invocations.forEach { invocation ->
             Assertions.assertEquals("blit", invocation.method.name)
             val arguments: Array<Any> = invocation.arguments
-            Assertions.assertEquals(textureId, arguments[0])
+            Assertions.assertEquals(ninePatchTextureCard.texture, arguments[0])
             val x = arguments[1] as Int
             val y = arguments[2] as Int
             val stretched = arguments.size == 11

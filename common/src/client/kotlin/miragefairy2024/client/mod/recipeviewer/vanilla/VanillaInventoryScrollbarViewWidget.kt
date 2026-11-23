@@ -2,9 +2,9 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.math.Axis
-import miragefairy2024.MirageFairy2024
 import miragefairy2024.client.util.drawNinePatchImage
 import miragefairy2024.client.util.stack
+import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.InventoryScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XInventoryScrollbarView
@@ -12,10 +12,6 @@ import miragefairy2024.mod.recipeviewer.views.YInventoryScrollbarView
 import net.minecraft.client.gui.GuiGraphics
 import org.lwjgl.glfw.GLFW
 import kotlin.math.roundToInt
-
-private val BACKGROUND_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_background.png")
-private val SCROLLER_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_scroller.png")
-private val DISABLED_SCROLLER_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_scroller_disabled.png")
 
 abstract class VanillaInventoryScrollbarViewWidget(view: InventoryScrollbarView, bounds: IntRectangle) : VanillaScrollbarViewWidget<InventoryScrollbarView>(view, bounds) {
 
@@ -26,29 +22,17 @@ abstract class VanillaInventoryScrollbarViewWidget(view: InventoryScrollbarView,
         val length = evaluateThumbLength()
 
         // 背景の描画
-        guiGraphics.drawNinePatchImage(
-            IntRectangle(x, y, scrollbarThickness, scrollbarLength),
-            BACKGROUND_TEXTURE,
-            16, 1, 13, 1,
-            16, 1, 13, 1,
-            false, false,
-        )
+        guiGraphics.drawNinePatchImage(IntRectangle(x, y, scrollbarThickness, scrollbarLength), NinePatchTextureCard.INVENTORY_SCROLLBAR_BACKGROUND)
 
         // つまみの描画
-        val texture = if (scrollable) SCROLLER_TEXTURE else DISABLED_SCROLLER_TEXTURE
+        val ninePatchTextureCard = if (scrollable) NinePatchTextureCard.INVENTORY_SCROLLBAR_SCROLLER else NinePatchTextureCard.INVENTORY_SCROLLBAR_SCROLLER_DISABLED
         val thumbX = x + 1
         val thumbY = y + start + 1
         val thumbWidth = scrollbarThickness - 2
         val thumbHeight = length - 2
         // 狭すぎる場合はつまみを描画しないのだ～🌱
         if (thumbWidth >= 4 && thumbHeight >= 4) {
-            guiGraphics.drawNinePatchImage(
-                IntRectangle(thumbX, thumbY, thumbWidth, thumbHeight),
-                texture,
-                16, 2, 11, 2,
-                16, 2, 11, 2,
-                false, true,
-            )
+            guiGraphics.drawNinePatchImage(IntRectangle(thumbX, thumbY, thumbWidth, thumbHeight), ninePatchTextureCard)
         }
 
     }
