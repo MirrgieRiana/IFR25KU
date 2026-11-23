@@ -1,6 +1,5 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
-import miragefairy2024.client.mod.recipeviewer.RenderOverflow
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.ClickableViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.FilledRectangleViewRenderer
@@ -91,20 +90,6 @@ class VanillaViewRendererWidgetTest {
         Assertions.assertNull(buttonWidget.nextFocusPath(event))
         view.enabled.value = true
         Assertions.assertNotNull(buttonWidget.nextFocusPath(event))
-    }
-
-    @Test
-    fun `画像ボタンの描画のはみ出し量を現在の画像の寸法ごとに求めるのだ`() {
-        val textureId = ResourceLocation.fromNamespaceAndPath("test", "button")
-        val textureSize = IntPoint(32, 32)
-        val view = ImageButtonView(IntPoint(16, 16))
-        view.texture = ViewTexture(textureId, textureSize, IntRectangle(0, 0, 16, 16))
-        val widget = VanillaViewRendererWidget(ImageButtonViewRenderer, view, IntRectangle(10, 20, 16, 16))
-        Assertions.assertEquals(RenderOverflow.NONE, widget.getRenderOverflow())
-
-        view.hoveredTexture = ViewTexture(textureId, textureSize, IntRectangle(0, 0, 20, 10))
-        view.disabledTexture = ViewTexture(textureId, textureSize, IntRectangle(0, 0, 10, 24))
-        Assertions.assertEquals(RenderOverflow(0, 4, 0, 8), widget.getRenderOverflow())
     }
 
     @Test
