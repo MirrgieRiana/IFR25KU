@@ -112,7 +112,6 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     /** ホストの tick を配置済みの View へ通知するのだ～🌱 */
     fun tick() {
-        if (!isInitialized) return
         onTick.fire()
     }
 
