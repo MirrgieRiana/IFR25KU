@@ -9,7 +9,6 @@ open class EventRegistry<L> {
 
     open fun add(listener: L): Boolean = listeners.add(listener)
     open fun remove(listener: L): Boolean = listeners.remove(listener)
-    operator fun contains(listener: L): Boolean = listener in listeners
     fun toList(): List<L> = listeners.toList()
 }
 
@@ -24,10 +23,9 @@ fun <L> EventRegistry<L>.observe(onClosed: EventRegistry<() -> Unit>, listener: 
     this.register(listener).removeOn(onClosed)
 }
 
-/** 発火時の登録順に、呼び出す時点でも登録されているリスナーへ通知するのだ～🌱 */
 inline fun <L> EventRegistry<L>.fire(invoker: (L) -> Unit) {
-    this.toList().forEach {
-        if (it in this) invoker(it)
+    toList().forEach {
+        invoker(it)
     }
 }
 

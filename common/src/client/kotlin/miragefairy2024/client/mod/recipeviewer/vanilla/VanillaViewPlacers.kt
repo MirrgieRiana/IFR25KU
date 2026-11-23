@@ -132,11 +132,18 @@ fun initVanillaViewPlacers() {
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TickView, _ ->
-        val remover = context.onTick.register { view.onTick.fire() }
+        var disposed = false
+        val remover = context.onTick.register {
+            // 同じ tick 中に購読を解除しても、発火時に作った購読一覧のコピーには残るのだ～🌱
+            if (!disposed) view.onTick.fire()
+        }
         object : ViewController {
             override fun setOffset(offset: IntPoint) = Unit
             override fun detach() = Unit
-            override fun dispose() = remover.remove()
+            override fun dispose() {
+                disposed = true
+                remover.remove()
+            }
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextButtonView, bounds ->
