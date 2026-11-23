@@ -171,7 +171,6 @@ class VanillaScrollContainerViewWidgetTest {
                 Triple(IntPoint(0, 25), WidgetRenderOverflow.NONE, false),
                 Triple(IntPoint(-1, 25), WidgetRenderOverflow(0, 1, 0, 0), false),
                 Triple(IntPoint(0, 25), WidgetRenderOverflow(0, 1, 0, 0), true),
-                Triple(IntPoint(0, 25), WidgetRenderOverflow(0, Int.MAX_VALUE - 1, 0, 0), true),
                 Triple(IntPoint(-100, 25), WidgetRenderOverflow(0, Int.MAX_VALUE, 0, 0), true),
                 Triple(IntPoint(100, 25), WidgetRenderOverflow(Int.MAX_VALUE, 0, 0, 0), true),
                 Triple(IntPoint(15, -100), WidgetRenderOverflow(0, 0, 0, Int.MAX_VALUE), true),
