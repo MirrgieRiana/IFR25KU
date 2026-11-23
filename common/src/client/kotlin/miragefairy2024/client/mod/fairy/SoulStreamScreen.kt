@@ -5,8 +5,6 @@ import com.mojang.blaze3d.systems.RenderSystem
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.RenderingEvent
-import miragefairy2024.client.mod.recipeviewer.ViewRenderer
-import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
 import miragefairy2024.client.mod.recipeviewer.vanilla.ViewContainerScreen
 import miragefairy2024.client.util.KeyMappingCard
 import miragefairy2024.client.util.WidgetSprites
@@ -17,18 +15,15 @@ import miragefairy2024.mod.fairy.FairyItem
 import miragefairy2024.mod.fairy.OPEN_SOUL_STREAM_KEY_TRANSLATION
 import miragefairy2024.mod.fairy.OpenSoulStreamChannel
 import miragefairy2024.mod.fairy.SetCollectionEnabledChannel
-import miragefairy2024.mod.fairy.SoulStreamFilterView
 import miragefairy2024.mod.fairy.SoulStreamScreenHandler
 import miragefairy2024.mod.fairy.getFairyMotif
 import miragefairy2024.mod.fairy.soulStreamScreenHandlerType
 import miragefairy2024.mod.passiveskill.PassiveSkillEffectFilter
-import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
 import miragefairy2024.util.register
 import miragefairy2024.util.text
-import mirrg.kotlin.helium.Slot
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
 import net.fabricmc.fabric.api.client.screen.v1.Screens
@@ -39,7 +34,6 @@ import net.minecraft.client.gui.components.ImageButton
 import net.minecraft.client.gui.components.Tooltip
 import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.client.gui.screens.inventory.InventoryScreen
-import net.minecraft.client.renderer.RenderType
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.player.Inventory
@@ -64,8 +58,6 @@ private val FILTER_OVERLAY_TEXTURE = MirageFairy2024.identifier("textures/gui/sp
 
 context(_: ModContext)
 fun initSoulStreamClientModule() {
-
-    ViewRendererRegistry.register(SoulStreamFilterView::class.java, SoulStreamFilterViewRenderer)
 
     soulStreamScreenHandlerType.registerHandledScreen(::SoulStreamScreen)
 
@@ -183,23 +175,6 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
             return true
         }
         return super.keyPressed(keyCode, scanCode, modifiers)
-    }
-
-}
-
-private object SoulStreamFilterViewRenderer : ViewRenderer<SoulStreamFilterView, Unit> {
-
-    override fun createState(view: SoulStreamFilterView) = Unit
-
-    override fun isFocusable(view: SoulStreamFilterView, state: Slot<Unit>) = true
-
-    override fun mouseClicked(view: SoulStreamFilterView, state: Slot<Unit>, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int): Boolean {
-        view.onClick()
-        return true
-    }
-
-    override fun render(view: SoulStreamFilterView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
-        if (isHovered) graphics.fill(RenderType.guiOverlay(), bounds.x, bounds.y, bounds.x + bounds.sizeX, bounds.y + bounds.sizeY, 0x80FFFFFF.toInt())
     }
 
 }

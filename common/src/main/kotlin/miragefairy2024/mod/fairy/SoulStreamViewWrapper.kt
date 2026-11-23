@@ -13,14 +13,8 @@ import miragefairy2024.mod.passiveskill.passiveSkillEffectRegistry
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
-import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
-import miragefairy2024.mod.recipeviewer.view.ViewController
-import miragefairy2024.mod.recipeviewer.view.ViewPlacer
-import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
-import miragefairy2024.mod.recipeviewer.view.plus
-import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.mod.recipeviewer.views.AlignView
 import miragefairy2024.mod.recipeviewer.views.DynamicView
 import miragefairy2024.mod.recipeviewer.views.FilledRectangleView
@@ -29,7 +23,6 @@ import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
 import miragefairy2024.mod.recipeviewer.views.View
-import miragefairy2024.mod.recipeviewer.views.WrapperView
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
@@ -41,6 +34,7 @@ import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.menuSlotView
+import miragefairy2024.mod.recipeviewer.views.onClick
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.mod.recipeviewer.views.tooltip
 import miragefairy2024.util.EventRegistry
@@ -214,10 +208,9 @@ class SoulStreamViewWrapper(
                             .mapNotNull { if (it.effect == effect) effect.castOrNull(it.valueProvider(10.0)) else null }
                         effect.getFilters(samples).sortedBy { it.identifier }.forEach { filter ->
                             var label = filter.text
-                            view += SoulStreamFilterView {
-                                val filters = enabledPassiveSkillEffectFilters.value
-                                enabledPassiveSkillEffectFilters.value = if (filter.identifier in filters) filters - filter.identifier else filters + (filter.identifier to filter)
-                            }.configure {
+                            view += AlignView().configure {
+                                view.sizingY = Sizing.WRAP
+
                                 view += TextView().configure {
                                     view.shadow = false
                                     val text = view.text
@@ -226,6 +219,10 @@ class SoulStreamViewWrapper(
                                         text.value = label.visualOrderText
                                     }
                                 }.tooltip { _, _ -> listOf(label) }
+                            }.onClick {
+                                val filters = enabledPassiveSkillEffectFilters.value
+                                enabledPassiveSkillEffectFilters.value = if (filter.identifier in filters) filters - filter.identifier else filters + (filter.identifier to filter)
+                                true
                             }
                         }
                     }
@@ -415,16 +412,6 @@ class SoulStreamViewWrapper(
             fun <T : Any> getTexts(effect: PassiveSkillEffect<T>) = effect.getTexts(result[effect]).map { it.gold }
             getTexts(effect)
         }
-    }
-
-}
-
-class SoulStreamFilterView(val onClick: () -> Unit) : WrapperView(), PlaceableView {
-
-    override val sizingX = Sizing.FILL
-
-    override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
-        return super.attachTo(offset, viewPlacer) + viewPlacer.place(this, offset.sized(evaluateActualSize()))
     }
 
 }
