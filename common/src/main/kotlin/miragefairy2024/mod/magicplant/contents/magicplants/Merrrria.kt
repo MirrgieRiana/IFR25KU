@@ -110,7 +110,7 @@ object MerrrriaCard : SimpleMagicPlantCard<MerrrriaBlock>() {
         type = AdvancementCardType.NORMAL,
     )
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
         Feature.FLOWER.generator(blockIdentifier) {

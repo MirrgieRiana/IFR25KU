@@ -10,19 +10,20 @@ import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
+import mirrg.kotlin.helium.atLeast
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.inventory.Slot
 
 /**
  * メニューのスロットを置くViewなのだ～🌱
- * 中身の描画と操作はバニラの画面に委ね、[net.minecraft.world.inventory.Slot] の座標と表示・入力領域を設定するのだ～🌱
+ * この View は [net.minecraft.world.inventory.Slot] の配置を管理し、中身の描画と操作はバニラの画面が行うのだ～🌱
  */
 class MenuSlotView(val slot: Slot) : AbstractView(), PlaceableView {
     var margin = IntPoint(1, 1)
     override val sizingX = Sizing.WRAP
     override val sizingY = Sizing.WRAP
-    override fun evaluateContentSizeXImpl() = margin.x + 16 + margin.x
-    override fun evaluateContentSizeYImpl() = margin.y + 16 + margin.y
+    override fun evaluateContentSizeXImpl() = margin.x + 16 + margin.x atLeast 0
+    override fun evaluateContentSizeYImpl() = margin.y + 16 + margin.y atLeast 0
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = viewPlacer.place(this, offset.sized(evaluateActualSize()))
 }
 

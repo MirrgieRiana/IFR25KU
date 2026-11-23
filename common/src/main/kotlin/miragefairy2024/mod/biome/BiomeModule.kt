@@ -36,14 +36,14 @@ import kotlin.math.sqrt
 
 val OVERWORLD_BIOME_OVERRIDES = mutableMapOf<ResourceKey<Biome>, ResourceKey<Biome>>()
 
-context(ModContext, BiomeCard)
+context(_: ModContext, card: BiomeCard)
 fun registerOverworldBiomeOverride(biome: ResourceKey<Biome>) {
-    OVERWORLD_BIOME_OVERRIDES[biome] = key
+    OVERWORLD_BIOME_OVERRIDES[biome] = card.key
 }
 
 val OVERWORLD_SURFACE_RULES_CREATORS = mutableListOf<() -> SurfaceRules.RuleSource>()
 
-context(ModContext)
+context(_: ModContext)
 fun registerOverworldSurfaceRules(surfaceRuleCreator: () -> SurfaceRules.RuleSource) {
     OVERWORLD_SURFACE_RULES_CREATORS += surfaceRuleCreator
 }
@@ -52,7 +52,7 @@ val FAIRY_BIOME_TAG = MirageFairy2024.identifier("fairy").toBiomeTag()
 val RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG = MirageFairy2024.identifier("retrospective_city_building").toBlockTag()
 val RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG = MirageFairy2024.identifier("retrospective_city_floor").toBlockTag()
 
-context(ModContext)
+context(_: ModContext)
 fun initBiomeModule() {
 
     // 地上世界用の共通RegionをTerraBlenderに登録

@@ -21,14 +21,14 @@ import miragefairy2024.mod.machine.TexturedArrowView
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
-import mirrg.kotlin.helium.atMost
+import mirrg.kotlin.helium.Slot
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.Rect2i
 import net.minecraft.resources.ResourceLocation
 import java.util.Optional
 import kotlin.math.roundToInt
 
-context(ModContext)
+context(_: ModContext)
 fun initMachineClientModule() {
     FermentationBarrelCard.screenHandlerType.registerHandledScreen { gui, inventory, title -> FermentationBarrelScreen(FermentationBarrelCard, MachineScreen.Arguments(gui, inventory, title)) }
     AuraReflectorFurnaceCard.screenHandlerType.registerHandledScreen { gui, inventory, title -> AuraReflectorFurnaceScreen(AuraReflectorFurnaceCard, MachineScreen.Arguments(gui, inventory, title)) }
@@ -43,9 +43,10 @@ fun initMachineClientModule() {
     ViewRendererRegistry.register(TexturedArrowView::class.java, TexturedArrowViewRenderer)
 }
 
-object FuelViewRenderer : ViewRenderer<FuelView> {
+object FuelViewRenderer : ViewRenderer<FuelView, Unit> {
     val TEXTURE = MirageFairy2024.identifier("textures/gui/sprites/fuel.png")
-    override fun render(view: FuelView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun createState(view: FuelView) = Unit
+    override fun render(view: FuelView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val fuelMax = 20 * 10
         val fuel = fuelMax - (System.currentTimeMillis() / 50) % fuelMax - 1
         val fuelRate = fuel.toDouble() / fuelMax.toDouble()
@@ -75,9 +76,10 @@ object FuelViewRenderer : ViewRenderer<FuelView> {
     }
 }
 
-object BlueFuelViewRenderer : ViewRenderer<BlueFuelView> {
+object BlueFuelViewRenderer : ViewRenderer<BlueFuelView, Unit> {
     val TEXTURE = MirageFairy2024.identifier("textures/gui/sprites/blue_fuel.png")
-    override fun render(view: BlueFuelView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun createState(view: BlueFuelView) = Unit
+    override fun render(view: BlueFuelView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val fuelMax = 20 * 10
         val fuel = fuelMax - (System.currentTimeMillis() / 50) % fuelMax - 1
         val fuelRate = fuel.toDouble() / fuelMax.toDouble()
@@ -107,8 +109,9 @@ object BlueFuelViewRenderer : ViewRenderer<BlueFuelView> {
     }
 }
 
-object TexturedArrowViewRenderer : ViewRenderer<TexturedArrowView> {
-    override fun render(view: TexturedArrowView, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+object TexturedArrowViewRenderer : ViewRenderer<TexturedArrowView, Unit> {
+    override fun createState(view: TexturedArrowView) = Unit
+    override fun render(view: TexturedArrowView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val rate = view.durationMilliSeconds?.let {
             (System.nanoTime() / 1_000_000 % it.toLong()).toDouble() / it.toDouble()
         } ?: 1.0
@@ -157,7 +160,7 @@ abstract class SimpleMachineScreen<H : SimpleMachineScreenHandler>(card: SimpleM
         super.renderBg(context, delta, mouseX, mouseY)
 
         if (menu.progressMax > 0) {
-            val w = (arrowBound.width.toDouble() * (menu.progress.toDouble() / menu.progressMax.toDouble() atMost 1.0)).roundToInt()
+            val w = (arrowBound.width.toDouble() * (menu.progress.toDouble() / menu.progressMax.toDouble()).coerceIn(0.0, 1.0)).roundToInt()
             context.blit(
                 arrowTexture,
                 leftPos + arrowBound.x,
@@ -202,7 +205,7 @@ class AuraReflectorFurnaceScreen(card: AuraReflectorFurnaceCard, arguments: Argu
         super.renderBg(context, delta, mouseX, mouseY)
 
         if (menu.fuelMax > 0) {
-            val h = (fuelBound.height.toDouble() * (menu.fuel.toDouble() / menu.fuelMax.toDouble() atMost 1.0)).roundToInt()
+            val h = (fuelBound.height.toDouble() * (menu.fuel.toDouble() / menu.fuelMax.toDouble()).coerceIn(0.0, 1.0)).roundToInt()
             context.blit(
                 BlueFuelViewRenderer.TEXTURE,
                 leftPos + fuelBound.x - 1,
@@ -227,7 +230,7 @@ class AthanorScreen(card: AthanorCard, arguments: Arguments<AthanorScreenHandler
         super.renderBg(context, delta, mouseX, mouseY)
 
         if (menu.fuelMax > 0) {
-            val h = (fuelBound.height.toDouble() * (menu.fuel.toDouble() / menu.fuelMax.toDouble() atMost 1.0)).roundToInt()
+            val h = (fuelBound.height.toDouble() * (menu.fuel.toDouble() / menu.fuelMax.toDouble()).coerceIn(0.0, 1.0)).roundToInt()
             context.blit(
                 FuelViewRenderer.TEXTURE,
                 leftPos + fuelBound.x - 1,

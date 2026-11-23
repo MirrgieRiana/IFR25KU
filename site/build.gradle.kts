@@ -22,7 +22,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.microsoft.playwright:playwright:1.58.0")
+        classpath("com.microsoft.playwright:playwright:1.64.0")
         classpath("org.sejda.imageio:webp-imageio:0.1.6")
     }
 }

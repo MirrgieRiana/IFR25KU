@@ -8,7 +8,10 @@ import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
 import net.minecraft.resources.ResourceLocation
 
-/** @param repeat 辺と中央を、true なら反復描画し、false なら伸長描画するのだ～🌱 */
+/**
+ * @param repeatX 上下の辺と中央を、true なら X 軸方向に反復描画し、false なら伸長描画するのだ～🌱
+ * @param repeatY 左右の辺と中央を、true なら Y 軸方向に反復描画し、false なら伸長描画するのだ～🌱
+ */
 class NinePatchImageView(
     val textureId: ResourceLocation,
     val textureWidth: Int,
@@ -19,7 +22,8 @@ class NinePatchImageView(
     val yStartSize: Int,
     val yMiddleSize: Int,
     val yEndSize: Int,
-    val repeat: Boolean,
+    val repeatX: Boolean,
+    val repeatY: Boolean,
 ) : AbstractView(), PlaceableView {
     override var sizingX = Sizing.FILL
     override var sizingY = Sizing.FILL

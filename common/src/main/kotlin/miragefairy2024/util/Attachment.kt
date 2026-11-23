@@ -47,7 +47,7 @@ fun <T> AttachmentDelegate<T>.sync() {
 }
 
 
-context(ModContext)
+context(_: ModContext)
 fun AttachmentType<*>.register() {
     // AttachmentTypeはインスタンス化した時点で登録成立
 

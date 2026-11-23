@@ -20,8 +20,7 @@ import miragefairy2024.mod.recipeviewer.views.OutputSlotView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.configure
-import miragefairy2024.mod.recipeviewer.views.maxContentSizeX
-import miragefairy2024.mod.recipeviewer.views.minContentSizeX
+import miragefairy2024.mod.recipeviewer.views.fixedContentSizeX
 import miragefairy2024.mod.recipeviewer.views.noBackground
 import miragefairy2024.mod.recipeviewer.views.noMargin
 import miragefairy2024.mod.recipeviewer.views.plusAssign
@@ -71,7 +70,7 @@ object AthanorRecipeViewerCategoryCard : SimpleMachineRecipeViewerCategoryCard<A
                 view.alignmentX = Alignment.CENTER
                 view.color = ColorPair.DARK_GRAY
                 view.shadow = false
-            }.minContentSizeX(durationTextSizeX).maxContentSizeX(durationTextSizeX)
+            }.fixedContentSizeX(durationTextSizeX)
 
             getOutputs(recipeEntry).forEachIndexed { i, it ->
                 view += OutputSlotView(it).noBackground().noMargin().configure {

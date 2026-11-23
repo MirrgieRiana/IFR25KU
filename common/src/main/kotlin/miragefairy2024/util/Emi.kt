@@ -4,6 +4,7 @@ import dev.emi.emi.api.stack.EmiIngredient
 import dev.emi.emi.api.stack.EmiStack
 import dev.emi.emi.api.widget.Bounds
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import mirrg.kotlin.helium.atLeast
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.Ingredient
 
@@ -15,4 +16,4 @@ fun IngredientStack.toEmiIngredient(): EmiIngredient = EmiIngredient.of(this.ing
 
 
 fun IntRectangle.toEmiBounds() = Bounds(x, y, sizeX, sizeY)
-fun Bounds.toIntRectangle() = IntRectangle(x, y, width, height)
+fun Bounds.toIntRectangle() = IntRectangle(this.x, this.y, this.width atLeast 0, this.height atLeast 0)

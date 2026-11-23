@@ -18,11 +18,20 @@ sourceSets {
     }
     test {
         compileClasspath += sourceSets.main.get().compileClasspath
+
         runtimeClasspath += sourceSets.main.get().runtimeClasspath
     }
     create("clientTest") {
-        compileClasspath += sourceSets.main.get().output + sourceSets.main.get().compileClasspath + sourceSets.named("client").get().output + sourceSets.named("client").get().compileClasspath
-        runtimeClasspath += sourceSets.main.get().output + sourceSets.main.get().runtimeClasspath + sourceSets.named("client").get().output + sourceSets.named("client").get().runtimeClasspath
+        compileClasspath += sourceSets.main.get().output
+        compileClasspath += sourceSets.main.get().compileClasspath
+        compileClasspath += sourceSets.named("client").get().output
+        compileClasspath += sourceSets.named("client").get().compileClasspath
+
+        runtimeClasspath += sourceSets.main.get().output
+        runtimeClasspath += sourceSets.main.get().runtimeClasspath
+        runtimeClasspath += sourceSets.named("client").get().output
+        runtimeClasspath += sourceSets.named("client").get().runtimeClasspath
+        runtimeClasspath += sourceSets.named("client").get().compileClasspath
     }
 }
 
@@ -112,6 +121,9 @@ dependencies {
     modImplementation("com.github.glitchfiend:TerraBlender-fabric:${libs.versions.terraBlenderFabric.get()}")
 
     modCompileOnly("dev.emi:emi-fabric:${libs.versions.emi.get()}:api")
+
+    // テスト専用なのだ～🌱
+    "clientTestImplementation"("org.mockito:mockito-core:${libs.versions.mockito.get()}")
 
 }
 configurations.named("architecturyTransformerClasspath") {

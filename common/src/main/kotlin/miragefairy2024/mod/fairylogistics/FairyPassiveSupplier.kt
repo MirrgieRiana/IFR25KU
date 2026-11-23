@@ -70,7 +70,7 @@ object FairyPassiveSupplierCard : FairyLogisticsCard<FairyPassiveSupplierBlock, 
 
     val FAIRY_SLOT = Slot(80, 19)
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 

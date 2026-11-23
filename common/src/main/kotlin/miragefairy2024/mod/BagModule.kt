@@ -11,6 +11,7 @@ import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
+import miragefairy2024.mod.recipeviewer.views.EmptyView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.SpaceView
@@ -140,7 +141,7 @@ enum class BagCard(
 }
 
 
-context(ModContext)
+context(_: ModContext)
 fun initBagModule() {
     BagCard.BAG_ITEM_TAG.enJa(EnJa("Bag", "カバン"))
 
@@ -434,7 +435,7 @@ open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenH
     open val card: BagCard? = null
 
     override fun createView(title: Component, playerInventoryTitle: Component): View {
-        val card = card ?: return SpaceView()
+        val card = card ?: return EmptyView()
 
         /** インベントリの名前なのだ～🌱 */
         fun inventoryNameView(name: Component) = MultiLineTextView().also {
@@ -458,7 +459,7 @@ open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenH
 
         return View {
             view += StackView().configure { // 外枠なのだ～🌱
-                view += NinePatchImageView(PANEL_TEXTURE, 16, 16, 5, 5, 5, 5, 5, 5, false)
+                view += NinePatchImageView(PANEL_TEXTURE, 16, 16, 5, 5, 5, 5, 5, 5, false, false)
                 view += YListView().configure { // 内枠なのだ～🌱
                     view.sizingX = Sizing.FILL
 

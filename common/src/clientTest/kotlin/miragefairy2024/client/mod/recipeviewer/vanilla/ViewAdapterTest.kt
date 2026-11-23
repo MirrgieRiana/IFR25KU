@@ -3,6 +3,7 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
+import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
@@ -10,21 +11,29 @@ import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.Remover
+import miragefairy2024.util.empty
+import miragefairy2024.util.register
+import miragefairy2024.util.text
+import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.components.AbstractContainerWidget
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
+import net.minecraft.client.gui.components.MultiLineEditBox
 import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.FormattedText
 import net.minecraft.util.FormattedCharSequence
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
 import org.lwjgl.glfw.GLFW
 
 private val ADAPTER_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
@@ -34,7 +43,7 @@ private val ADAPTER_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
     override fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence> = throw UnsupportedOperationException()
 }
 
-private class TestView(val interactive: Boolean) : FixedWidgetView(IntPoint(10, 20))
+private class TestView(val interactive: Boolean, val beforeRender: (() -> Unit)? = null) : FixedWidgetView(IntPoint(10, 20))
 
 private class RecordingWidget(bounds: IntRectangle) : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty()) {
     var onClick: () -> Unit = { }
@@ -56,8 +65,12 @@ private class AdapterFixture(vararg views: TestView) {
     val removers = mutableListOf<Remover>()
     var disposals = 0
     var removals = 0
+    var closes = 0
     val screen: Screen = object : Screen(Component.empty()) {
         override fun children() = interactiveWidgets
+        override fun onClose() {
+            closes += 1
+        }
     }.also {
         it.width = 100
         it.height = 100
@@ -69,13 +82,13 @@ private class AdapterFixture(vararg views: TestView) {
     var onDispose: () -> Unit = { }
     val host: ViewAdapterHost = object : ViewAdapterHost {
         override fun getScreen() = this@AdapterFixture.screen
-        override fun getLeftPos() = 30
-        override fun getTopPos() = 40
-        override fun setImageWidth(imageWidth: Int) {
-            this@AdapterFixture.imageWidth = imageWidth
-        }
-        override fun setImageHeight(imageHeight: Int) {
-            this@AdapterFixture.imageHeight = imageHeight
+        override fun canPlaceMenuSlots() = false
+        override fun getRegionSizeX() = screen.width
+        override fun getRegionSizeY() = screen.height
+        override fun getUiOffset() = IntPoint(30, 40)
+        override fun setUiSize(uiSize: IntPoint) {
+            this@AdapterFixture.imageWidth = uiSize.x
+            this@AdapterFixture.imageHeight = uiSize.y
         }
 
         override fun getRenderingProxy() = ADAPTER_RENDERING_PROXY
@@ -85,6 +98,7 @@ private class AdapterFixture(vararg views: TestView) {
                 widgets += widget
                 val remover = if (view.interactive) context.addRenderableWidget(widget) else context.addRenderableOnly(widget)
                 removers += remover
+                view.beforeRender?.let { listener -> context.onBeforeRender.register { listener() } }
                 object : ViewController {
                     override fun setOffset(offset: IntPoint) = widget.setPosition(offset.x, offset.y)
                     override fun detach() = throw UnsupportedOperationException()
@@ -114,20 +128,24 @@ private class AdapterFixture(vararg views: TestView) {
             screen.isDragging = false
         }
 
-        override fun addRenderableWidget(widget: AbstractWidget) {
+        override fun addRenderableWidget(widget: AbstractWidget): Remover {
             interactiveWidgets += widget
+            return Remover {
+                removals += 1
+                interactiveWidgets.remove(widget)
+                adapter.removeWidget(widget)
+            }
         }
 
-        override fun addRenderableOnly(widget: AbstractWidget) {
+        override fun addRenderableOnly(widget: AbstractWidget): Remover {
             renderableOnlyWidgets += widget
+            return Remover {
+                removals += 1
+                renderableOnlyWidgets.remove(widget)
+                adapter.removeWidget(widget)
+            }
         }
-
-        override fun removeWidget(listener: GuiEventListener) {
-            removals += 1
-            interactiveWidgets.remove(listener)
-            renderableOnlyWidgets.remove(listener)
-            adapter.removeWidget(listener)
-        }
+        override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
     }
     val adapter = ViewAdapter(host)
 
@@ -139,6 +157,193 @@ private class AdapterFixture(vararg views: TestView) {
 }
 
 class ViewAdapterTest {
+
+    @Test
+    fun `ホイールを未消費の背景から次の子へ渡し消費後は止めるのだ`() {
+        val fixture = AdapterFixture()
+        val calls = mutableListOf<String>()
+        var consume = true
+        fun widget(label: String, x: Int, handles: () -> Boolean): AbstractWidget {
+            return object : AbstractWidget(x, 40, 20, 20, text { empty() }) {
+                override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+                override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+                override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
+                    Assertions.assertEquals(listOf(35.0, 45.0, 2.0, -3.0), listOf(mouseX, mouseY, scrollX, scrollY))
+                    calls += label
+                    return handles()
+                }
+            }
+        }
+        fixture.interactiveWidgets += widget("outside", 100) { true }
+        fixture.interactiveWidgets += widget("background", 30) { false }
+        fixture.interactiveWidgets += widget("scroll", 30) { consume }
+        fixture.interactiveWidgets += widget("behind", 30) { false }
+        try {
+            Assertions.assertTrue(fixture.adapter.mouseScrolled(35.0, 45.0, 2.0, -3.0))
+            Assertions.assertEquals(listOf("background", "scroll"), calls)
+            calls.clear()
+            consume = false
+            Assertions.assertFalse(fixture.adapter.mouseScrolled(35.0, 45.0, 2.0, -3.0))
+            Assertions.assertEquals(listOf("background", "scroll", "behind"), calls)
+            calls.clear()
+            fixture.adapter.removed()
+            Assertions.assertFalse(fixture.adapter.mouseScrolled(35.0, 45.0, 2.0, -3.0))
+            Assertions.assertTrue(calls.isEmpty())
+        } finally {
+            fixture.adapter.removed()
+        }
+    }
+
+    @Test
+    fun `複数行入力欄のキー消費と有効時の入力保護と無効なコンテナを検証するのだ`() {
+        val fixture = AdapterFixture()
+        val keys = mutableListOf<Int>()
+        var consumeKeys = false
+        val editBox: MultiLineEditBox = object : MultiLineEditBox(null, 0, 0, 100, 40, text { empty() }, text { empty() }) {
+            override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+                keys += keyCode
+                return consumeKeys
+            }
+        }
+        val container: AbstractContainerWidget = object : AbstractContainerWidget(0, 0, 100, 100, text { empty() }) {
+            override fun children() = listOf(editBox)
+            override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+            override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+        }
+        container.focused = editBox
+        fixture.interactiveWidgets += container
+        fixture.screen.focused = container
+        try {
+            Assertions.assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+            Assertions.assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_TAB, 0, 0))
+            Assertions.assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
+            Assertions.assertEquals(listOf(GLFW.GLFW_KEY_E, GLFW.GLFW_KEY_TAB, GLFW.GLFW_KEY_ESCAPE), keys)
+
+            consumeKeys = true
+            Assertions.assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
+            Assertions.assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_TAB, 0, 0))
+            Assertions.assertEquals(listOf(GLFW.GLFW_KEY_ESCAPE, GLFW.GLFW_KEY_TAB), keys.takeLast(2))
+
+            consumeKeys = false
+            editBox.active = false
+            Assertions.assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+            editBox.active = true
+            editBox.visible = false
+            Assertions.assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+            editBox.visible = true
+            editBox.isFocused = false
+            Assertions.assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+            editBox.isFocused = true
+            keys.clear()
+            container.active = false
+            Assertions.assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+            Assertions.assertTrue(keys.isEmpty())
+            container.active = true
+            fixture.screen.focused = null
+            Assertions.assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+            Assertions.assertTrue(keys.isEmpty())
+        } finally {
+            fixture.adapter.removed()
+        }
+    }
+
+    @Test
+    fun `Screen なしでホストの領域を使って配置と移動を行うのだ`() {
+        val widgets = mutableListOf<RecordingWidget>()
+        val renderableWidgets = mutableListOf<AbstractWidget>()
+        var size = IntPoint.ZERO
+        var disposals = 0
+        val registry = ViewPlacerRegistry<VanillaViewPlacerContext>().also {
+            it.register(TestView::class.java) { context, view, bounds ->
+                val widget = RecordingWidget(bounds)
+                widgets += widget
+                if (view.interactive) context.addRenderableWidget(widget) else context.addRenderableOnly(widget)
+                object : ViewController {
+                    override fun setOffset(offset: IntPoint) = widget.setPosition(offset.x, offset.y)
+                    override fun detach() = throw UnsupportedOperationException()
+                    override fun dispose() {
+                        disposals += 1
+                    }
+                }
+            }
+        }
+        val rootView = XListView().also {
+            it.sizingX = Sizing.FILL
+            it.sizingY = Sizing.FILL
+            it += TestView(true)
+            it += TestView(false)
+        }
+        val adapter = ViewAdapter(object : ViewAdapterHost {
+            override fun getRenderingProxy() = ADAPTER_RENDERING_PROXY
+            override fun getViewPlacerRegistry() = registry
+            override fun getScreen() = null
+            override fun canPlaceMenuSlots() = false
+            override fun getRegionSizeX() = 300
+            override fun getRegionSizeY() = 80
+            override fun createRootView() = rootView
+            override fun getUiOffset() = IntPoint.ZERO
+            override fun setUiSize(uiSize: IntPoint) = run { size = uiSize }
+            override fun init() {
+                renderableWidgets.clear()
+            }
+            override fun addRenderableWidget(widget: AbstractWidget): Remover {
+                renderableWidgets += widget
+                return Remover { renderableWidgets.remove(widget) }
+            }
+            override fun addRenderableOnly(widget: AbstractWidget) = addRenderableWidget(widget)
+            override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this host")
+        })
+        adapter.init()
+        assertEquals(IntPoint(300, 80), size)
+        assertEquals(listOf(0, 10), widgets.map { it.x })
+        assertFalse(adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+        assertFalse(adapter.mouseDragged(0.0, 0.0, 0, 1.0, 1.0))
+        assertFalse(adapter.mouseReleased(0.0, 0.0, 0))
+        adapter.mouseClicked(0.0, 0.0)
+        adapter.removeWidget(widgets[0])
+
+        adapter.setOffset(IntPoint(30, 40))
+
+        assertEquals(listOf(30, 40), widgets.map { it.x })
+        assertEquals(listOf(40, 40), widgets.map { it.y })
+        adapter.removed()
+        adapter.removed()
+        assertEquals(2, disposals)
+        assertThrows(IllegalStateException::class.java) { adapter.setOffset(IntPoint.ZERO) }
+    }
+
+    @Test
+    fun `配置コンテキストからホストへスロット番号と矩形取得関数を中継するのだ`() {
+        val contexts = mutableListOf<VanillaViewPlacerContext>()
+        val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
+        registry.register(TestView::class.java) { context, _, _ ->
+            contexts += context
+            object : ViewController {
+                override fun setOffset(offset: IntPoint) = Unit
+                override fun detach() = Unit
+            }
+        }
+        val host: ViewAdapterHost = Mockito.mock(ViewAdapterHost::class.java)
+        Mockito.`when`(host.getRenderingProxy()).thenReturn(ADAPTER_RENDERING_PROXY)
+        Mockito.`when`(host.getViewPlacerRegistry()).thenReturn(registry)
+        Mockito.`when`(host.createRootView()).thenReturn(TestView(false))
+        Mockito.`when`(host.getUiOffset()).thenReturn(IntPoint.ZERO)
+        Mockito.`when`(host.canPlaceMenuSlots()).thenReturn(true)
+        val slotId = 3
+        val clipBounds = { IntRectangle(10, 20, 30, 40) }
+        val remover = Remover { }
+        Mockito.`when`(host.registerMenuSlotPlacement(slotId, clipBounds)).thenReturn(remover)
+        val adapter = ViewAdapter(host)
+        adapter.init()
+        try {
+            Assertions.assertTrue(contexts.single().canPlaceMenuSlots)
+            Assertions.assertSame(remover, contexts.single().registerMenuSlotPlacement(slotId, clipBounds))
+            Mockito.verify(host).registerMenuSlotPlacement(slotId, clipBounds)
+        } finally {
+            adapter.removed()
+        }
+    }
+
     @Test
     fun `再初期化では旧配置を破棄してから新しい View を生成するのだ`() {
         val fixture = AdapterFixture(TestView(true))
@@ -154,11 +359,30 @@ class ViewAdapterTest {
     }
 
     @Test
+    fun `再初期化と破棄で前の配置の描画前登録を解除するのだ`() {
+        var calls = 0
+        val fixture = AdapterFixture(TestView(true) { calls += 1 })
+        val adapter = fixture.adapter
+
+        adapter.beforeRender()
+        assertEquals(1, calls)
+
+        fixture.init()
+        adapter.beforeRender()
+        assertEquals(2, calls)
+
+        adapter.removed()
+        adapter.beforeRender()
+        assertEquals(2, calls)
+    }
+
+    @Test
     fun `破棄の後始末から再入しても入力を消費しないのだ`() {
         val fixture = AdapterFixture(TestView(true))
         fixture.onDispose = {
             assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
             assertFalse(fixture.adapter.mouseDragged(10.0, 20.0, 0, 1.0, 2.0))
+            assertFalse(fixture.adapter.mouseReleased(10.0, 20.0, 0))
             assertThrows(IllegalStateException::class.java) { fixture.adapter.setOffset(IntPoint.ZERO) }
             fixture.adapter.removed()
         }
@@ -189,20 +413,34 @@ class ViewAdapterTest {
         val fixture = AdapterFixture(TestView(false), TestView(true))
         assertEquals(listOf(fixture.widgets[0]), fixture.renderableOnlyWidgets)
         assertEquals(listOf(fixture.widgets[1]), fixture.interactiveWidgets)
+
+        fixture.removers[0].remove()
+
+        assertTrue(fixture.renderableOnlyWidgets.isEmpty())
+        assertEquals(listOf(fixture.widgets[1]), fixture.interactiveWidgets)
+
+        fixture.removers[1].remove()
+
+        assertTrue(fixture.interactiveWidgets.isEmpty())
+        assertEquals(2, fixture.removals)
         fixture.adapter.removed()
     }
 
     @Test
-    fun `登録解除は繰り返しても一度だけ実行するのだ`() {
+    fun `登録解除の呼び出しをホストの解除処理へ中継するのだ`() {
         val fixture = AdapterFixture(TestView(true))
         val remover = fixture.removers.single()
         assertEquals(1, fixture.widgets.size)
         assertEquals(0, fixture.removals)
 
         remover.remove()
-        remover.remove()
 
         assertEquals(1, fixture.removals)
+
+        remover.remove()
+
+        assertEquals(2, fixture.removals)
+        assertTrue(fixture.interactiveWidgets.isEmpty())
         fixture.adapter.removed()
     }
 
@@ -226,7 +464,7 @@ class ViewAdapterTest {
         fixture.widgets[0].onClick = { fixture.removers[0].remove() }
 
         assertTrue(fixture.screen.mouseClicked(31.0, 41.0, 0))
-        fixture.adapter.mouseClicked()
+        fixture.adapter.mouseClicked(31.0, 41.0)
 
         assertNull(fixture.screen.focused)
         assertFalse(fixture.screen.isDragging)
@@ -234,7 +472,7 @@ class ViewAdapterTest {
     }
 
     @Test
-    fun `ホストの文字入力中は Escape 以外の未処理キーを消費するのだ`() {
+    fun `ホストの文字入力中は Escape と Tab 以外の未処理キーを消費するのだ`() {
         val fixture = AdapterFixture()
         val editBox: EditBox = object : EditBox(null, 10, 20, Component.empty()) {
             private var focused2 = false
@@ -249,8 +487,134 @@ class ViewAdapterTest {
 
         assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
         assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
+        assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_TAB, 0, 0))
         editBox.setEditable(false)
         assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+        fixture.adapter.removed()
+    }
+
+    @Test
+    fun `入れ子の入力欄でも未処理の Escape と Tab 以外を消費するのだ`() {
+        val fixture = AdapterFixture()
+        var keyPresses = 0
+        var consumeEscape = false
+        val editBox: EditBox = object : EditBox(null, 10, 20, text { empty() }) {
+            override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+                keyPresses += 1
+                return consumeEscape && keyCode == GLFW.GLFW_KEY_ESCAPE
+            }
+        }
+        fun wrap(child: GuiEventListener): AbstractContainerWidget {
+            return object : AbstractContainerWidget(0, 0, 100, 100, text { empty() }) {
+                override fun children() = listOf(child)
+                override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+                override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+            }.also {
+                it.focused = child
+            }
+        }
+        val container = wrap(wrap(editBox))
+        fixture.interactiveWidgets += container
+        fixture.screen.focused = container
+        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+        assertEquals(1, keyPresses)
+        assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_TAB, 0, 0))
+        assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
+        consumeEscape = true
+        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
+        consumeEscape = false
+        editBox.setEditable(false)
+        assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+        editBox.setEditable(true)
+        container.active = false
+        assertFalse(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+        fixture.adapter.removed()
+    }
+
+    @Test
+    fun `入力欄が消費した Escape と Tab を Screen へ渡さないのだ`() {
+        val fixture = AdapterFixture()
+        val keys = mutableListOf<Int>()
+        val editBox: EditBox = object : EditBox(null, 10, 20, text { empty() }) {
+            override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+                keys += keyCode
+                return true
+            }
+        }
+        fixture.interactiveWidgets += editBox
+        fixture.screen.focused = editBox
+
+        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0))
+        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_TAB, 0, 0))
+        assertEquals(listOf(GLFW.GLFW_KEY_ESCAPE, GLFW.GLFW_KEY_TAB), keys)
+        assertTrue(fixture.adapter.keyPressed(GLFW.GLFW_KEY_E, 0, 0))
+        assertEquals(listOf(GLFW.GLFW_KEY_ESCAPE, GLFW.GLFW_KEY_TAB, GLFW.GLFW_KEY_E), keys)
+        fixture.adapter.removed()
+    }
+
+    @Test
+    fun `未処理の Tab は Screen で前後へ移動し Escape は閉じるが消費済みなら実行しないのだ`() {
+        Mockito.mockStatic(Screen::class.java).use { screenMock ->
+            val fixture = AdapterFixture()
+            var consumeKeys = true
+            val editBox: EditBox = object : EditBox(null, 10, 20, text { empty() }) {
+                override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = consumeKeys
+            }
+            val nextEditBox = EditBox(Mockito.mock(Font::class.java), 10, 50, text { empty() })
+            fixture.interactiveWidgets += editBox
+            fixture.interactiveWidgets += nextEditBox
+            fixture.screen.focused = editBox
+            fun press(keyCode: Int) {
+                if (!fixture.adapter.keyPressed(keyCode, 0, 0)) fixture.screen.keyPressed(keyCode, 0, 0)
+            }
+            try {
+                press(GLFW.GLFW_KEY_TAB)
+                Assertions.assertSame(editBox, fixture.screen.focused)
+                press(GLFW.GLFW_KEY_ESCAPE)
+                Assertions.assertEquals(0, fixture.closes)
+
+                consumeKeys = false
+                press(GLFW.GLFW_KEY_TAB)
+                Assertions.assertSame(nextEditBox, fixture.screen.focused)
+                screenMock.`when`<Boolean> { Screen.hasShiftDown() }.thenReturn(true)
+                press(GLFW.GLFW_KEY_TAB)
+                Assertions.assertSame(editBox, fixture.screen.focused)
+                press(GLFW.GLFW_KEY_ESCAPE)
+                Assertions.assertEquals(1, fixture.closes)
+            } finally {
+                fixture.adapter.removed()
+            }
+        }
+    }
+
+    @Test
+    fun `フォーカスが変わっても右ボタンの押下先へ領域外のドラッグと解放を届けるのだ`() {
+        val fixture = AdapterFixture(TestView(true))
+        var captured = true
+        var drags = 0
+        var releases = 0
+        val widget: AbstractWidget = object : AbstractWidget(0, 0, 10, 10, text { empty() }), MouseCaptureContainer {
+            override fun hasMouseCapture(button: Int) = captured && button == 1
+            override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+            override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+            override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
+                drags += 1
+                return true
+            }
+
+            override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
+                captured = false
+                releases += 1
+                return true
+            }
+        }
+        fixture.interactiveWidgets += widget
+        fixture.screen.focused = fixture.widgets[0]
+        assertTrue(fixture.adapter.mouseDragged(-100.0, -100.0, 1, 1.0, 1.0))
+        assertTrue(fixture.adapter.mouseReleased(-100.0, -100.0, 1))
+        assertEquals(1, drags)
+        assertEquals(1, releases)
+        assertFalse(captured)
         fixture.adapter.removed()
     }
 

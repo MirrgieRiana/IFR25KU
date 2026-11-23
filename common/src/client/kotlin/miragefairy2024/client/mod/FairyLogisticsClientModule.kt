@@ -14,7 +14,7 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import net.minecraft.client.gui.GuiGraphics
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyLogisticsClientModule() {
     FairyPassiveSupplierCard.screenHandlerType.registerHandledScreen { gui, inventory, title -> FairyPassiveSupplierScreen(FairyPassiveSupplierCard, MachineScreen.Arguments(gui, inventory, title)) }
     FairyActiveConsumerCard.screenHandlerType.registerHandledScreen { gui, inventory, title -> FairyActiveConsumerScreen(FairyActiveConsumerCard, MachineScreen.Arguments(gui, inventory, title)) }

@@ -79,7 +79,7 @@ object MendingPassiveSkillEffect : AbstractPassiveSkillEffect<MendingPassiveSkil
 
     override fun getFilters(samples: List<Value>): List<PassiveSkillEffectFilter<Value>> = listOf(PassiveSkillEffectFilter(this, identifier, text { translation() }) { true })
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
         translation.enJa()

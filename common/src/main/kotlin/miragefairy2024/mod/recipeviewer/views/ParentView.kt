@@ -15,7 +15,10 @@ abstract class ParentView<P> : AbstractView() {
         }
     }
 
+    /** 子 View に割り当てる領域の幅を 0 以上の値で返すのだ～🌱 */
     protected abstract fun evaluateChildRegionSizeX(index: Int): Int
+
+    /** 子 View に割り当てる領域の高さを 0 以上の値で返すのだ～🌱 */
     protected abstract fun evaluateChildRegionSizeY(index: Int): Int
 
     protected fun Iterable<Child<P, *>>.attachTo(viewPlacer: ViewPlacer<PlaceableView>, offset: IntPoint, offsetFunction: (Child<P, *>) -> IntPoint): ViewController {
@@ -54,5 +57,5 @@ abstract class ParentView<P> : AbstractView() {
 
 class Child<P, V : View>(var position: P, val view: V)
 
-context(Child<*, out ParentView<P>>)
-inline fun <P, V : View> V.configure(block: Child<P, V>.() -> Unit = {}) = Child(this@Child.view.createDefaultPosition(), this).apply { block() }
+context(parent: Child<*, out ParentView<P>>)
+inline fun <P, V : View> V.configure(block: Child<P, V>.() -> Unit = {}) = Child(parent.view.createDefaultPosition(), this).apply { block() }

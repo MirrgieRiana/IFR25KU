@@ -25,7 +25,7 @@ fun <T : ToolConfiguration> T.obtainFairy(appearanceRateBonus: Double) = this.me
 object ObtainFairyToolEffectType : DoubleAddToolEffectType<ToolConfiguration>() {
     private val TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("fairy_mining_tool").toLanguageKey()}.obtain_fairy" }, "Obtain a fairy when mined or killed", "採掘・撃破時に妖精を入手")
 
-    context(ModContext)
+    context(_: ModContext)
     fun init() {
         TRANSLATION.enJa()
     }

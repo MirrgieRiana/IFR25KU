@@ -49,7 +49,7 @@ class ParticleTypeCard<P : ParticleType<T>, T : ParticleOptions>(
     val particleType = creator()
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initParticleModule() {
     ParticleTypeCard.entries.forEach { card ->
         Registration(BuiltInRegistries.PARTICLE_TYPE, card.identifier) { card.particleType }.register()

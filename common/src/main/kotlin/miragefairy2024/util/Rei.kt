@@ -9,6 +9,7 @@ import me.shedaniel.rei.api.common.util.EntryIngredients
 import me.shedaniel.rei.api.common.util.EntryStacks
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import mirrg.kotlin.helium.atLeast
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.Ingredient
 
@@ -37,7 +38,7 @@ fun IntPoint.toReiDimension() = Dimension(x, y)
 fun Point.toIntPoint() = IntPoint(x, y)
 fun Dimension.toIntPoint() = IntPoint(width, height)
 fun IntRectangle.toReiRectangle() = Rectangle(x, y, sizeX, sizeY)
-fun Rectangle.toIntRectangle() = IntRectangle(x, y, width, height)
+fun Rectangle.toIntRectangle() = IntRectangle(this.x, this.y, this.width atLeast 0, this.height atLeast 0)
 
 
 operator fun Point.plus(other: Point) = Point(this.x + other.x, this.y + other.y)

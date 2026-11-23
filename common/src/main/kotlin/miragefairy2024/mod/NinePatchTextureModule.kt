@@ -25,7 +25,7 @@ class NinePatchTextureCard(
     val texture = "textures/gui/" * identifier * ".png"
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initNinePatchTextureModule() {
     NinePatchTextureCard.entries.forEach { card ->
         DataGenerationEvents.onGenerateNinePatchTexture {

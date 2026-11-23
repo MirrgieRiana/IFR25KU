@@ -23,7 +23,7 @@ import miragefairy2024.util.LootTable
 import miragefairy2024.util.Model
 import miragefairy2024.util.Registration
 import miragefairy2024.util.ResourceLocation
-import miragefairy2024.util.configure
+import miragefairy2024.util.apply2
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
@@ -99,7 +99,7 @@ object ChaosCubeCard {
         type = AdvancementCardType.NORMAL,
     )
 
-    context(ModContext)
+    context(_: ModContext)
     fun init() {
         entityType.register()
         ModEvents.onConstruction {
@@ -117,15 +117,15 @@ object ChaosCubeCard {
         EntityTypeTags.FALL_DAMAGE_IMMUNE.generator.registerChild(entityType)
         entityType.registerLootTableGeneration { registries ->
             LootTable(
-                LootPool(ItemLootPoolEntry(MaterialCard.MIRAGIDIAN_SHARD.item())).configure {
+                LootPool(ItemLootPoolEntry(MaterialCard.MIRAGIDIAN_SHARD.item())).apply2 {
                     apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
                     apply(EnchantedCountIncreaseFunction.lootingMultiplier(registries, UniformGenerator.between(0.0F, 1.0F)))
                 },
-                LootPool(ItemLootPoolEntry(MaterialCard.MIRAGIDIAN.item())).configure {
+                LootPool(ItemLootPoolEntry(MaterialCard.MIRAGIDIAN.item())).apply2 {
                     `when`(LootItemKilledByPlayerCondition.killedByPlayer())
                     `when`(LootItemRandomChanceWithEnchantedBonusCondition.randomChanceAndLootingBoost(registries, 0.05F, 0.02F))
                 },
-                LootPool(ItemLootPoolEntry(MaterialCard.CHAOS_STONE.item())).configure {
+                LootPool(ItemLootPoolEntry(MaterialCard.CHAOS_STONE.item())).apply2 {
                     `when`(LootItemKilledByPlayerCondition.killedByPlayer())
                     `when`(LootItemRandomChanceWithEnchantedBonusCondition.randomChanceAndLootingBoost(registries, 0.3F, 0.1F))
                 },
