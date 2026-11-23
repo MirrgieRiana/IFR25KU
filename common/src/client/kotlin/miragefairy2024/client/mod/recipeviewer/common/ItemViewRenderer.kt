@@ -12,6 +12,7 @@ object ItemViewRenderer : ViewRenderer<ItemView, Unit> {
     override fun createState(view: ItemView) = Unit
 
     override fun getRenderOverflow(view: ItemView, bounds: IntRectangle) = RenderOverflow.UNBOUNDED
+
     override fun render(view: ItemView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         graphics.renderFakeItem(view.itemStack, bounds.x, bounds.y)
         if (view.showDecorations) graphics.renderItemDecorations(Minecraft.getInstance().font, view.itemStack, bounds.x, bounds.y)
