@@ -5,7 +5,7 @@ import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.register
 
 /** 画面の tick を受け取り、登録した処理を呼び出すのだ～🌱 */
-class TickView() : FixedWidgetView(IntPoint.ZERO) {
+class TickView : FixedWidgetView(IntPoint.ZERO) {
     val onTick = EventRegistry<() -> Unit>()
 }
 
