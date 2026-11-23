@@ -59,7 +59,8 @@ private val FILTER_OVERLAY_TEXTURE = MirageFairy2024.identifier("textures/gui/sp
 context(_: ModContext)
 fun initSoulStreamClientModule() {
 
-    soulStreamScreenHandlerType.registerHandledScreen(::SoulStreamScreen)
+    // GUI 登録
+    soulStreamScreenHandlerType.registerHandledScreen { gui, inventory, title -> SoulStreamScreen(gui, inventory, title) }
 
     // ソウルストリームのキーバインド
     soulStreamKeyMappingCard.init()
