@@ -132,14 +132,17 @@ fun initSoulStreamClientModule() {
 
 class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : ViewContainerScreen<SoulStreamScreenHandler>(handler, playerInventory, title) {
 
-    private val viewWrapper = handler.initViewWrapper(enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, text { toggleCollectionEnabledKeyMappingCard() }) {
-        SetCollectionEnabledChannel.sendToServer(it)
-    }
     private var isFirstRender = true
     private var lastUpdateEventNanoTime = 0L
 
+    init {
+        handler.initViewWrapper(enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, text { toggleCollectionEnabledKeyMappingCard() }) {
+            SetCollectionEnabledChannel.sendToServer(it)
+        }
+    }
+
     override fun removed() {
-        viewWrapper.dispose()
+        menu.disposeView()
         super.removed()
     }
 
@@ -161,7 +164,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
         val now = System.nanoTime()
         if (now - lastUpdateEventNanoTime >= 100_000_000) {
             lastUpdateEventNanoTime = now
-            viewWrapper.updateEffects()
+            menu.updateEffects()
         }
     }
 

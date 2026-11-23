@@ -171,12 +171,14 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
         enableGlobalFairyHighlight: ObservableValue<Boolean>,
         collectionToggleKeyText: Component,
         setCollectionEnabled: (Boolean) -> Unit,
-    ): SoulStreamViewWrapper {
-        return SoulStreamViewWrapper(this, enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, collectionToggleKeyText, setCollectionEnabled).also {
-            viewWrapper = it
-        }
+    ) {
+        viewWrapper = SoulStreamViewWrapper(this, enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, collectionToggleKeyText, setCollectionEnabled)
     }
 
     override fun createView(title: Component, playerInventoryTitle: Component) = viewWrapper.createView(title)
+
+    fun updateEffects() = viewWrapper.updateEffects()
+
+    fun disposeView() = viewWrapper.dispose()
 
 }
