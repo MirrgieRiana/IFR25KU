@@ -133,7 +133,6 @@ fun initSoulStreamClientModule() {
 class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : ViewContainerScreen<SoulStreamScreenHandler>(handler, playerInventory, title) {
 
     private var isFirstRender = true
-    private var lastUpdateEventNanoTime = 0L
 
     init {
         handler.initViewWrapper(enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, text { toggleCollectionEnabledKeyMappingCard() }) {
@@ -156,16 +155,6 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
             }
         }
         super.render(guiGraphics, mouseX, mouseY, partialTick)
-    }
-
-    override fun containerTick() {
-        super.containerTick()
-
-        val now = System.nanoTime()
-        if (now - lastUpdateEventNanoTime >= 100_000_000) {
-            lastUpdateEventNanoTime = now
-            menu.updateEffects()
-        }
     }
 
     // キー入力で閉じる

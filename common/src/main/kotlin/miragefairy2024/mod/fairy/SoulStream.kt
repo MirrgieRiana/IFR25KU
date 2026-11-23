@@ -177,8 +177,6 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
 
     override fun createView(title: Component, playerInventoryTitle: Component) = viewWrapper.createView(title)
 
-    fun updateEffects() = viewWrapper.updateEffects()
-
     fun disposeView() = viewWrapper.dispose()
 
 }

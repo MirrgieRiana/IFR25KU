@@ -21,6 +21,7 @@ import miragefairy2024.mod.recipeviewer.views.FilledRectangleView
 import miragefairy2024.mod.recipeviewer.views.LayeredImageButtonView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextView
+import miragefairy2024.mod.recipeviewer.views.TickView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
@@ -76,7 +77,7 @@ class SoulStreamViewWrapper(
 
     private val player: Player = menu.playerInventory.player
     private val onViewClosed = EventRegistry<() -> Unit>()
-    private var refreshEffects: (() -> Unit)? = null
+    private var lastUpdateEventNanoTime = 0L
 
     fun createView(title: Component): View {
         dispose()
@@ -679,14 +680,18 @@ class SoulStreamViewWrapper(
                                 }
                                 connectScrollbar(scrollView, scrollbarView)
 
-                                    refreshEffects = {
+                                    view += TickView {
+                                        val now = System.nanoTime()
+                                        if (now - lastUpdateEventNanoTime < 100_000_000) return@TickView
+                                        lastUpdateEventNanoTime = now
+
                                         val newEffects = collectPassiveSkillTexts()
-                                    if (effects != newEffects) {
-                                        effects = newEffects
-                                        effectList.content.value = createEffectList(effects)
-                                        scrollView.updateScrollBounds()
-                                        scrollView.clampScrollOffset()
-                                    }
+                                        if (effects != newEffects) {
+                                            effects = newEffects
+                                            effectList.content.value = createEffectList(effects)
+                                            scrollView.updateScrollBounds()
+                                            scrollView.clampScrollOffset()
+                                        }
                                     }
                             /*
                             })
@@ -710,13 +715,8 @@ class SoulStreamViewWrapper(
         }
     }
 
-    fun updateEffects() {
-        refreshEffects?.invoke()
-    }
-
     fun dispose() {
         onViewClosed.fire()
-        refreshEffects = null
     }
 
 }
