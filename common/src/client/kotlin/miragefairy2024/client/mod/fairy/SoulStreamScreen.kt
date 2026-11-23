@@ -144,6 +144,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
     }
 
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+        // カーソルをインベントリ画面での位置に戻す
         if (isFirstRender) {
             isFirstRender = false
             val mousePosition = lastMousePositionInInventory
@@ -164,6 +165,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
         }
     }
 
+    // キー入力で閉じる
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         if (soulStreamKeyMappingCard.keyMapping.matches(keyCode, scanCode)) {
             onClose()

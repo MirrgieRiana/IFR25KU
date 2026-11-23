@@ -147,6 +147,13 @@ class SoulStreamViewWrapper(
                                     view += YListView().configure {
                                         view.sizingX = Sizing.FILL
 
+                                        // TODO 条件フィルタ
+                                        // 条件は実装しても不毛なことになりそう
+                                        // 例えば満腹度は上下と数値で個別にエントリを作る必要がある
+                                        // doubleで管理されるものもあり、identifierを作りにくい
+                                        // ツール系は該当する妖精が1体しかない条件がずらっと並ぶことになる
+                                        // 実装しても微妙なのが多すぎて折り畳み可能にしないといけないかも
+
                                         view += TextView(text { SOUL_STREAM_PASSIVE_SKILL_EFFECT_TRANSLATION().blue.bold }).configure {
                                             view.sizingX = Sizing.FILL
                                             view.alignmentX = Alignment.CENTER
@@ -187,7 +194,7 @@ class SoulStreamViewWrapper(
                                 connectScrollbar(scrollView, scrollbarView)
                             }.margin(4)
                         }
-                    }.margin(0, 0, 0, RECIPE_VIEWER_MARGIN)
+                    }.margin(0, 0, 0, RECIPE_VIEWER_MARGIN) // レシピMOD用に下部を保護
 
                     view += XSpaceView(PANE_GAP)
 
@@ -240,6 +247,8 @@ class SoulStreamViewWrapper(
                         }
                         view += YSpaceView(4)
                         view += createSlotRow(hotbarSlotIndex until passiveSkillSlotIndex, SlotType.NORMAL)
+
+                        // GUIタイトルはレシピMOD用の保護領域に持ってくる
                         view += YSpaceView(5)
                         view += TextView(title).configure {
                             position.ignoreLayoutX = true
@@ -329,7 +338,7 @@ class SoulStreamViewWrapper(
                                 }
                             }.margin(4)
                         }
-                    }.margin(0, 0, 0, RECIPE_VIEWER_MARGIN)
+                    }.margin(0, 0, 0, RECIPE_VIEWER_MARGIN) // レシピMOD用に下部を保護
                 }.margin(PANE_MARGIN)
             }
         }
