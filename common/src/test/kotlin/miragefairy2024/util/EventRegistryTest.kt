@@ -9,6 +9,27 @@ import kotlin.test.assertTrue
 class EventRegistryTest {
 
     @Test
+    fun `発火中に解除したリスナーには同じ発火で通知しないのだ～🌱`() {
+        val event = EventRegistry<() -> Unit>()
+        val notifications = mutableListOf<Int>()
+        val addedListener: () -> Unit = { notifications += 4 }
+        lateinit var remover: Remover
+        event.register {
+            notifications += 1
+            remover.remove()
+            event.add(addedListener)
+        }
+        remover = event.register { notifications += 2 }
+        event.register { notifications += 3 }
+
+        event.fire()
+        assertEquals(listOf(1, 3), notifications)
+
+        event.fire()
+        assertEquals(listOf(1, 3, 1, 3, 4), notifications)
+    }
+
+    @Test
     fun `登録時の現在値と変更前後の値を通知し手動解除後は通知しないのだ～🌱`() {
         val value = ObservableValue(0)
         value.value = 2

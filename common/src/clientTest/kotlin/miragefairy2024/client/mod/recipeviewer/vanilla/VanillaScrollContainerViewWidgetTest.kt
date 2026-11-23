@@ -1,5 +1,7 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import com.mojang.blaze3d.systems.RenderSystem
+import miragefairy2024.client.mod.recipeviewer.RenderOverflow
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
@@ -137,7 +139,7 @@ class VanillaScrollContainerViewWidgetTest {
                             return false
                         }
                     }
-                    val remover = childContext.addRenderableWidget(child)
+                    val remover = childContext.addRenderable(WidgetRegistration(child, true) { RenderOverflow.UNBOUNDED })
                     object : ViewController {
                         override fun setOffset(offset: IntPoint) = child.setPosition(offset.x, offset.y)
                         override fun detach() = remover.remove()
@@ -160,6 +162,161 @@ class VanillaScrollContainerViewWidgetTest {
                 widget.dispose()
                 Assertions.assertTrue(disposed)
                 Assertions.assertFalse(widget.mouseClicked(109.0, 119.0, 0))
+            }
+        }
+    }
+
+    @Test
+    fun `描画範囲が表示領域に届くかを辺ごとに判定するのだ`() {
+        GuiTestEnvironment().use { environment ->
+            val cases = listOf(
+                Triple(IntPoint(0, 25), RenderOverflow.NONE, false),
+                Triple(IntPoint(-1, 25), RenderOverflow(0, 1, 0, 0), false),
+                Triple(IntPoint(0, 25), RenderOverflow(0, 1, 0, 0), true),
+                Triple(IntPoint(-100, 25), RenderOverflow(0, Int.MAX_VALUE, 0, 0), true),
+                Triple(IntPoint(100, 25), RenderOverflow(Int.MAX_VALUE, 0, 0, 0), true),
+                Triple(IntPoint(15, -100), RenderOverflow(0, 0, 0, Int.MAX_VALUE), true),
+                Triple(IntPoint(15, 100), RenderOverflow(0, 0, Int.MAX_VALUE, 0), true),
+                Triple(IntPoint(-100, 10), RenderOverflow(0, Int.MAX_VALUE, 0, 0), false),
+                Triple(IntPoint(30, 25), RenderOverflow(0, Int.MAX_VALUE, 0, 0), false),
+                Triple(IntPoint(100, 100), RenderOverflow.UNBOUNDED, true),
+            )
+            val view = YScrollContainerView()
+            view += YListView().also { listView ->
+                cases.forEach {
+                    listView += ScrollContainerTestView(IntPoint(10, 10))
+                }
+            }
+            view.initSizeCalculation(Mockito.mock(RenderingProxy::class.java), { 20 }, { 20 })
+            val context: VanillaViewPlacerContext = Mockito.mock(VanillaViewPlacerContext::class.java)
+            Mockito.`when`(context.origin).thenReturn(IntPoint.ZERO)
+            val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
+            val children = mutableListOf<AbstractWidget>()
+            val renderedChildren = mutableListOf<Int>()
+            val renderOverflows = cases.map { it.second }.toMutableList()
+            registry.register { childContext, _: ScrollContainerTestView, bounds ->
+                val index = children.size
+                val child = object : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {
+                    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+                        renderedChildren += index
+                    }
+
+                    override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+                }
+                children += child
+                val remover = childContext.addRenderable(WidgetRegistration(child, true) { renderOverflows[index] })
+                object : ViewController {
+                    override fun setOffset(offset: IntPoint) = child.setPosition(offset.x, offset.y)
+                    override fun detach() = remover.remove()
+                }
+            }
+            val widget = VanillaYScrollContainerViewWidget(view, IntRectangle(10, 20, 20, 20), context, registry)
+            try {
+                children.zip(cases).forEach { (child, case) ->
+                    child.setPosition(case.first.x, case.first.y)
+                }
+                widget.render(environment.graphics, 0, 0, 0.0F)
+                Assertions.assertEquals(cases.mapIndexedNotNull { index, case -> if (case.third) index else null }, renderedChildren)
+
+                val child = children.first()
+                child.setPosition(10, 20)
+                widget.render(environment.graphics, 12, 22, 0.0F)
+                Assertions.assertTrue(child.isHovered)
+
+                renderedChildren.clear()
+                child.setPosition(0, 25)
+                widget.render(environment.graphics, 12, 22, 0.0F)
+                Assertions.assertTrue(0 in renderedChildren)
+                Assertions.assertFalse(child.isHovered)
+
+                renderedChildren.clear()
+                widget.render(environment.graphics, 12, 22, 0.0F)
+                Assertions.assertFalse(0 in renderedChildren)
+
+                renderedChildren.clear()
+                renderOverflows[0] = RenderOverflow(0, 1, 0, 0)
+                widget.render(environment.graphics, 12, 22, 0.0F)
+                Assertions.assertTrue(0 in renderedChildren)
+            } finally {
+                widget.dispose()
+                widget.detach()
+            }
+        }
+    }
+
+    @Test
+    fun `描画範囲とホバー状態に応じて子の描画を省くのだ`() {
+        GuiTestEnvironment().use { environment ->
+            val view = YScrollContainerView()
+            view += YListView().also { listView ->
+                repeat(4) {
+                    listView += ScrollContainerTestView(IntPoint(20, 10))
+                }
+            }
+            view.initSizeCalculation(Mockito.mock(RenderingProxy::class.java), { 20 }, { 20 })
+            val context: VanillaViewPlacerContext = Mockito.mock(VanillaViewPlacerContext::class.java)
+            Mockito.`when`(context.origin).thenReturn(IntPoint.ZERO)
+            val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
+            val renderedChildren = mutableListOf<Int>()
+            val children = mutableListOf<AbstractWidget>()
+            registry.register { childContext, _: ScrollContainerTestView, bounds ->
+                val index = children.size
+                val child = object : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {
+                    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+                        renderedChildren += index
+                    }
+
+                    override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+                }
+                children += child
+                val remover = when (index) {
+                    0 -> childContext.addRenderable(WidgetRegistration(child, true) { RenderOverflow(0, 0, 0, 1) })
+                    1 -> childContext.addRenderable(WidgetRegistration(child, false) { RenderOverflow.NONE })
+                    2 -> childContext.addRenderable(WidgetRegistration(child, true) { RenderOverflow.NONE })
+                    else -> childContext.addRenderable(WidgetRegistration(child, false) { RenderOverflow.UNBOUNDED })
+                }
+                object : ViewController {
+                    override fun setOffset(offset: IntPoint) = child.setPosition(offset.x, offset.y)
+                    override fun detach() = remover.remove()
+                }
+            }
+            val widget = VanillaYScrollContainerViewWidget(view, IntRectangle(10, 20, 20, 20), context, registry)
+            try {
+                widget.render(environment.graphics, 0, 0, 0.0F)
+                Assertions.assertEquals(listOf(0, 1, 3), renderedChildren)
+
+                renderedChildren.clear()
+                view.scrollOffsetY.value = 10.0
+                widget.render(environment.graphics, 0, 0, 0.0F)
+                Assertions.assertEquals(listOf(0, 1, 2, 3), renderedChildren)
+
+                renderedChildren.clear()
+                view.scrollOffsetY.value = 11.0
+                widget.render(environment.graphics, 0, 0, 0.0F)
+                Assertions.assertEquals(listOf(1, 2, 3), renderedChildren)
+
+                listOf(IntPoint(0, 20), IntPoint(20, 0)).forEach { size ->
+                    widget.setSize(20, 20)
+                    widget.render(environment.graphics, 10, 30, 0.0F)
+                    Assertions.assertTrue(children[2].isHovered)
+
+                    renderedChildren.clear()
+                    environment.renderSystem.clearInvocations()
+                    widget.setSize(size.x, size.y)
+                    widget.render(environment.graphics, 10, 30, 0.0F)
+                    Assertions.assertEquals(listOf(2), renderedChildren)
+                    Assertions.assertFalse(children[2].isHovered)
+
+                    renderedChildren.clear()
+                    widget.render(environment.graphics, 10, 30, 0.0F)
+                    Assertions.assertTrue(renderedChildren.isEmpty())
+                    environment.renderSystem.verify({
+                        RenderSystem.enableScissor(10, 280 - size.y, size.x, size.y)
+                    }, Mockito.times(2))
+                }
+            } finally {
+                widget.dispose()
+                widget.detach()
             }
         }
     }
@@ -226,7 +383,7 @@ class VanillaScrollContainerViewWidgetTest {
                     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
                 }
                 children += child
-                val remover = childContext.addRenderableWidget(child)
+                val remover = childContext.addRenderable(WidgetRegistration(child, true) { RenderOverflow.UNBOUNDED })
                 object : ViewController {
                     override fun setOffset(offset: IntPoint) = child.setPosition(offset.x, offset.y)
                     override fun detach() = remover.remove()
