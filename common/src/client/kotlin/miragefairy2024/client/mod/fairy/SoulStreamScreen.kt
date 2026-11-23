@@ -137,12 +137,6 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
     private var isFirstRender = true
     private var lastUpdateEventNanoTime = 0L
 
-    override fun init() {
-        viewWrapper.dispose()
-        super.init()
-        viewWrapper.clampScrollOffsets()
-    }
-
     override fun removed() {
         viewWrapper.dispose()
         super.removed()
