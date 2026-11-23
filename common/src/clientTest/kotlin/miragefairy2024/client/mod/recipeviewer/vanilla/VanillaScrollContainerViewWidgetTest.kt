@@ -20,7 +20,6 @@ import miragefairy2024.util.register
 import miragefairy2024.util.text
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
-import net.minecraft.client.gui.narration.NarratableEntry
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import org.junit.jupiter.api.Assertions
@@ -166,7 +165,7 @@ class VanillaScrollContainerViewWidgetTest {
     }
 
     @Test
-    fun `表示領域と交差する子を描画と読み上げの対象にするのだ`() {
+    fun `表示領域と交差する子だけを描画するのだ`() {
         GuiTestEnvironment().use { environment ->
             val view = YScrollContainerView()
             view += YListView().also { listView ->
@@ -187,7 +186,6 @@ class VanillaScrollContainerViewWidgetTest {
                         renderedChildren += index
                     }
 
-                    override fun narrationPriority() = if (index == 2) NarratableEntry.NarrationPriority.FOCUSED else NarratableEntry.NarrationPriority.NONE
                     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
                 }
                 val remover = childContext.addRenderableWidget(child)
@@ -200,13 +198,11 @@ class VanillaScrollContainerViewWidgetTest {
             try {
                 widget.render(environment.graphics, 10, 20, 0.0F)
                 Assertions.assertEquals(listOf(0, 1), renderedChildren)
-                Assertions.assertEquals(NarratableEntry.NarrationPriority.NONE, widget.narrationPriority())
 
                 renderedChildren.clear()
                 view.scrollOffsetY.value = 5.0
                 widget.render(environment.graphics, 10, 20, 0.0F)
                 Assertions.assertEquals(listOf(0, 1, 2), renderedChildren)
-                Assertions.assertEquals(NarratableEntry.NarrationPriority.FOCUSED, widget.narrationPriority())
             } finally {
                 widget.dispose()
                 widget.detach()

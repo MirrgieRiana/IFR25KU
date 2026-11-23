@@ -395,7 +395,7 @@ abstract class VanillaScrollContainerViewWidget(
 
     private var lastNarratable: NarratableEntry? = null
 
-    private fun getNarratables() = children().filter { it.isActive && intersectsViewport(it) }
+    private fun getNarratables() = children().filter { it.isActive }
 
     override fun narrationPriority(): NarratableEntry.NarrationPriority {
         if (!isActive) return NarratableEntry.NarrationPriority.NONE
