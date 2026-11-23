@@ -23,6 +23,7 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.Slot
+import mirrg.kotlin.java.hydrogen.floorMod
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.Rect2i
 import net.minecraft.resources.ResourceLocation
@@ -115,12 +116,9 @@ object BlueFuelViewRenderer : ViewRenderer<BlueFuelView, Unit> {
 object TexturedArrowViewRenderer : ViewRenderer<TexturedArrowView, Unit> {
     override fun createState(view: TexturedArrowView) = Unit
 
-    // 時刻の剰余が負のとき、前景は左へ描画されるのだ～🌱
-    override fun getRenderOverflow(view: TexturedArrowView, bounds: IntRectangle) = RenderOverflow(bounds.sizeX, 0, 0, 0)
-
     override fun render(view: TexturedArrowView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val rate = view.durationMilliSeconds?.let {
-            (System.nanoTime() / 1_000_000 % it.toLong()).toDouble() / it.toDouble()
+            (System.nanoTime() / 1_000_000 floorMod it).toDouble() / it.toDouble()
         } ?: 1.0
         view.backgroundTexture?.let {
             graphics.blit(
