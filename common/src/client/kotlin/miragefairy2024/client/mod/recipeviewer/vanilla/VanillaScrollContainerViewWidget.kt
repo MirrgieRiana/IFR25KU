@@ -176,11 +176,35 @@ abstract class VanillaScrollContainerViewWidget(
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
 
+        fun isSeparated(start: Int, end: Int, outset: Int): Boolean {
+            if (outset == Int.MAX_VALUE) return false
+            // start >= end のとき、辺の間隔は UInt で表せるのだ～🌱
+            return start >= end && (start - end).toUInt() >= outset.toUInt()
+        }
+
         // 子要素の描画なのだ～🌱
-        guiGraphics.enableScissor(x, y, x + width, y + height)
+        val xMin = x
+        val xMax = xMin + width
+        val yMin = y
+        val yMax = yMin + height
+        guiGraphics.enableScissor(xMin, yMin, xMax, yMax)
         try {
             widgetRegistrations.forEach { widgetRegistration ->
-                widgetRegistration.widget.render(guiGraphics, mouseX, mouseY, partialTick)
+                val widget = widgetRegistration.widget
+
+                // ホバーの解除やフォーカス中・押下中の処理には、領域外でも描画呼び出しが必要なのだ～🌱
+                if (!widget.isHovered && focused !== widget && widgetRegistration !in pressedWidgetRegistrations.values) {
+                    if (xMin == xMax || yMin == yMax) return@forEach
+                    val overflow = widgetRegistration.renderOverflow
+                    if (widget.width == 0 && overflow.xMin == 0 && overflow.xMax == 0) return@forEach
+                    if (widget.height == 0 && overflow.yMin == 0 && overflow.yMax == 0) return@forEach
+                    if (isSeparated(widget.x, xMax, overflow.xMin)) return@forEach
+                    if (isSeparated(xMin, widget.x + widget.width, overflow.xMax)) return@forEach
+                    if (isSeparated(widget.y, yMax, overflow.yMin)) return@forEach
+                    if (isSeparated(yMin, widget.y + widget.height, overflow.yMax)) return@forEach
+                }
+
+                widget.render(guiGraphics, mouseX, mouseY, partialTick)
             }
         } finally {
             guiGraphics.disableScissor()

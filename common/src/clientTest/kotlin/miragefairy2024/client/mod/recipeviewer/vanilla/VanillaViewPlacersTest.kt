@@ -85,7 +85,7 @@ class VanillaViewPlacersTest {
                 }
                 override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
             }
-            val remover = context.addRenderable(WidgetRegistration(widget, true, WidgetRenderOverflow.Unbounded))
+            val remover = context.addRenderable(WidgetRegistration(widget, true, WidgetRenderOverflow.UNBOUNDED))
             object : ViewController {
                 override fun setOffset(offset: IntPoint) = widget.setPosition(offset.x, offset.y)
                 override fun detach() {

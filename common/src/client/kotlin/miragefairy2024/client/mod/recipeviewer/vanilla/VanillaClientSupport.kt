@@ -7,20 +7,20 @@ import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.components.AbstractWidget
 
-/** Widget の領域を基準に描画範囲を指定するのだ～🌱 */
-sealed interface WidgetRenderOverflow {
-    /** 描画は Widget の領域内に収まるのだ～🌱 */
-    data object None : WidgetRenderOverflow
-
-    /** Widget の各辺から外向きに測った非負のはみ出し量なのだ～🌱 */
-    data class Outsets(val xMin: Int, val xMax: Int, val yMin: Int, val yMax: Int) : WidgetRenderOverflow {
-        init {
-            require(xMin >= 0 && xMax >= 0 && yMin >= 0 && yMax >= 0) { "Widget render outsets must be non-negative" }
-        }
+/**
+ * Widget の各辺から外向きに測った非負のはみ出し量なのだ～🌱
+ * `0` を指定した辺からは描画がはみ出さないのだ～🌱
+ * 各辺に [kotlin.Int.MAX_VALUE] を指定すると、その方向のはみ出し量に上限がないことを表すのだ～🌱
+ */
+data class WidgetRenderOverflow(val xMin: Int, val xMax: Int, val yMin: Int, val yMax: Int) {
+    init {
+        require(xMin >= 0 && xMax >= 0 && yMin >= 0 && yMax >= 0) { "Widget render outsets must be non-negative" }
     }
 
-    /** Widget の領域からのはみ出し量に上限を指定しないのだ～🌱 */
-    data object Unbounded : WidgetRenderOverflow
+    companion object {
+        val NONE = WidgetRenderOverflow(0, 0, 0, 0)
+        val UNBOUNDED = WidgetRenderOverflow(Int.MAX_VALUE, Int.MAX_VALUE, Int.MAX_VALUE, Int.MAX_VALUE)
+    }
 }
 
 class WidgetRegistration(val widget: AbstractWidget, val interactive: Boolean, val renderOverflow: WidgetRenderOverflow)

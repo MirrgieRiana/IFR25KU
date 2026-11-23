@@ -54,7 +54,7 @@ private infix fun VanillaViewPlacerContext.place(registration: WidgetRegistratio
 context(_: ModContext)
 fun initVanillaViewPlacers() {
     fun placeScrollContainerView(context: VanillaViewPlacerContext, widget: VanillaScrollContainerViewWidget): ViewController {
-        val controller = context place WidgetRegistration(widget, true, WidgetRenderOverflow.None)
+        val controller = context place WidgetRegistration(widget, true, WidgetRenderOverflow.NONE)
         // 子の差し替えだけで全長が変わった場合も、描画前に寸法を通知するのだ～🌱
         val boundsRemover = context.onBeforeRender.register(widget::updateScrollBounds)
         return object : ViewController {
@@ -82,7 +82,7 @@ fun initVanillaViewPlacers() {
         placeScrollContainerView(context, VanillaYScrollContainerViewWidget(view, bounds, context, VANILLA_VIEW_PLACER_REGISTRY))
     }
     fun placeScrollbarView(context: VanillaViewPlacerContext, widget: VanillaScrollbarViewWidget<*>): ViewController {
-        val controller = context place WidgetRegistration(widget, true, WidgetRenderOverflow.None)
+        val controller = context place WidgetRegistration(widget, true, WidgetRenderOverflow.NONE)
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {
                 controller.setOffset(offset)
@@ -143,7 +143,7 @@ fun initVanillaViewPlacers() {
         ) {
             override fun getMessage() = view.message
         }
-        context place WidgetRegistration(TextButtonWidget(), true, WidgetRenderOverflow.Unbounded)
+        context place WidgetRegistration(TextButtonWidget(), true, WidgetRenderOverflow.UNBOUNDED)
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: LayeredImageButtonView, bounds ->
         fun LayeredImageButtonView.Sprites.toWidgetSprites() = WidgetSprites(this.selected, this.unselected, this.selectedFocused, this.unselectedFocused)
@@ -160,7 +160,7 @@ fun initVanillaViewPlacers() {
         widget.onClick.observe(onClosed) {
             view.onClick.fire()
         }
-        val controller = context place WidgetRegistration(widget, true, WidgetRenderOverflow.Unbounded)
+        val controller = context place WidgetRegistration(widget, true, WidgetRenderOverflow.UNBOUNDED)
         object : ViewController {
             override fun setOffset(offset: IntPoint) {
                 controller.setOffset(offset)
@@ -189,7 +189,7 @@ fun initVanillaViewPlacers() {
         editBox.setResponder {
             view.text.value = it
         }
-        val controller = context place WidgetRegistration(editBox, true, WidgetRenderOverflow.Unbounded)
+        val controller = context place WidgetRegistration(editBox, true, WidgetRenderOverflow.UNBOUNDED)
         object : ViewController {
             override fun setOffset(offset: IntPoint): Unit {
                 controller.setOffset(offset)
@@ -206,18 +206,18 @@ fun initVanillaViewPlacers() {
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextView, bounds ->
-        context place WidgetRegistration(VanillaViewRendererWidget(TextViewRenderer, view, bounds), true, WidgetRenderOverflow.Unbounded)
+        context place WidgetRegistration(VanillaViewRendererWidget(TextViewRenderer, view, bounds), true, WidgetRenderOverflow.UNBOUNDED)
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: ImageView, bounds ->
-        context place WidgetRegistration(VanillaViewRendererWidget(ImageViewRenderer, view, bounds), true, WidgetRenderOverflow.None)
+        context place WidgetRegistration(VanillaViewRendererWidget(ImageViewRenderer, view, bounds), true, WidgetRenderOverflow.NONE)
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TooltipView, bounds ->
-        context place WidgetRegistration(VanillaViewRendererWidget(TooltipViewRenderer, view, bounds), false, WidgetRenderOverflow.Unbounded)
+        context place WidgetRegistration(VanillaViewRendererWidget(TooltipViewRenderer, view, bounds), false, WidgetRenderOverflow.UNBOUNDED)
     }
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView, S> f(entry: ViewRendererRegistry.Entry<V, S>) {
             VANILLA_VIEW_PLACER_REGISTRY.register(entry.viewClass) { context, view, bounds ->
-                context place WidgetRegistration(VanillaViewRendererWidget(entry.viewRenderer, view, bounds), true, WidgetRenderOverflow.Unbounded)
+                context place WidgetRegistration(VanillaViewRendererWidget(entry.viewRenderer, view, bounds), true, WidgetRenderOverflow.UNBOUNDED)
             }
         }
         f(entry)
