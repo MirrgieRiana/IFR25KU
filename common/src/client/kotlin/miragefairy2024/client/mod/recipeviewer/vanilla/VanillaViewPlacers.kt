@@ -44,8 +44,7 @@ private infix fun VanillaViewPlacerContext.place(widget: AbstractWidget) = this.
 
 private fun VanillaViewPlacerContext.place(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow?): ViewController {
     val onDetached = EventRegistry<() -> Unit>()
-    val remover = if (renderOverflow == null) this.addRenderableWidget(widget) else this.addRenderableWidget(widget, renderOverflow)
-    remover.removeOn(onDetached)
+    this.addRenderableWidget(widget, renderOverflow).removeOn(onDetached)
     return object : ViewController {
         override fun setOffset(offset: IntPoint) {
             widget.setPosition(offset.x, offset.y)
@@ -59,8 +58,7 @@ private infix fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidge
 
 private fun VanillaViewPlacerContext.placeRenderable(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow?): ViewController {
     val onDetached = EventRegistry<() -> Unit>()
-    val remover = if (renderOverflow == null) this.addRenderableOnly(widget) else this.addRenderableOnly(widget, renderOverflow)
-    remover.removeOn(onDetached)
+    this.addRenderableOnly(widget, renderOverflow).removeOn(onDetached)
     return object : ViewController {
         override fun setOffset(offset: IntPoint) {
             widget.setPosition(offset.x, offset.y)

@@ -17,10 +17,8 @@ interface VanillaViewPlacerContext {
     val canPlaceMenuSlots: Boolean
     val onBeforeRender: EventRegistry<() -> Unit>
 
-    fun addRenderableWidget(widget: AbstractWidget): Remover
-    fun addRenderableWidget(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow): Remover = addRenderableWidget(widget)
-    fun addRenderableOnly(widget: AbstractWidget): Remover
-    fun addRenderableOnly(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow): Remover = addRenderableOnly(widget)
+    fun addRenderableWidget(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow?): Remover
+    fun addRenderableOnly(widget: AbstractWidget, renderOverflow: WidgetRenderOverflow?): Remover
     fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover
 }
 

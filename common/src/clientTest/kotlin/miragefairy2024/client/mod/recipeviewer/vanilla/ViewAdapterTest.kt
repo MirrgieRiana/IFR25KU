@@ -96,7 +96,7 @@ private class AdapterFixture(vararg views: TestView) {
             it.register(TestView::class.java) { context, view, bounds ->
                 val widget = RecordingWidget(bounds)
                 widgets += widget
-                val remover = if (view.interactive) context.addRenderableWidget(widget) else context.addRenderableOnly(widget)
+                val remover = if (view.interactive) context.addRenderableWidget(widget, null) else context.addRenderableOnly(widget, null)
                 removers += remover
                 view.beforeRender?.let { listener -> context.onBeforeRender.register { listener() } }
                 object : ViewController {
@@ -257,7 +257,7 @@ class ViewAdapterTest {
             it.register(TestView::class.java) { context, view, bounds ->
                 val widget = RecordingWidget(bounds)
                 widgets += widget
-                if (view.interactive) context.addRenderableWidget(widget) else context.addRenderableOnly(widget)
+                if (view.interactive) context.addRenderableWidget(widget, null) else context.addRenderableOnly(widget, null)
                 object : ViewController {
                     override fun setOffset(offset: IntPoint) = widget.setPosition(offset.x, offset.y)
                     override fun detach() = throw UnsupportedOperationException()
