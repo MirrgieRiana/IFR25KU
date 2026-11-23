@@ -13,9 +13,9 @@ sealed interface WidgetRenderOverflow {
     data object None : WidgetRenderOverflow
 
     /** Widget の各辺から外向きに測った非負のはみ出し量なのだ～🌱 */
-    data class Outsets(val left: Int, val right: Int, val top: Int, val bottom: Int) : WidgetRenderOverflow {
+    data class Outsets(val xMin: Int, val xMax: Int, val yMin: Int, val yMax: Int) : WidgetRenderOverflow {
         init {
-            require(left >= 0 && right >= 0 && top >= 0 && bottom >= 0) { "Widget render outsets must be non-negative" }
+            require(xMin >= 0 && xMax >= 0 && yMin >= 0 && yMax >= 0) { "Widget render outsets must be non-negative" }
         }
     }
 
