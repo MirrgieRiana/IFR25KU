@@ -189,10 +189,6 @@ class SoulStreamViewWrapper(
                     view += YListView().configure {
                         view.sizingY = Sizing.FILL
 
-                        val scrollView = YScrollContainerView().also {
-                            it.scrollStep = SlotType.NORMAL.viewTexture.size.y
-                        }
-
                         val columnCount = 9
                         val hotbarSlotIndex = columnCount * 3
                         val passiveSkillSlotIndex = hotbarSlotIndex + columnCount
@@ -214,6 +210,9 @@ class SoulStreamViewWrapper(
                             view.sizingY = Sizing.FILL
                             position.weight = 1.0
 
+                            val scrollView = YScrollContainerView().also {
+                                it.scrollStep = SlotType.NORMAL.viewTexture.size.y
+                            }
                             view += scrollView.configure {
                                 view += YListView().configure {
                                     (storageSlotIndex until menu.slots.size).chunked(columnCount).forEach {
@@ -252,22 +251,6 @@ class SoulStreamViewWrapper(
                         position.ignoreLayoutX = true
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL
-
-                        var effects = collectPassiveSkillTexts()
-                        val effectList = DynamicView(createEffectList(effects))
-                        val scrollView = YScrollContainerView().also {
-                            it += effectList
-                        }
-
-                        refreshEffects = {
-                            val newEffects = collectPassiveSkillTexts()
-                            if (effects != newEffects) {
-                                effects = newEffects
-                                effectList.content.value = createEffectList(effects)
-                                scrollView.updateScrollBounds()
-                                scrollView.clampScrollOffset()
-                            }
-                        }
 
                         view += LayeredImageButtonView(IntPoint(14, 14)).configure {
                             view.backgroundSprites = BUTTON_14_BACKGROUND
@@ -308,6 +291,11 @@ class SoulStreamViewWrapper(
                                 view.sizingX = Sizing.FILL
                                 view.sizingY = Sizing.FILL
 
+                                var effects = collectPassiveSkillTexts()
+                                val effectList = DynamicView(createEffectList(effects))
+                                val scrollView = YScrollContainerView().also {
+                                    it += effectList
+                                }
                                 view += scrollView
                                 val scrollbarView = YFlatScrollbarView().also {
                                     it.scrollbarColor = 0xA0FFFFFF.toInt()
@@ -317,6 +305,16 @@ class SoulStreamViewWrapper(
                                     view += scrollbarView
                                 }
                                 connectScrollbar(scrollView, scrollbarView)
+
+                                refreshEffects = {
+                                    val newEffects = collectPassiveSkillTexts()
+                                    if (effects != newEffects) {
+                                        effects = newEffects
+                                        effectList.content.value = createEffectList(effects)
+                                        scrollView.updateScrollBounds()
+                                        scrollView.clampScrollOffset()
+                                    }
+                                }
                             }.margin(4)
                         }
                     }.margin(0, 0, 0, RECIPE_VIEWER_MARGIN)
