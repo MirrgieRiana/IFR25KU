@@ -34,7 +34,6 @@ import net.minecraft.client.gui.components.ImageButton
 import net.minecraft.client.gui.components.Tooltip
 import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.client.gui.screens.inventory.InventoryScreen
-import net.minecraft.client.renderer.RenderType
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.player.Inventory
@@ -60,7 +59,7 @@ private val FILTER_OVERLAY_TEXTURE = MirageFairy2024.identifier("textures/gui/sp
 context(_: ModContext)
 fun initSoulStreamClientModule() {
 
-    // GUI登録
+    // GUI 登録
     soulStreamScreenHandlerType.registerHandledScreen { gui, inventory, title -> SoulStreamScreen(gui, inventory, title) }
 
     // ソウルストリームのキーバインド
