@@ -61,6 +61,10 @@ class ViewAdapter(val host: ViewAdapterHost) {
     private val onBeforeRender = EventRegistry<() -> Unit>()
     private val onTick = EventRegistry<() -> Unit>()
 
+    /** ルート View の表示終了を通知するイベントで、次の表示では新しいレジストリを使うのだ～🌱 */
+    var onRemoved = EventRegistry<() -> Unit>()
+        private set
+
     private class MouseClickSentinel : GuiEventListener, NarratableEntry {
 
         var clicked = false
@@ -125,8 +129,14 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     /** ルート View の保持を解除し、配置に伴うイベント登録などの後始末を行うのだ～🌱 */
     fun removed() {
+        val onRemoved = this.onRemoved
+        this.onRemoved = EventRegistry()
         rootViewCache.reset()
-        disposePlacement()
+        try {
+            disposePlacement()
+        } finally {
+            onRemoved.fire()
+        }
     }
 
     private fun disposePlacement() {

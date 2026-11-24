@@ -54,6 +54,8 @@ abstract class ViewScreen(title: Component) : Screen(title) {
 
     })
 
+    protected val onRemoved get() = viewAdapter.onRemoved
+
     override fun init() = viewAdapter.init()
 
     override fun tick() {

@@ -379,6 +379,29 @@ class ViewAdapterTest {
     }
 
     @Test
+    fun `画面が外れたときだけ現在の表示の終了を通知するのだ`() {
+        val fixture = AdapterFixture(TestView(true))
+        val adapter = fixture.adapter
+        val disposalsAtRemoval = mutableListOf<Int>()
+        adapter.onRemoved.add {
+            disposalsAtRemoval += fixture.disposals
+        }
+
+        fixture.init()
+        assertTrue(disposalsAtRemoval.isEmpty())
+
+        adapter.removed()
+        assertEquals(listOf(2), disposalsAtRemoval)
+
+        fixture.init()
+        adapter.onRemoved.add {
+            disposalsAtRemoval += fixture.disposals
+        }
+        adapter.removed()
+        assertEquals(listOf(2, 3), disposalsAtRemoval)
+    }
+
+    @Test
     fun `破棄の後始末から再入しても入力を消費しないのだ`() {
         val fixture = AdapterFixture(TestView(true))
         fixture.onDispose = {

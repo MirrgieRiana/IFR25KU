@@ -79,6 +79,8 @@ open class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Co
 
     })
 
+    protected val onRemoved get() = viewAdapter.onRemoved
+
     override fun init() = viewAdapter.init()
 
     override fun removed() {
