@@ -25,7 +25,7 @@ data class ScrollBounds(val contentLength: Int, val viewportLength: Int) {
 /**
  * 子 View を一方向へスクロールするのだ～🌱
  * スクロール方向のコンテンツが占有する最小のサイズは `0` なのだ～🌱
- * スクロール位置はコンテンツ座標で保持し、寸法が変わる再配置時には新しい範囲へ収めるのだ～🌱
+ * スクロール位置はコンテンツ座標で保持し、再配置時にも引き継ぐのだ～🌱
  * バニラでは、親のコンテキストが許可していれば、子孫に [miragefairy2024.mod.recipeviewer.views.MenuSlotView] を配置できるのだ～🌱
  */
 abstract class ScrollContainerView : WrapperView(), PlaceableView {
@@ -40,7 +40,6 @@ abstract class ScrollContainerView : WrapperView(), PlaceableView {
         }
 
     val scrollBounds = ObservableValue(ScrollBounds(0, 0))
-    private var hasBeenPlaced = false
 
     val onScrollInput = EventRegistry<() -> Unit>()
 
@@ -60,12 +59,8 @@ abstract class ScrollContainerView : WrapperView(), PlaceableView {
     }
 
     override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
-        val previousBounds = scrollBounds.value
         updateScrollBounds()
-        if (hasBeenPlaced && scrollBounds.value != previousBounds) clampScrollOffset()
-        val controller = viewPlacer.place(this, offset.sized(evaluateActualSize()))
-        hasBeenPlaced = true
-        return controller
+        return viewPlacer.place(this, offset.sized(evaluateActualSize()))
     }
 
 }

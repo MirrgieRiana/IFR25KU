@@ -201,7 +201,7 @@ class ScrollContainerViewTest {
     }
 
     @Test
-    fun `再配置時に寸法を通知しスクロール位置を現在の範囲へ収めるのだ`() {
+    fun `配置時に子の全長と表示領域の長さを通知するのだ`() {
         listOf(false, true).forEach { horizontal ->
             val child: AbstractView = object : AbstractView() {
                 override val sizingX = Sizing.WRAP
@@ -210,26 +210,11 @@ class ScrollContainerViewTest {
                 override fun evaluateContentSizeYImpl() = 300
                 override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>) = ViewController.NONE
             }
-            val (view, scrollOffset) = if (horizontal) {
-                XScrollContainerView().let { it to it.scrollOffsetX }
-            } else {
-                YScrollContainerView().let { it to it.scrollOffsetY }
-            }
+            val view = if (horizontal) XScrollContainerView() else YScrollContainerView()
             view += child
             view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 100 }, { 80 })
             view.attachTo(IntPoint.ZERO) { _, _ -> ViewController.NONE }
             Assertions.assertEquals(ScrollBounds(300, if (horizontal) 100 else 80), view.scrollBounds.value)
-
-            scrollOffset.value = 172.5
-            view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 120 }, { 120 })
-            view.attachTo(IntPoint.ZERO) { _, _ -> ViewController.NONE }
-            Assertions.assertEquals(ScrollBounds(300, 120), view.scrollBounds.value)
-            Assertions.assertEquals(172.5, scrollOffset.value)
-
-            view.initSizeCalculation(SCROLL_RENDERING_PROXY, { 200 }, { 200 })
-            view.attachTo(IntPoint.ZERO) { _, _ -> ViewController.NONE }
-            Assertions.assertEquals(ScrollBounds(300, 200), view.scrollBounds.value)
-            Assertions.assertEquals(100.0, scrollOffset.value)
         }
     }
 

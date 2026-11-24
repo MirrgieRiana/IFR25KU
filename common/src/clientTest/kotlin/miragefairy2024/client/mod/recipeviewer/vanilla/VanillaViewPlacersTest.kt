@@ -1,13 +1,16 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import miragefairy2024.MessageViewScreenDefinition
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.SlotPositionSetter
 import miragefairy2024.client.mod.recipeviewer.RenderOverflow
 import miragefairy2024.client.util.ViewToast
+import miragefairy2024.mod.TooltipViewerScreenContent
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.AbsoluteView
@@ -39,19 +42,28 @@ import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
 import miragefairy2024.util.register
 import miragefairy2024.util.text
+import net.minecraft.SharedConstants
 import net.minecraft.Util
 import net.minecraft.client.DeltaTracker
+import net.minecraft.client.GameNarrator
+import net.minecraft.client.InputType
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.Button
+import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.components.toasts.Toast
 import net.minecraft.client.gui.components.toasts.ToastComponent
 import net.minecraft.client.gui.narration.NarrationElementOutput
+import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.FormattedText
+import net.minecraft.network.chat.Style
+import net.minecraft.server.Bootstrap
 import net.minecraft.util.FormattedCharSequence
 import net.minecraft.world.Container
 import net.minecraft.world.inventory.Slot
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -97,6 +109,67 @@ class VanillaViewPlacersTest {
                 override fun dispose() {
                     view.disposals += 1
                 }
+            }
+        }
+    }
+
+    @Test
+    fun `ツールチップビューワーのリサイズで検索と絞り込みとスクロール位置を引き継ぐのだ`() {
+        SharedConstants.tryDetectVersion()
+        Bootstrap.bootStrap()
+
+        val measuredLines = mutableSetOf<String>()
+        val testRenderingProxy = object : RenderingProxy {
+            override fun calculateTextWidth(text: FormattedText) = text.string.length * 6
+            override fun calculateTextWidth(text: FormattedCharSequence) = throw UnsupportedOperationException()
+            override fun getTextHeight() = 9
+            override fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence> {
+                measuredLines += text.string
+                return listOf(FormattedCharSequence.forward(text.string, Style.EMPTY))
+            }
+        }
+        val lines = listOf("first", "second", "third")
+        val definition = MessageViewScreenDefinition(Component.empty()) {
+            val root = TooltipViewerScreenContent(List(5) { ItemStack(Items.STONE) }) { lines.map { Component.literal(it) } }.view
+            object : View by root {
+                override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
+                    root.initSizeCalculation(testRenderingProxy, regionSizeXProvider, regionSizeYProvider)
+                }
+            }
+        }
+
+        fun contentOffset(viewport: VanillaYScrollContainerViewWidget): Int {
+            return viewport.y - viewport.children().filterIsInstance<AbstractWidget>().minOf { it.y }
+        }
+
+        GuiTestEnvironment().use {
+            val minecraft = Minecraft.getInstance()
+            Mockito.`when`(minecraft.lastInputType).thenReturn(InputType.MOUSE)
+            Mockito.`when`(minecraft.narrator).thenReturn(Mockito.mock(GameNarrator::class.java))
+            val screen = MessageViewScreen(null, definition)
+            minecraft.screen = screen
+            try {
+                screen.init(minecraft, 320, 100)
+                val search = screen.children().filterIsInstance<EditBox>().single()
+                val viewport = screen.children().filterIsInstance<VanillaYScrollContainerViewWidget>().single()
+                Assertions.assertEquals(lines.toSet(), measuredLines)
+
+                search.value = "0,2"
+                Assertions.assertTrue(screen.mouseScrolled(viewport.x + 1.0, viewport.y + 1.0, 0.0, -2.0))
+                val offset = contentOffset(viewport)
+                Assertions.assertEquals(30, offset)
+
+                measuredLines.clear()
+                screen.resize(minecraft, 400, 240)
+
+                val resizedSearch = screen.children().filterIsInstance<EditBox>().single()
+                val resizedViewport = screen.children().filterIsInstance<VanillaYScrollContainerViewWidget>().single()
+                Assertions.assertNotSame(search, resizedSearch)
+                Assertions.assertEquals("0,2", resizedSearch.value)
+                Assertions.assertEquals(setOf("first", "third"), measuredLines)
+                Assertions.assertEquals(offset, contentOffset(resizedViewport))
+            } finally {
+                screen.removed()
             }
         }
     }
