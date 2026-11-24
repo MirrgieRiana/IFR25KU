@@ -82,265 +82,126 @@ class SoulStreamScreenContent(
     fun createView(title: Component): View {
         dispose()
 
-        /*
-        rootComponent.apply {
-        */
         return View {
             view += StackView().configure {
                 view.sizingX = Sizing.FILL
                 view.sizingY = Sizing.FILL
 
-            /*
-            surface(Surface.flat(0xFFC6C6C6.toInt()))
-            */
-            view += FilledRectangleView().configure {
-            view.color.value = 0xFFC6C6C6.toInt()
-            }
-        /*
-            allowOverflow(true) // expandの端数処理の不具合で1pxだけはみ出すことがある
-            padding(Insets.of(4))
-            gap(4)
-        */
-        view += XListView().configure {
+                view += FilledRectangleView().configure {
+                    view.color.value = 0xFFC6C6C6.toInt()
+                }
+                view += XListView().configure {
                     view.sizingX = Sizing.FILL
                     view.sizingY = Sizing.FILL
 
                     // 左ペイン
-                    /*
-                    child(Containers.verticalFlow(Sizing.expand(50), Sizing.fill()).apply {
-                        padding(Insets.of(0, 20, 0, 0)) // レシピMOD用に下部を保護
-                        gap(2)
-                    */
                     view += YListView().configure {
-                    position.weight = 1.0
+                        position.weight = 1.0
                         position.ignoreLayoutX = true
-                    view.sizingX = Sizing.FILL
-                    view.sizingY = Sizing.FILL
+                        view.sizingX = Sizing.FILL
+                        view.sizingY = Sizing.FILL
 
-                            val scrollView = YScrollContainerView()
+                        val scrollView = YScrollContainerView()
 
                         // 左ペインボタン
-                        /*
-                        child(Containers.horizontalFlow(Sizing.fill(), Sizing.content()).apply {
-                            gap(2)
-
-                        */
                         view += XListView().configure {
                             // ハイライトリセットボタン
-                            /*
-                            child(LayeredImageButton(14, 14, BUTTON_14_BACKGROUND, run {
-                                WidgetSprites(MirageFairy2024.identifier("button_14/clear_foreground"))
-                            }).apply {
-                            */
                             view += LayeredImageButtonView(IntPoint(14, 14)).configure {
-                            view.backgroundSprites = BUTTON_14_BACKGROUND
+                                view.backgroundSprites = BUTTON_14_BACKGROUND
                                 view.foregroundSprites = LayeredImageButtonView.Sprites.of(MirageFairy2024.identifier("button_14/clear_foreground"))
-                                /*
-                                tooltip(text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() })
-                                */
                                 view.tooltip.value = text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() }
-                                /*
-
-                                onClick.register {
-                                    enabledPassiveSkillEffectFilters.value = mapOf()
-                                */
                                 view.onClick.register {
                                     enabledPassiveSkillEffectFilters.value = emptyMap()
                                 }
-                            /*
-                            })
-                            */
                             }
                             view += XSpaceView(2)
 
                             // グローバル検索トグルボタン
-                            /*
-                            child(LayeredImageToggleButton(14, 14, BUTTON_14_BACKGROUND, run {
-                                WidgetSprites(MirageFairy2024.identifier("button_14/global_search_foreground"))
-                            }).apply {
-                            */
                             view += LayeredImageButtonView(IntPoint(14, 14)).configure {
-                            view.backgroundSprites = BUTTON_14_BACKGROUND
+                                view.backgroundSprites = BUTTON_14_BACKGROUND
                                 view.foregroundSprites = LayeredImageButtonView.Sprites.of(MirageFairy2024.identifier("button_14/global_search_foreground"))
-                                /*
-                                tooltip(text { SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION() })
-                                */
                                 view.tooltip.value = text { SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION() }
-                                /*
-
-                                enableGlobalFairyHighlight.observeAndInitialize(onClose) { _, _ ->
-                                    value.value = enableGlobalFairyHighlight.value
-                                */
                                 enableGlobalFairyHighlight.observeAndInitialize(onViewClosed) { _, enabled ->
                                     view.selected.value = enabled
                                 }
-                                /*
-                                value.register { _, _ ->
-                                    enableGlobalFairyHighlight.value = value.value
-                                */
                                 view.onClick.register {
                                     enableGlobalFairyHighlight.value = !enableGlobalFairyHighlight.value
                                 }
-                            /*
-                            })
-                            */
                             }
-                        /*
-
-                        })
-                        */
                         }
                         view += YSpaceView(2)
 
                         // ハイライトフィルタ
-                        /*
-                        child(tooltipContainer(Sizing.fill(), Sizing.expand(100)).apply {
-                        */
                         view += StackView().configure {
-                        view.sizingX = Sizing.FILL
-                        view.sizingY = Sizing.FILL
-                        position.weight = 1.0
+                            view.sizingX = Sizing.FILL
+                            view.sizingY = Sizing.FILL
+                            position.weight = 1.0
 
                             view += TooltipBackgroundView()
                             view += XListView().configure {
                                 view.sizingX = Sizing.FILL
                                 view.sizingY = Sizing.FILL
 
-                            /*
-                            child(verticalScroll(Sizing.fill(), Sizing.fill(), 5).apply {
-                                scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0FFFFFF.toInt())))
-                            */
-                            view += scrollView.configure {
+                                view += scrollView.configure {
                                     position.weight = 1.0
                                     position.ignoreLayoutX = true
-                                    /*
-                                child().apply {
-                                    */
                                     view += YListView().configure {
-                                    view.sizingX = Sizing.FILL
+                                        view.sizingX = Sizing.FILL
 
-                                    // TODO 条件フィルタ
-                                    // 条件は実装しても不毛なことになりそう
-                                    // 例えば満腹度は上下と数値で個別にエントリを作る必要がある
-                                    // doubleで管理されるものもあり、identifierを作りにくい
-                                    // ツール系は該当する妖精が1体しかない条件がずらっと並ぶことになる
-                                    // 実装しても微妙なのが多すぎて折り畳み可能にしないといけないかも
+                                        // TODO 条件フィルタ
+                                        // 条件は実装しても不毛なことになりそう
+                                        // 例えば満腹度は上下と数値で個別にエントリを作る必要がある
+                                        // doubleで管理されるものもあり、identifierを作りにくい
+                                        // ツール系は該当する妖精が1体しかない条件がずらっと並ぶことになる
+                                        // 実装しても微妙なのが多すぎて折り畳み可能にしないといけないかも
 
-                                    /*
-                                    child().child(Components.label(text { SOUL_STREAM_PASSIVE_SKILL_EFFECT_TRANSLATION().blue.bold }).horizontalTextAlignment(HorizontalAlignment.CENTER).horizontalSizing(Sizing.fill()))
-                                    */
-                                    view += TextView(text { SOUL_STREAM_PASSIVE_SKILL_EFFECT_TRANSLATION().blue.bold }).configure {
-                                    view.sizingX = Sizing.FILL
-                                    view.alignmentX = Alignment.CENTER
+                                        view += TextView(text { SOUL_STREAM_PASSIVE_SKILL_EFFECT_TRANSLATION().blue.bold }).configure {
+                                            view.sizingX = Sizing.FILL
+                                            view.alignmentX = Alignment.CENTER
                                             view.shadow = false
-                                    }
-                                        /*
-                                    child().child(Containers.verticalFlow(Sizing.fill(), Sizing.content()).apply {
-                                        */
+                                        }
                                         passiveSkillEffectRegistry.entrySet().sortedBy { it.key.location() }.forEach { (_, effect) ->
-                                            /*
-                                            fun <T : Any> f(effect: PassiveSkillEffect<T>) {
-                                            */
                                             fun <T : Any> addFilters(effect: PassiveSkillEffect<T>) {
                                                 val samples = motifRegistry.entrySet()
                                                     .flatMap { it.value.passiveSkillSpecifications }
                                                     .mapNotNull { if (it.effect == effect) effect.castOrNull(it.valueProvider(10.0)) else null }
                                                 effect.getFilters(samples).sortedBy { it.identifier }.forEach { filter ->
-                                                            /*
-                                                    lateinit var updateLabel: () -> Unit
-                                                    child(ClickableContainer(Sizing.fill(), Sizing.content()).apply {
-                                                        onClick.register {
-                                                            if (filter.identifier in enabledPassiveSkillEffectFilters.value) {
-                                                                enabledPassiveSkillEffectFilters.value = enabledPassiveSkillEffectFilters.value - filter.identifier
-                                                            } else {
-                                                                enabledPassiveSkillEffectFilters.value = enabledPassiveSkillEffectFilters.value + (filter.identifier to filter)
-                                                            }
-                                                            true
-                                                        }
-                                                        child(Components.label(Component.empty()).apply {
-                                                            updateLabel = {
-                                                                if (filter.identifier in enabledPassiveSkillEffectFilters.value) {
-                                                                    text(filter.text.gold)
-                                                                    tooltip(filter.text.gold)
-                                                                } else {
-                                                                    text(filter.text)
-                                                                    tooltip(filter.text)
-                                                                }
-                                                            }
-                                                            */
-                                                            fun label(filters: Map<ResourceLocation, PassiveSkillEffectFilter<*>>) = if (filter.identifier in filters) filter.text.gold else filter.text
+                                                    fun label(filters: Map<ResourceLocation, PassiveSkillEffectFilter<*>>) = if (filter.identifier in filters) filter.text.gold else filter.text
 
                                                     view += AlignView().configure {
-                                                    view.sizingY = Sizing.WRAP
+                                                        view.sizingY = Sizing.WRAP
 
                                                         view += TextView().configure {
                                                             view.shadow = false
-                                                            /*
-                                                            enabledPassiveSkillEffectFilters.observeAndInitialize(onClose) { _, _ ->
-                                                                updateLabel()
-                                                            }
-                                                            */
                                                             enabledPassiveSkillEffectFilters.observeAndInitialize(onViewClosed) { _, filters ->
                                                                 view.text.value = label(filters).visualOrderText
                                                             }
-                                                                    /*
-                                                        })
-                                                                    */
-                                                                    }.tooltip { _, _ -> listOf(label(enabledPassiveSkillEffectFilters.value)) }
-                                                        }.onClick {
-                                                            val filters = enabledPassiveSkillEffectFilters.value
-                                                                enabledPassiveSkillEffectFilters.value = if (filter.identifier in filters) filters - filter.identifier else filters + (filter.identifier to filter)
-                                                            true
-                                                        }
-                                                /*
-                                                    })
-                                                */
+                                                        }.tooltip { _, _ -> listOf(label(enabledPassiveSkillEffectFilters.value)) }
+                                                    }.onClick {
+                                                        val filters = enabledPassiveSkillEffectFilters.value
+                                                        enabledPassiveSkillEffectFilters.value = if (filter.identifier in filters) filters - filter.identifier else filters + (filter.identifier to filter)
+                                                        true
+                                                    }
                                                 }
                                             }
-                                            /*
-                                            f(effect)
-                                            */
                                             addFilters(effect)
                                         }
-                                    /*
-                                    })
-
-                                }
-                                    */
                                     }
-                            /*
-                            })
-                            */
-                            }
+                                }
                                 val scrollbarView = YFlatScrollbarView().also {
-                                it.scrollbarColor = 0xA0FFFFFF.toInt()
+                                    it.scrollbarColor = 0xA0FFFFFF.toInt()
                                 }
                                 view += scrollbarView
                                 connectScrollbar(scrollView, scrollbarView)
                             }.margin(4)
-                        /*
-                        })
-
-                        */
                         }
-                        /*
-                    })
-                        */
-                        }.margin(0, 0, 0, RECIPE_VIEWER_MARGIN) // レシピMOD用に下部を保護
+                    }.margin(0, 0, 0, RECIPE_VIEWER_MARGIN) // レシピMOD用に下部を保護
 
-            view += XSpaceView(PANE_GAP)
+                    view += XSpaceView(PANE_GAP)
 
                     // メインコンテナ
-                    /*
-                    child(Containers.verticalFlow(Sizing.fixed(18 * 9 + 18), Sizing.fill()).apply {
-
-                        //child(inventoryNameLabel(title))
-
-                        //child(verticalSpace(3))
-
-                    */
                     view += YListView().configure {
-                    view.sizingY = Sizing.FILL
+                        view.sizingY = Sizing.FILL
 
                         val columnCount = 9
                         val hotbarSlotIndex = columnCount * 3
@@ -357,322 +218,139 @@ class SoulStreamScreenContent(
                             }
                         }
 
-                        /*
-                        child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-                            surface(Surface.tiled(SlotType.FAIRY.viewTexture.id, 18, 18))
-                            repeat(9) { index ->
-                                child(slotContainer(slotAsComponent(9 * 3 + 9 + index), type = null))
-                            }
-                        })
-
-                        */
                         view += createSlotRow(passiveSkillSlotIndex until storageSlotIndex, SlotType.FAIRY)
-                        /*
-                        child(verticalSpace(4))
-
-                        */
                         view += YSpaceView(4)
-                        /*
-                        child(verticalScroll(Sizing.fill(100), Sizing.expand(), 18).apply {
-                            surface(Surface.tiled(SlotType.NORMAL.viewTexture.id, 18, 18))
-                            scrollbar(ScrollContainer.Scrollbar.vanilla())
-                        */
                         view += XListView().configure {
                             view.sizingY = Sizing.FILL
                             position.weight = 1.0
 
-                        val scrollView = YScrollContainerView().also {
-                            /*
-                            scrollStep(18)
-                            */
-                            it.scrollStep = SlotType.NORMAL.viewTexture.size.y
-                        }
-                        view += scrollView.configure {
+                            val scrollView = YScrollContainerView().also {
+                                it.scrollStep = SlotType.NORMAL.viewTexture.size.y
+                            }
+                            view += scrollView.configure {
                                 view += YListView().configure {
-                            /*
-                            (9 until menu.soulStream.size).chunked(9).forEach { indices ->
-                            */
-                            (storageSlotIndex until menu.slots.size).chunked(columnCount).forEach {
-                                /*
-                                child().child(Containers.horizontalFlow(Sizing.fill(100), Sizing.content()).apply {
-                                    indices.forEach { index ->
-                                        child(slotContainer(slotAsComponent(9 * 3 + 9 + index), type = null))
+                                    (storageSlotIndex until menu.slots.size).chunked(columnCount).forEach {
+                                        view += createSlotRow(it, SlotType.NORMAL)
                                     }
-                                })
-                                */
-                                view += createSlotRow(it, SlotType.NORMAL)
-                            /*
-                            }
-                            */
-                            }
                                 }
-                        }
+                            }
                             val scrollbarView = YInventoryScrollbarView().also {
                                 it.scrollStep = scrollView.scrollStep
                             }
                             view += scrollbarView
                             connectScrollbar(scrollView, scrollbarView)
-                        /*
-                        })
-
-                        */
                         }
-                        /*
-                        child(verticalSpace(4))
-
-                        */
                         view += YSpaceView(4)
 
-                        /*
-                        //child(inventoryNameLabel(menu.playerInventory.name))
-
-                        //child(verticalSpace(1))
-
-                        */
                         // プレイヤーインベントリ
-                            /*
-                        child(Containers.verticalFlow(Sizing.content(), Sizing.content()).apply {
-                            surface(Surface.tiled(SlotType.NORMAL.viewTexture.id, 18, 18))
-                            repeat(3) { r ->
-                                child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-                                    repeat(9) { c ->
-                                        child(slotContainer(slotAsComponent(9 * r + c), type = null))
-                                    }
-                                })
-                            */
-                            (0 until hotbarSlotIndex).chunked(columnCount).forEach {
-                                view += createSlotRow(it, SlotType.NORMAL)
-                            }
-                        /*
-                        })
-                        child(verticalSpace(4))
-                        */
+                        (0 until hotbarSlotIndex).chunked(columnCount).forEach {
+                            view += createSlotRow(it, SlotType.NORMAL)
+                        }
                         view += YSpaceView(4)
-                        /*
-                        child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-                            surface(Surface.tiled(SlotType.NORMAL.viewTexture.id, 18, 18))
-                            repeat(9) { c ->
-                                child(slotContainer(slotAsComponent(9 * 3 + c), type = null))
-                            }
-                        })
-                        */
                         view += createSlotRow(hotbarSlotIndex until passiveSkillSlotIndex, SlotType.NORMAL)
 
                         // GUIタイトルはレシピMOD用の保護領域に持ってくる
-                        /*
-                        child(verticalSpace(5))
-                        */
                         view += YSpaceView(5)
-                        /*
-                        child(inventoryNameLabel(title).horizontalTextAlignment(HorizontalAlignment.CENTER))
-                        */
                         view += TextView(title).configure {
                             position.ignoreLayoutX = true
                             view.sizingX = Sizing.FILL
                             view.color = ColorPair.DARK_GRAY
                             view.shadow = false
-                        view.alignmentX = Alignment.CENTER
+                            view.alignmentX = Alignment.CENTER
                         }
-                        /*
-                        child(verticalSpace(5))
-                        */
                         view += YSpaceView(5)
-                    /*
-
-                    })
-                    */
                     }
 
-            view += XSpaceView(PANE_GAP)
+                    view += XSpaceView(PANE_GAP)
 
                     // 右ペイン
-                    /*
-                    child(Containers.verticalFlow(Sizing.expand(50), Sizing.fill()).apply {
-                        padding(Insets.of(0, 20, 0, 0)) // レシピMOD用に下部を保護
-                        gap(2)
-                    */
                     view += YListView().configure {
-                    position.weight = 1.0
+                        position.weight = 1.0
                         position.ignoreLayoutX = true
-                    view.sizingX = Sizing.FILL
-                    view.sizingY = Sizing.FILL
+                        view.sizingX = Sizing.FILL
+                        view.sizingY = Sizing.FILL
 
                         // 右ペインボタン
-                            /*
-                        child(Containers.horizontalFlow(Sizing.fill(), Sizing.content()).apply {
-                            gap(2)
-
-                            */
-                            // 収集効果の有効化切り替えボタン
-                            /*
-                            child(LayeredImageToggleButton(14, 14, BUTTON_14_BACKGROUND, run {
-                            */
-                            view += LayeredImageButtonView(IntPoint(14, 14)).configure {
+                        // 収集効果の有効化切り替えボタン
+                        view += LayeredImageButtonView(IntPoint(14, 14)).configure {
                             view.backgroundSprites = BUTTON_14_BACKGROUND
-                                /*
-                                WidgetSprites(
-                                */
-                                view.foregroundSprites = LayeredImageButtonView.Sprites(
-                                    MirageFairy2024.identifier("button_14/collection_enabled_foreground"),
-                                    MirageFairy2024.identifier("button_14/collection_disabled_foreground"),
-                                    MirageFairy2024.identifier("button_14/collection_enabled_foreground"),
-                                    MirageFairy2024.identifier("button_14/collection_disabled_foreground"),
-                                )
-                                /*
-                            }).apply {
-                                val player = Minecraft.getInstance().player ?: return@apply
-                                fun update() {
-                                */
-                                fun updateButton() {
-                                    /*
-                                    value.value = player.collectionEnabled.getOrDefault()
-                                    */
-                                    val enabled = player.collectionEnabled.getOrDefault()
-                                    view.selected.value = enabled
-                                    /*
-                                    tooltip(text { (if (value.value) COLLECTION_ENABLED_TRANSLATION() else COLLECTION_DISABLED_TRANSLATION()) + " ("() + toggleCollectionEnabledKeyMappingCard() + ")"() })
-                                    */
-                                    view.tooltip.value = text {
+                            view.foregroundSprites = LayeredImageButtonView.Sprites(
+                                MirageFairy2024.identifier("button_14/collection_enabled_foreground"),
+                                MirageFairy2024.identifier("button_14/collection_disabled_foreground"),
+                                MirageFairy2024.identifier("button_14/collection_enabled_foreground"),
+                                MirageFairy2024.identifier("button_14/collection_disabled_foreground"),
+                            )
+                            fun updateButton() {
+                                val enabled = player.collectionEnabled.getOrDefault()
+                                view.selected.value = enabled
+                                view.tooltip.value = text {
                                     val message = if (enabled) COLLECTION_ENABLED_TRANSLATION() else COLLECTION_DISABLED_TRANSLATION()
                                     message + " ("() + collectionToggleKeyText + ")"()
-                                    }
                                 }
-                                /*
-                                AttachmentChangedEvent.eventRegistry.observe(onClose) { identifier ->
-                                */
-                                AttachmentChangedEvent.eventRegistry.observe(onViewClosed) { identifier ->
-                                    if (identifier == COLLECTION_ENABLED_ATTACHMENT_TYPE.identifier()) {
-                                        /*
-                                        update()
-                                        */
-                                        updateButton()
-                                    }
+                            }
+                            AttachmentChangedEvent.eventRegistry.observe(onViewClosed) { identifier ->
+                                if (identifier == COLLECTION_ENABLED_ATTACHMENT_TYPE.identifier()) {
+                                    updateButton()
                                 }
-                                /*
-                                update()
-                                */
-                                updateButton()
-                                /*
-                                value.register { _, _ ->
-                                */
-                                view.onClick.register {
+                            }
+                            updateButton()
+                            view.onClick.register {
                                 val enabled = !view.selected.value
                                 view.selected.value = enabled
-                                    /*
-                                    if (player.collectionEnabled.getOrDefault() != value.value) {
-                                        SetCollectionEnabledChannel.sendToServer(value.value)
-                                    }
-                                    */
-                                    if (player.collectionEnabled.getOrDefault() != enabled) setCollectionEnabled(enabled)
-                                }
-                            /*
-                            })
-
-                        })
-                            */
+                                if (player.collectionEnabled.getOrDefault() != enabled) setCollectionEnabled(enabled)
                             }
+                        }
                         view += YSpaceView(2)
 
                         // 効果欄
-                        /*
-                        child(tooltipContainer(Sizing.fill(), Sizing.fill()).apply {
-                        */
                         view += StackView().configure {
-                        view.sizingX = Sizing.FILL
-                        view.sizingY = Sizing.FILL
+                            view.sizingX = Sizing.FILL
+                            view.sizingY = Sizing.FILL
                             position.weight = 1.0
 
                             view += TooltipBackgroundView()
-                            /*
-                            child(verticalScroll(Sizing.fill(), Sizing.fill(), 5, overlapped = true).apply {
-                                scrollbar(ScrollContainer.Scrollbar.flat(Color.ofArgb(0xA0FFFFFF.toInt())))
-                            */
                             view += StackView().configure {
                                 view.sizingX = Sizing.FILL
                                 view.sizingY = Sizing.FILL
 
-                                    /*
-                                child().apply {
-                                    val container = this
-
-                                    fun refresh() {
-                                        container.clearChildren()
-
-                                    */
-                                    fun collectPassiveSkillTexts(): List<Component> {
-                                        /*
-                                        val player = Minecraft.getInstance().player ?: return
-                                        */
-                                        val passiveSkillProviders = player.findPassiveSkillProviders()
-                                        val result = PassiveSkillResult()
-                                        result.collect(passiveSkillProviders.passiveSkills, player, ManaBoostPassiveSkillEffect.Value(mapOf()), true)
-                                        val manaBoostValue = result[ManaBoostPassiveSkillEffect]
-                                        result.collect(passiveSkillProviders.passiveSkills, player, manaBoostValue, false)
-                                        /*
-
-                                        if (result.map.isEmpty()) {
-                                            container.child(Components.label(text { SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION().red }))
-                                        } else {
-                                            result.map.keys.sortedBy { passiveSkillEffectRegistry.getKey(it) }.forEach { effect ->
-                                        */
-                                        return result.map.keys.sortedBy { passiveSkillEffectRegistry.getKey(it) }.flatMap { effect ->
-                                            /*
-                                                fun <T : Any> f(effect: PassiveSkillEffect<T>) {
-                                                    val value = result[effect]
-                                                    effect.getTexts(value).forEach {
-                                            */
-                                            fun <T : Any> getTexts(effect: PassiveSkillEffect<T>) = effect.getTexts(result[effect]).map { it.gold }
-                                            /*
-                                                        container.child(Components.label(it.gold).tooltip(it.gold))
-                                                    }
-                                                }
-                                                f(effect)
-                                            }
-                                            */
-                                            getTexts(effect)
-                                        }
-                                    /*
-                                        }
+                                fun collectPassiveSkillTexts(): List<Component> {
+                                    val passiveSkillProviders = player.findPassiveSkillProviders()
+                                    val result = PassiveSkillResult()
+                                    result.collect(passiveSkillProviders.passiveSkills, player, ManaBoostPassiveSkillEffect.Value(mapOf()), true)
+                                    val manaBoostValue = result[ManaBoostPassiveSkillEffect]
+                                    result.collect(passiveSkillProviders.passiveSkills, player, manaBoostValue, false)
+                                    return result.map.keys.sortedBy { passiveSkillEffectRegistry.getKey(it) }.flatMap { effect ->
+                                        fun <T : Any> getTexts(effect: PassiveSkillEffect<T>) = effect.getTexts(result[effect]).map { it.gold }
+                                        getTexts(effect)
                                     }
-                                    */
-                                    }
-
-                                    fun createEffectList(effects: List<Component>): View {
-                                        return View {
-                                            view += YListView().configure {
-                                                if (effects.isEmpty()) {
-                                                    view += TextView(text { SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION().red }).configure {
-                                                        view.shadow = false
-                                                    }
-                                                } else {
-                                                    effects.forEach {
-                                                        view += TextView(it).configure {
-                                                            view.shadow = false
-                                                        }.tooltip(it)
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    /*
-
-                                    onUpdateListeners += {
-                                        refresh()
-                                    }
-                                    refresh()
-                                    */
-                                    var effects = collectPassiveSkillTexts()
-                                    val effectList = DynamicView(createEffectList(effects))
-                            val scrollView = YScrollContainerView().also {
-                                it += effectList
-                            /*
                                 }
-                            */
-                            }
-                            view += scrollView
+
+                                fun createEffectList(effects: List<Component>): View {
+                                    return View {
+                                        view += YListView().configure {
+                                            if (effects.isEmpty()) {
+                                                view += TextView(text { SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION().red }).configure {
+                                                    view.shadow = false
+                                                }
+                                            } else {
+                                                effects.forEach {
+                                                    view += TextView(it).configure {
+                                                        view.shadow = false
+                                                    }.tooltip(it)
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                var effects = collectPassiveSkillTexts()
+                                val effectList = DynamicView(createEffectList(effects))
+                                val scrollView = YScrollContainerView().also {
+                                    it += effectList
+                                }
+                                view += scrollView
                                 val scrollbarView = YFlatScrollbarView().also {
-                                it.scrollbarColor = 0xA0FFFFFF.toInt()
+                                    it.scrollbarColor = 0xA0FFFFFF.toInt()
                                 }
                                 view += AlignView().configure {
                                     view.alignmentX = Alignment.END
@@ -680,37 +358,23 @@ class SoulStreamScreenContent(
                                 }
                                 connectScrollbar(scrollView, scrollbarView)
 
-                                    view += TickView {
-                                        val now = System.nanoTime()
-                                        if (now - lastUpdateEventNanoTime < 100_000_000) return@TickView
-                                        lastUpdateEventNanoTime = now
+                                view += TickView {
+                                    val now = System.nanoTime()
+                                    if (now - lastUpdateEventNanoTime < 100_000_000) return@TickView
+                                    lastUpdateEventNanoTime = now
 
-                                        val newEffects = collectPassiveSkillTexts()
-                                        if (effects != newEffects) {
-                                            effects = newEffects
-                                            effectList.content.value = createEffectList(effects)
-                                            scrollView.updateScrollBounds()
-                                            scrollView.clampScrollOffset()
-                                        }
+                                    val newEffects = collectPassiveSkillTexts()
+                                    if (effects != newEffects) {
+                                        effects = newEffects
+                                        effectList.content.value = createEffectList(effects)
+                                        scrollView.updateScrollBounds()
+                                        scrollView.clampScrollOffset()
                                     }
-                            /*
-                            })
-                            */
+                                }
                             }.margin(4)
-                        /*
-                        })
-
-                        */
                         }
-                        /*
-                    })
-                        */
-                        }.margin(0, 0, 0, RECIPE_VIEWER_MARGIN) // レシピMOD用に下部を保護
-            /*
-
-        }
-            */
-            }.margin(PANE_MARGIN)
+                    }.margin(0, 0, 0, RECIPE_VIEWER_MARGIN) // レシピMOD用に下部を保護
+                }.margin(PANE_MARGIN)
             }
         }
     }
