@@ -88,8 +88,14 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
     override fun stillValid(player: Player) = true
     override fun quickMoveStack(player: Player, slot: Int): ItemStack = slots[slot].item
 
-    override fun createView(title: Component, playerInventoryTitle: Component): View {
-        val level: Level = playerInventory.player.level()
+    override fun createView(title: Component, playerInventoryTitle: Component) = TraitListScreenContent(this, title).view
+
+}
+
+private class TraitListScreenContent(menu: TraitListScreenHandler, title: Component) {
+
+    val view = run {
+        val level: Level = menu.playerInventory.player.level()
 
         fun createTraitCardView(traitStack: TraitStack): View {
             return View {
@@ -98,7 +104,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                     view.sizingY = Sizing.FILL
 
                     val trait = traitStack.trait
-                    val context = TraitConditionContext(level, blockPos, level.getMagicPlantBlockEntity(blockPos))
+                    val context = TraitConditionContext(level, menu.blockPos, level.getMagicPlantBlockEntity(menu.blockPos))
                     val conditionFactors = trait.conditions.map { it.getFactor(context) }
                     val totalConditionFactor = conditionFactors.fold(1.0) { a, b -> a * b }
 
@@ -186,7 +192,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
             }
         }
 
-        return View {
+        View {
             // 外枠
             view += StackView().configure {
                 view += NinePatchTextureCard.PANEL.createView()
@@ -194,7 +200,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                 view += YListView().configure {
                     view.sizingX = Sizing.FILL
 
-                    val traitStackList = traitStacks.traitStackList
+                    val traitStackList = menu.traitStacks.traitStackList
 
                     val cardContent = DynamicView(if (traitStackList.isNotEmpty()) createTraitCardView(traitStackList.first()) else EmptyView())
 
@@ -235,7 +241,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                                 view += YListView().configure {
                                     view.sizingX = Sizing.FILL
 
-                                    val context = TraitConditionContext(level, blockPos, level.getMagicPlantBlockEntity(blockPos))
+                                    val context = TraitConditionContext(level, menu.blockPos, level.getMagicPlantBlockEntity(menu.blockPos))
 
                                     traitStackList.forEach { traitStack ->
                                         val trait = traitStack.trait

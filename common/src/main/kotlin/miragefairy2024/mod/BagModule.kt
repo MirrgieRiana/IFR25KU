@@ -10,7 +10,6 @@ import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.Sizing
-import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.views.EmptyView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.SpaceView
@@ -430,8 +429,14 @@ open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenH
     override fun quickMoveStack(player: Player, slot: Int) = EMPTY_ITEM_STACK
     open val card: BagCard? = null
 
-    override fun createView(title: Component, playerInventoryTitle: Component): View {
-        val card = card ?: return EmptyView()
+    override fun createView(title: Component, playerInventoryTitle: Component) = BagScreenContent(this, title, playerInventoryTitle).view
+
+}
+
+private class BagScreenContent(menu: BagScreenHandler, title: Component, playerInventoryTitle: Component) {
+
+    val view = run {
+        val card = menu.card ?: return@run EmptyView()
 
         /** インベントリの名前なのだ～🌱 */
         fun inventoryNameView(name: Component) = MultiLineTextView().also {
@@ -447,13 +452,13 @@ open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenH
 
                 view += SpaceView().configure { position.weight = 1.0 }
                 repeat(count) { c ->
-                    view += menuSlotView(slots[slotIndexFunction(c)], SlotType.NORMAL)
+                    view += menuSlotView(menu.slots[slotIndexFunction(c)], SlotType.NORMAL)
                 }
                 view += SpaceView().configure { position.weight = 1.0 }
             }
         }
 
-        return View {
+        View {
             view += StackView().configure { // 外枠なのだ～🌱
                 view += NinePatchTextureCard.PANEL.createView()
                 view += YListView().configure { // 内枠なのだ～🌱
