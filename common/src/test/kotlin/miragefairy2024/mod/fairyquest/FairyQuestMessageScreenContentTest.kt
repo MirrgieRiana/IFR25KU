@@ -39,7 +39,7 @@ private class MessageRenderingProxy : RenderingProxy {
     }
 }
 
-private fun FairyQuestMessageViewWrapper.place(): List<Pair<PlaceableView, IntRectangle>> {
+private fun FairyQuestMessageScreenContent.place(): List<Pair<PlaceableView, IntRectangle>> {
     val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
     fun place(view: PlaceableView, bounds: IntRectangle): ViewController {
         placements += Pair(view, bounds)
@@ -50,12 +50,12 @@ private fun FairyQuestMessageViewWrapper.place(): List<Pair<PlaceableView, IntRe
     return placements
 }
 
-class FairyQuestMessageViewWrapperTest {
+class FairyQuestMessageScreenContentTest {
 
     @Test
     fun `長文をカード幅で折り返し本文と題名と依頼人を一緒にスクロールするのだ`() {
         val proxy = MessageRenderingProxy()
-        val view = FairyQuestMessageViewWrapper(text { "title"() }, text { "message".repeat(200)() }, text { "client"() })
+        val view = FairyQuestMessageScreenContent(text { "title"() }, text { "message".repeat(200)() }, text { "client"() })
         view.view.initSizeCalculation(proxy, { 400 }, { 240 })
 
         Assertions.assertEquals(IntPoint(400, 240), view.view.evaluateActualSize())
@@ -83,7 +83,7 @@ class FairyQuestMessageViewWrapperTest {
 
     @Test
     fun `再初期化すると画面の寸法に合わせてスクロール領域とボタンを再配置するのだ`() {
-        val view = FairyQuestMessageViewWrapper(text { "title"() }, text { "message"() }, text { "client"() })
+        val view = FairyQuestMessageScreenContent(text { "title"() }, text { "message"() }, text { "client"() })
         listOf(IntPoint(400, 240), IntPoint(320, 180)).forEach { size ->
             view.view.initSizeCalculation(MessageRenderingProxy(), { size.x }, { size.y })
             val placements = view.place()
@@ -96,7 +96,7 @@ class FairyQuestMessageViewWrapperTest {
 
     @Test
     fun `二つのボタンがゲーム復帰と親画面復帰を別々に通知するのだ`() {
-        val view = FairyQuestMessageViewWrapper(text { "title"() }, text { "message"() }, text { "client"() })
+        val view = FairyQuestMessageScreenContent(text { "title"() }, text { "message"() }, text { "client"() })
         val events = mutableListOf<String>()
         view.onBackToGame.register {
             events += "game"

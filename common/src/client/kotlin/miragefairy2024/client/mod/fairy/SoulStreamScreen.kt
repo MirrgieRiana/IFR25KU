@@ -135,7 +135,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
     private var isFirstRender = true
 
     init {
-        handler.initViewWrapper(enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, text { toggleCollectionEnabledKeyMappingCard() }) {
+        handler.initScreenContent(enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, text { toggleCollectionEnabledKeyMappingCard() }) {
             SetCollectionEnabledChannel.sendToServer(it)
         }
     }

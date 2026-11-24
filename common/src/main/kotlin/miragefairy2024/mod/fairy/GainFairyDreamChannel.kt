@@ -14,7 +14,7 @@ context(_: ModContext)
 fun initGainFairyDreamChannel() {
     GainFairyDreamChannel.registerServerToClientPayloadType()
     GainFairyDreamChannel.registerClientPacketReceiver { motif ->
-        clientProxy!!.addToast(FairyDreamToastViewWrapper(motif.createFairyItemStack()).view)
+        clientProxy!!.addToast(FairyDreamToastScreenContent(motif.createFairyItemStack()).view)
     }
 }
 

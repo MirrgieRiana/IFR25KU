@@ -140,7 +140,7 @@ val soulStreamScreenHandlerType = Registration(BuiltInRegistries.MENU, MirageFai
 
 class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val soulStream: Container) : AbstractContainerMenu(soulStreamScreenHandlerType(), syncId), ViewProviderMenu {
 
-    private lateinit var viewWrapper: SoulStreamViewWrapper
+    private lateinit var screenContent: SoulStreamScreenContent
 
     init {
         repeat(3) { r ->
@@ -166,17 +166,17 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
         return quickMove(slot, destinationIndices)
     }
 
-    fun initViewWrapper(
+    fun initScreenContent(
         enabledPassiveSkillEffectFilters: ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>,
         enableGlobalFairyHighlight: ObservableValue<Boolean>,
         collectionToggleKeyText: Component,
         setCollectionEnabled: (Boolean) -> Unit,
     ) {
-        viewWrapper = SoulStreamViewWrapper(this, enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, collectionToggleKeyText, setCollectionEnabled)
+        screenContent = SoulStreamScreenContent(this, enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, collectionToggleKeyText, setCollectionEnabled)
     }
 
-    override fun createView(title: Component, playerInventoryTitle: Component) = viewWrapper.createView(title)
+    override fun createView(title: Component, playerInventoryTitle: Component) = screenContent.createView(title)
 
-    fun disposeView() = viewWrapper.dispose()
+    fun disposeView() = screenContent.dispose()
 
 }
