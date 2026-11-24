@@ -102,11 +102,7 @@ class ClientProxyImpl : ClientProxy<Screen> {
     }
 
     override fun <T> registerViewScreen(menuType: MenuType<T>) where T : AbstractContainerMenu, T : ViewProviderMenu {
-        MenuScreens.register(menuType) { menu, playerInventory, title ->
-            object : ViewContainerScreen<T>(menu, playerInventory, title) {
-                override fun createRootView() = menu.createView(title, playerInventoryTitle)
-            }
-        }
+        MenuScreens.register(menuType, ::ViewContainerScreen)
     }
 
     override fun getCurrentScreen() = Minecraft.getInstance().screen

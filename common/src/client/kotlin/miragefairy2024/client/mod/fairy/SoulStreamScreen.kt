@@ -14,7 +14,6 @@ import miragefairy2024.mod.fairy.FairyItem
 import miragefairy2024.mod.fairy.OPEN_SOUL_STREAM_KEY_TRANSLATION
 import miragefairy2024.mod.fairy.OpenSoulStreamChannel
 import miragefairy2024.mod.fairy.SetCollectionEnabledChannel
-import miragefairy2024.mod.fairy.SoulStreamScreenContent
 import miragefairy2024.mod.fairy.SoulStreamScreenHandler
 import miragefairy2024.mod.fairy.getFairyMotif
 import miragefairy2024.mod.fairy.soulStreamScreenHandlerType
@@ -131,11 +130,12 @@ fun initSoulStreamClientModule() {
 
 class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : ViewContainerScreen<SoulStreamScreenHandler>(handler, playerInventory, title) {
 
-    private val screenContent = SoulStreamScreenContent(handler, enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, text { toggleCollectionEnabledKeyMappingCard() }) {
-        SetCollectionEnabledChannel.sendToServer(it)
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
+    init {
+        handler.initScreenContent(enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, text { toggleCollectionEnabledKeyMappingCard() }) {
+            SetCollectionEnabledChannel.sendToServer(it)
+        }
     }
-
-    override fun createRootView() = screenContent.createView(title)
 
     // カーソルをインベントリ画面での位置に戻す
     private var isFirst = true
@@ -160,7 +160,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
     }
 
     override fun removed() {
-        screenContent.dispose()
+        menu.disposeView()
         super.removed()
     }
 

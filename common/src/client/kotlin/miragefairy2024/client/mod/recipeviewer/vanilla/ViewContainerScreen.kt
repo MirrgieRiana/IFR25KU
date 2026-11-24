@@ -3,9 +3,9 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 import com.mojang.blaze3d.platform.Window
 import miragefairy2024.client.mixins.api.SlotHovering
 import miragefairy2024.client.mod.recipeviewer.renderingProxy
+import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.contains
 import miragefairy2024.util.Remover
 import net.minecraft.client.Minecraft
@@ -20,9 +20,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.Slot
 
 /** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
-abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title), SlotHovering {
-
-    protected abstract fun createRootView(): View
+open class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title), SlotHovering where T : AbstractContainerMenu, T : ViewProviderMenu {
 
     private class SlotPlacement(val clipBounds: () -> IntRectangle?)
 
@@ -42,7 +40,7 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
         override fun getRegionSizeX() = this@ViewContainerScreen.width
         override fun getRegionSizeY() = this@ViewContainerScreen.height
 
-        override fun createRootView() = this@ViewContainerScreen.createRootView()
+        override fun createRootView() = menu.createView(title, playerInventoryTitle)
 
         override fun getUiOffset() = IntPoint(this@ViewContainerScreen.leftPos, this@ViewContainerScreen.topPos)
         override fun setUiSize(uiSize: IntPoint) {
