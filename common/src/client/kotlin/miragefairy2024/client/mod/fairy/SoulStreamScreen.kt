@@ -136,11 +136,6 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
         }
     }
 
-    override fun removed() {
-        menu.disposeView()
-        super.removed()
-    }
-
     // カーソルをインベントリ画面での位置に戻す
     private var isFirst = true
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
@@ -161,6 +156,11 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
             return true
         }
         return super.keyPressed(keyCode, scanCode, modifiers)
+    }
+
+    override fun removed() {
+        menu.disposeView()
+        super.removed()
     }
 
 }
