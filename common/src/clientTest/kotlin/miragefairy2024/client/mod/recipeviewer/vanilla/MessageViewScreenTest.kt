@@ -28,22 +28,44 @@ class MessageViewScreenTest {
     }
 
     @Test
-    fun `画面を再初期化すると View を再生成し外部クリック終了を無効にした画面は閉じないのだ`() {
+    fun `リサイズではルート View を再利用し画面を開き直すと再生成するのだ`() {
         Mockito.mockStatic(Screen::class.java).use {
             val minecraft = createMinecraft()
-            val parent: Screen = Mockito.mock(Screen::class.java)
             var creations = 0
             val definition = MessageViewScreenDefinition(text { empty() }) {
                 creations++
                 EmptyView()
             }
+            val screen = MessageViewScreen(null, definition)
+            try {
+                screen.init(minecraft, 200, 200)
+                screen.resize(minecraft, 300, 240)
+
+                Assertions.assertEquals(1, creations)
+                Assertions.assertEquals(300, screen.width)
+                Assertions.assertEquals(240, screen.height)
+
+                screen.removed()
+                screen.init(minecraft, 300, 240)
+
+                Assertions.assertEquals(2, creations)
+            } finally {
+                screen.removed()
+            }
+        }
+    }
+
+    @Test
+    fun `外部クリック終了を無効にした画面は外部をクリックしても閉じないのだ`() {
+        Mockito.mockStatic(Screen::class.java).use {
+            val minecraft = createMinecraft()
+            val parent: Screen = Mockito.mock(Screen::class.java)
+            val definition = MessageViewScreenDefinition(text { empty() }) { EmptyView() }
             definition.closeOnOutsideClick = false
             val screen = MessageViewScreen(parent, definition)
             try {
                 screen.init(minecraft, 200, 200)
-                screen.init(minecraft, 300, 200)
 
-                Assertions.assertEquals(2, creations)
                 Assertions.assertFalse(screen.mouseClicked(10.0, 10.0, 0))
                 Mockito.verify(minecraft, Mockito.never()).setScreen(parent)
                 screen.onClose()
