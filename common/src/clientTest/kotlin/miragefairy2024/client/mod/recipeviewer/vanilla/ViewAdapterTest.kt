@@ -346,13 +346,14 @@ class ViewAdapterTest {
     }
 
     @Test
-    fun `再初期化では旧配置を破棄してから新しい View を生成するのだ`() {
+    fun `再初期化では旧配置を破棄して同じルート View を配置するのだ`() {
         val fixture = AdapterFixture(TestView(true))
         assertEquals(listOf(0), fixture.disposalsBeforeCreate)
 
         fixture.init()
 
-        assertEquals(listOf(0, 1), fixture.disposalsBeforeCreate)
+        assertEquals(1, fixture.disposals)
+        assertEquals(listOf(0), fixture.disposalsBeforeCreate)
         assertEquals(listOf(IntPoint(10, 20), IntPoint(10, 20)), fixture.initializedSizes)
         assertEquals(listOf(fixture.widgets[1]), fixture.interactiveWidgets)
         assertEquals(IntPoint(30, 40), IntPoint(fixture.widgets[1].x, fixture.widgets[1].y))

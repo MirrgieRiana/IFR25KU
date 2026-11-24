@@ -12,6 +12,7 @@ import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import miragefairy2024.util.fire
+import mirrg.kotlin.helium.CachingEvaluator
 import mirrg.kotlin.java.hydrogen.orNull
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
@@ -54,6 +55,7 @@ interface ViewAdapterHost {
  */
 class ViewAdapter(val host: ViewAdapterHost) {
 
+    private val rootViewCache = CachingEvaluator { host.createRootView() }
     private var isInitialized = false
     private var viewController: ViewController? = null
     private val onBeforeRender = EventRegistry<() -> Unit>()
@@ -81,13 +83,13 @@ class ViewAdapter(val host: ViewAdapterHost) {
     private var mouseClickSentinelRemover: Remover? = null
 
     /**
-     * View のツリーを再構築して、各ウィジェットをホストへ直接登録するのだ～🌱
+     * 表示中は同じルート View を使い、現在の寸法で各ウィジェットを配置してホストへ登録するのだ～🌱
      *
      * 再初期化時は、既存のウィジェットをホスト側で登録解除した後に呼び出さなければならないのだ～🌱
      */
     fun init() {
-        removed()
-        val rootView = host.createRootView()
+        disposePlacement()
+        val rootView = rootViewCache.evaluate()
         rootView.initSizeCalculation(host.getRenderingProxy(), { host.getRegionSizeX() }, { host.getRegionSizeY() })
         host.setUiSize(rootView.evaluateActualSize())
         host.init()
@@ -121,8 +123,13 @@ class ViewAdapter(val host: ViewAdapterHost) {
         controller.setOffset(offset)
     }
 
-    /** 配置状態を無効化してから、イベント登録などの後始末を行うのだ～🌱 */
+    /** ルート View の保持を解除し、配置に伴うイベント登録などの後始末を行うのだ～🌱 */
     fun removed() {
+        rootViewCache.reset()
+        disposePlacement()
+    }
+
+    private fun disposePlacement() {
         isInitialized = false
         removeMouseClickSentinel()
         val controller = viewController
