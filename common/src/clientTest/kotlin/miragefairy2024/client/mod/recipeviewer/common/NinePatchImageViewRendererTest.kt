@@ -1,11 +1,11 @@
 package miragefairy2024.client.mod.recipeviewer.common
 
 import miragefairy2024.client.mod.recipeviewer.vanilla.GuiTestEnvironment
+import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
+import miragefairy2024.mod.recipeviewer.views.createView
 import mirrg.kotlin.helium.Slot
-import net.minecraft.resources.ResourceLocation
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import kotlin.math.floor
@@ -19,8 +19,8 @@ class NinePatchImageViewRendererTest {
     private val stretchedY = intArrayOf(0, 1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 5, 6)
 
     private fun check(repeatX: Boolean, repeatY: Boolean, expectedX: IntArray, expectedY: IntArray) {
-        val textureId: ResourceLocation = ResourceLocation.fromNamespaceAndPath("test", "nine_patch")
-        val view = NinePatchImageView(textureId, 9, 7, 2, 3, 4, 1, 4, 2, repeatX, repeatY)
+        val ninePatchTextureCard = NinePatchTextureCard("test/nine_patch", 9, 7, 2, 3, 4, 1, 4, 2, repeatX, repeatY)
+        val view = ninePatchTextureCard.createView()
         val bounds = IntRectangle(10, 20, expectedX.size, expectedY.size)
 
         val draw = GuiTestEnvironment().use { environment ->
@@ -30,7 +30,7 @@ class NinePatchImageViewRendererTest {
                 draws.single()
             }
         }
-        Assertions.assertEquals(textureId, draw.texture)
+        Assertions.assertEquals(ninePatchTextureCard.texture, draw.texture)
 
         val pixels = Array(bounds.sizeY) { arrayOfNulls<IntPoint>(bounds.sizeX) }
         draw.quads.forEach { (topLeft, bottomLeft, bottomRight, topRight) ->
@@ -40,10 +40,10 @@ class NinePatchImageViewRendererTest {
             val y = topLeft.y.roundToInt()
             val width = bottomRight.x.roundToInt() - x
             val height = bottomRight.y.roundToInt() - y
-            val u = (topLeft.u * view.textureWidth).roundToInt()
-            val v = (topLeft.v * view.textureHeight).roundToInt()
-            val sourceWidth = (bottomRight.u * view.textureWidth).roundToInt() - u
-            val sourceHeight = (bottomRight.v * view.textureHeight).roundToInt() - v
+            val u = (topLeft.u * ninePatchTextureCard.textureWidth).roundToInt()
+            val v = (topLeft.v * ninePatchTextureCard.textureHeight).roundToInt()
+            val sourceWidth = (bottomRight.u * ninePatchTextureCard.textureWidth).roundToInt() - u
+            val sourceHeight = (bottomRight.v * ninePatchTextureCard.textureHeight).roundToInt() - v
 
             (0 until height).forEach { dy ->
                 (0 until width).forEach { dx ->
@@ -51,7 +51,7 @@ class NinePatchImageViewRendererTest {
                     val targetY = y + dy - bounds.y
                     Assertions.assertTrue(targetX in expectedX.indices && targetY in expectedY.indices)
                     Assertions.assertNull(pixels[targetY][targetX], "Overlapping pixel at $targetX, $targetY")
-                    pixels[targetY][targetX] = IntPoint(floor(u + (dx + 0.5) * sourceWidth / width).toInt(), floor(v + (dy + 0.5) * sourceHeight / height).toInt())
+                    pixels[targetY][targetX] = IntPoint(floor(u + (dx + 0.5) * sourceWidth / width.toDouble()).toInt(), floor(v + (dy + 0.5) * sourceHeight / height.toDouble()).toInt())
                 }
             }
         }

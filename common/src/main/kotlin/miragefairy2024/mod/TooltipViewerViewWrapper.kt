@@ -2,7 +2,6 @@ package miragefairy2024.mod
 
 import miragefairy2024.ClientProxy
 import miragefairy2024.MessageViewScreenDefinition
-import miragefairy2024.MirageFairy2024
 import miragefairy2024.clientProxy
 import miragefairy2024.mod.common.KeyMappingType
 import miragefairy2024.mod.common.SlotType
@@ -14,7 +13,6 @@ import miragefairy2024.mod.recipeviewer.views.DynamicView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.ItemView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
-import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.TextView
@@ -28,6 +26,7 @@ import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
+import miragefairy2024.mod.recipeviewer.views.createView
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.plusAssign
@@ -36,7 +35,6 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.register
 import miragefairy2024.util.text
-import miragefairy2024.util.times
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 
@@ -127,7 +125,7 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, tooltipProvider: (It
             view += StackView().configure {
                 view.sizingY = Sizing.FILL
 
-                view += NinePatchImageView("textures/gui/" * MirageFairy2024.identifier("panel") * ".png", 16, 16, 5, 5, 5, 5, 5, 5, false, false)
+                view += NinePatchTextureCard.PANEL.createView()
                 // 内枠
                 view += YListView().configure {
                     view.sizingX = Sizing.FILL

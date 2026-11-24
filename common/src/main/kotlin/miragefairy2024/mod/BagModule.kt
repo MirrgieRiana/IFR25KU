@@ -13,7 +13,6 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.views.EmptyView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
-import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.View
@@ -21,6 +20,7 @@ import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.createView
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.menuSlotView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
@@ -52,7 +52,6 @@ import miragefairy2024.util.registerShapedRecipeGeneration
 import miragefairy2024.util.registerViewScreen
 import miragefairy2024.util.set
 import miragefairy2024.util.text
-import miragefairy2024.util.times
 import miragefairy2024.util.toItemTag
 import mirrg.kotlin.helium.castOrNull
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
@@ -416,9 +415,6 @@ private const val PLAYER_INVENTORY_WIDTH = 9
 /** ホットバーを除いた段数なのだ～🌱 */
 private const val PLAYER_INVENTORY_HEIGHT = 3
 
-/** 枠の絵なのだ～🌱 */
-private val PANEL_TEXTURE = "textures/gui/" * MirageFairy2024.identifier("panel") * ".png"
-
 private const val PANEL_MARGIN = 7
 
 private const val INVENTORY_NAME_SPACE = 3
@@ -459,7 +455,7 @@ open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenH
 
         return View {
             view += StackView().configure { // 外枠なのだ～🌱
-                view += NinePatchImageView(PANEL_TEXTURE, 16, 16, 5, 5, 5, 5, 5, 5, false, false)
+                view += NinePatchTextureCard.PANEL.createView()
                 view += YListView().configure { // 内枠なのだ～🌱
                     view.sizingX = Sizing.FILL
 

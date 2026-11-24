@@ -2,7 +2,6 @@ package miragefairy2024.mod.fairyquest
 
 import miragefairy2024.ClientProxy
 import miragefairy2024.MessageViewScreenDefinition
-import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.clientProxy
 import miragefairy2024.mod.NinePatchTextureCard
@@ -12,7 +11,6 @@ import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
-import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.View
@@ -24,6 +22,7 @@ import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
+import miragefairy2024.mod.recipeviewer.views.createView
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.plusAssign
@@ -84,7 +83,7 @@ class FairyQuestMessageViewWrapper(fairyQuestTitle: Component, fairyQuestMessage
                     view += StackView().configure {
                         view.sizingX = Sizing.FILL
 
-                        view += NinePatchImageView(NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.texture, 66, 66, 22, 22, 22, 22, 22, 22, true, true)
+                        view += NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.createView()
                         view += YListView().configure {
                             view.sizingX = Sizing.FILL
 
@@ -98,7 +97,7 @@ class FairyQuestMessageViewWrapper(fairyQuestTitle: Component, fairyQuestMessage
                             view += StackView().configure {
                                 view.sizingX = Sizing.FILL
 
-                                view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/fairy_quest_card_line.png"), 11, 11, 0, 11, 0, 0, 11, 0, true, true)
+                                view += NinePatchTextureCard.FAIRY_QUEST_CARD_LINE.createView()
                                 view += MultiLineTextView().configure {
                                     view.text.value = fairyQuestMessage
                                     view.color = textColor
