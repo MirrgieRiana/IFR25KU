@@ -202,7 +202,7 @@ private class TraitListScreenContent(menu: TraitListScreenHandler, title: Compon
 
                     val traitStackList = menu.traitStacks.traitStackList
 
-                    val cardContent = DynamicView(if (traitStackList.isNotEmpty()) createTraitCardView(traitStackList.first()) else EmptyView())
+                    val cardContentDynamicView = DynamicView(if (traitStackList.isNotEmpty()) createTraitCardView(traitStackList.first()) else EmptyView())
 
                     // GUI名
                     view += MultiLineTextView().configure {
@@ -220,7 +220,7 @@ private class TraitListScreenContent(menu: TraitListScreenHandler, title: Compon
                         view.sizingY = Sizing.FILL
 
                         view += NinePatchTextureCard.TRAIT_BACKGROUND.createView()
-                        view += cardContent.configure().margin(5)
+                        view += cardContentDynamicView.configure().margin(5)
                     }.fixedContentSizeY(18 * 6)
 
                     view += YSpaceView(4)
@@ -261,7 +261,7 @@ private class TraitListScreenContent(menu: TraitListScreenHandler, title: Compon
                                             }
                                             view.shadow = false
                                         }.onClick {
-                                            cardContent.content.value = createTraitCardView(traitStack)
+                                            cardContentDynamicView.content.value = createTraitCardView(traitStack)
                                             true
                                         }
 
