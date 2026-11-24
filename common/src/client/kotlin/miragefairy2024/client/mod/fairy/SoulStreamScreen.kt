@@ -137,6 +137,8 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
         }
     }
 
+    override fun createRootView() = menu.createView(title, playerInventoryTitle)
+
     // カーソルをインベントリ画面での位置に戻す
     private var isFirst = true
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
