@@ -88,11 +88,11 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
     override fun stillValid(player: Player) = true
     override fun quickMoveStack(player: Player, slot: Int): ItemStack = slots[slot].item
 
-    override fun createView(title: Component, playerInventoryTitle: Component): View = TraitListScreenContent(this, title, playerInventoryTitle).view
+    override fun createView(title: Component, playerInventoryTitle: Component) = TraitListScreenContent(this, title).view
 
 }
 
-private class TraitListScreenContent(menu: TraitListScreenHandler, title: Component, playerInventoryTitle: Component) {
+private class TraitListScreenContent(menu: TraitListScreenHandler, title: Component) {
 
     val view = run {
         val level: Level = menu.playerInventory.player.level()

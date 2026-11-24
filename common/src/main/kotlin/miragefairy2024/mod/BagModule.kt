@@ -10,7 +10,6 @@ import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.Sizing
-import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.views.EmptyView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.SpaceView
@@ -430,7 +429,7 @@ open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenH
     override fun quickMoveStack(player: Player, slot: Int) = EMPTY_ITEM_STACK
     open val card: BagCard? = null
 
-    override fun createView(title: Component, playerInventoryTitle: Component): View = BagScreenContent(this, title, playerInventoryTitle).view
+    override fun createView(title: Component, playerInventoryTitle: Component) = BagScreenContent(this, title, playerInventoryTitle).view
 
 }
 
