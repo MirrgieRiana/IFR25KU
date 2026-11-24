@@ -4,6 +4,11 @@ import miragefairy2024.MessageViewScreenDefinition
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.SlotPositionSetter
 import miragefairy2024.client.mod.recipeviewer.RenderOverflow
+import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
+import miragefairy2024.client.mod.recipeviewer.common.ItemViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.MultiLineTextViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.NinePatchImageViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.TooltipBackgroundViewRenderer
 import miragefairy2024.client.util.ViewToast
 import miragefairy2024.mod.TooltipViewerScreenContent
 import miragefairy2024.mod.recipeviewer.view.IntPoint
@@ -19,12 +24,16 @@ import miragefairy2024.mod.recipeviewer.views.Child
 import miragefairy2024.mod.recipeviewer.views.DynamicView
 import miragefairy2024.mod.recipeviewer.views.EmptyView
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
+import miragefairy2024.mod.recipeviewer.views.ItemView
 import miragefairy2024.mod.recipeviewer.views.ListView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
+import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
+import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.TickView
+import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
 import miragefairy2024.mod.recipeviewer.views.XFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XInventoryScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XListView
@@ -89,9 +98,15 @@ private val PLACER_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
 class VanillaViewPlacersTest {
     @BeforeAll
     fun initRegistry() {
+        SharedConstants.tryDetectVersion()
+        Bootstrap.bootStrap()
         with(ModContext()) {
             initVanillaViewPlacers()
         }
+        ViewRendererRegistry.register(NinePatchImageView::class.java, NinePatchImageViewRenderer)
+        ViewRendererRegistry.register(TooltipBackgroundView::class.java, TooltipBackgroundViewRenderer)
+        ViewRendererRegistry.register(ItemView::class.java, ItemViewRenderer)
+        ViewRendererRegistry.register(MultiLineTextView::class.java, MultiLineTextViewRenderer)
         VANILLA_VIEW_PLACER_REGISTRY.register { context, view: PlacerTestView, bounds ->
             val widget: AbstractWidget = object : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {
                 override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
@@ -115,9 +130,6 @@ class VanillaViewPlacersTest {
 
     @Test
     fun `ツールチップビューワーのリサイズで検索と絞り込みとスクロール位置を引き継ぐのだ`() {
-        SharedConstants.tryDetectVersion()
-        Bootstrap.bootStrap()
-
         val measuredLines = mutableSetOf<String>()
         val testRenderingProxy = object : RenderingProxy {
             override fun calculateTextWidth(text: FormattedText) = text.string.length * 6
