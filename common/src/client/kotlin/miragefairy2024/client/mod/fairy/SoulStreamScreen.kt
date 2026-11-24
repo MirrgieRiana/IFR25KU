@@ -130,6 +130,7 @@ fun initSoulStreamClientModule() {
 
 class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : ViewContainerScreen<SoulStreamScreenHandler>(handler, playerInventory, title) {
 
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     init {
         handler.initScreenContent(enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, text { toggleCollectionEnabledKeyMappingCard() }) {
             SetCollectionEnabledChannel.sendToServer(it)

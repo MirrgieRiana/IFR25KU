@@ -140,6 +140,7 @@ val soulStreamScreenHandlerType = Registration(BuiltInRegistries.MENU, MirageFai
 
 class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val soulStream: Container) : AbstractContainerMenu(soulStreamScreenHandlerType(), syncId), ViewProviderMenu {
 
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     private lateinit var screenContent: SoulStreamScreenContent
 
     init {
@@ -166,6 +167,7 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
         return quickMove(slot, destinationIndices)
     }
 
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     fun initScreenContent(
         enabledPassiveSkillEffectFilters: ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>,
         enableGlobalFairyHighlight: ObservableValue<Boolean>,
@@ -175,8 +177,10 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
         screenContent = SoulStreamScreenContent(this, enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, collectionToggleKeyText, setCollectionEnabled)
     }
 
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     override fun createView(title: Component, playerInventoryTitle: Component) = screenContent.createView(title)
 
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     fun disposeView() = screenContent.dispose()
 
 }
