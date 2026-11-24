@@ -10,7 +10,6 @@ import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.Sizing
-import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.GhostRecipeItemView
@@ -118,7 +117,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
         addDataSlots(propertyDelegate)
     }
 
-    override fun createView(title: Component, playerInventoryTitle: Component): View = FairyQuestCardScreenContent(this, title, playerInventoryTitle).view
+    override fun createView(title: Component, playerInventoryTitle: Component) = FairyQuestCardScreenContent(this, title, playerInventoryTitle).view
 
     override fun stillValid(player: Player) = true
 
