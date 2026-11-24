@@ -24,7 +24,7 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import net.minecraft.world.item.ItemStack
 
-class FairyDreamToastViewWrapper(itemStack: ItemStack) {
+class FairyDreamToastScreenContent(itemStack: ItemStack) {
 
     val view = View {
         val imageSize = IntPoint(160, 32)
