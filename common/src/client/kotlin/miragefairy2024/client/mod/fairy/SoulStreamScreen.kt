@@ -7,7 +7,6 @@ import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.RenderingEvent
 import miragefairy2024.client.mod.recipeviewer.vanilla.ViewContainerScreen
 import miragefairy2024.client.util.KeyMappingCard
-import miragefairy2024.client.util.WidgetSprites
 import miragefairy2024.client.util.invoke
 import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.client.util.sendToServer
@@ -22,7 +21,6 @@ import miragefairy2024.mod.passiveskill.PassiveSkillEffectFilter
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
-import miragefairy2024.util.register
 import miragefairy2024.util.text
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
@@ -132,8 +130,6 @@ fun initSoulStreamClientModule() {
 
 class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : ViewContainerScreen<SoulStreamScreenHandler>(handler, playerInventory, title) {
 
-    private var isFirstRender = true
-
     init {
         handler.initScreenContent(enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, text { toggleCollectionEnabledKeyMappingCard() }) {
             SetCollectionEnabledChannel.sendToServer(it)
@@ -145,10 +141,11 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
         super.removed()
     }
 
+    // カーソルをインベントリ画面での位置に戻す
+    private var isFirst = true
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        // カーソルをインベントリ画面での位置に戻す
-        if (isFirstRender) {
-            isFirstRender = false
+        if (isFirst) {
+            isFirst = false
             val mousePosition = lastMousePositionInInventory
             if (mousePosition != null) {
                 InputConstants.grabOrReleaseMouse(minecraft!!.window.window, InputConstants.CURSOR_NORMAL, mousePosition.first, mousePosition.second)
