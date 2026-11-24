@@ -2,7 +2,7 @@ package miragefairy2024.mod.fairy
 
 import miragefairy2024.mod.recipeviewer.views.View
 
-class SoulStreamViewWrapper {
+class SoulStreamScreenContent {
 
     val view = View {
         TODO()

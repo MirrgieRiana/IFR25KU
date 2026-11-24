@@ -43,7 +43,7 @@ fun openTooltipViewerScreen() {
         val definition = MessageViewScreenDefinition(text { TOOLTIP_VIEWER_KEY_TRANSLATION() }) {
             val player = proxy.getClientPlayer()
             val itemStacks = if (player != null) (0 until 9).map { player.inventory[it] } else emptyList()
-            TooltipViewerViewWrapper(itemStacks, proxy::getItemTooltip).view
+            TooltipViewerScreenContent(itemStacks, proxy::getItemTooltip).view
         }.also {
             it.additionalCloseKey = KeyMappingType.OPEN_TOOLTIP_VIEWER
             it.closeOnOutsideClick = false
@@ -53,7 +53,7 @@ fun openTooltipViewerScreen() {
     openScreen(clientProxy!!)
 }
 
-class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, tooltipProvider: (ItemStack) -> List<Component>) {
+class TooltipViewerScreenContent(itemStacks: List<ItemStack>, tooltipProvider: (ItemStack) -> List<Component>) {
 
     val view = View {
 

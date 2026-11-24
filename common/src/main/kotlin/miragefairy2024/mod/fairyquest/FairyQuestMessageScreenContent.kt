@@ -1,4 +1,4 @@
-package miragefairy2024.mod.magicplant
+package miragefairy2024.mod.fairyquest
 
 import miragefairy2024.ClientProxy
 import miragefairy2024.MessageViewScreenDefinition
@@ -7,11 +7,9 @@ import miragefairy2024.clientProxy
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.guiBackToGameTranslation
 import miragefairy2024.mod.recipeviewer.view.Alignment
+import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.Sizing
-import miragefairy2024.mod.recipeviewer.view.ViewTexture
-import miragefairy2024.mod.recipeviewer.views.AlignView
-import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
@@ -25,30 +23,30 @@ import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.createView
-import miragefairy2024.mod.recipeviewer.views.fixedContentSizeX
 import miragefairy2024.mod.recipeviewer.views.margin
+import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
 import miragefairy2024.util.register
-import miragefairy2024.util.style
 import miragefairy2024.util.text
 import net.minecraft.network.chat.CommonComponents
+import net.minecraft.network.chat.Component
 
 context(_: ModContext)
-fun initTraitEncyclopediaPageScreen() {
-    onOpenTraitEncyclopediaPageScreen.register { trait ->
-        trait.openTraitEncyclopediaPageScreen()
+fun initFairyQuestMessageScreen() {
+    onOpenFairyQuestMessageScreen.register { recipe ->
+        recipe.openMessageScreen()
         true
     }
 }
 
-private fun Trait.openTraitEncyclopediaPageScreen() {
+fun FairyQuestRecipe.openMessageScreen() {
     fun <S : Any> openScreen(proxy: ClientProxy<S>) {
         val parent = proxy.getCurrentScreen()
-        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(this.getName()) {
-            TraitEncyclopediaPageViewWrapper(this).also { view ->
+        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(this.title) {
+            FairyQuestMessageScreenContent(this.title, this.message, this.client).also { view ->
                 view.onBackToGame.register {
                     proxy.setCurrentScreen(null)
                     true
@@ -63,77 +61,72 @@ private fun Trait.openTraitEncyclopediaPageScreen() {
     openScreen(clientProxy!!)
 }
 
-class TraitEncyclopediaPageViewWrapper(trait: Trait) {
+class FairyQuestMessageScreenContent(fairyQuestTitle: Component, fairyQuestMessage: Component, fairyQuestClient: Component) {
 
     val onBackToGame = EventRegistry<() -> Boolean>()
     val onBack = EventRegistry<() -> Boolean>()
 
     val view = View {
+        val textColor = ColorPair(0xFF6B472E.toInt(), 0xFF6B472E.toInt())
         view += YListView().configure {
             view.sizingX = Sizing.FILL
             view.sizingY = Sizing.FILL
 
-            // カード部分
+            // メッセージ部分
             view += XListView().configure {
-                position.weight = 1.0
                 position.alignmentX = Alignment.CENTER
+                position.weight = 1.0
                 view.sizingY = Sizing.FILL
+                val scrollView = YScrollContainerView().configure {
+                    view.sizingX = Sizing.WRAP
 
-                // カード外枠
-                view += StackView().configure {
-                    view.sizingX = Sizing.FILL
-                    view.sizingY = Sizing.FILL
-
-                    view += NinePatchTextureCard.TRAIT_BACKGROUND.createView()
-                    view += YListView().configure {
+                    view += StackView().configure {
                         view.sizingX = Sizing.FILL
-                        view.sizingY = Sizing.FILL
 
-                        // 特性名
-                        view += MultiLineTextView().configure {
-                            view.text.value = trait.getName().style(trait.style)
-                            view.alignmentX = Alignment.CENTER
-                            view.shadow = false
-                        }
-
-                        view += YSpaceView(5)
-
-                        // 特性アイコン
-                        view += ImageView(ViewTexture(trait.texture, IntPoint(32, 32))).configure {
-                            position.alignmentX = Alignment.CENTER
-                        }
-
-                        view += YSpaceView(5)
-
-                        // 特性ポエム
-                        view += StackView().configure {
-                            position.weight = 1.0
+                        view += NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.createView()
+                        view += YListView().configure {
                             view.sizingX = Sizing.FILL
-                            view.sizingY = Sizing.FILL
-                            val scrollView = YScrollContainerView().configure {
+
+                            view += MultiLineTextView().configure {
+                                view.text.value = fairyQuestTitle
+                                view.alignmentX = Alignment.CENTER
+                                view.color = textColor
+                                view.shadow = false
+                            }
+                            view += YSpaceView(11)
+                            view += StackView().configure {
+                                view.sizingX = Sizing.FILL
+
+                                view += NinePatchTextureCard.FAIRY_QUEST_CARD_LINE.createView()
                                 view += MultiLineTextView().configure {
-                                    view.text.value = trait.text
+                                    view.text.value = fairyQuestMessage
+                                    view.color = textColor
                                     view.shadow = false
-                                }
+                                }.margin(0, 0, 0, 1)
                             }
-                            view += scrollView
-                            val scrollbarView = YFlatScrollbarView().configure {
-                                view.scrollbarColor = 0xA0FFFFFF.toInt()
-                                view.keyboardFocusable = false
-                            }
-                            view += AlignView().configure {
+                            view += YSpaceView(11)
+                            view += MultiLineTextView().configure {
+                                view.text.value = fairyQuestClient
                                 view.alignmentX = Alignment.END
-                                view += scrollbarView
+                                view.color = textColor
+                                view.shadow = false
                             }
-                            connectScrollbar(scrollView.view, scrollbarView.view)
-                        }
-                    }.margin(5)
-                }.fixedContentSizeX(160)
-            }
+                        }.minContentSizeX(18 * 15 - 10 * 2 - 11 * 2).margin(11)
+                    }
+                }
+                view += scrollView
+                val scrollbarView = YFlatScrollbarView().configure {
+                    view.scrollbarThickness = 10
+                    view.scrollbarColor = 0xA0FFFFFF.toInt()
+                    view.keyboardFocusable = false
+                }
+                view += scrollbarView
+                connectScrollbar(scrollView.view, scrollbarView.view)
+            }.margin(10, 0, 0, 0) // アンチスクロールバーマージン
 
             view += YSpaceView(10)
 
-            // 下部ボタン
+            // ボタン部分
             view += XListView().configure {
                 position.alignmentX = Alignment.CENTER
 
@@ -158,7 +151,7 @@ class TraitEncyclopediaPageViewWrapper(trait: Trait) {
                 }
             }
 
-        }.margin(0, 0, 20, 4)
+        }.margin(0, 0, 10, 4)
     }
 
 }

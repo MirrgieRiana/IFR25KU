@@ -37,7 +37,7 @@ private val TOAST_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
 }
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class FairyDreamToastViewWrapperTest {
+class FairyDreamToastScreenContentTest {
 
     @BeforeAll
     fun initMinecraft() {
@@ -58,7 +58,7 @@ class FairyDreamToastViewWrapperTest {
             val name: FormattedCharSequence = text { "short..."().darkBlue }.visualOrderText
             Mockito.`when`(proxy.ellipsizeText(displayName, 118, ellipsis)).thenReturn(name)
 
-            val view = FairyDreamToastViewWrapper(itemStack).view
+            val view = FairyDreamToastScreenContent(itemStack).view
             view.initSizeCalculation(TOAST_RENDERING_PROXY, { 1000 }, { 1000 })
             Assertions.assertEquals(IntPoint(160, 32), view.evaluateActualSize())
             val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
