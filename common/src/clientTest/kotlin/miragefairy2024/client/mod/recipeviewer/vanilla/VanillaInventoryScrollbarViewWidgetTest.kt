@@ -10,8 +10,6 @@ import miragefairy2024.mod.recipeviewer.views.YInventoryScrollbarView
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.resources.ResourceLocation
-import org.joml.Matrix4f
-import org.joml.Vector3f
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.lwjgl.glfw.GLFW
@@ -21,46 +19,46 @@ private val BACKGROUND_TEXTURE = MirageFairy2024.identifier("textures/gui/invent
 private val THUMB_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_scroller.png")
 private val DISABLED_THUMB_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_scroller_disabled.png")
 
-private class ScrollbarGraphics : GuiGraphics(Minecraft.getInstance(), null) {
-    val blits = mutableListOf<Pair<ResourceLocation, IntRectangle>>()
-
-    override fun blit(atlasLocation: ResourceLocation, x: Int, y: Int, width: Int, height: Int, uOffset: Float, vOffset: Float, uWidth: Int, vHeight: Int, textureWidth: Int, textureHeight: Int) {
-        Assertions.assertEquals(16, textureWidth)
-        Assertions.assertEquals(16, textureHeight)
-        Assertions.assertTrue(uOffset >= 0F && uOffset + uWidth <= 15F)
-        Assertions.assertTrue(vOffset >= 0F && vOffset + vHeight <= 15F)
-        val matrix: Matrix4f = pose().last().pose()
-        val start: Vector3f = matrix.transformPosition(x.toFloat(), y.toFloat(), 0F, Vector3f())
-        val end: Vector3f = matrix.transformPosition((x + width).toFloat(), (y + height).toFloat(), 0F, Vector3f())
-        val left = minOf(start.x, end.x).roundToInt()
-        val top = minOf(start.y, end.y).roundToInt()
-        val right = maxOf(start.x, end.x).roundToInt()
-        val bottom = maxOf(start.y, end.y).roundToInt()
-        blits += Pair(atlasLocation, IntRectangle(left, top, right - left, bottom - top))
-    }
+private class ScrollbarGraphics(val draws: MutableList<GuiTestEnvironment.TexturedDraw>) : GuiGraphics(Minecraft.getInstance(), null) {
 
     fun assertBackgroundOnly(background: IntRectangle) {
-        Assertions.assertEquals(listOf(BACKGROUND_TEXTURE), blits.map { it.first }.distinct())
-        assertPaintedBounds(background, blits.map { it.second })
+        Assertions.assertEquals(listOf(BACKGROUND_TEXTURE), draws.map { it.texture })
+        assertPaintedBounds(background, draws[0])
         Assertions.assertTrue(pose().clear())
     }
 
     fun assertBackgroundAndThumb(background: IntRectangle, thumb: IntRectangle, thumbTexture: ResourceLocation) {
-        Assertions.assertEquals(listOf(BACKGROUND_TEXTURE, thumbTexture), blits.map { it.first }.distinct())
-        val backgroundBlits = blits.takeWhile { it.first == BACKGROUND_TEXTURE }
-        val thumbBlits = blits.drop(backgroundBlits.size)
-        Assertions.assertTrue(thumbBlits.all { it.first == thumbTexture })
-        assertPaintedBounds(background, backgroundBlits.map { it.second })
-        assertPaintedBounds(thumb, thumbBlits.map { it.second })
+        Assertions.assertEquals(listOf(BACKGROUND_TEXTURE, thumbTexture), draws.map { it.texture })
+        assertPaintedBounds(background, draws[0])
+        assertPaintedBounds(thumb, draws[1])
         Assertions.assertTrue(pose().clear())
     }
 
-    private fun assertPaintedBounds(bounds: IntRectangle, rectangles: List<IntRectangle>) {
+    private fun assertPaintedBounds(bounds: IntRectangle, draw: GuiTestEnvironment.TexturedDraw) {
+        val rectangles = draw.quads.map { quad ->
+            quad.forEach { vertex ->
+                Assertions.assertTrue(vertex.u in 0F..(15F / 16F))
+                Assertions.assertTrue(vertex.v in 0F..(15F / 16F))
+            }
+            val left = quad.minOf { it.x }.roundToInt()
+            val top = quad.minOf { it.y }.roundToInt()
+            val right = quad.maxOf { it.x }.roundToInt()
+            val bottom = quad.maxOf { it.y }.roundToInt()
+            IntRectangle(left, top, right - left, bottom - top)
+        }
         Assertions.assertEquals(bounds.x, rectangles.minOf { it.x })
         Assertions.assertEquals(bounds.y, rectangles.minOf { it.y })
         Assertions.assertEquals(bounds.x2, rectangles.maxOf { it.x2 })
         Assertions.assertEquals(bounds.y2, rectangles.maxOf { it.y2 })
         Assertions.assertEquals(bounds.sizeX * bounds.sizeY, rectangles.sumOf { it.sizeX * it.sizeY })
+    }
+}
+
+private fun withScrollbarGraphics(block: (ScrollbarGraphics) -> Unit) {
+    GuiTestEnvironment().use { environment ->
+        environment.withTexturedDraws { draws ->
+            block(ScrollbarGraphics(draws))
+        }
     }
 }
 
@@ -79,7 +77,7 @@ class VanillaInventoryScrollbarViewWidgetTest {
     @Test
     fun `両軸でインベントリ風の背景とつまみを描きスクロール位置を読み書きするのだ`() {
         listOf(false, true).forEach { horizontal ->
-            GuiTestEnvironment().use {
+            withScrollbarGraphics { graphics ->
                 val bounds = if (horizontal) IntRectangle(10, 20, 100, 18) else IntRectangle(10, 20, 18, 100)
                 val (view, widget) = createScrollbar(horizontal, bounds)
                 val scrollOffset = view.scrollOffset
@@ -87,10 +85,8 @@ class VanillaInventoryScrollbarViewWidgetTest {
                 view.viewportLength = 100
                 val mouseX = if (horizontal) 23.0 else 12.0
                 val mouseY = if (horizontal) 22.0 else 33.0
-                val graphics = ScrollbarGraphics()
-
                 fun assertScrollbar(position: Int) {
-                    graphics.blits.clear()
+                    graphics.draws.clear()
                     widget.render(graphics, mouseX.toInt(), mouseY.toInt(), 0F)
                     val thumb = if (horizontal) IntRectangle(11 + position, 21, 31, 16) else IntRectangle(11, 21 + position, 16, 31)
                     graphics.assertBackgroundAndThumb(bounds, thumb, THUMB_TEXTURE)
@@ -124,10 +120,9 @@ class VanillaInventoryScrollbarViewWidgetTest {
     @Test
     fun `両軸で空内容のつまみと極小寸法の描画を確認するのだ`() {
         listOf(false, true).forEach { horizontal ->
-            GuiTestEnvironment().use {
+            withScrollbarGraphics { graphics ->
                 val bounds = if (horizontal) IntRectangle(10, 20, 100, 18) else IntRectangle(10, 20, 18, 100)
                 val (view, widget) = createScrollbar(horizontal, bounds)
-                val graphics = ScrollbarGraphics()
                 view.viewportLength = 100
                 widget.render(graphics, 12, 22, 0F)
                 val disabledThumb = if (horizontal) IntRectangle(11, 21, 98, 16) else IntRectangle(11, 21, 16, 98)
@@ -135,17 +130,17 @@ class VanillaInventoryScrollbarViewWidgetTest {
                 Assertions.assertFalse(widget.mouseClicked(12.0, 22.0, 0))
 
                 (2..5).forEach { width ->
-                    graphics.blits.clear()
+                    graphics.draws.clear()
                     widget.setSize(width, 6)
                     widget.render(graphics, 12, 22, 0F)
                     graphics.assertBackgroundOnly(IntRectangle(10, 20, width, 6))
                 }
 
-                graphics.blits.clear()
+                graphics.draws.clear()
                 view.contentLength = 300
                 widget.setSize(if (horizontal) 0 else 18, if (horizontal) 18 else 0)
                 widget.render(graphics, 12, 22, 0F)
-                Assertions.assertTrue(graphics.blits.isEmpty())
+                Assertions.assertTrue(graphics.draws.isEmpty())
                 Assertions.assertFalse(widget.mouseClicked(12.0, 22.0, 0))
 
                 widget.setSize(6, 6)
