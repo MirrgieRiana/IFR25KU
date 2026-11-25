@@ -6,7 +6,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
 import miragefairy2024.clientProxy
 import miragefairy2024.mod.passiveskill.PassiveSkillEffectFilter
-import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
+import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.util.Channel
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.ItemStacks
@@ -138,10 +138,9 @@ val soulStreamScreenHandlerType = Registration(BuiltInRegistries.MENU, MirageFai
     }, dummyUnitStreamCodec())
 }
 
-class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val soulStream: Container) : AbstractContainerMenu(soulStreamScreenHandlerType(), syncId), ViewProviderMenu {
+class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val soulStream: Container) : AbstractContainerMenu(soulStreamScreenHandlerType(), syncId) {
 
-    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-    private lateinit var screenContent: SoulStreamScreenContent
+    private var screenContent: SoulStreamScreenContent? = null
 
     init {
         repeat(3) { r ->
@@ -167,20 +166,21 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
         return quickMove(slot, destinationIndices)
     }
 
-    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-    fun initScreenContent(
+    fun createRootView(
+        title: Component,
         enabledPassiveSkillEffectFilters: ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>,
         enableGlobalFairyHighlight: ObservableValue<Boolean>,
         collectionToggleKeyText: Component,
         setCollectionEnabled: (Boolean) -> Unit,
-    ) {
-        screenContent = SoulStreamScreenContent(this, enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, collectionToggleKeyText, setCollectionEnabled)
+    ): View {
+        val screenContent = SoulStreamScreenContent(this, enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, collectionToggleKeyText, setCollectionEnabled)
+        this.screenContent = screenContent
+        return screenContent.createView(title)
     }
 
-    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-    override fun createView(title: Component, playerInventoryTitle: Component) = screenContent.createView(title)
-
-    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-    fun disposeView() = screenContent.dispose()
+    fun disposeView() {
+        screenContent?.dispose()
+        screenContent = null
+    }
 
 }

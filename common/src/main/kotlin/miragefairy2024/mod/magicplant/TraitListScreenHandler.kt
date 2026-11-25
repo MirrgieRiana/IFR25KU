@@ -88,7 +88,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
     override fun stillValid(player: Player) = true
     override fun quickMoveStack(player: Player, slot: Int): ItemStack = slots[slot].item
 
-    override fun createView(title: Component, playerInventoryTitle: Component) = TraitListScreenContent(this, title).view
+    override fun createRootView(title: Component, playerInventoryTitle: Component) = TraitListScreenContent(this, title).view
 
 }
 

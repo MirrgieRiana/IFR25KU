@@ -82,9 +82,6 @@ class SoulStreamScreenContent(
     private var lastUpdateEventNanoTime = 0L
 
     fun createView(title: Component): View {
-        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-        dispose()
-
         return View {
             // 灰色背景
             view += StackView().configure {
