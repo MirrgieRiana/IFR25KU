@@ -18,6 +18,7 @@ class ScreenEventSource {
     val onDisposing = EventRegistry<() -> Unit>()
 
     val onBeforeRender = EventRegistry<() -> Unit>()
+
     val onTick = EventRegistry<() -> Unit>()
 
 }
