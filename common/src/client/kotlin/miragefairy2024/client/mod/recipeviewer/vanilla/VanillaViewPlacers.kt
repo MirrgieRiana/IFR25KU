@@ -19,7 +19,6 @@ import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.LayeredImageButtonView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
-import miragefairy2024.mod.recipeviewer.views.ScreenLifecycleView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.TextView
@@ -141,22 +140,6 @@ fun initVanillaViewPlacers() {
             override fun setOffset(offset: IntPoint) = Unit
             override fun detach() = Unit
             override fun dispose() = remover.remove()
-        }
-    }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: ScreenLifecycleView, _ ->
-        val openedRemover = context.onOpened.register {
-            view.onOpened.fire()
-        }
-        val disposingRemover = context.onDisposing.register {
-            view.onDisposing.fire()
-        }
-        object : ViewController {
-            override fun setOffset(offset: IntPoint) = Unit
-            override fun detach() = Unit
-            override fun dispose() {
-                openedRemover.remove()
-                disposingRemover.remove()
-            }
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextButtonView, bounds ->

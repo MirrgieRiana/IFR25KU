@@ -2,6 +2,7 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import dev.architectury.platform.Platform
 import miragefairy2024.client.util.getActualFocused
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
@@ -34,7 +35,7 @@ interface ViewAdapterHost {
     fun getRegionSizeX(): Int
     fun getRegionSizeY(): Int
 
-    fun createRootView(): View
+    fun createRootView(screenEventSource: ScreenEventSource): View
 
     fun getUiOffset(): IntPoint
     fun setUiSize(uiSize: IntPoint)
@@ -55,14 +56,27 @@ interface ViewAdapterHost {
  */
 class ViewAdapter(val host: ViewAdapterHost) {
 
-    private val rootViewCache = CachingEvaluator { host.createRootView() }
+    private var screenEventSource: ScreenEventSource? = null
+    private val rootViewCache = CachingEvaluator {
+        val screenEventSource = ScreenEventSource()
+        try {
+            host.createRootView(screenEventSource).also {
+                this.screenEventSource = screenEventSource
+            }
+        } catch (e: Throwable) {
+            try {
+                screenEventSource.onDisposing.fire()
+            } catch (e2: Throwable) {
+                if (e2 !== e) e.addSuppressed(e2)
+            }
+            throw e
+        }
+    }
     private var isInitialized = false
     private var isOpened = false
     private var viewController: ViewController? = null
     private val onBeforeRender = EventRegistry<() -> Unit>()
     private val onTick = EventRegistry<() -> Unit>()
-    private val onOpened = EventRegistry<() -> Unit>()
-    private val onDisposing = EventRegistry<() -> Unit>()
 
     private class MouseClickSentinel : GuiEventListener, NarratableEntry {
 
@@ -101,8 +115,6 @@ class ViewAdapter(val host: ViewAdapterHost) {
             override val canPlaceMenuSlots = host.canPlaceMenuSlots()
             override val onBeforeRender = this@ViewAdapter.onBeforeRender
             override val onTick = this@ViewAdapter.onTick
-            override val onOpened = this@ViewAdapter.onOpened
-            override val onDisposing = this@ViewAdapter.onDisposing
             override fun addRenderable(registration: WidgetRegistration) = if (registration.interactive) host.addRenderableWidget(registration.widget) else host.addRenderableOnly(registration.widget)
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = host.registerMenuSlotPlacement(slotId, clipBounds)
         }
@@ -112,17 +124,19 @@ class ViewAdapter(val host: ViewAdapterHost) {
         isInitialized = true
         if (!isOpened && host.getScreen() != null) {
             isOpened = true
-            onOpened.fire()
+            screenEventSource?.onOpened?.fire()
         }
     }
 
     /** このルートのウィジェットを描き始める前に呼ぶのだ～🌱 */
     fun beforeRender() {
+        screenEventSource?.onBeforeRender?.fire()
         onBeforeRender.fire()
     }
 
     /** ホストの tick を配置済みの View へ通知するのだ～🌱 */
     fun tick() {
+        screenEventSource?.onTick?.fire()
         onTick.fire()
     }
 
@@ -134,13 +148,13 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     /** ルート View の保持を解除し、配置に伴うイベント登録などの後始末を行うのだ～🌱 */
     fun removed() {
-        rootViewCache.reset()
+        val screenEventSource = this.screenEventSource
+        this.screenEventSource = null
+        isOpened = false
         try {
-            if (isOpened) {
-                isOpened = false
-                onDisposing.fire()
-            }
+            screenEventSource?.onDisposing?.fire()
         } finally {
+            rootViewCache.reset()
             disposePlacement()
         }
     }

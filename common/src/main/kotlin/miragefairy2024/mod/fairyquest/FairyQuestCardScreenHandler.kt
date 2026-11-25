@@ -117,7 +117,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
         addDataSlots(propertyDelegate)
     }
 
-    override fun createView(title: Component, playerInventoryTitle: Component) = FairyQuestCardScreenContent(this, title, playerInventoryTitle).view
+    override fun createRootView(title: Component, playerInventoryTitle: Component) = FairyQuestCardScreenContent(this, title, playerInventoryTitle).view
 
     override fun stillValid(player: Player) = true
 

@@ -3,8 +3,14 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 import miragefairy2024.MessageViewScreenDefinition
 import miragefairy2024.client.mod.getKeyMapping
 import miragefairy2024.mod.common.KeyMappingType
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
+import miragefairy2024.mod.recipeviewer.views.DynamicView
 import miragefairy2024.mod.recipeviewer.views.EmptyView
+import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.empty
+import miragefairy2024.util.fire
+import miragefairy2024.util.observe
+import miragefairy2024.util.register
 import miragefairy2024.util.text
 import net.minecraft.client.GameNarrator
 import net.minecraft.client.InputType
@@ -52,6 +58,55 @@ class MessageViewScreenTest {
             } finally {
                 screen.removed()
             }
+        }
+    }
+
+    @Test
+    fun `子 View の差し替えとリサイズをまたいで画面のイベントを購読できるのだ`() {
+        Mockito.mockStatic(Screen::class.java).use {
+            val minecraft = createMinecraft()
+            val externalEvent = EventRegistry<() -> Unit>()
+            val screenEventSources = mutableListOf<ScreenEventSource>()
+            val calls = mutableListOf<String>()
+            val tab = DynamicView(EmptyView())
+            val definition = MessageViewScreenDefinition(text { empty() }) { screenEventSource ->
+                screenEventSources += screenEventSource
+                externalEvent.observe(screenEventSource.onDisposing) {
+                    calls += "updated"
+                }
+                screenEventSource.onOpened.register {
+                    calls += "opened"
+                }
+                screenEventSource.onDisposing.register {
+                    calls += "disposing"
+                }
+                screenEventSource.onTick.register {
+                    calls += "tick"
+                }
+                tab
+            }
+            val screen = MessageViewScreen(null, definition)
+            try {
+                screen.init(minecraft, 200, 200)
+                externalEvent.fire()
+                tab.content.value = EmptyView()
+                screen.resize(minecraft, 300, 240)
+                externalEvent.fire()
+                screen.tick()
+                screen.removed()
+                externalEvent.fire()
+
+                screen.init(minecraft, 300, 240)
+                externalEvent.fire()
+                screen.removed()
+                externalEvent.fire()
+            } finally {
+                screen.removed()
+            }
+
+            Assertions.assertEquals(2, screenEventSources.size)
+            Assertions.assertNotSame(screenEventSources[0], screenEventSources[1])
+            Assertions.assertEquals(listOf("opened", "updated", "updated", "tick", "disposing", "opened", "updated", "disposing"), calls)
         }
     }
 

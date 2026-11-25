@@ -29,7 +29,6 @@ import miragefairy2024.mod.recipeviewer.views.ListView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
-import miragefairy2024.mod.recipeviewer.views.ScreenLifecycleView
 import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
@@ -50,7 +49,6 @@ import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
 import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
-import miragefairy2024.util.observe
 import miragefairy2024.util.register
 import miragefairy2024.util.text
 import net.minecraft.SharedConstants
@@ -189,55 +187,6 @@ class VanillaViewPlacersTest {
     }
 
     @Test
-    fun `スクロール領域内の View へ表示ごとに画面の開閉を通知するのだ`() {
-        val externalEvent = EventRegistry<() -> Unit>()
-        val calls = mutableListOf<String>()
-        val definition = MessageViewScreenDefinition(text { empty() }) {
-            val lifecycleView = ScreenLifecycleView().also {
-                it.onOpened.register {
-                    calls += "opened"
-                    externalEvent.observe(it.onDisposing) {
-                        calls += "updated"
-                    }
-                }
-                it.onDisposing.register {
-                    calls += "disposing"
-                }
-            }
-            AbsoluteView(IntPoint(100, 100)).also {
-                it += YScrollContainerView().also {
-                    it += lifecycleView
-                }
-            }
-        }
-
-        GuiTestEnvironment().use {
-            val minecraft = Minecraft.getInstance()
-            Mockito.`when`(minecraft.lastInputType).thenReturn(InputType.MOUSE)
-            Mockito.`when`(minecraft.narrator).thenReturn(Mockito.mock(GameNarrator::class.java))
-            val screen = MessageViewScreen(null, definition)
-            minecraft.screen = screen
-            try {
-                screen.init(minecraft, 100, 100)
-                externalEvent.fire()
-                screen.resize(minecraft, 200, 150)
-                externalEvent.fire()
-                screen.removed()
-                externalEvent.fire()
-
-                screen.init(minecraft, 100, 100)
-                externalEvent.fire()
-                screen.removed()
-                externalEvent.fire()
-            } finally {
-                screen.removed()
-            }
-        }
-
-        Assertions.assertEquals(listOf("opened", "updated", "updated", "disposing", "opened", "updated", "disposing"), calls)
-    }
-
-    @Test
     fun `スクロール領域内の View もルートの描画前通知を受けて配置解除で登録を外すのだ`() {
         val calls = mutableListOf<String>()
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
@@ -245,8 +194,6 @@ class VanillaViewPlacersTest {
             override val canPlaceMenuSlots = false
             override val onBeforeRender = EventRegistry<() -> Unit>()
             override val onTick = EventRegistry<() -> Unit>()
-            override val onOpened = EventRegistry<() -> Unit>()
-            override val onDisposing = EventRegistry<() -> Unit>()
             override fun addRenderable(registration: WidgetRegistration) = Remover.NONE
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
         }
@@ -309,8 +256,6 @@ class VanillaViewPlacersTest {
             override val canPlaceMenuSlots = false
             override val onBeforeRender = EventRegistry<() -> Unit>()
             override val onTick = EventRegistry<() -> Unit>()
-            override val onOpened = EventRegistry<() -> Unit>()
-            override val onDisposing = EventRegistry<() -> Unit>()
             override fun addRenderable(registration: WidgetRegistration) = throw AssertionError("No widget should be registered")
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
         }
@@ -334,8 +279,6 @@ class VanillaViewPlacersTest {
             override val canPlaceMenuSlots = true
             override val onBeforeRender = EventRegistry<() -> Unit>()
             override val onTick = EventRegistry<() -> Unit>()
-            override val onOpened = EventRegistry<() -> Unit>()
-            override val onDisposing = EventRegistry<() -> Unit>()
             override fun addRenderable(registration: WidgetRegistration) = throw AssertionError("Slots must not register widgets")
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover {
                 Assertions.assertNull(clipBounds())
@@ -380,8 +323,6 @@ class VanillaViewPlacersTest {
             override val canPlaceMenuSlots = false
             override val onBeforeRender = EventRegistry<() -> Unit>()
             override val onTick = EventRegistry<() -> Unit>()
-            override val onOpened = EventRegistry<() -> Unit>()
-            override val onDisposing = EventRegistry<() -> Unit>()
             override fun addRenderable(registration: WidgetRegistration) = throw AssertionError("Placement must fail before widget registration")
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
         }
@@ -418,8 +359,6 @@ class VanillaViewPlacersTest {
             override val canPlaceMenuSlots = false
             override val onBeforeRender = EventRegistry<() -> Unit>()
             override val onTick = EventRegistry<() -> Unit>()
-            override val onOpened = EventRegistry<() -> Unit>()
-            override val onDisposing = EventRegistry<() -> Unit>()
             override fun addRenderable(registration: WidgetRegistration): Remover {
                 if (!registration.interactive) throw AssertionError("Buttons must accept input")
                 val widget = registration.widget
@@ -459,8 +398,6 @@ class VanillaViewPlacersTest {
             override val canPlaceMenuSlots = false
             override val onBeforeRender = EventRegistry<() -> Unit>()
             override val onTick = EventRegistry<() -> Unit>()
-            override val onOpened = EventRegistry<() -> Unit>()
-            override val onDisposing = EventRegistry<() -> Unit>()
             override fun addRenderable(registration: WidgetRegistration): Remover {
                 if (!registration.interactive) throw AssertionError("Buttons must accept input")
                 val widget = registration.widget
@@ -509,8 +446,6 @@ class VanillaViewPlacersTest {
                 override val canPlaceMenuSlots = true
                 override val onBeforeRender = EventRegistry<() -> Unit>()
                 override val onTick = EventRegistry<() -> Unit>()
-                override val onOpened = EventRegistry<() -> Unit>()
-                override val onDisposing = EventRegistry<() -> Unit>()
                 override fun addRenderable(registration: WidgetRegistration): Remover {
                     if (!registration.interactive) throw AssertionError("Scroll containers must accept input")
                     val widget = registration.widget
@@ -550,8 +485,6 @@ class VanillaViewPlacersTest {
             override val canPlaceMenuSlots = false
             override val onBeforeRender = EventRegistry<() -> Unit>()
             override val onTick = EventRegistry<() -> Unit>()
-            override val onOpened = EventRegistry<() -> Unit>()
-            override val onDisposing = EventRegistry<() -> Unit>()
             override fun addRenderable(registration: WidgetRegistration): Remover {
                 if (!registration.interactive) throw AssertionError("Scrollbars must accept input")
                 val widget = registration.widget
@@ -643,8 +576,6 @@ class VanillaViewPlacersTest {
                         override val canPlaceMenuSlots = false
                         override val onBeforeRender = EventRegistry<() -> Unit>()
                         override val onTick = EventRegistry<() -> Unit>()
-                        override val onOpened = EventRegistry<() -> Unit>()
-                        override val onDisposing = EventRegistry<() -> Unit>()
                         override fun addRenderable(registration: WidgetRegistration): Remover {
                             if (!registration.interactive) throw AssertionError("Unexpected render-only widget")
                             val widget = registration.widget
@@ -734,8 +665,6 @@ class VanillaViewPlacersTest {
                     override val canPlaceMenuSlots = false
                     override val onBeforeRender = EventRegistry<() -> Unit>()
                     override val onTick = EventRegistry<() -> Unit>()
-                    override val onOpened = EventRegistry<() -> Unit>()
-                    override val onDisposing = EventRegistry<() -> Unit>()
                     override fun addRenderable(registration: WidgetRegistration): Remover {
                         if (!registration.interactive) throw AssertionError("Unexpected render-only widget")
                         val widget = registration.widget
@@ -793,8 +722,6 @@ class VanillaViewPlacersTest {
                     override val canPlaceMenuSlots = false
                     override val onBeforeRender = EventRegistry<() -> Unit>()
                     override val onTick = EventRegistry<() -> Unit>()
-                    override val onOpened = EventRegistry<() -> Unit>()
-                    override val onDisposing = EventRegistry<() -> Unit>()
                     override fun addRenderable(registration: WidgetRegistration): Remover {
                         if (!registration.interactive) throw AssertionError("Unexpected render-only widget")
                         val widget = registration.widget
