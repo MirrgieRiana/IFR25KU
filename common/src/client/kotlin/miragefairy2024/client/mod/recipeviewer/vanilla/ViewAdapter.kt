@@ -110,7 +110,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
         isInitialized = true
     }
 
-    /** 画面の配置が完了した後に呼び、初回の配置時だけ画面を開いたことを通知するのだ～🌱 */
+    /** 画面を持つホストでは、[miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter.init] が正常に完了した直後に呼び出さなければならないのだ～🌱 */
     fun opened() {
         if (!isOpened) {
             isOpened = true
