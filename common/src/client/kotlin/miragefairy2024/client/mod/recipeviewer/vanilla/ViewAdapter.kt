@@ -136,15 +136,12 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     /** ルート View の保持を解除し、配置に伴うイベント登録などの後始末を行うのだ～🌱 */
     fun removed() {
-        try {
-            if (isOpened) {
-                isOpened = false
-                screenEventSource.onDisposing.fire()
-            }
-        } finally {
-            rootViewCache.reset()
-            disposePlacement()
+        if (isOpened) {
+            isOpened = false
+            screenEventSource.onDisposing.fire()
         }
+        rootViewCache.reset()
+        disposePlacement()
     }
 
     private fun disposePlacement() {
