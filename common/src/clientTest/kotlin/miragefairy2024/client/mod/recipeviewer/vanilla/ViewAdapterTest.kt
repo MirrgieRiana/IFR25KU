@@ -14,6 +14,7 @@ import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
 import miragefairy2024.util.register
+import miragefairy2024.util.removeOn
 import miragefairy2024.util.text
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
@@ -382,10 +383,11 @@ class ViewAdapterTest {
     fun `画面が外れたときだけ現在の表示の終了を通知するのだ`() {
         val fixture = AdapterFixture(TestView(true))
         val adapter = fixture.adapter
+        val onRemoved = adapter.onRemoved
         val disposalsAtRemoval = mutableListOf<Int>()
-        adapter.onRemoved.add {
+        Remover {
             disposalsAtRemoval += fixture.disposals
-        }
+        }.removeOn(onRemoved)
 
         fixture.init()
         assertTrue(disposalsAtRemoval.isEmpty())
@@ -394,9 +396,9 @@ class ViewAdapterTest {
         assertEquals(listOf(2), disposalsAtRemoval)
 
         fixture.init()
-        adapter.onRemoved.add {
+        Remover {
             disposalsAtRemoval += fixture.disposals
-        }
+        }.removeOn(onRemoved)
         adapter.removed()
         assertEquals(listOf(2, 3), disposalsAtRemoval)
     }
