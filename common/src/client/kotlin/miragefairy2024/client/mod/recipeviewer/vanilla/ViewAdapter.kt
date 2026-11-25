@@ -57,12 +57,12 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     private val rootViewCache = CachingEvaluator { host.createRootView() }
     private var isInitialized = false
+    private var isOpened = false
     private var viewController: ViewController? = null
     private val onBeforeRender = EventRegistry<() -> Unit>()
     private val onTick = EventRegistry<() -> Unit>()
-
-    /** 同じ表示の終了を複数回通知することがあるのだ～🌱 */
-    val onRemoved = EventRegistry<() -> Unit>()
+    private val onOpened = EventRegistry<() -> Unit>()
+    private val onDisposing = EventRegistry<() -> Unit>()
 
     private class MouseClickSentinel : GuiEventListener, NarratableEntry {
 
@@ -101,6 +101,8 @@ class ViewAdapter(val host: ViewAdapterHost) {
             override val canPlaceMenuSlots = host.canPlaceMenuSlots()
             override val onBeforeRender = this@ViewAdapter.onBeforeRender
             override val onTick = this@ViewAdapter.onTick
+            override val onOpened = this@ViewAdapter.onOpened
+            override val onDisposing = this@ViewAdapter.onDisposing
             override fun addRenderable(registration: WidgetRegistration) = if (registration.interactive) host.addRenderableWidget(registration.widget) else host.addRenderableOnly(registration.widget)
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = host.registerMenuSlotPlacement(slotId, clipBounds)
         }
@@ -108,6 +110,10 @@ class ViewAdapter(val host: ViewAdapterHost) {
             host.getViewPlacerRegistry().place(context, view, bounds)
         }
         isInitialized = true
+        if (!isOpened && host.getScreen() != null) {
+            isOpened = true
+            onOpened.fire()
+        }
     }
 
     /** このルートのウィジェットを描き始める前に呼ぶのだ～🌱 */
@@ -130,9 +136,12 @@ class ViewAdapter(val host: ViewAdapterHost) {
     fun removed() {
         rootViewCache.reset()
         try {
-            disposePlacement()
+            if (isOpened) {
+                isOpened = false
+                onDisposing.fire()
+            }
         } finally {
-            onRemoved.fire()
+            disposePlacement()
         }
     }
 
