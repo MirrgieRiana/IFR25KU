@@ -59,17 +59,8 @@ class ViewAdapter(val host: ViewAdapterHost) {
     private var screenEventSource: ScreenEventSource? = null
     private val rootViewCache = CachingEvaluator {
         val screenEventSource = ScreenEventSource()
-        try {
-            host.createRootView(screenEventSource).also {
-                this.screenEventSource = screenEventSource
-            }
-        } catch (e: Throwable) {
-            try {
-                screenEventSource.onDisposing.fire()
-            } catch (e2: Throwable) {
-                if (e2 !== e) e.addSuppressed(e2)
-            }
-            throw e
+        host.createRootView(screenEventSource).also {
+            this.screenEventSource = screenEventSource
         }
     }
     private var isInitialized = false
@@ -150,9 +141,11 @@ class ViewAdapter(val host: ViewAdapterHost) {
     fun removed() {
         val screenEventSource = this.screenEventSource
         this.screenEventSource = null
-        isOpened = false
         try {
-            screenEventSource?.onDisposing?.fire()
+            if (isOpened) {
+                isOpened = false
+                screenEventSource?.onDisposing?.fire()
+            }
         } finally {
             rootViewCache.reset()
             disposePlacement()

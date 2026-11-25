@@ -4,6 +4,11 @@ import miragefairy2024.MessageViewScreenDefinition
 import miragefairy2024.client.mod.getKeyMapping
 import miragefairy2024.mod.common.KeyMappingType
 import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.PlaceableView
+import miragefairy2024.mod.recipeviewer.view.View
+import miragefairy2024.mod.recipeviewer.view.ViewController
+import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.views.DynamicView
 import miragefairy2024.mod.recipeviewer.views.EmptyView
 import miragefairy2024.util.EventRegistry
@@ -107,6 +112,43 @@ class MessageViewScreenTest {
             Assertions.assertEquals(2, screenEventSources.size)
             Assertions.assertNotSame(screenEventSources[0], screenEventSources[1])
             Assertions.assertEquals(listOf("opened", "updated", "updated", "tick", "disposing", "opened", "updated", "disposing"), calls)
+        }
+    }
+
+    @Test
+    fun `最初の生成や配置に失敗した画面を外しても開閉を通知しないのだ`() {
+        Mockito.mockStatic(Screen::class.java).use {
+            val minecraft = createMinecraft()
+            val failure = IllegalStateException("View initialization failed")
+            val failingView: View = object : View by EmptyView() {
+                override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
+                    throw failure
+                }
+            }
+            val createViews = listOf<() -> View>({ throw failure }, { failingView })
+
+            createViews.forEach { createView ->
+                val calls = mutableListOf<String>()
+                val definition = MessageViewScreenDefinition(text { empty() }) { screenEventSource ->
+                    screenEventSource.onOpened.register {
+                        calls += "opened"
+                    }
+                    screenEventSource.onDisposing.register {
+                        calls += "disposing"
+                    }
+                    createView()
+                }
+                val screen = MessageViewScreen(null, definition)
+                try {
+                    val thrown = Assertions.assertThrows(IllegalStateException::class.java) {
+                        screen.init(minecraft, 200, 200)
+                    }
+                    Assertions.assertSame(failure, thrown)
+                } finally {
+                    screen.removed()
+                }
+                Assertions.assertTrue(calls.isEmpty())
+            }
         }
     }
 

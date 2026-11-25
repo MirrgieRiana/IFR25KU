@@ -12,7 +12,7 @@ class ScreenEventSource {
     val onOpened = EventRegistry<() -> Unit>()
 
     /**
-     * 画面を外す際に配置を破棄する前と、ルート View の生成が失敗したときに通知するのだ～🌱
+     * 最初の配置が完了した画面を外す際に、配置を破棄する前に通知するのだ～🌱
      * 処理中は直接・間接を問わず同期的に画面を開閉してはいけないのだ～🌱
      */
     val onDisposing = EventRegistry<() -> Unit>()
