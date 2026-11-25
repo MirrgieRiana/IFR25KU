@@ -85,9 +85,6 @@ class MessageViewScreenTest {
                 screenEventSource.onDisposing.observe(screenEventSource.onDisposing) {
                     calls += "disposing"
                 }
-                screenEventSource.onTick.observe(screenEventSource.onDisposing) {
-                    calls += "tick"
-                }
                 tab
             }
             val screen = MessageViewScreen(null, definition)
@@ -97,13 +94,11 @@ class MessageViewScreenTest {
                 tab.content.value = EmptyView()
                 screen.resize(minecraft, 300, 240)
                 externalEvent.fire()
-                screen.tick()
                 screen.removed()
                 externalEvent.fire()
 
                 screen.init(minecraft, 300, 240)
                 externalEvent.fire()
-                screen.tick()
                 screen.removed()
                 externalEvent.fire()
             } finally {
@@ -112,7 +107,7 @@ class MessageViewScreenTest {
 
             Assertions.assertEquals(2, screenEventSources.size)
             Assertions.assertSame(screenEventSources[0], screenEventSources[1])
-            Assertions.assertEquals(listOf("opened", "updated", "updated", "tick", "disposing", "opened", "updated", "tick", "disposing"), calls)
+            Assertions.assertEquals(listOf("opened", "updated", "updated", "disposing", "opened", "updated", "disposing"), calls)
         }
     }
 
