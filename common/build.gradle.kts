@@ -48,7 +48,7 @@ configurations.named("clientTestRuntimeOnly") {
 
 idea {
     module {
-        testSources.from(file("src/clientTest/kotlin"))
+        testSources.from(sourceSets["clientTest"].allJava.srcDirs)
     }
 }
 
