@@ -450,8 +450,7 @@ abstract class VanillaScrollContainerViewWidget(
         val childContext: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = context.origin
             override val canPlaceMenuSlots = context.canPlaceMenuSlots
-            override val onBeforeRender = context.onBeforeRender
-            override val onTick = context.onTick
+            override val screenEventSource = context.screenEventSource
             override fun addRenderable(registration: WidgetRegistration) = register(registration)
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover {
                 return context.registerMenuSlotPlacement(slotId) {

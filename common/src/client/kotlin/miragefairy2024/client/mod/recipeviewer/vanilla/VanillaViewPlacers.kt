@@ -15,14 +15,12 @@ import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.register
-import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.LayeredImageButtonView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.TextView
-import miragefairy2024.mod.recipeviewer.views.TickView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.mod.recipeviewer.views.XFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XInventoryScrollbarView
@@ -60,7 +58,9 @@ fun initVanillaViewPlacers() {
     fun placeScrollContainerView(context: VanillaViewPlacerContext, widget: VanillaScrollContainerViewWidget): ViewController {
         val controller = context place WidgetRegistration(widget, true) { RenderOverflow.NONE }
         // 子の差し替えだけで全長が変わった場合も、描画前に寸法を通知するのだ～🌱
-        val boundsRemover = context.onBeforeRender.register(widget::updateScrollBounds)
+        val boundsRemover = context.screenEventSource.onBeforeRender.register {
+            widget.updateScrollBounds()
+        }
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {
                 controller.setOffset(offset)
@@ -125,21 +125,6 @@ fun initVanillaViewPlacers() {
         object : ViewController {
             override fun setOffset(offset: IntPoint) = setPosition(offset)
             override fun detach() = remover.remove()
-        }
-    }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: BeforeRenderView, _ ->
-        val remover = context.onBeforeRender.register { view.onBeforeRender.fire() }
-        object : ViewController {
-            override fun setOffset(offset: IntPoint) = Unit
-            override fun detach() = remover.remove()
-        }
-    }
-    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TickView, _ ->
-        val remover = context.onTick.register { view.onTick.fire() }
-        object : ViewController {
-            override fun setOffset(offset: IntPoint) = Unit
-            override fun detach() = Unit
-            override fun dispose() = remover.remove()
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextButtonView, bounds ->
