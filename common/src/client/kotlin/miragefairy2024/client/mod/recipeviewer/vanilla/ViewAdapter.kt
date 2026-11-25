@@ -108,7 +108,11 @@ class ViewAdapter(val host: ViewAdapterHost) {
             host.getViewPlacerRegistry().place(context, view, bounds)
         }
         isInitialized = true
-        if (!isOpened && host.getScreen() != null) {
+    }
+
+    /** 画面の配置が完了した後に呼び、初回の配置時だけ画面を開いたことを通知するのだ～🌱 */
+    fun opened() {
+        if (!isOpened) {
             isOpened = true
             screenEventSource.onOpened.fire()
         }

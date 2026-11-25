@@ -55,7 +55,10 @@ abstract class ViewScreen(title: Component) : Screen(title) {
 
     })
 
-    override fun init() = viewAdapter.init()
+    override fun init() {
+        viewAdapter.init()
+        viewAdapter.opened()
+    }
 
     override fun tick() {
         super.tick()

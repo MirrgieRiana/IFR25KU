@@ -82,7 +82,10 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
 
     })
 
-    override fun init() = viewAdapter.init()
+    override fun init() {
+        viewAdapter.init()
+        viewAdapter.opened()
+    }
 
     override fun removed() {
         viewAdapter.removed()
