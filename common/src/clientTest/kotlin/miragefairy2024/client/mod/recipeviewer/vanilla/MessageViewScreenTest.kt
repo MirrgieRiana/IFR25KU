@@ -79,13 +79,13 @@ class MessageViewScreenTest {
                 externalEvent.observe(screenEventSource.onDisposing) {
                     calls += "updated"
                 }
-                screenEventSource.onOpened.register {
+                screenEventSource.onOpened.observe(screenEventSource.onDisposing) {
                     calls += "opened"
                 }
-                screenEventSource.onDisposing.register {
+                screenEventSource.onDisposing.observe(screenEventSource.onDisposing) {
                     calls += "disposing"
                 }
-                screenEventSource.onTick.register {
+                screenEventSource.onTick.observe(screenEventSource.onDisposing) {
                     calls += "tick"
                 }
                 tab
@@ -103,6 +103,7 @@ class MessageViewScreenTest {
 
                 screen.init(minecraft, 300, 240)
                 externalEvent.fire()
+                screen.tick()
                 screen.removed()
                 externalEvent.fire()
             } finally {
@@ -110,8 +111,8 @@ class MessageViewScreenTest {
             }
 
             Assertions.assertEquals(2, screenEventSources.size)
-            Assertions.assertNotSame(screenEventSources[0], screenEventSources[1])
-            Assertions.assertEquals(listOf("opened", "updated", "updated", "tick", "disposing", "opened", "updated", "disposing"), calls)
+            Assertions.assertSame(screenEventSources[0], screenEventSources[1])
+            Assertions.assertEquals(listOf("opened", "updated", "updated", "tick", "disposing", "opened", "updated", "tick", "disposing"), calls)
         }
     }
 

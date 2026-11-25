@@ -3,9 +3,9 @@ package miragefairy2024.mod.recipeviewer.vanilla
 import miragefairy2024.util.EventRegistry
 
 /**
- * バニラの View 画面で 1 回の表示に対応するイベントなのだ～🌱
+ * バニラの View 画面のイベントを提供するのだ～🌱
  *
- * このイベントソースは、個々の View の配置が終わった後も画面の終了まで存続するのだ～🌱
+ * このイベントソースは、個々の View の配置が終わった後も、同じ画面を開き直した後も存続するのだ～🌱
  * 購読側は、登録したすべてのリスナーを [miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource.onDisposing] で解除しなければならないのだ～🌱
  */
 class ScreenEventSource {

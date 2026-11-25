@@ -56,13 +56,8 @@ interface ViewAdapterHost {
  */
 class ViewAdapter(val host: ViewAdapterHost) {
 
-    private var screenEventSource: ScreenEventSource? = null
-    private val rootViewCache = CachingEvaluator {
-        val screenEventSource = ScreenEventSource()
-        host.createRootView(screenEventSource).also {
-            this.screenEventSource = screenEventSource
-        }
-    }
+    private val screenEventSource = ScreenEventSource()
+    private val rootViewCache = CachingEvaluator { host.createRootView(screenEventSource) }
     private var isInitialized = false
     private var isOpened = false
     private var viewController: ViewController? = null
@@ -115,19 +110,19 @@ class ViewAdapter(val host: ViewAdapterHost) {
         isInitialized = true
         if (!isOpened && host.getScreen() != null) {
             isOpened = true
-            screenEventSource?.onOpened?.fire()
+            screenEventSource.onOpened.fire()
         }
     }
 
     /** このルートのウィジェットを描き始める前に呼ぶのだ～🌱 */
     fun beforeRender() {
-        screenEventSource?.onBeforeRender?.fire()
+        screenEventSource.onBeforeRender.fire()
         onBeforeRender.fire()
     }
 
     /** ホストの tick を配置済みの View へ通知するのだ～🌱 */
     fun tick() {
-        screenEventSource?.onTick?.fire()
+        screenEventSource.onTick.fire()
         onTick.fire()
     }
 
@@ -139,12 +134,10 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     /** ルート View の保持を解除し、配置に伴うイベント登録などの後始末を行うのだ～🌱 */
     fun removed() {
-        val screenEventSource = this.screenEventSource
-        this.screenEventSource = null
         try {
             if (isOpened) {
                 isOpened = false
-                screenEventSource?.onDisposing?.fire()
+                screenEventSource.onDisposing.fire()
             }
         } finally {
             rootViewCache.reset()
