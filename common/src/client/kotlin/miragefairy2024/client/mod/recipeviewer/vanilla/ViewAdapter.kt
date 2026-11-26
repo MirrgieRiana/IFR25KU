@@ -98,6 +98,8 @@ class ViewAdapter(val host: ViewAdapterHost) {
             override val origin = host.getUiOffset()
             override val canPlaceMenuSlots = host.canPlaceMenuSlots()
             override val screenEventSource = this@ViewAdapter.screenEventSource
+            override val onBeforeRender = this@ViewAdapter.screenEventSource.onBeforeRender
+            override val onTick = this@ViewAdapter.screenEventSource.onTick
             override fun addRenderable(registration: WidgetRegistration) = if (registration.interactive) host.addRenderableWidget(registration.widget) else host.addRenderableOnly(registration.widget)
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = host.registerMenuSlotPlacement(slotId, clipBounds)
         }
@@ -120,7 +122,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
         screenEventSource.onBeforeRender.fire()
     }
 
-    /** ホストが tick するたびに呼ぶのだ～🌱 */
+    /** ホストの tick を配置済みの View へ通知するのだ～🌱 */
     fun tick() {
         screenEventSource.onTick.fire()
     }
@@ -146,6 +148,12 @@ class ViewAdapter(val host: ViewAdapterHost) {
         removeMouseClickSentinel()
         val controller = viewController
         viewController = null
+        screenEventSource.onBeforeRender.toList().forEach {
+            screenEventSource.onBeforeRender.remove(it)
+        }
+        screenEventSource.onTick.toList().forEach {
+            screenEventSource.onTick.remove(it)
+        }
         if (controller != null) controller.dispose()
     }
 

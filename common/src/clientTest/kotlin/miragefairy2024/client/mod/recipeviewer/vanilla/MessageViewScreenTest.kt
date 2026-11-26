@@ -21,7 +21,6 @@ import net.minecraft.client.GameNarrator
 import net.minecraft.client.InputType
 import net.minecraft.client.KeyMapping
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.screens.Screen
@@ -75,7 +74,6 @@ class MessageViewScreenTest {
             val screenEventSources = mutableListOf<ScreenEventSource>()
             val calls = mutableListOf<String>()
             val tab = DynamicView(EmptyView())
-            val guiGraphics = Mockito.mock(GuiGraphics::class.java)
             val definition = MessageViewScreenDefinition(text { empty() }) { screenEventSource ->
                 screenEventSources += screenEventSource
                 externalEvent.observe(screenEventSource.onDisposing) {
@@ -87,31 +85,20 @@ class MessageViewScreenTest {
                 screenEventSource.onDisposing.observe(screenEventSource.onDisposing) {
                     calls += "disposing"
                 }
-                screenEventSource.onBeforeRender.observe(screenEventSource.onDisposing) {
-                    calls += "render"
-                }
-                screenEventSource.onTick.observe(screenEventSource.onDisposing) {
-                    calls += "tick"
-                }
                 tab
             }
             val screen = MessageViewScreen(null, definition)
             try {
                 screen.init(minecraft, 200, 200)
                 externalEvent.fire()
-                screen.render(guiGraphics, 0, 0, 0.0F)
                 tab.content.value = EmptyView()
                 screen.resize(minecraft, 300, 240)
                 externalEvent.fire()
-                screen.tick()
-                screen.render(guiGraphics, 0, 0, 0.0F)
                 screen.removed()
                 externalEvent.fire()
 
                 screen.init(minecraft, 300, 240)
                 externalEvent.fire()
-                screen.tick()
-                screen.render(guiGraphics, 0, 0, 0.0F)
                 screen.removed()
                 externalEvent.fire()
             } finally {
@@ -120,7 +107,7 @@ class MessageViewScreenTest {
 
             Assertions.assertEquals(2, screenEventSources.size)
             Assertions.assertSame(screenEventSources[0], screenEventSources[1])
-            Assertions.assertEquals(listOf("opened", "updated", "render", "updated", "tick", "render", "disposing", "opened", "updated", "tick", "render", "disposing"), calls)
+            Assertions.assertEquals(listOf("opened", "updated", "updated", "disposing", "opened", "updated", "disposing"), calls)
         }
     }
 

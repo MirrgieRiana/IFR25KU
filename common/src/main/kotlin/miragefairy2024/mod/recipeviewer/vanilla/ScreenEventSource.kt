@@ -3,11 +3,10 @@ package miragefairy2024.mod.recipeviewer.vanilla
 import miragefairy2024.util.EventRegistry
 
 /**
- * バニラの View の表示を管理するホストのイベントを提供するのだ～🌱
+ * バニラの View 画面のイベントを提供するのだ～🌱
  *
  * このイベントソースは、個々の View の配置が終わった後も、同じ画面を開き直した後も存続するのだ～🌱
- * 画面の表示中に購読するリスナーは [miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource.onDisposing] で解除しなければならないのだ～🌱
- * View の配置中に購読するリスナーは、その配置を解除する際に解除しなければならないのだ～🌱
+ * 画面の開閉イベントのリスナーは [miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource.onDisposing] で解除しなければならないのだ～🌱
  */
 class ScreenEventSource {
 
@@ -26,10 +25,16 @@ class ScreenEventSource {
      */
     val onDisposing = EventRegistry<() -> Unit>()
 
-    /** ホストがウィジェットを描画する直前に通知するのだ～🌱 */
+    /**
+     * ホストがウィジェットを描画する直前に通知するのだ～🌱
+     * 配置を破棄する際にリスナーを解除するのだ～🌱
+     */
     val onBeforeRender = EventRegistry<() -> Unit>()
 
-    /** ホストの tick を通知するのだ～🌱 */
+    /**
+     * ホストの tick を通知するのだ～🌱
+     * 配置を破棄する際にリスナーを解除するのだ～🌱
+     */
     val onTick = EventRegistry<() -> Unit>()
 
 }
