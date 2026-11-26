@@ -236,8 +236,12 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
                         fun update() {
                             view.enabled.value = pageIndex.value < pageCount.value - 1
                         }
-                        pageIndex.registerAndInitialize { _, _ -> update() }
-                        pageCount.registerAndInitialize { _, _ -> update() }
+                        pageIndex.registerAndInitialize { _, _ ->
+                            update()
+                        }
+                        pageCount.registerAndInitialize { _, _ ->
+                            update()
+                        }
 
                         view.onClick.register {
                             pageIndex.value += 1

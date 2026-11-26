@@ -237,9 +237,13 @@ class VanillaViewPlacersTest {
         }
         val scrollContent = YListView()
         scrollContent += PlacerTestView()
-        scrollContent += BeforeRenderView { calls += "child" }
+        scrollContent += BeforeRenderView {
+            calls += "child"
+        }
         val view = AbsoluteView(IntPoint(100, 100))
-        view += BeforeRenderView { calls += "root" }
+        view += BeforeRenderView {
+            calls += "root"
+        }
         view += YScrollContainerView().also { it += scrollContent }
         view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
         Assertions.assertEquals(100, scrollContent.evaluateContentSizeY())
@@ -257,7 +261,11 @@ class VanillaViewPlacersTest {
     fun `tick 中に差し替えた View は次の tick から通知を受けるのだ`() {
         val calls = mutableListOf<String>()
         val context = createScrollbarPlacerContext(mutableListOf())
-        val dynamicView = DynamicView(TickView { calls += "old" })
+        val dynamicView = DynamicView(
+            TickView {
+                calls += "old"
+            },
+        )
         val scrollContent = YListView()
         scrollContent += PlacerTestView()
         scrollContent += dynamicView
@@ -268,7 +276,9 @@ class VanillaViewPlacersTest {
             calls += "root"
             if (!replaced) {
                 replaced = true
-                dynamicView.content.value = TickView { calls += "new" }
+                dynamicView.content.value = TickView {
+                    calls += "new"
+                }
             }
         }
         view += YScrollContainerView().also { it += scrollContent }
