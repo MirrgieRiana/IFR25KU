@@ -28,6 +28,7 @@ repositories {
 
 loom {
     splitEnvironmentSourceSets()
+    enableTransitiveAccessWideners = true
 }
 
 val preparePortedSources = tasks.register<Sync>("preparePortedSources") {
@@ -84,7 +85,10 @@ tasks.withType<KotlinJvmCompile>().configureEach {
 dependencies {
     minecraft("com.mojang:minecraft:${experiment.getProperty("minecraft_version")}")
     compileOnly("net.fabricmc:fabric-loader:${experiment.getProperty("fabric_loader_version")}")
-    compileOnly("net.fabricmc.fabric-api:fabric-api:${experiment.getProperty("fabric_api_version")}")
+    implementation("net.fabricmc.fabric-api:fabric-api:${experiment.getProperty("fabric_api_version")}")
+    if (providers.gradleProperty("migrationClientClasspath").isPresent) {
+        compileOnly(loom.namedMinecraftJars)
+    }
     compileOnly("dev.architectury:architectury:${experiment.getProperty("architectury_version")}")
     compileOnly("com.github.glitchfiend:TerraBlender-fabric:26.1.2-26.1.2.0.3")
     compileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:26.1.819")

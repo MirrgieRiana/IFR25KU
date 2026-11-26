@@ -219,6 +219,41 @@ index da86d8a..07f14b7 100644
 +import net.minecraft.client.renderer.rendertype.RenderType
  import net.minecraft.world.item.ItemStack
 
+diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiViewPlacers.kt b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiViewPlacers.kt
+index d8b4b02..d4bbbff 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiViewPlacers.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiViewPlacers.kt
+@@ -3,4 +3,5 @@ package miragefairy2024.client.mod.recipeviewer.emi
+ import dev.emi.emi.api.render.EmiTexture
+ import dev.emi.emi.api.widget.FillingArrowWidget
++import dev.emi.emi.api.stack.EmiStack
+ import dev.emi.emi.api.widget.SlotWidget
+ import dev.emi.emi.api.widget.TextureWidget
+@@ -27,5 +28,5 @@ context(_: ModContext)
+ fun initEmiViewPlacers() {
+     EMI_VIEW_PLACER_REGISTRY.register { context, view: InputSlotView, bounds ->
+-        context.containerWidget place SlotWidget(view.ingredientStack.toEmiIngredient(), bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
++        context.containerWidget place SlotWidget(view.ingredientStack?.toEmiIngredient() ?: EmiStack.EMPTY, bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
+             .drawBack(view.drawBackground)
+             .also { widget ->
+diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiViewPlacers.kt b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiViewPlacers.kt
+index d1204e1..5e27a2a 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiViewPlacers.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiViewPlacers.kt
+@@ -26,5 +26,5 @@ context(_: ModContext)
+ fun initReiViewPlacers() {
+     REI_VIEW_PLACER_REGISTRY.register { widgets, view: InputSlotView, bounds ->
+-        val entryIngredient = view.ingredientStack.toEntryIngredient()
++        val entryIngredient = (view.ingredientStack?.toEntryIngredient() ?: EntryIngredient.of(emptyList()))
+             .let {
+                 if (view.additionalTooltip.isNotEmpty()) {
+@@ -40,5 +40,5 @@ fun initReiViewPlacers() {
+     }
+     REI_VIEW_PLACER_REGISTRY.register { widgets, view: CatalystSlotView, bounds ->
+-        val entryIngredient = view.ingredientStack.toEntryIngredient()
++        val entryIngredient = (view.ingredientStack?.toEntryIngredient() ?: EntryIngredient.of(emptyList()))
+             .let {
+                 if (view.additionalTooltip.isNotEmpty()) {
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/VanillaFlatScrollbarViewWidget.kt b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/VanillaFlatScrollbarViewWidget.kt
 index 34774f6..0be0d53 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/VanillaFlatScrollbarViewWidget.kt
@@ -382,10 +417,10 @@ index 87e5823..238e860 100644
 
 diff --git a/common/src/main/kotlin/miragefairy2024/DataGenerationEvents.kt b/common/src/main/kotlin/miragefairy2024/DataGenerationEvents.kt
 new file mode 100644
-index 0000000..61ea541
+index 0000000..5d94052
 --- /dev/null
 +++ b/common/src/main/kotlin/miragefairy2024/DataGenerationEvents.kt
-@@ -0,0 +1,46 @@
+@@ -0,0 +1,63 @@
 +package miragefairy2024
 +
 +import com.google.gson.JsonElement
@@ -398,10 +433,16 @@ index 0000000..61ea541
 +import net.minecraft.core.RegistrySetBuilder
 +import net.minecraft.client.data.models.BlockModelGenerators
 +import net.minecraft.client.data.models.ItemModelGenerators
++import net.minecraft.core.registries.Registries
++import net.minecraft.data.BlockFamily
++import net.minecraft.data.recipes.RecipeCategory
 +import net.minecraft.data.recipes.RecipeOutput
++import net.minecraft.data.recipes.RecipeProvider
 +import net.minecraft.resources.ResourceKey
 +import net.minecraft.resources.Identifier
 +import net.minecraft.world.entity.EntityType
++import net.minecraft.world.flag.FeatureFlagSet
++import net.minecraft.world.item.Item
 +import net.minecraft.world.level.storage.loot.LootTable
 +import java.util.function.Consumer
 +
@@ -415,7 +456,7 @@ index 0000000..61ea541
 +    val onGenerateArchaeologyLootTable = InitializationEventRegistry<((ResourceKey<LootTable>, LootTable.Builder) -> Unit, HolderLookup.Provider) -> Unit>()
 +    val onGenerateEntityLootTable = InitializationEventRegistry<((EntityType<*>, LootTable.Builder) -> Unit, HolderLookup.Provider) -> Unit>()
 +    val onGenerateAdvancementRewardLootTable = InitializationEventRegistry<((ResourceKey<LootTable>, LootTable.Builder) -> Unit, HolderLookup.Provider) -> Unit>()
-+    val onGenerateRecipe = InitializationEventRegistry<(RecipeOutput) -> Unit>()
++    val onGenerateRecipe = InitializationEventRegistry<(ModRecipeProvider) -> Unit>()
 +    val onGenerateEnglishTranslation = InitializationEventRegistry<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
 +    val onGenerateJapaneseTranslation = InitializationEventRegistry<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
 +    val onGenerateNinePatchTexture = InitializationEventRegistry<((Identifier, NinePatchTextureCard) -> Unit) -> Unit>()
@@ -427,6 +468,17 @@ index 0000000..61ea541
 +    val onBuildRegistry = InitializationEventRegistry<(RegistrySetBuilder) -> Unit>()
 +
 +    val dynamicGenerationRegistries = mutableSetOf<ResourceKey<out Registry<*>>>()
++}
++
++class ModRecipeProvider(registries: HolderLookup.Provider, val recipeOutput: RecipeOutput) : RecipeProvider(registries, recipeOutput) {
++    val items = registries.lookupOrThrow(Registries.ITEM)
++
++    override fun buildRecipes() = DataGenerationEvents.onGenerateRecipe.fire { it(this) }
++
++    fun generateBlockFamily(family: BlockFamily, features: FeatureFlagSet) = generateRecipes(family, features)
++
++    fun generateStonecutterRecipe(category: RecipeCategory, result: Item, ingredient: Item, count: Int) =
++        stonecutterResultFromBase(category, result, ingredient, count)
 +}
 +
 +interface DataMapConsumer {
@@ -637,7 +689,7 @@ index 27bb9d2..28b99c8 100644
  }
 
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/BagModule.kt b/common/src/main/kotlin/miragefairy2024/mod/BagModule.kt
-index b493f30..72a61e2 100644
+index b493f30..0d7a9d5 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/BagModule.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/BagModule.kt
 @@ -55,6 +55,6 @@ import miragefairy2024.util.text
@@ -672,8 +724,9 @@ index b493f30..72a61e2 100644
 -        if (level.isClientSide) return InteractionResultHolder.success(itemStack)
 +        if (level.isClientSide) return InteractionResult.SUCCESS
          val slotIndex = if (hand == InteractionHand.MAIN_HAND) {
-             val selectedSlot = user.inventory.selected
+-            val selectedSlot = user.inventory.selected
 -            if (!Inventory.isHotbarSlot(selectedSlot)) return InteractionResultHolder.fail(itemStack)
++            val selectedSlot = user.inventory.selectedSlot
 +            if (!Inventory.isHotbarSlot(selectedSlot)) return InteractionResult.FAIL
              selectedSlot
          } else {
@@ -942,6 +995,50 @@ index c79d1ce..c86b27c 100644
 +enum class BlockTagCard(identifier: Identifier, val title: EnJa) {
      CONCRETE(MirageFairy2024.identifier("concrete"), EnJa("Concrete", "コンクリート")),
      ;
+diff --git a/common/src/main/kotlin/miragefairy2024/mod/biome/ElevatedSpawnerFeature.kt b/common/src/main/kotlin/miragefairy2024/mod/biome/ElevatedSpawnerFeature.kt
+index 3ee52d8..022d814 100644
+--- a/common/src/main/kotlin/miragefairy2024/mod/biome/ElevatedSpawnerFeature.kt
++++ b/common/src/main/kotlin/miragefairy2024/mod/biome/ElevatedSpawnerFeature.kt
+@@ -50,5 +50,5 @@ class ElevatedSpawnerFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<N
+         val totalHeight = pillarHeight + 1 + 3 + 1 + 1 + 1
+
+-        if (originBlockPos.y + totalHeight - 1 > level.maxBuildHeight - 1) return false
++        if (originBlockPos.y + totalHeight - 1 > level.maxY) return false
+
+         // 検証
+diff --git a/common/src/main/kotlin/miragefairy2024/mod/biome/MiragidianLampFeature.kt b/common/src/main/kotlin/miragefairy2024/mod/biome/MiragidianLampFeature.kt
+index e5cc3cb..41809f8 100644
+--- a/common/src/main/kotlin/miragefairy2024/mod/biome/MiragidianLampFeature.kt
++++ b/common/src/main/kotlin/miragefairy2024/mod/biome/MiragidianLampFeature.kt
+@@ -46,5 +46,5 @@ class MiragidianLampFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<No
+         repeat(height) { i ->
+             val targetBlockPos = blockPos.above(i)
+-            if (targetBlockPos.y >= level.maxBuildHeight) return false
++            if (targetBlockPos.y > level.maxY) return false
+             if (!level.isEmptyBlock(targetBlockPos)) return false
+         }
+diff --git a/common/src/main/kotlin/miragefairy2024/mod/biome/RetrospectiveCity.kt b/common/src/main/kotlin/miragefairy2024/mod/biome/RetrospectiveCity.kt
+index 6e70026..3f08cde 100644
+--- a/common/src/main/kotlin/miragefairy2024/mod/biome/RetrospectiveCity.kt
++++ b/common/src/main/kotlin/miragefairy2024/mod/biome/RetrospectiveCity.kt
+@@ -157,5 +157,5 @@ fun checkConflict(level: WorldGenLevel, blockPos: BlockPos, height: Int): Pair<I
+     while (true) {
+         if (level.getBlockState(blockPos.above(up)).isConflicting()) return null // そのマスに建物を構成するブロックがある
+-        if (blockPos.y + up >= level.maxBuildHeight) return null // ワールドの高さ制限に達しているので抜ける
++        if (blockPos.y + up > level.maxY) return null // ワールドの高さ制限に達しているので抜ける
+         if (up + 1 >= height) break // 現在の高さが最大高さに到達しているので抜ける
+         if (!level.isEmptyBlock(blockPos.above(up + 1))) break // これより上に拡張できないので抜ける
+diff --git a/common/src/main/kotlin/miragefairy2024/mod/biome/XarperiaObeliskFeature.kt b/common/src/main/kotlin/miragefairy2024/mod/biome/XarperiaObeliskFeature.kt
+index 16169a5..f12340d 100644
+--- a/common/src/main/kotlin/miragefairy2024/mod/biome/XarperiaObeliskFeature.kt
++++ b/common/src/main/kotlin/miragefairy2024/mod/biome/XarperiaObeliskFeature.kt
+@@ -67,5 +67,5 @@ class XarperiaObeliskFeature(codec: Codec<NoneFeatureConfiguration>) : Feature<N
+
+         val schedules = mutableListOf<() -> Unit>()
+-        val maxHeight = random.nextIntBetweenInclusive(BottomPlacer.height + TopPlacer.height, 32) atMost level.maxBuildHeight - originBlockPos.y
++        val maxHeight = random.nextIntBetweenInclusive(BottomPlacer.height + TopPlacer.height, 32) atMost (level.maxY + 1 - originBlockPos.y)
+         var currentHeight = 0
+
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/common/CommonModule.kt b/common/src/main/kotlin/miragefairy2024/mod/common/CommonModule.kt
 index 51a7394..714e4c3 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/common/CommonModule.kt
@@ -960,6 +1057,20 @@ index 51a7394..714e4c3 100644
 +enum class SlotType(texture: Identifier, size: IntPoint, val margin: IntPoint) {
      NORMAL(MirageFairy2024.identifier("textures/gui/slot.png"), IntPoint(18, 18), IntPoint(1, 1)),
      FAIRY(MirageFairy2024.identifier("textures/gui/fairy_slot.png"), IntPoint(18, 18), IntPoint(1, 1)),
+diff --git a/common/src/main/kotlin/miragefairy2024/mod/enchantment/contents/Smelting.kt b/common/src/main/kotlin/miragefairy2024/mod/enchantment/contents/Smelting.kt
+index 42e319f..8ae3a43 100644
+--- a/common/src/main/kotlin/miragefairy2024/mod/enchantment/contents/Smelting.kt
++++ b/common/src/main/kotlin/miragefairy2024/mod/enchantment/contents/Smelting.kt
+@@ -18,6 +18,7 @@ fun initSmelting() {
+         if (!tool.isCorrectToolForDrops(state)) return@register drops
+         drops.map {
+-            val recipe = level.recipeManager.getRecipeFor(RecipeType.SMELTING, SingleRecipeInput(it), level).orNull ?: return@map it
+-            val result = recipe.value.getResultItem(level.registryAccess())
++            val input = SingleRecipeInput(it)
++            val recipe = level.recipeManager.getRecipeFor(RecipeType.SMELTING, input, level).orNull ?: return@map it
++            val result = recipe.value.assemble(input)
+             if (result.isEmpty) return@map it
+             result.copyWithCount(it.count)
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/entity/ChaosCube.kt b/common/src/main/kotlin/miragefairy2024/mod/entity/ChaosCube.kt
 index 070f3f1..11f08a5 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/entity/ChaosCube.kt
@@ -1400,17 +1511,49 @@ index f672e69..fa6b48b 100644
                  .apply(instance, ::SetFairyQuestRecipeLootFunction)
          }
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/machine/Athanor.kt b/common/src/main/kotlin/miragefairy2024/mod/machine/Athanor.kt
-index 1804fa9..43e97b9 100644
+index 1804fa9..e5bb1a7 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/machine/Athanor.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/machine/Athanor.kt
-@@ -45,5 +45,5 @@ import net.minecraft.core.Direction
+@@ -45,7 +45,8 @@ import net.minecraft.core.Direction
  import net.minecraft.core.HolderLookup
  import net.minecraft.core.registries.BuiltInRegistries
 -import net.minecraft.data.models.model.TextureSlot
 +import net.minecraft.client.data.models.model.TextureSlot
  import net.minecraft.nbt.CompoundTag
  import net.minecraft.tags.BlockTags
-@@ -279,5 +279,5 @@ class AthanorBlock(private val card: AthanorCard) : SimpleMachineBlock(card) {
++import net.minecraft.util.RandomSource
+ import net.minecraft.world.InteractionResult
+ import net.minecraft.world.entity.LivingEntity
+@@ -56,5 +57,6 @@ import net.minecraft.world.item.context.BlockPlaceContext
+ import net.minecraft.world.level.BlockGetter
+ import net.minecraft.world.level.Level
+-import net.minecraft.world.level.LevelAccessor
++import net.minecraft.world.level.LevelReader
++import net.minecraft.world.level.ScheduledTickAccess
+ import net.minecraft.world.level.block.Block
+ import net.minecraft.world.level.block.Blocks
+@@ -227,5 +229,5 @@ class AthanorBlock(private val card: AthanorCard) : SimpleMachineBlock(card) {
+         val pos = context.clickedPos
+         val level = context.level
+-        if (pos.y + 1 >= level.maxBuildHeight) return null
++        if (pos.y + 1 > level.maxY) return null
+         if (!level.getBlockState(pos.above()).canBeReplaced(context)) return null
+         return super.getStateForPlacement(context)
+@@ -240,5 +242,5 @@ class AthanorBlock(private val card: AthanorCard) : SimpleMachineBlock(card) {
+
+     @Suppress("OVERRIDE_DEPRECATION")
+-    override fun updateShape(state: BlockState, direction: Direction, neighborState: BlockState, level: LevelAccessor, pos: BlockPos, neighborPos: BlockPos): BlockState {
++    override fun updateShape(state: BlockState, level: LevelReader, scheduledTickAccess: ScheduledTickAccess, pos: BlockPos, direction: Direction, neighborPos: BlockPos, neighborState: BlockState, random: RandomSource): BlockState {
+         val connectingDirection = when (state[HALF]) {
+             DoubleBlockHalf.UPPER -> Direction.DOWN
+@@ -252,5 +254,5 @@ class AthanorBlock(private val card: AthanorCard) : SimpleMachineBlock(card) {
+             }
+         }
+-        return super.updateShape(state, direction, neighborState, level, pos, neighborPos)
++        return super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random)
+     }
+
+@@ -279,5 +281,5 @@ class AthanorBlock(private val card: AthanorCard) : SimpleMachineBlock(card) {
          }
          openMenu(level, actualPos, player)
 -        return InteractionResult.sidedSuccess(level.isClientSide)
@@ -1429,37 +1572,189 @@ index a280240..b2e5bf1 100644
  import net.minecraft.nbt.CompoundTag
  import net.minecraft.tags.BlockTags
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/machine/SimpleMachineRecipe.kt b/common/src/main/kotlin/miragefairy2024/mod/machine/SimpleMachineRecipe.kt
-index 83483c9..b511099 100644
+index 83483c9..13e673b 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/machine/SimpleMachineRecipe.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/machine/SimpleMachineRecipe.kt
-@@ -23,5 +23,5 @@ import net.minecraft.advancements.AdvancementRequirements
+@@ -2,5 +2,4 @@ package miragefairy2024.mod.machine
+
+ import com.mojang.serialization.Codec
+-import com.mojang.serialization.MapCodec
+ import com.mojang.serialization.codecs.RecordCodecBuilder
+ import miragefairy2024.DataGenerationEvents
+@@ -18,4 +17,5 @@ import miragefairy2024.util.times
+ import miragefairy2024.util.toIngredientStack
+ import miragefairy2024.util.toNonNullList
++import miragefairy2024.util.with
+ import mirrg.kotlin.helium.atMost
+ import mirrg.kotlin.helium.min
+@@ -23,8 +23,8 @@ import net.minecraft.advancements.AdvancementRequirements
  import net.minecraft.advancements.AdvancementRewards
  import net.minecraft.advancements.Criterion
 -import net.minecraft.advancements.critereon.RecipeUnlockedTrigger
+-import net.minecraft.core.HolderLookup
 +import net.minecraft.advancements.criterion.RecipeUnlockedTrigger
- import net.minecraft.core.HolderLookup
  import net.minecraft.core.NonNullList
-@@ -33,5 +33,5 @@ import net.minecraft.network.RegistryFriendlyByteBuf
+ import net.minecraft.core.registries.BuiltInRegistries
++import net.minecraft.core.registries.Registries
+ import net.minecraft.data.recipes.RecipeBuilder
+ import net.minecraft.data.recipes.RecipeCategory
+@@ -33,10 +33,13 @@ import net.minecraft.network.RegistryFriendlyByteBuf
  import net.minecraft.network.codec.ByteBufCodecs
  import net.minecraft.network.codec.StreamCodec
 -import net.minecraft.resources.ResourceLocation
 +import net.minecraft.resources.Identifier
++import net.minecraft.resources.ResourceKey
  import net.minecraft.util.RandomSource
  import net.minecraft.world.item.Item
-@@ -46,5 +46,5 @@ import net.minecraft.world.level.Level
+ import net.minecraft.world.item.ItemStack
+ import net.minecraft.world.item.crafting.Ingredient
++import net.minecraft.world.item.crafting.PlacementInfo
+ import net.minecraft.world.item.crafting.Recipe
++import net.minecraft.world.item.crafting.RecipeBookCategories
+ import net.minecraft.world.item.crafting.RecipeInput
+ import net.minecraft.world.item.crafting.RecipeSerializer
+@@ -46,5 +49,5 @@ import net.minecraft.world.level.Level
  abstract class SimpleMachineRecipeCard<R : SimpleMachineRecipe> {
 
 -    abstract val identifier: ResourceLocation
 +    abstract val identifier: Identifier
 
      abstract fun getIcon(): ItemStack
-@@ -271,5 +271,5 @@ class SimpleMachineRecipeJsonBuilder<R : SimpleMachineRecipe>(
-     override fun getResult(): Item = outputs.first().item
+@@ -55,5 +58,5 @@ abstract class SimpleMachineRecipeCard<R : SimpleMachineRecipe> {
+
+     @Suppress("LeakingThis")
+-    val serializer = SimpleMachineRecipe.Serializer(this)
++    val serializer = SimpleMachineRecipe.createSerializer(this)
+
+     abstract val recipeClass: Class<R>
+@@ -109,10 +112,11 @@ open class SimpleMachineRecipe(
+                 ::Input,
+             )
+-
+-            val EMPTY = Input(Ingredient.EMPTY, 0)
+         }
+     }
+
+-    override fun getGroup() = group
++    override fun group() = group
++    override fun showNotification() = true
++    override fun placementInfo() = PlacementInfo.create(inputs.map { it.ingredient })
++    override fun recipeBookCategory() = RecipeBookCategories.CRAFTING_MISC
+
+     interface MatchResult {
+@@ -187,10 +191,9 @@ open class SimpleMachineRecipe(
+
+     open fun getCustomizedRemainder(itemStack: ItemStack): ItemStack {
+-        val remainder = itemStack.item.getRecipeRemainder(itemStack)
+-        if (remainder.isNotEmpty) return remainder
++        itemStack.item.getCraftingRemainder()?.let { return it.create() }
+         return CustomizedRemainderRegistry.getCustomizedRemainder(itemStack)
+     }
+
+-    override fun getRemainingItems(inventory: SimpleMachineRecipeInput): NonNullList<ItemStack> {
++    fun getRemainingItems(inventory: SimpleMachineRecipeInput): NonNullList<ItemStack> {
+         val matchResult = match(inventory) ?: return NonNullList.create()
+         val craftResult = matchResult.craft(null, true)
+@@ -198,31 +201,29 @@ open class SimpleMachineRecipe(
+     }
+
+-    override fun assemble(inventory: SimpleMachineRecipeInput, registries: HolderLookup.Provider): ItemStack = outputs.first().copy()
+-    override fun canCraftInDimensions(width: Int, height: Int) = width * height >= inputs.size
+-    override fun getResultItem(registries: HolderLookup.Provider) = outputs.first()
+-    override fun getToastSymbol() = card.getIcon()
++    override fun assemble(inventory: SimpleMachineRecipeInput): ItemStack = outputs.first().copy()
+     override fun getSerializer() = card.serializer
+     override fun getType() = card.type
+
+-    class Serializer<R : SimpleMachineRecipe>(private val card: SimpleMachineRecipeCard<R>) : RecipeSerializer<R> {
+-        override fun codec(): MapCodec<R> = RecordCodecBuilder.mapCodec { instance ->
+-            instance.group(
+-                Codec.STRING.fieldOf("group").forGetter { it.group },
+-                Input.CODEC.listOf().fieldOf("inputs").forGetter { it.inputs },
+-                ItemStack.CODEC.listOf().fieldOf("outputs").forGetter { it.outputs },
+-                Codec.INT.fieldOf("duration").forGetter { it.duration },
+-            ).apply(instance, card::createRecipe)
+-        }
+-
+-        override fun streamCodec(): StreamCodec<RegistryFriendlyByteBuf, R> = StreamCodec.composite(
+-            ByteBufCodecs.STRING_UTF8,
+-            { it.group },
+-            Input.STREAM_CODEC.list(),
+-            { it.inputs },
+-            ItemStack.STREAM_CODEC.list(),
+-            { it.outputs },
+-            ByteBufCodecs.VAR_INT,
+-            { it.duration },
+-            card::createRecipe,
++    companion object {
++        fun <R : SimpleMachineRecipe> createSerializer(card: SimpleMachineRecipeCard<R>): RecipeSerializer<R> = RecipeSerializer(
++            RecordCodecBuilder.mapCodec { instance ->
++                instance.group(
++                    Codec.STRING.fieldOf("group").forGetter { it.group },
++                    Input.CODEC.listOf().fieldOf("inputs").forGetter { it.inputs },
++                    ItemStack.CODEC.listOf().fieldOf("outputs").forGetter { it.outputs },
++                    Codec.INT.fieldOf("duration").forGetter { it.duration },
++                ).apply(instance, card::createRecipe)
++            },
++            StreamCodec.composite(
++                ByteBufCodecs.STRING_UTF8,
++                { it.group },
++                Input.STREAM_CODEC.list(),
++                { it.inputs },
++                ItemStack.STREAM_CODEC.list(),
++                { it.outputs },
++                ByteBufCodecs.VAR_INT,
++                { it.duration },
++                card::createRecipe,
++            ),
+         )
+     }
+@@ -244,9 +245,9 @@ fun <R : SimpleMachineRecipe> registerSimpleMachineRecipeGeneration(
+         builder.group(outputs.first()().item)
+         settings.listeners.forEach { listener ->
+-            listener(builder)
++            listener(builder, it.items)
+         }
+         block(builder)
+         val identifier = settings.idModifiers.fold(outputs.first()().item.getIdentifier()) { id, idModifier -> idModifier(id) }
+-        builder.save(it, identifier)
++        builder.save(it.recipeOutput, ResourceKey.create(Registries.RECIPE, identifier))
+     }
+     return settings
+@@ -269,7 +270,7 @@ class SimpleMachineRecipeJsonBuilder<R : SimpleMachineRecipe>(
+     override fun unlockedBy(name: String, condition: Criterion<*>) = this.also { criteria[name] = condition }
+     override fun group(string: String?) = this.also { this.group = string ?: "" }
+-    override fun getResult(): Item = outputs.first().item
++    override fun defaultId() = Registries.RECIPE with outputs.first().item.getIdentifier()
 
 -    override fun save(recipeOutput: RecipeOutput, recipeId: ResourceLocation) {
-+    override fun save(recipeOutput: RecipeOutput, recipeId: Identifier) {
++    override fun save(recipeOutput: RecipeOutput, recipeId: ResourceKey<Recipe<*>>) {
          check(criteria.isNotEmpty()) { "No way of obtaining recipe $recipeId" }
          val advancementBuilder = recipeOutput.advancement()
+@@ -280,5 +281,5 @@ class SimpleMachineRecipeJsonBuilder<R : SimpleMachineRecipe>(
+             advancementBuilder.addCriterion(it.key, it.value)
+         }
+-        recipeOutput.accept(recipeId, card.createRecipe(group, inputs, outputs, duration), advancementBuilder.build("recipes/${category.folderName}/" * recipeId))
++        recipeOutput.accept(recipeId, card.createRecipe(group, inputs, outputs, duration), advancementBuilder.build("recipes/${category.folderName}/" * recipeId.identifier()))
+     }
+ }
+diff --git a/common/src/main/kotlin/miragefairy2024/mod/machine/SimpleMachineRecipeViewerCategoryCard.kt b/common/src/main/kotlin/miragefairy2024/mod/machine/SimpleMachineRecipeViewerCategoryCard.kt
+index 71a55d4..12e7661 100644
+--- a/common/src/main/kotlin/miragefairy2024/mod/machine/SimpleMachineRecipeViewerCategoryCard.kt
++++ b/common/src/main/kotlin/miragefairy2024/mod/machine/SimpleMachineRecipeViewerCategoryCard.kt
+@@ -21,5 +21,4 @@ import miragefairy2024.mod.recipeviewer.views.noBackground
+ import miragefairy2024.mod.recipeviewer.views.noMargin
+ import miragefairy2024.mod.recipeviewer.views.plusAssign
+-import miragefairy2024.util.IngredientStack
+ import miragefairy2024.util.createItemStack
+ import miragefairy2024.util.gold
+@@ -93,5 +92,5 @@ abstract class SimpleMachineRecipeViewerCategoryCard<R : SimpleMachineRecipe> :
+
+             // アイテム
+-            view += InputSlotView(input?.ingredientStack ?: IngredientStack.EMPTY).noBackground().noMargin().configure {
++            view += InputSlotView(input?.ingredientStack).noBackground().noMargin().configure {
+                 if (input != null && input.consumptionChance < 1.0) {
+                     view.additionalTooltip = listOf(text { (CONSUMPTION_CHANCE_TRANSLATION() + ": ${(input.consumptionChance * 100.0 formatAs "%.8f").stripTrailingZeros()}%"()).gold })
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/magicplant/CreativeGeneAmpoule.kt b/common/src/main/kotlin/miragefairy2024/mod/magicplant/CreativeGeneAmpoule.kt
 index cd2cff0..cff0828 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/magicplant/CreativeGeneAmpoule.kt
@@ -1991,7 +2286,7 @@ index 29600ce..85aa951 100644
 +    override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResult = ItemUtils.startUsingInstantly(level, user, hand)
  }
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/materials/contents/FairyCrystalGlass.kt b/common/src/main/kotlin/miragefairy2024/mod/materials/contents/FairyCrystalGlass.kt
-index ab4aca8..f51077b 100644
+index ab4aca8..585c4bb 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/materials/contents/FairyCrystalGlass.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/materials/contents/FairyCrystalGlass.kt
 @@ -9,5 +9,5 @@ import miragefairy2024.util.ModelFaceData
@@ -2001,21 +2296,33 @@ index ab4aca8..f51077b 100644
 +import miragefairy2024.util.Identifier
  import miragefairy2024.util.isIn
  import miragefairy2024.util.string
-@@ -15,5 +15,5 @@ import miragefairy2024.util.with
+@@ -15,7 +15,9 @@ import miragefairy2024.util.with
  import net.minecraft.core.BlockPos
  import net.minecraft.core.Direction
 -import net.minecraft.data.models.model.TextureSlot
 +import net.minecraft.client.data.models.model.TextureSlot
++import net.minecraft.util.RandomSource
  import net.minecraft.world.item.context.BlockPlaceContext
- import net.minecraft.world.level.LevelAccessor
-@@ -72,5 +72,5 @@ class FairyCrystalGlassBlock(properties: Properties) : TransparentBlock(properti
+-import net.minecraft.world.level.LevelAccessor
++import net.minecraft.world.level.LevelReader
++import net.minecraft.world.level.ScheduledTickAccess
+ import net.minecraft.world.level.block.Block
+ import net.minecraft.world.level.block.PipeBlock
+@@ -65,5 +67,5 @@ class FairyCrystalGlassBlock(properties: Properties) : TransparentBlock(properti
+     }
+
+-    override fun updateShape(state: BlockState, direction: Direction, neighborState: BlockState, level: LevelAccessor, pos: BlockPos, neighborPos: BlockPos): BlockState {
++    override fun updateShape(state: BlockState, level: LevelReader, scheduledTickAccess: ScheduledTickAccess, pos: BlockPos, direction: Direction, neighborPos: BlockPos, neighborState: BlockState, random: RandomSource): BlockState {
+         return state.with(PipeBlock.PROPERTY_BY_DIRECTION[direction]!!, neighborState isIn this)
+     }
+@@ -72,5 +74,5 @@ class FairyCrystalGlassBlock(properties: Properties) : TransparentBlock(properti
  val fairyCrystalGlassFrameBlockModel = Model { textureMapping ->
      ModelData(
 -        parent = ResourceLocation("block/block"),
 +        parent = Identifier("block/block"),
          textures = ModelTexturesData(
              TextureSlot.PARTICLE.id to textureMapping.get(TextureSlot.TEXTURE).string,
-@@ -106,5 +106,5 @@ val fairyCrystalGlassBlockModel = Model { textureMapping ->
+@@ -106,5 +108,5 @@ val fairyCrystalGlassBlockModel = Model { textureMapping ->
      )
      ModelData(
 -        parent = ResourceLocation("block/block"),
@@ -2050,7 +2357,7 @@ index ca4b234..9c8fce3 100644
              textures = ModelTexturesData(
                  TextureSlot.PARTICLE.id to textureMapping.get(TextureSlot.BACK).string,
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/materials/contents/MiragidianLampBlock.kt b/common/src/main/kotlin/miragefairy2024/mod/materials/contents/MiragidianLampBlock.kt
-index a842a2e..8a6b2c0 100644
+index a842a2e..2510d80 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/materials/contents/MiragidianLampBlock.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/materials/contents/MiragidianLampBlock.kt
 @@ -15,5 +15,5 @@ import net.minecraft.util.RandomSource
@@ -2060,7 +2367,36 @@ index a842a2e..8a6b2c0 100644
 +import net.minecraft.world.InteractionResult
  import net.minecraft.world.entity.LivingEntity
  import net.minecraft.world.entity.player.Player
-@@ -123,14 +123,14 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
+@@ -22,5 +22,6 @@ import net.minecraft.world.item.context.BlockPlaceContext
+ import net.minecraft.world.level.BlockGetter
+ import net.minecraft.world.level.Level
+-import net.minecraft.world.level.LevelAccessor
++import net.minecraft.world.level.LevelReader
++import net.minecraft.world.level.ScheduledTickAccess
+ import net.minecraft.world.level.block.Block
+ import net.minecraft.world.level.block.Blocks
+@@ -84,5 +85,5 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
+         val blockPos = context.clickedPos
+         val level = context.level
+-        if (blockPos.y + 1 >= level.maxBuildHeight) return null
++        if (blockPos.y + 1 > level.maxY) return null
+         if (!level.getBlockState(blockPos.above()).canBeReplaced(context)) return null
+         return defaultBlockState().with(PART, Part.FOOT)
+@@ -96,5 +97,5 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
+     // Remove
+
+-    override fun updateShape(state: BlockState, direction: Direction, neighborState: BlockState, level: LevelAccessor, pos: BlockPos, neighborPos: BlockPos): BlockState {
++    override fun updateShape(state: BlockState, level: LevelReader, scheduledTickAccess: ScheduledTickAccess, pos: BlockPos, direction: Direction, neighborPos: BlockPos, neighborState: BlockState, random: RandomSource): BlockState {
+         val part = state[PART]
+         if (direction in part.connections) {
+@@ -105,5 +106,5 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
+             }
+         }
+-        return super.updateShape(state, direction, neighborState, level, pos, neighborPos)
++        return super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random)
+     }
+
+@@ -123,14 +124,14 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
      // Use
 
 -    override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): ItemInteractionResult? {
@@ -2073,14 +2409,14 @@ index a842a2e..8a6b2c0 100644
          val newHeadBlockPos = parts.headBlockPos.above()
 -        if (newHeadBlockPos.y >= level.maxBuildHeight) return ItemInteractionResult.sidedSuccess(level.isClientSide)
 -        if (!level.getBlockState(newHeadBlockPos).canBeReplaced()) return ItemInteractionResult.sidedSuccess(level.isClientSide)
-+        if (newHeadBlockPos.y >= level.maxBuildHeight) return if (level.isClientSide) InteractionResult.SUCCESS else InteractionResult.CONSUME
++        if (newHeadBlockPos.y > level.maxY) return if (level.isClientSide) InteractionResult.SUCCESS else InteractionResult.CONSUME
 +        if (!level.getBlockState(newHeadBlockPos).canBeReplaced()) return if (level.isClientSide) InteractionResult.SUCCESS else InteractionResult.CONSUME
 
 -        if (level.isClientSide) return ItemInteractionResult.SUCCESS
 +        if (level.isClientSide) return InteractionResult.SUCCESS
 
          level.setBlock(newPoleBlockPos, defaultBlockState().with(PART, Part.POLE), 2)
-@@ -145,5 +145,5 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
+@@ -145,5 +146,5 @@ class MiragidianLampBlock(settings: Properties) : Block(settings) {
          level.playSound(null, newHeadBlockPos, soundType.placeSound, SoundSource.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F)
 
 -        return ItemInteractionResult.CONSUME
@@ -2305,6 +2641,17 @@ index a139630..875b10a 100644
 +import net.minecraft.resources.Identifier
  import net.minecraft.world.inventory.Slot
 
+diff --git a/common/src/main/kotlin/miragefairy2024/mod/recipeviewer/views/SlotView.kt b/common/src/main/kotlin/miragefairy2024/mod/recipeviewer/views/SlotView.kt
+index d1dcbfc..909c8cc 100644
+--- a/common/src/main/kotlin/miragefairy2024/mod/recipeviewer/views/SlotView.kt
++++ b/common/src/main/kotlin/miragefairy2024/mod/recipeviewer/views/SlotView.kt
+@@ -27,5 +27,5 @@ fun <V : SlotView> V.margin(margin: Int) = this.apply { this.margin = margin }
+ fun <V : SlotView> V.noMargin() = this.margin(0)
+
+-class InputSlotView(val ingredientStack: IngredientStack) : SlotView()
++class InputSlotView(val ingredientStack: IngredientStack?) : SlotView()
+ class CatalystSlotView(val ingredientStack: IngredientStack) : SlotView()
+ class OutputSlotView(val itemStack: ItemStack) : SlotView()
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/structure/UnlimitedJigsaw.kt b/common/src/main/kotlin/miragefairy2024/mod/structure/UnlimitedJigsaw.kt
 index 7d019d6..2273775 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/structure/UnlimitedJigsaw.kt
@@ -2848,10 +3195,10 @@ index d899f2d..dad126b 100644
  import net.minecraft.world.level.block.Block
  import net.minecraft.world.level.block.Blocks
 diff --git a/common/src/main/kotlin/miragefairy2024/util/Advancement.kt b/common/src/main/kotlin/miragefairy2024/util/Advancement.kt
-index 72260e0..78eb75a 100644
+index 72260e0..06655d6 100644
 --- a/common/src/main/kotlin/miragefairy2024/util/Advancement.kt
 +++ b/common/src/main/kotlin/miragefairy2024/util/Advancement.kt
-@@ -11,15 +11,15 @@ import net.minecraft.advancements.AdvancementRewards
+@@ -11,19 +11,20 @@ import net.minecraft.advancements.AdvancementRewards
  import net.minecraft.advancements.AdvancementType
  import net.minecraft.advancements.Criterion
 -import net.minecraft.advancements.critereon.EntityPredicate
@@ -2874,34 +3221,67 @@ index 72260e0..78eb75a 100644
 +import net.minecraft.resources.Identifier
  import net.minecraft.tags.TagKey
  import net.minecraft.world.entity.EntityType
-@@ -83,5 +83,5 @@ enum class AdvancementCardType(
+ import net.minecraft.world.item.Item
+ import net.minecraft.world.item.ItemStack
++import net.minecraft.world.item.ItemStackTemplate
+ import net.minecraft.world.level.biome.Biome
+ import net.minecraft.world.level.levelgen.structure.Structure
+@@ -83,5 +84,5 @@ enum class AdvancementCardType(
 
  class AdvancementCard(
 -    private val identifier: ResourceLocation,
 +    private val identifier: Identifier,
      private val context: Context,
      private val icon: () -> ItemStack,
-@@ -118,5 +118,5 @@ class AdvancementCard(
+@@ -108,7 +109,7 @@ class AdvancementCard(
+         @JvmName("hasItemTag")
+         fun hasItemTag(itemTagGetter: () -> TagKey<Item>): (HolderLookup.Provider) -> Pair<String, Criterion<*>> {
+-            return { _ ->
++            return { registries ->
+                 val itemTag = itemTagGetter()
+-                Pair("has_${itemTag.location.path}", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(itemTag)))
++                Pair("has_${itemTag.location.path}", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(registries.lookupOrThrow(Registries.ITEM), itemTag)))
+             }
+         }
+@@ -118,5 +119,5 @@ class AdvancementCard(
              return { registries ->
                  Pair(
 -                    "visit_${structure.location().path}",
 +                    "visit_${structure.identifier().path}",
                      PlayerTrigger.TriggerInstance.located(
                          LocationPredicate.Builder.inStructure(
-@@ -132,5 +132,5 @@ class AdvancementCard(
+@@ -132,5 +133,5 @@ class AdvancementCard(
              return { registries ->
                  Pair(
 -                    biome.location().path,
 +                    biome.identifier().path,
                      PlayerTrigger.TriggerInstance.located(
                          LocationPredicate.Builder.inBiome(
-@@ -153,5 +153,5 @@ class AdvancementCard(
+@@ -143,8 +144,8 @@ class AdvancementCard(
+
+         fun kill(entityType: () -> EntityType<*>): (HolderLookup.Provider) -> Pair<String, Criterion<*>> {
+-            return { _ ->
++            return { registries ->
+                 Pair(
+                     "kill_${BuiltInRegistries.ENTITY_TYPE.getKey(entityType()).path}",
+-                    KilledTrigger.TriggerInstance.playerKilledEntity(EntityPredicate.Builder.entity().of(entityType())),
++                    KilledTrigger.TriggerInstance.playerKilledEntity(EntityPredicate.Builder.entity().of(registries.lookupOrThrow(Registries.ENTITY_TYPE), entityType())),
+                 )
+             }
+@@ -153,5 +154,5 @@ class AdvancementCard(
 
      sealed class Context
 -    class Root(val texture: ResourceLocation) : Context()
 +    class Root(val texture: Identifier) : Context()
      class Sub(val parent: suspend () -> AdvancementHolder) : Context()
 
+@@ -174,5 +175,5 @@ class AdvancementCard(
+                 .let { if (context is Sub) it.parent(context.parent()) else it }
+                 .display(
+-                    icon(),
++                    ItemStackTemplate.fromNonEmptyStack(icon()),
+                     text { nameTranslation() },
+                     text { descriptionTranslation() },
 diff --git a/common/src/main/kotlin/miragefairy2024/util/Attachment.kt b/common/src/main/kotlin/miragefairy2024/util/Attachment.kt
 index db188dc..58e9c7e 100644
 --- a/common/src/main/kotlin/miragefairy2024/util/Attachment.kt
@@ -2978,26 +3358,43 @@ index de339e7..c7c9363 100644
      }
 
 diff --git a/common/src/main/kotlin/miragefairy2024/util/Block.kt b/common/src/main/kotlin/miragefairy2024/util/Block.kt
-index a078361..b5231df 100644
+index a078361..30b335c 100644
 --- a/common/src/main/kotlin/miragefairy2024/util/Block.kt
 +++ b/common/src/main/kotlin/miragefairy2024/util/Block.kt
-@@ -8,7 +8,7 @@ import net.fabricmc.fabric.api.registry.FlammableBlockRegistry
+@@ -8,7 +8,6 @@ import net.fabricmc.fabric.api.registry.FlammableBlockRegistry
  import net.minecraft.core.registries.BuiltInRegistries
  import net.minecraft.data.BlockFamily
 -import net.minecraft.data.models.model.TexturedModel
-+import net.minecraft.client.data.models.model.TexturedModel
- import net.minecraft.data.recipes.RecipeProvider
+-import net.minecraft.data.recipes.RecipeProvider
 -import net.minecraft.resources.ResourceLocation
++import net.minecraft.client.data.models.model.TexturedModel
 +import net.minecraft.resources.Identifier
  import net.minecraft.tags.TagKey
  import net.minecraft.world.flag.FeatureFlagSet
-@@ -21,5 +21,5 @@ import net.minecraft.world.level.block.state.properties.Property
+@@ -21,5 +20,5 @@ import net.minecraft.world.level.block.state.properties.Property
  fun Block.getIdentifier() = BuiltInRegistries.BLOCK.getKey(this)
 
 -fun ResourceLocation.toBlock() = BuiltInRegistries.BLOCK.get(this)
-+fun Identifier.toBlock() = BuiltInRegistries.BLOCK.get(this)
++fun Identifier.toBlock() = BuiltInRegistries.BLOCK.getValue(this)
 
  context(_: ModContext)
+@@ -30,8 +29,5 @@ fun (() -> Block).registerFlammable(burn: Int, spread: Int) = ModEvents.onInitia
+ operator fun <T : Comparable<T>> BlockState.get(property: Property<T>): T = this.getValue(property)
+
+-fun <T : Comparable<T>> BlockState.getOrNull(property: Property<T>): T? {
+-    val value = this.values[property] ?: return null
+-    return property.valueClass.cast(value)
+-}
++fun <T : Comparable<T>> BlockState.getOrNull(property: Property<T>): T? = this.getOptionalValue(property).orElse(null)
+
+ fun <T : Comparable<T>> BlockState.getOr(property: Property<T>, default: () -> T) = this.getOrNull(property) ?: default()
+@@ -54,5 +50,5 @@ fun registerBlockFamily(texturedModelProvider: TexturedModel.Provider, baseBlock
+     }
+     DataGenerationEvents.onGenerateRecipe {
+-        RecipeProvider.generateRecipes(it, family, FeatureFlagSet.of(FeatureFlags.VANILLA))
++        it.generateBlockFamily(family, FeatureFlagSet.of(FeatureFlags.VANILLA))
+     }
+ }
 diff --git a/common/src/main/kotlin/miragefairy2024/util/BlockEntity.kt b/common/src/main/kotlin/miragefairy2024/util/BlockEntity.kt
 index 0094e58..e82838d 100644
 --- a/common/src/main/kotlin/miragefairy2024/util/BlockEntity.kt
@@ -3020,35 +3417,60 @@ index 0094e58..e82838d 100644
  }
 
 diff --git a/common/src/main/kotlin/miragefairy2024/util/BlockStateGeneration.kt b/common/src/main/kotlin/miragefairy2024/util/BlockStateGeneration.kt
-index 48b757a..d3c1ac4 100644
+index 48b757a..7fa0317 100644
 --- a/common/src/main/kotlin/miragefairy2024/util/BlockStateGeneration.kt
 +++ b/common/src/main/kotlin/miragefairy2024/util/BlockStateGeneration.kt
-@@ -10,7 +10,7 @@ import mirrg.kotlin.helium.join
+@@ -2,4 +2,5 @@ package miragefairy2024.util
+
+ import com.google.gson.JsonElement
++import com.mojang.serialization.JsonOps
+ import miragefairy2024.DataGenerationEvents
+ import miragefairy2024.ModContext
+@@ -10,7 +11,8 @@ import mirrg.kotlin.helium.join
  import mirrg.kotlin.helium.or
  import net.minecraft.core.Direction
 -import net.minecraft.data.models.BlockModelGenerators
 -import net.minecraft.data.models.blockstates.BlockStateGenerator
 -import net.minecraft.resources.ResourceLocation
 +import net.minecraft.client.data.models.BlockModelGenerators
-+import net.minecraft.client.data.models.blockstates.BlockStateGenerator
++import net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerator
++import net.minecraft.client.renderer.block.dispatch.BlockStateModelDispatcher
 +import net.minecraft.resources.Identifier
  import net.minecraft.world.level.block.Block
  import net.minecraft.world.level.block.state.properties.Property
-@@ -70,5 +70,5 @@ enum class BlockStateVariantRotation(val degrees: Int) {
+@@ -21,7 +23,7 @@ import net.minecraft.world.level.block.state.properties.Property
+ context(_: ModContext)
+ fun (() -> Block).registerBlockStateGeneration(creator: () -> JsonElement) = DataGenerationEvents.onGenerateBlockModel {
+-    it.blockStateOutput.accept(object : BlockStateGenerator {
+-        override fun get() = creator()
+-        override fun getBlock() = this@registerBlockStateGeneration()
++    it.blockStateOutput.accept(object : BlockModelDefinitionGenerator {
++        override fun create() = BlockStateModelDispatcher.CODEC.parse(JsonOps.INSTANCE, creator()).getOrThrow()
++        override fun block() = this@registerBlockStateGeneration()
+     })
+ }
+@@ -48,5 +50,5 @@ fun (() -> Block).registerVariantsBlockStateGeneration(entriesGetter: VariantsBl
+ context(_: ModContext)
+ fun (() -> Block).registerSingletonBlockStateGeneration() = DataGenerationEvents.onGenerateBlockModel {
+-    it.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(this(), "block/" * this().getIdentifier()))
++    it.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(this(), BlockModelGenerators.plainVariant("block/" * this().getIdentifier())))
+ }
+
+@@ -70,5 +72,5 @@ enum class BlockStateVariantRotation(val degrees: Int) {
  class BlockStateVariant(
      private val parent: BlockStateVariant? = null,
 -    private val model: ResourceLocation? = null,
 +    private val model: Identifier? = null,
      private val x: BlockStateVariantRotation? = null,
      private val y: BlockStateVariantRotation? = null,
-@@ -84,5 +84,5 @@ class BlockStateVariant(
+@@ -84,5 +86,5 @@ class BlockStateVariant(
 
  fun BlockStateVariant.with(
 -    model: ResourceLocation? = null,
 +    model: Identifier? = null,
      x: BlockStateVariantRotation? = null,
      y: BlockStateVariantRotation? = null,
-@@ -124,8 +124,8 @@ object VariantsBlockStateGenerationRegistrationScope
+@@ -124,8 +126,8 @@ object VariantsBlockStateGenerationRegistrationScope
 
  context(_: VariantsBlockStateGenerationRegistrationScope)
 -fun normal(model: ResourceLocation) = listOf(propertiesOf() with BlockStateVariant(model = model))
@@ -3211,7 +3633,7 @@ index 610e32d..562e2be 100644
 
  context(_: ModContext)
 diff --git a/common/src/main/kotlin/miragefairy2024/util/IngredientStack.kt b/common/src/main/kotlin/miragefairy2024/util/IngredientStack.kt
-index 21d18e6..7e4408b 100644
+index 21d18e6..404b313 100644
 --- a/common/src/main/kotlin/miragefairy2024/util/IngredientStack.kt
 +++ b/common/src/main/kotlin/miragefairy2024/util/IngredientStack.kt
 @@ -3,4 +3,5 @@ package miragefairy2024.util
@@ -3220,14 +3642,21 @@ index 21d18e6..7e4408b 100644
 +import net.minecraft.core.HolderGetter
  import net.minecraft.network.RegistryFriendlyByteBuf
  import net.minecraft.network.codec.ByteBufCodecs
-@@ -37,5 +38,5 @@ fun Ingredient.toIngredientStack(amount: Int = 1) = IngredientStack(this, amount
+@@ -26,6 +27,4 @@ data class IngredientStack(val ingredient: Ingredient, val count: Int) {
+             ::IngredientStack,
+         )
+-
+-        val EMPTY = Ingredient.EMPTY.toIngredientStack(0)
+     }
+ }
+@@ -37,5 +36,5 @@ fun Ingredient.toIngredientStack(amount: Int = 1) = IngredientStack(this, amount
  fun ItemStack.toIngredientStack(amount: Int = 1) = IngredientStack(this, amount)
  fun Item.toIngredientStack(amount: Int = 1) = this.defaultInstance.toIngredientStack(amount)
 -fun TagKey<Item>.toIngredientStack(amount: Int = 1) = IngredientStack(this.toIngredient(), amount)
 +fun TagKey<Item>.toIngredientStack(items: HolderGetter<Item>, amount: Int = 1) = IngredientStack(this.toIngredient(items), amount)
 
  @JvmName("toIngredientStackFromItems")
-@@ -45,3 +46,3 @@ fun Iterable<Item>.toIngredientStack(amount: Int = 1) = this.toIngredient().toIn
+@@ -45,3 +44,3 @@ fun Iterable<Item>.toIngredientStack(amount: Int = 1) = this.toIngredient().toIn
  fun Iterable<ItemStack>.toIngredientStack(amount: Int = 1) = this.toIngredient().toIngredientStack(amount)
 
 -fun IngredientStack.toItemStacks(): List<ItemStack> = ingredient.items.map { it.copyWithCount(count) }
@@ -3359,7 +3788,7 @@ index 5558b9c..90b0c8f 100644
      val blockEntity = level.getBlockEntity(blockPos)
      val block = blockState.block
 diff --git a/common/src/main/kotlin/miragefairy2024/util/LootTable.kt b/common/src/main/kotlin/miragefairy2024/util/LootTable.kt
-index 524edbe..96967ce 100644
+index 524edbe..97ed62b 100644
 --- a/common/src/main/kotlin/miragefairy2024/util/LootTable.kt
 +++ b/common/src/main/kotlin/miragefairy2024/util/LootTable.kt
 @@ -3,5 +3,5 @@ package miragefairy2024.util
@@ -3369,18 +3798,45 @@ index 524edbe..96967ce 100644
 +import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider
  import net.minecraft.core.HolderLookup
  import net.minecraft.core.registries.Registries
-@@ -70,5 +70,5 @@ fun SequenceLootPoolEntry(vararg children: LootPoolEntryContainer.Builder<*>, in
+@@ -70,6 +70,6 @@ fun SequenceLootPoolEntry(vararg children: LootPoolEntryContainer.Builder<*>, in
 
  context(_: ModContext)
 -fun (() -> Block).registerLootTableGeneration(initializer: (FabricBlockLootTableProvider, HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateBlockLootTable { it, registries ->
+-    it.add(this(), initializer(it, registries).setRandomSequence(this().lootTable.location()))
 +fun (() -> Block).registerLootTableGeneration(initializer: (FabricBlockLootSubProvider, HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateBlockLootTable { it, registries ->
-     it.add(this(), initializer(it, registries).setRandomSequence(this().lootTable.location()))
++    it.add(this(), initializer(it, registries).setRandomSequence(this().lootTable.orElseThrow().identifier()))
  }
+
+@@ -81,20 +81,20 @@ fun (() -> Block).registerDefaultLootTableGeneration() = this.registerLootTableG
+ context(_: ModContext)
+ fun registerChestLootTableGeneration(lootTableId: ResourceKey<LootTable>, initializer: (HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateChestLootTable { it, registries ->
+-    it(lootTableId, initializer(registries).setRandomSequence(lootTableId.location()))
++    it(lootTableId, initializer(registries).setRandomSequence(lootTableId.identifier()))
+ }
+
+ context(_: ModContext)
+ fun registerArchaeologyLootTableGeneration(lootTableId: ResourceKey<LootTable>, initializer: (HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateArchaeologyLootTable { it, registries ->
+-    it(lootTableId, initializer(registries).setRandomSequence(lootTableId.location()))
++    it(lootTableId, initializer(registries).setRandomSequence(lootTableId.identifier()))
+ }
+
+ context(_: ModContext)
+ fun (() -> EntityType<*>).registerLootTableGeneration(initializer: (HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateEntityLootTable { it, registries ->
+-    it(this(), initializer(registries).setRandomSequence(this().defaultLootTable.location()))
++    it(this(), initializer(registries).setRandomSequence(this().defaultLootTable.orElseThrow().identifier()))
+ }
+
+ context(_: ModContext)
+ fun registerAdvancementRewardLootTableGeneration(lootTableId: ResourceKey<LootTable>, initializer: (HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateAdvancementRewardLootTable { it, registries ->
+-    it(lootTableId, initializer(registries).setRandomSequence(lootTableId.location()))
++    it(lootTableId, initializer(registries).setRandomSequence(lootTableId.identifier()))
+ }
+
 diff --git a/common/src/main/kotlin/miragefairy2024/util/Model.kt b/common/src/main/kotlin/miragefairy2024/util/Model.kt
-index 47acf6c..6254f36 100644
+index 47acf6c..4a6cd12 100644
 --- a/common/src/main/kotlin/miragefairy2024/util/Model.kt
 +++ b/common/src/main/kotlin/miragefairy2024/util/Model.kt
-@@ -8,10 +8,10 @@ import mirrg.kotlin.gson.hydrogen.jsonElement
+@@ -8,10 +8,12 @@ import mirrg.kotlin.gson.hydrogen.jsonElement
  import mirrg.kotlin.gson.hydrogen.jsonObject
  import mirrg.kotlin.gson.hydrogen.jsonObjectNotNull
 -import net.minecraft.data.models.model.ModelTemplate
@@ -3389,22 +3845,30 @@ index 47acf6c..6254f36 100644
 -import net.minecraft.data.models.model.TextureSlot
 -import net.minecraft.data.models.model.TexturedModel
 -import net.minecraft.resources.ResourceLocation
++import net.minecraft.client.data.models.model.ModelInstance
 +import net.minecraft.client.data.models.model.ModelTemplate
 +import net.minecraft.client.data.models.model.ModelTemplates
 +import net.minecraft.client.data.models.model.TextureMapping
 +import net.minecraft.client.data.models.model.TextureSlot
 +import net.minecraft.client.data.models.model.TexturedModel
++import net.minecraft.client.resources.model.sprite.Material
 +import net.minecraft.resources.Identifier
  import net.minecraft.world.item.Item
  import net.minecraft.world.item.ItemDisplayContext
-@@ -26,5 +26,5 @@ import java.util.function.Supplier
+@@ -20,5 +22,4 @@ import net.minecraft.world.level.block.Blocks
+ import java.util.Optional
+ import java.util.function.BiConsumer
+-import java.util.function.Supplier
+
+
+@@ -26,5 +27,5 @@ import java.util.function.Supplier
 
  fun Model(creator: (TextureMapping) -> ModelData): ModelTemplate = object : ModelTemplate(Optional.empty(), Optional.empty()) {
 -    override fun create(id: ResourceLocation, textures: TextureMapping, modelCollector: BiConsumer<ResourceLocation, Supplier<JsonElement>>): ResourceLocation {
-+    override fun create(id: Identifier, textures: TextureMapping, modelCollector: BiConsumer<Identifier, Supplier<JsonElement>>): Identifier {
++    override fun create(id: Identifier, textures: TextureMapping, modelCollector: BiConsumer<Identifier, ModelInstance>): Identifier {
          modelCollector.accept(id) { creator(textures).toJsonElement() }
          return id
-@@ -32,10 +32,10 @@ fun Model(creator: (TextureMapping) -> ModelData): ModelTemplate = object : Mode
+@@ -32,10 +33,10 @@ fun Model(creator: (TextureMapping) -> ModelData): ModelTemplate = object : Mode
  }
 
 -fun Model(parent: ResourceLocation, vararg textureKeys: TextureSlot) = ModelTemplate(Optional.of(parent), Optional.empty(), *textureKeys)
@@ -3418,14 +3882,18 @@ index 47acf6c..6254f36 100644
 +    val parent: Identifier? = null,
      val ambientOcclusion: Boolean? = null,
      val textures: ModelTexturesData? = null,
-@@ -147,5 +147,5 @@ class ModelFaceData(
+@@ -147,8 +148,8 @@ class ModelFaceData(
  // Util
 
 -fun TextureMapping(vararg entries: Pair<TextureSlot, ResourceLocation>, initializer: TextureMapping.() -> Unit = {}): TextureMapping {
 +fun TextureMapping(vararg entries: Pair<TextureSlot, Identifier>, initializer: TextureMapping.() -> Unit = {}): TextureMapping {
      val textureMapping = TextureMapping()
      entries.forEach {
-@@ -159,10 +159,10 @@ val TextureSlot.string get() = this.toString()
+-        textureMapping.put(it.first, it.second)
++        textureMapping.put(it.first, Material(it.second))
+     }
+     initializer(textureMapping)
+@@ -159,12 +160,12 @@ val TextureSlot.string get() = this.toString()
 
  infix fun ModelTemplate.with(textureMapping: TextureMapping): TexturedModel = TexturedModel.createDefault({ textureMapping }, this).get(Blocks.AIR)
 -fun ModelTemplate.with(vararg textureEntries: Pair<TextureSlot, ResourceLocation>) = this with TextureMapping(*textureEntries)
@@ -3438,8 +3906,11 @@ index 47acf6c..6254f36 100644
 -            parent = ResourceLocation("block/block"),
 +            parent = Identifier("block/block"),
              textures = ModelTexturesData(
-                 TextureSlot.PARTICLE.id to textureMapping.get(TextureSlot.PARTICLE).string,
-@@ -177,5 +177,5 @@ fun createEmptyModel(particleTexture: ResourceLocation): TexturedModel {
+-                TextureSlot.PARTICLE.id to textureMapping.get(TextureSlot.PARTICLE).string,
++                TextureSlot.PARTICLE.id to textureMapping.get(TextureSlot.PARTICLE).sprite().string,
+             ),
+             elements = ModelElementsData(),
+@@ -177,5 +178,5 @@ fun createEmptyModel(particleTexture: ResourceLocation): TexturedModel {
 
  context(_: ModContext)
 -fun registerModelGeneration(identifierGetter: () -> ResourceLocation, texturedModelCreator: () -> TexturedModel) = DataGenerationEvents.onGenerateBlockModel {
@@ -3537,10 +4008,16 @@ index 5a1b7c4..7d2724b 100644
      if (itemEntity != null) {
          itemEntity.setNoPickUpDelay()
 diff --git a/common/src/main/kotlin/miragefairy2024/util/Recipe.kt b/common/src/main/kotlin/miragefairy2024/util/Recipe.kt
-index c8fb523..38d7863 100644
+index c8fb523..041c611 100644
 --- a/common/src/main/kotlin/miragefairy2024/util/Recipe.kt
 +++ b/common/src/main/kotlin/miragefairy2024/util/Recipe.kt
-@@ -10,11 +10,11 @@ import mirrg.kotlin.gson.hydrogen.jsonElement
+@@ -1,4 +1,5 @@
+ package miragefairy2024.util
+
++import com.mojang.serialization.codecs.RecordCodecBuilder
+ import miragefairy2024.DataGenerationEvents
+ import miragefairy2024.MirageFairy2024
+@@ -10,19 +11,23 @@ import mirrg.kotlin.gson.hydrogen.jsonElement
  import mirrg.kotlin.gson.hydrogen.jsonObject
  import net.fabricmc.fabric.api.loot.v3.LootTableEvents
 -import net.fabricmc.fabric.api.registry.FuelRegistry
@@ -3551,43 +4028,240 @@ index c8fb523..38d7863 100644
 -import net.minecraft.advancements.critereon.LocationPredicate
 -import net.minecraft.advancements.critereon.MinMaxBounds
 +import net.fabricmc.fabric.api.registry.FuelValueEvents
++import net.minecraft.advancements.criterion.DataComponentMatchers
 +import net.minecraft.advancements.criterion.EnchantmentPredicate
-+import net.minecraft.advancements.criterion.ItemEnchantmentsPredicate
++import net.minecraft.advancements.criterion.InventoryChangeTrigger
 +import net.minecraft.advancements.criterion.ItemPredicate
-+import net.minecraft.advancements.criterion.ItemSubPredicates
 +import net.minecraft.advancements.criterion.LocationPredicate
 +import net.minecraft.advancements.criterion.MinMaxBounds
++import net.minecraft.core.HolderGetter
  import net.minecraft.core.HolderLookup
  import net.minecraft.core.HolderSet
-@@ -30,5 +30,5 @@ import net.minecraft.data.recipes.SimpleCookingRecipeBuilder
+ import net.minecraft.core.NonNullList
++import net.minecraft.core.component.DataComponentExactPredicate
++import net.minecraft.core.component.DataComponents
++import net.minecraft.core.component.predicates.DataComponentPredicates
++import net.minecraft.core.component.predicates.EnchantmentsPredicate
+ import net.minecraft.core.registries.BuiltInRegistries
+ import net.minecraft.core.registries.Registries
+ import net.minecraft.data.recipes.RecipeBuilder
+ import net.minecraft.data.recipes.RecipeCategory
+-import net.minecraft.data.recipes.RecipeProvider
+ import net.minecraft.data.recipes.ShapedRecipeBuilder
+ import net.minecraft.data.recipes.ShapelessRecipeBuilder
+@@ -30,19 +35,18 @@ import net.minecraft.data.recipes.SimpleCookingRecipeBuilder
  import net.minecraft.data.recipes.SpecialRecipeBuilder
  import net.minecraft.resources.ResourceKey
 -import net.minecraft.resources.ResourceLocation
 +import net.minecraft.resources.Identifier
  import net.minecraft.tags.TagKey
  import net.minecraft.world.entity.EntityType
-@@ -72,5 +72,5 @@ fun <T : RecipeBuilder> T.group(item: Item) = this.also { it.group(recipeGroupRe
++import net.minecraft.world.item.BlockItem
+ import net.minecraft.world.item.Item
+ import net.minecraft.world.item.ItemStack
+ import net.minecraft.world.item.Items
++import net.minecraft.world.item.crafting.CookingBookCategory
+ import net.minecraft.world.item.crafting.CraftingBookCategory
+ import net.minecraft.world.item.crafting.CraftingInput
++import net.minecraft.world.item.crafting.CraftingRecipe
+ import net.minecraft.world.item.crafting.CustomRecipe
+ import net.minecraft.world.item.crafting.Ingredient
+-import net.minecraft.world.item.crafting.Recipe
+-import net.minecraft.world.item.crafting.RecipeInput
+ import net.minecraft.world.item.crafting.RecipeSerializer
+-import net.minecraft.world.item.crafting.RecipeType
+-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer
+ import net.minecraft.world.item.enchantment.Enchantments
+ import net.minecraft.world.level.Level
+@@ -66,11 +70,13 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator
+ // Crafting
+
+-fun <T : RecipeBuilder> T.criterion(item: Item) = this.also { it.unlockedBy("has_${item.getIdentifier().path}", RecipeProvider.has(item)) }
+-fun <T : RecipeBuilder> T.criterion(tagKey: TagKey<Item>) = this.also { it.unlockedBy("has_${tagKey.location().path}", RecipeProvider.has(tagKey)) }
++fun <T : RecipeBuilder> T.criterion(item: Item) = this.also { it.unlockedBy("has_${item.getIdentifier().path}", InventoryChangeTrigger.TriggerInstance.hasItems(item)) }
++fun <T : RecipeBuilder> T.criterion(tagKey: TagKey<Item>, items: HolderGetter<Item>) = this.also {
++    it.unlockedBy("has_${tagKey.location().path}", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(items, tagKey)))
++}
+ fun <T : RecipeBuilder> T.group(item: Item) = this.also { it.group(recipeGroupRegistry[item] ?: "${item.getIdentifier()}") }
+
  class RecipeGenerationSettings<T> {
-     val listeners = mutableListOf<(T) -> Unit>()
+-    val listeners = mutableListOf<(T) -> Unit>()
 -    val idModifiers = mutableListOf<(ResourceLocation) -> ResourceLocation>()
++    val listeners = mutableListOf<(T, HolderGetter<Item>) -> Unit>()
 +    val idModifiers = mutableListOf<(Identifier) -> Identifier>()
      var recipeCategory = RecipeCategory.MISC
      var noGroup = false
-@@ -88,5 +88,5 @@ infix fun <T : RecipeBuilder> RecipeGenerationSettings<T>.on(tag: TagKey<Item>)
+@@ -79,14 +85,14 @@ class RecipeGenerationSettings<T> {
+ @JvmName("onItem")
+ infix fun <T : RecipeBuilder> RecipeGenerationSettings<T>.on(item: () -> Item) = this.apply {
+-    this.listeners += { it.criterion(item()) }
++    this.listeners += { recipe, _ -> recipe.criterion(item()) }
+ }
+
+ @JvmName("onTag")
+ infix fun <T : RecipeBuilder> RecipeGenerationSettings<T>.on(tag: TagKey<Item>) = this.apply {
+-    this.listeners += { it.criterion(tag) }
++    this.listeners += { recipe, items -> recipe.criterion(tag, items) }
+ }
 
  infix fun <T> RecipeGenerationSettings<T>.modId(modId: String) = this.apply {
 -    this.idModifiers += { ResourceLocation(modId, it.path) }
 +    this.idModifiers += { Identifier(modId, it.path) }
  }
 
-@@ -390,5 +390,5 @@ fun (() -> Item).registerComposterInput(chance: Float) {
+@@ -115,5 +121,5 @@ infix fun <T> RecipeGenerationSettings<T>.path(string: String) = this.apply {
+ context(_: ModContext)
+ fun <T : RecipeBuilder> registerRecipeGeneration(
+-    creator: (RecipeCategory, Item, Int) -> T,
++    creator: (HolderGetter<Item>, RecipeCategory, Item, Int) -> T,
+     item: () -> Item,
+     count: Int = 1,
+@@ -122,12 +128,12 @@ fun <T : RecipeBuilder> registerRecipeGeneration(
+     val settings = RecipeGenerationSettings<T>()
+     DataGenerationEvents.onGenerateRecipe {
+-        val builder = creator(settings.recipeCategory, item(), count)
++        val builder = creator(it.items, settings.recipeCategory, item(), count)
+         settings.listeners.forEach { listener ->
+-            listener(builder)
++            listener(builder, it.items)
+         }
+         if (!settings.noGroup) builder.group(item())
+         block(builder)
+         val identifier = settings.idModifiers.fold(item().getIdentifier()) { id, idModifier -> idModifier(id) }
+-        builder.save(it, identifier)
++        builder.save(it.recipeOutput, ResourceKey.create(Registries.RECIPE, identifier))
+     }
+     return settings
+@@ -158,12 +164,18 @@ fun registerSmeltingRecipeGeneration(
+     val settings = RecipeGenerationSettings<SimpleCookingRecipeBuilder>()
+     DataGenerationEvents.onGenerateRecipe {
+-        val builder = SimpleCookingRecipeBuilder.smelting(input().toIngredient(), RecipeCategory.MISC, output(), experience.toFloat(), cookingTime)
++        val result = output()
++        val category = when {
++            result.components().has(DataComponents.FOOD) -> CookingBookCategory.FOOD
++            result is BlockItem -> CookingBookCategory.BLOCKS
++            else -> CookingBookCategory.MISC
++        }
++        val builder = SimpleCookingRecipeBuilder.smelting(input().toIngredient(), RecipeCategory.MISC, category, result, experience.toFloat(), cookingTime)
+         builder.group(output())
+         settings.listeners.forEach { listener ->
+-            listener(builder)
++            listener(builder, it.items)
+         }
+         block(builder)
+         val identifier = settings.idModifiers.fold(output().getIdentifier()) { id, idModifier -> idModifier(id) }
+-        builder.save(it, identifier)
++        builder.save(it.recipeOutput, ResourceKey.create(Registries.RECIPE, identifier))
+     }
+     return settings
+@@ -180,12 +192,14 @@ fun registerBlastingRecipeGeneration(
+     val settings = RecipeGenerationSettings<SimpleCookingRecipeBuilder>()
+     DataGenerationEvents.onGenerateRecipe {
+-        val builder = SimpleCookingRecipeBuilder.blasting(input().toIngredient(), RecipeCategory.MISC, output(), experience.toFloat(), cookingTime)
++        val result = output()
++        val category = if (result is BlockItem) CookingBookCategory.BLOCKS else CookingBookCategory.MISC
++        val builder = SimpleCookingRecipeBuilder.blasting(input().toIngredient(), RecipeCategory.MISC, category, result, experience.toFloat(), cookingTime)
+         builder.group(output())
+         settings.listeners.forEach { listener ->
+-            listener(builder)
++            listener(builder, it.items)
+         }
+         block(builder)
+         val identifier = settings.idModifiers.fold(output().getIdentifier() * "_from_blasting") { id, idModifier -> idModifier(id) }
+-        builder.save(it, identifier)
++        builder.save(it.recipeOutput, ResourceKey.create(Registries.RECIPE, identifier))
+     }
+     return settings
+@@ -205,10 +219,11 @@ fun registerSpecialRecipe(
+ ) {
+     val identifier = MirageFairy2024.identifier(path)
+-    lateinit var serializer: SimpleCraftingRecipeSerializer<*>
++    lateinit var serializer: RecipeSerializer<out CustomRecipe>
+
+-    class SpecialCraftingRecipeImpl(category: CraftingBookCategory) : CustomRecipe(category) {
++    class SpecialCraftingRecipeImpl(private val bookCategory: CraftingBookCategory) : CustomRecipe() {
++        override fun category() = bookCategory
+         override fun matches(input: CraftingInput, level: Level) = matcher(input) != null
+-        override fun assemble(input: CraftingInput, registries: HolderLookup.Provider) = matcher(input)?.craft() ?: EMPTY_ITEM_STACK
+-        override fun getRemainingItems(input: CraftingInput) = matcher(input)?.getRemainder() ?: getDefaultRemainingItems(input) // interfaceのsuperを呼び出そうとするとNoSuchMethodErrorになる
++        override fun assemble(input: CraftingInput) = matcher(input)?.craft() ?: EMPTY_ITEM_STACK
++        override fun getRemainingItems(input: CraftingInput) = matcher(input)?.getRemainder() ?: CraftingRecipe.defaultCraftingReminder(input)
+
+         override fun canCraftInDimensions(width: Int, height: Int): Boolean {
+@@ -222,21 +237,15 @@ fun registerSpecialRecipe(
+     }
+
+-    serializer = SimpleCraftingRecipeSerializer(::SpecialCraftingRecipeImpl)
++    serializer = RecipeSerializer(
++        RecordCodecBuilder.mapCodec { instance ->
++            instance.group(CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter { it.category() })
++                .apply(instance, ::SpecialCraftingRecipeImpl)
++        },
++        CraftingBookCategory.STREAM_CODEC.map(::SpecialCraftingRecipeImpl) { it.category() }.cast(),
++    )
+     Registration(BuiltInRegistries.RECIPE_SERIALIZER, identifier) { serializer }.register()
+     DataGenerationEvents.onGenerateRecipe {
+-        SpecialRecipeBuilder.special(::SpecialCraftingRecipeImpl).save(it, identifier.string)
+-    }
+-}
+-
+-private fun <T : RecipeInput> getDefaultRemainingItems(input: T): NonNullList<ItemStack> {
+-    val recipe = object : Recipe<T> {
+-        override fun matches(input: T, level: Level): Boolean = throw AssertionError()
+-        override fun assemble(input: T, registries: HolderLookup.Provider): ItemStack? = throw AssertionError()
+-        override fun canCraftInDimensions(width: Int, height: Int): Boolean = throw AssertionError()
+-        override fun getResultItem(registries: HolderLookup.Provider): ItemStack? = throw AssertionError()
+-        override fun getSerializer(): RecipeSerializer<*> = throw AssertionError()
+-        override fun getType(): RecipeType<*> = throw AssertionError()
++        SpecialRecipeBuilder.special { SpecialCraftingRecipeImpl(CraftingBookCategory.MISC) }.save(it.recipeOutput, ResourceKey.create(Registries.RECIPE, identifier))
+     }
+-    return recipe.getRemainingItems(input)
+ }
+
+@@ -291,9 +300,9 @@ fun (() -> Item).registerGrassDrop(
+     fortuneMultiplier: Int = 2,
+     biome: (() -> ResourceKey<Biome>)? = null,
+-) = this.registerLootTableModification({ Blocks.SHORT_GRASS.lootTable }) { tableBuilder, registries ->
++) = this.registerLootTableModification({ Blocks.SHORT_GRASS.lootTable.orElseThrow() }) { tableBuilder, registries ->
+     tableBuilder.apply2 {
+         withPool(LootPool(AlternativeLootPoolEntry {
+             otherwise(EmptyLootPoolEntry {
+-                `when`(MatchTool.toolMatches(ItemPredicate.Builder.item().of(Items.SHEARS)))
++                `when`(MatchTool.toolMatches(ItemPredicate.Builder.item().of(registries.lookupOrThrow(Registries.ITEM), Items.SHEARS)))
+             })
+             otherwise(ItemLootPoolEntry(this@registerGrassDrop()) {
+@@ -312,9 +321,14 @@ fun (() -> Item).registerExtraOreDrop(
+     chance: Float = 1.0F,
+     fortuneMultiplier: Int = 0,
+-) = this.registerLootTableModification({ oreBlock.lootTable }) { tableBuilder, registries ->
++) = this.registerLootTableModification({ oreBlock.lootTable.orElseThrow() }) { tableBuilder, registries ->
+     tableBuilder.apply2 {
+         withPool(LootPool(AlternativeLootPoolEntry {
+             otherwise(EmptyLootPoolEntry {
+-                `when`(MatchTool.toolMatches(ItemPredicate.Builder.item().withSubPredicate(ItemSubPredicates.ENCHANTMENTS, ItemEnchantmentsPredicate.enchantments(listOf(EnchantmentPredicate(registries[Registries.ENCHANTMENT, Enchantments.SILK_TOUCH], MinMaxBounds.Ints.atLeast(1)))))))
++                val silkTouch = EnchantmentPredicate(registries[Registries.ENCHANTMENT, Enchantments.SILK_TOUCH], MinMaxBounds.Ints.atLeast(1))
++                val components = DataComponentMatchers(
++                    DataComponentExactPredicate.EMPTY,
++                    mapOf(DataComponentPredicates.ENCHANTMENTS to EnchantmentsPredicate.enchantments(listOf(silkTouch))),
++                )
++                `when`(MatchTool.toolMatches(ItemPredicate.Builder.item().withComponents(components)))
+             })
+             otherwise(ItemLootPoolEntry(this@registerExtraOreDrop()) {
+@@ -334,5 +348,5 @@ fun (() -> Item).registerMobDrop(
+     amount: NumberProvider? = null,
+     fortuneFactor: NumberProvider? = null,
+-) = this.registerLootTableModification({ entityType.defaultLootTable }) { tableBuilder, registries ->
++) = this.registerLootTableModification({ entityType.defaultLootTable.orElseThrow() }) { tableBuilder, registries ->
+     tableBuilder.apply2 {
+         withPool(LootPool(ItemLootPoolEntry(this@registerMobDrop()) {
+@@ -390,5 +404,5 @@ fun (() -> Item).registerComposterInput(chance: Float) {
          it.accept(
              Registries.ITEM,
 -            ResourceLocation("neoforge", "compostables"),
 +            Identifier("neoforge", "compostables"),
              BuiltInRegistries.ITEM.getResourceKey(this()).get(),
              jsonObject(
-@@ -402,5 +402,8 @@ fun (() -> Item).registerComposterInput(chance: Float) {
+@@ -402,9 +416,12 @@ fun (() -> Item).registerComposterInput(chance: Float) {
  context(_: ModContext)
  fun (() -> Item).registerFuel(ticks: Int) = ModEvents.onInitialize {
 -    FuelRegistry.INSTANCE.add(this(), ticks)
@@ -3597,6 +4271,11 @@ index c8fb523..38d7863 100644
 +    }
  }
 
+ context(_: ModContext)
+ fun registerStonecutterRecipeGeneration(input: () -> Item, output: () -> Item, count: Int = 1, category: RecipeCategory = RecipeCategory.BUILDING_BLOCKS) = DataGenerationEvents.onGenerateRecipe {
+-    RecipeProvider.stonecutterResultFromBase(it, category, output(), input(), count)
++    it.generateStonecutterRecipe(category, output(), input(), count)
+ }
 diff --git a/common/src/main/kotlin/miragefairy2024/util/Registry.kt b/common/src/main/kotlin/miragefairy2024/util/Registry.kt
 index 4797425..39e936f 100644
 --- a/common/src/main/kotlin/miragefairy2024/util/Registry.kt
@@ -3682,10 +4361,10 @@ index f1c4370..51f949e 100644
  }
 
 diff --git a/common/src/main/kotlin/miragefairy2024/util/Tag.kt b/common/src/main/kotlin/miragefairy2024/util/Tag.kt
-index 711c70d..dfc0da5 100644
+index 711c70d..ca9a1ee 100644
 --- a/common/src/main/kotlin/miragefairy2024/util/Tag.kt
 +++ b/common/src/main/kotlin/miragefairy2024/util/Tag.kt
-@@ -3,11 +3,11 @@ package miragefairy2024.util
+@@ -3,11 +3,12 @@ package miragefairy2024.util
  import miragefairy2024.InitializationEventRegistry
  import miragefairy2024.ModContext
 -import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
@@ -3695,12 +4374,16 @@ index 711c70d..dfc0da5 100644
  import net.minecraft.core.HolderLookup
  import net.minecraft.core.Registry
  import net.minecraft.core.registries.Registries
++import net.minecraft.data.tags.TagAppender
  import net.minecraft.resources.ResourceKey
 -import net.minecraft.resources.ResourceLocation
 +import net.minecraft.resources.Identifier
  import net.minecraft.tags.TagKey
  import net.minecraft.world.damagesource.DamageType
-@@ -20,10 +20,10 @@ import net.minecraft.world.level.levelgen.structure.Structure
+@@ -18,12 +19,13 @@ import net.minecraft.world.level.biome.Biome
+ import net.minecraft.world.level.block.Block
+ import net.minecraft.world.level.levelgen.structure.Structure
++import java.util.IdentityHashMap
  import java.util.concurrent.CompletableFuture
 
 -fun <T> ResourceLocation.toTag(registry: ResourceKey<Registry<T>>): TagKey<T> = TagKey.create(registry, this)
@@ -3717,87 +4400,112 @@ index 711c70d..dfc0da5 100644
 +fun Identifier.toStructureTag(): TagKey<Structure> = this.toTag(Registries.STRUCTURE)
 
  val TagKey<Block>.generator @JvmName("getBlockGenerator") get() = Pair(this, TagGenerator.BLOCK)
-@@ -35,19 +35,19 @@ val TagKey<DamageType>.generator @JvmName("getDamageTypeGenerator") get() = Pair
+@@ -35,44 +37,34 @@ val TagKey<DamageType>.generator @JvmName("getDamageTypeGenerator") get() = Pair
  val TagKey<Enchantment>.generator @JvmName("getEnchantmentGenerator") get() = Pair(this, TagGenerator.ENCHANTMENT)
 
 -class TagGenerator<T>(
-+class TagGenerator<T : Any>(
-     private val registryKey: ResourceKey<out Registry<T>>,
+-    private val registryKey: ResourceKey<out Registry<T>>,
 -    private val providerFactory: (TagGenerator<T>.(FabricDataOutput, CompletableFuture<HolderLookup.Provider>) -> FabricTagProvider<T>)? = null,
-+    private val providerFactory: (TagGenerator<T>.(FabricPackOutput, CompletableFuture<HolderLookup.Provider>) -> FabricTagsProvider<T>)? = null,
- ) {
+-) {
++class TagGenerator<T : Any>(private val registryKey: ResourceKey<out Registry<T>>) {
      companion object {
          val entries = mutableListOf<TagGenerator<*>>()
 -        private operator fun <T> TagGenerator<T>.not() = this.also { entries.add(it) }
 +        private operator fun <T : Any> TagGenerator<T>.not() = this.also { entries.add(it) }
 
-         val BLOCK = !TagGenerator(Registries.BLOCK) { output, registriesFuture ->
+-        val BLOCK = !TagGenerator(Registries.BLOCK) { output, registriesFuture ->
 -            object : FabricTagProvider.BlockTagProvider(output, registriesFuture) {
-+            object : FabricTagsProvider.BlockTagProvider(output, registriesFuture) {
-                 override fun addTags(arg: HolderLookup.Provider) = eventRegistry.fire { it { tag -> getOrCreateTagBuilder(tag) } }
-             }
-         }
-         val ITEM = !TagGenerator(Registries.ITEM) { output, registriesFuture ->
+-                override fun addTags(arg: HolderLookup.Provider) = eventRegistry.fire { it { tag -> getOrCreateTagBuilder(tag) } }
+-            }
+-        }
+-        val ITEM = !TagGenerator(Registries.ITEM) { output, registriesFuture ->
 -            object : FabricTagProvider.ItemTagProvider(output, registriesFuture) {
-+            object : FabricTagsProvider.ItemTagProvider(output, registriesFuture) {
-                 override fun addTags(arg: HolderLookup.Provider) = eventRegistry.fire { it { tag -> getOrCreateTagBuilder(tag) } }
-             }
-@@ -56,5 +56,5 @@ class TagGenerator<T>(
+-                override fun addTags(arg: HolderLookup.Provider) = eventRegistry.fire { it { tag -> getOrCreateTagBuilder(tag) } }
+-            }
+-        }
++        val BLOCK = !TagGenerator(Registries.BLOCK)
++        val ITEM = !TagGenerator(Registries.ITEM)
+         val BIOME = !TagGenerator(Registries.BIOME)
          val STRUCTURE = !TagGenerator(Registries.STRUCTURE)
-         val ENTITY_TYPE = !TagGenerator(Registries.ENTITY_TYPE) { output, registriesFuture ->
+-        val ENTITY_TYPE = !TagGenerator(Registries.ENTITY_TYPE) { output, registriesFuture ->
 -            object : FabricTagProvider.EntityTypeTagProvider(output, registriesFuture) {
-+            object : FabricTagsProvider.EntityTypeTagProvider(output, registriesFuture) {
-                 override fun addTags(arg: HolderLookup.Provider) = eventRegistry.fire { it { tag -> getOrCreateTagBuilder(tag) } }
-             }
-@@ -62,5 +62,5 @@ class TagGenerator<T>(
+-                override fun addTags(arg: HolderLookup.Provider) = eventRegistry.fire { it { tag -> getOrCreateTagBuilder(tag) } }
+-            }
+-        }
++        val ENTITY_TYPE = !TagGenerator(Registries.ENTITY_TYPE)
          val DAMAGE_TYPE = !TagGenerator(Registries.DAMAGE_TYPE)
-         val ENCHANTMENT = !TagGenerator(Registries.ENCHANTMENT) { output, registriesFuture ->
+-        val ENCHANTMENT = !TagGenerator(Registries.ENCHANTMENT) { output, registriesFuture ->
 -            object : FabricTagProvider.EnchantmentTagProvider(output, registriesFuture) {
-+            object : FabricTagsProvider.EnchantmentTagProvider(output, registriesFuture) {
-                 override fun addTags(arg: HolderLookup.Provider) = eventRegistry.fire { it { tag -> getOrCreateTagBuilder(tag) } }
-             }
-@@ -68,10 +68,10 @@ class TagGenerator<T>(
+-                override fun addTags(arg: HolderLookup.Provider) = eventRegistry.fire { it { tag -> getOrCreateTagBuilder(tag) } }
+-            }
+-        }
++        val ENCHANTMENT = !TagGenerator(Registries.ENCHANTMENT)
      }
 
 -    val eventRegistry = InitializationEventRegistry<((TagKey<T>) -> FabricTagProvider<T>.FabricTagBuilder) -> Unit>()
-+    val eventRegistry = InitializationEventRegistry<((TagKey<T>) -> FabricTagsProvider<T>.FabricTagBuilder) -> Unit>()
++    val eventRegistry = InitializationEventRegistry<((TagKey<T>) -> TagAppender<ResourceKey<T>, T>, (T) -> ResourceKey<T>) -> Unit>()
 
 -    fun createProvider(output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>): FabricTagProvider<T> {
-+    fun createProvider(output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>): FabricTagsProvider<T> {
-         return if (providerFactory != null) {
-             providerFactory(this, output, registriesFuture)
+-        return if (providerFactory != null) {
+-            providerFactory(this, output, registriesFuture)
 -        } else object : FabricTagProvider<T>(output, registryKey, registriesFuture) {
-+        } else object : FabricTagsProvider<T>(output, registryKey, registriesFuture) {
-             override fun addTags(arg: HolderLookup.Provider) = eventRegistry.fire { it { tag -> getOrCreateTagBuilder(tag) } }
+-            override fun addTags(arg: HolderLookup.Provider) = eventRegistry.fire { it { tag -> getOrCreateTagBuilder(tag) } }
++    fun createProvider(output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>): FabricTagsProvider<T> {
++        return object : FabricTagsProvider<T>(output, registryKey, registriesFuture) {
++            override fun addTags(arg: HolderLookup.Provider) {
++                val keysByValue by lazy {
++                    IdentityHashMap<T, ResourceKey<T>>().apply {
++                        arg.lookupOrThrow(registryKey).listElements().forEach { holder ->
++                            put(holder.value(), holder.key())
++                        }
++                    }
++                }
++                eventRegistry.fire { generate ->
++                    generate({ tag -> builder(tag) }, { value -> keysByValue.getValue(value) })
++                }
++            }
          }
-@@ -81,5 +81,5 @@ class TagGenerator<T>(
+     }
+@@ -81,28 +73,26 @@ class TagGenerator<T>(
 
  context(_: ModContext)
 -fun <T> Pair<TagKey<T>, TagGenerator<T>>.registerChild(elementGetter: () -> T) {
+-    this.second.eventRegistry {
+-        it(this.first).add(elementGetter())
 +fun <T : Any> Pair<TagKey<T>, TagGenerator<T>>.registerChild(elementGetter: () -> T) {
-     this.second.eventRegistry {
-         it(this.first).add(elementGetter())
-@@ -88,5 +88,5 @@ fun <T> Pair<TagKey<T>, TagGenerator<T>>.registerChild(elementGetter: () -> T) {
++    this.second.eventRegistry { tagBuilder, keyOf ->
++        tagBuilder(this.first).add(keyOf(elementGetter()))
+     }
+ }
 
  context(_: ModContext)
 -fun <T> Pair<TagKey<T>, TagGenerator<T>>.registerChild(resourceLocation: ResourceLocation) {
-+fun <T : Any> Pair<TagKey<T>, TagGenerator<T>>.registerChild(resourceLocation: Identifier) {
-     this.second.eventRegistry {
-         it(this.first).add(resourceLocation)
-@@ -95,5 +95,5 @@ fun <T> Pair<TagKey<T>, TagGenerator<T>>.registerChild(resourceLocation: Resourc
+-    this.second.eventRegistry {
+-        it(this.first).add(resourceLocation)
+-    }
++fun <T : Any> Pair<TagKey<T>, TagGenerator<T>>.registerChild(identifier: Identifier) {
++    this.registerChild(ResourceKey.create(this.first.registry(), identifier))
+ }
 
  context(_: ModContext)
 -fun <T> Pair<TagKey<T>, TagGenerator<T>>.registerChild(resourceKey: ResourceKey<T>) {
+-    this.second.eventRegistry {
+-        it(this.first).add(resourceKey)
 +fun <T : Any> Pair<TagKey<T>, TagGenerator<T>>.registerChild(resourceKey: ResourceKey<T>) {
-     this.second.eventRegistry {
-         it(this.first).add(resourceKey)
-@@ -102,5 +102,5 @@ fun <T> Pair<TagKey<T>, TagGenerator<T>>.registerChild(resourceKey: ResourceKey<
++    this.second.eventRegistry { tagBuilder, _ ->
++        tagBuilder(this.first).add(resourceKey)
+     }
+ }
 
  context(_: ModContext)
 -fun <T> Pair<TagKey<T>, TagGenerator<T>>.registerChild(tag: TagKey<T>) {
+-    this.second.eventRegistry {
+-        it(this.first).addOptionalTag(tag)
 +fun <T : Any> Pair<TagKey<T>, TagGenerator<T>>.registerChild(tag: TagKey<T>) {
-     this.second.eventRegistry {
-         it(this.first).addOptionalTag(tag)
++    this.second.eventRegistry { tagBuilder, _ ->
++        tagBuilder(this.first).addOptionalTag(tag)
+     }
+ }
 diff --git a/common/src/main/kotlin/miragefairy2024/util/TextScope.kt b/common/src/main/kotlin/miragefairy2024/util/TextScope.kt
 index d146119..c103657 100644
 --- a/common/src/main/kotlin/miragefairy2024/util/TextScope.kt
@@ -3818,28 +4526,17 @@ index d146119..c103657 100644
 +    it.withClickEvent(ClickEvent.OpenFile(absoluteFile.canonicalPath))
  }.underline
 diff --git a/common/src/main/kotlin/miragefairy2024/util/Translation.kt b/common/src/main/kotlin/miragefairy2024/util/Translation.kt
-index 6c5099e..d63112d 100644
+index 6c5099e..930626d 100644
 --- a/common/src/main/kotlin/miragefairy2024/util/Translation.kt
 +++ b/common/src/main/kotlin/miragefairy2024/util/Translation.kt
-@@ -3,4 +3,5 @@ package miragefairy2024.util
- import miragefairy2024.DataGenerationEvents
- import miragefairy2024.ModContext
-+import net.fabricmc.fabric.api.tag.FabricTagKey
- import net.minecraft.tags.TagKey
- import net.minecraft.world.entity.EntityType
-@@ -43,7 +44,8 @@ fun (() -> EntityType<*>).enJa(name: EnJa) {
+@@ -43,5 +43,5 @@ fun (() -> EntityType<*>).enJa(name: EnJa) {
  context(_: ModContext)
  @JvmName("enJaTagKey")
 -fun <T> TagKey<T>.enJa(name: EnJa) {
--    en { this.translationKey to name.en }
--    ja { this.translationKey to name.ja }
 +fun <T : Any> TagKey<T>.enJa(name: EnJa) {
-+    val tag = this as FabricTagKey
-+    en { tag.translationKey to name.en }
-+    ja { tag.translationKey to name.ja }
- }
-
-@@ -60,5 +62,5 @@ operator fun Translation.invoke() = text { translate(this@invoke.keyGetter()) }
+     en { this.translationKey to name.en }
+     ja { this.translationKey to name.ja }
+@@ -60,5 +60,5 @@ operator fun Translation.invoke() = text { translate(this@invoke.keyGetter()) }
 
  context(_: TextScope)
 -operator fun Translation.invoke(vararg args: Any?) = text { translate(this@invoke.keyGetter(), *args) }
@@ -3847,16 +4544,20 @@ index 6c5099e..d63112d 100644
 
  context(_: ModContext)
 diff --git a/common/src/main/kotlin/miragefairy2024/util/WorldGen.kt b/common/src/main/kotlin/miragefairy2024/util/WorldGen.kt
-index 23901d1..8115aaf 100644
+index 23901d1..69501d8 100644
 --- a/common/src/main/kotlin/miragefairy2024/util/WorldGen.kt
 +++ b/common/src/main/kotlin/miragefairy2024/util/WorldGen.kt
-@@ -18,5 +18,5 @@ import net.minecraft.data.worldgen.BootstrapContext
+@@ -18,8 +18,8 @@ import net.minecraft.data.worldgen.BootstrapContext
  import net.minecraft.data.worldgen.placement.PlacementUtils
  import net.minecraft.resources.ResourceKey
 -import net.minecraft.resources.ResourceLocation
 +import net.minecraft.resources.Identifier
  import net.minecraft.tags.BiomeTags
  import net.minecraft.tags.TagKey
+-import net.minecraft.util.random.SimpleWeightedRandomList
++import net.minecraft.util.random.WeightedList
+ import net.minecraft.util.valueproviders.ConstantInt
+ import net.minecraft.util.valueproviders.IntProvider
 @@ -62,15 +62,15 @@ infix fun Holder<ConfiguredFeature<*, *>>.with(placementModifiers: List<Placemen
 
  context(context: BootstrapContext<*>)
@@ -3889,6 +4590,34 @@ index 23901d1..8115aaf 100644
 +fun <C : FeatureConfiguration> Feature<C>.generator(identifier: Identifier, block: FeatureGenerationScope<C>.() -> Unit) {
      block(FeatureGenerationScope(this, identifier))
  }
+@@ -162,10 +162,10 @@ context(_: BiomeSelectorScope) val end: Predicate<BiomeSelectionContext> get() =
+ context(_: BiomeSelectorScope) operator fun ResourceKey<Biome>.unaryPlus(): Predicate<BiomeSelectionContext> = BiomeSelectors.includeByKey(this)
+ context(_: BiomeSelectorScope) operator fun TagKey<Biome>.unaryPlus(): Predicate<BiomeSelectionContext> = BiomeSelectors.tag(this)
+-context(_: BiomeSelectorScope) operator fun BiomeCondition.unaryPlus(): Predicate<BiomeSelectionContext> = Predicate { this.test(it.biomeRegistryEntry) }
++context(_: BiomeSelectorScope) operator fun BiomeCondition.unaryPlus(): Predicate<BiomeSelectionContext> = Predicate { this.test(it.biomeHolder) }
+ context(_: BiomeSelectorScope) operator fun Predicate<BiomeSelectionContext>.not(): Predicate<BiomeSelectionContext> = this.negate()
+ context(_: BiomeSelectorScope) operator fun Predicate<BiomeSelectionContext>.times(other: Predicate<BiomeSelectionContext>): Predicate<BiomeSelectionContext> = this.and(other)
+ context(_: BiomeSelectorScope) operator fun Predicate<BiomeSelectionContext>.plus(other: Predicate<BiomeSelectionContext>): Predicate<BiomeSelectionContext> = this.or(other)
+-context(_: BiomeSelectorScope) operator fun TemperatureCategory.unaryPlus(): Predicate<BiomeSelectionContext> = Predicate { it.biomeRegistryEntry.temperatureCategory == this }
+-context(_: BiomeSelectorScope) operator fun HumidityCategory.unaryPlus(): Predicate<BiomeSelectionContext> = Predicate { it.biomeRegistryEntry.humidityCategory == this }
++context(_: BiomeSelectorScope) operator fun TemperatureCategory.unaryPlus(): Predicate<BiomeSelectionContext> = Predicate { it.biomeHolder.temperatureCategory == this }
++context(_: BiomeSelectorScope) operator fun HumidityCategory.unaryPlus(): Predicate<BiomeSelectionContext> = Predicate { it.biomeHolder.humidityCategory == this }
+ context(_: BiomeSelectorScope) val cold get() = +TemperatureCategory.LOW
+ context(_: BiomeSelectorScope) val warm get() = +TemperatureCategory.MEDIUM
+@@ -174,5 +174,5 @@ context(_: BiomeSelectorScope) val arid get() = +HumidityCategory.LOW
+ context(_: BiomeSelectorScope) val mesic get() = +HumidityCategory.MEDIUM
+ context(_: BiomeSelectorScope) val humid get() = +HumidityCategory.HIGH
+-context(magicPlantCard: MagicPlantCard<*>, _: BiomeSelectorScope) val defaultTraits get(): Predicate<BiomeSelectionContext> = Predicate { magicPlantCard.hasEnvironmentAdaptation(false, it.biomeRegistryEntry.temperatureCategory, it.biomeRegistryEntry.humidityCategory) }
++context(magicPlantCard: MagicPlantCard<*>, _: BiomeSelectorScope) val defaultTraits get(): Predicate<BiomeSelectionContext> = Predicate { magicPlantCard.hasEnvironmentAdaptation(false, it.biomeHolder.temperatureCategory, it.biomeHolder.humidityCategory) }
+
+
+@@ -189,5 +189,5 @@ fun randomIntCount(count: Double): List<PlacementModifier> {
+     if (rate == 0) return count(min)
+     if (rate == 100) return count(min + 1)
+-    val dataPool = SimpleWeightedRandomList.builder<IntProvider>()
++    val dataPool = WeightedList.builder<IntProvider>()
+         .add(ConstantInt.of(min), 100 - rate)
+         .add(ConstantInt.of(min + 1), rate)
 @@ -309,5 +309,5 @@ fun StructureProcessorList(vararg processors: StructureProcessor): StructureProc
 
  context(_: BootstrapContext<*>)
@@ -3928,10 +4657,16 @@ index c92e0a0..d78ad83 100644
          (blockFamilyProvider as BlockModelGenerators.BlockFamilyProvider).fullBlock = block
      }
 diff --git a/fabric/src/main/kotlin/miragefairy2024/fabric/MirageFairy2024FabricDataGenerator.kt b/fabric/src/main/kotlin/miragefairy2024/fabric/MirageFairy2024FabricDataGenerator.kt
-index 9e4bdd3..9a5f78a 100644
+index 9e4bdd3..0c78933 100644
 --- a/fabric/src/main/kotlin/miragefairy2024/fabric/MirageFairy2024FabricDataGenerator.kt
 +++ b/fabric/src/main/kotlin/miragefairy2024/fabric/MirageFairy2024FabricDataGenerator.kt
-@@ -25,11 +25,11 @@ import mirrg.kotlin.gson.hydrogen.toJsonWrapper
+@@ -5,4 +5,5 @@ import kotlinx.coroutines.launch
+ import kotlinx.coroutines.runBlocking
+ import miragefairy2024.DataGenerationEvents
++import miragefairy2024.ModRecipeProvider
+ import miragefairy2024.DataMapConsumer
+ import miragefairy2024.MirageFairy2024
+@@ -25,11 +26,11 @@ import mirrg.kotlin.gson.hydrogen.toJsonWrapper
  import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint
  import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator
 -import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
@@ -3946,7 +4681,7 @@ index 9e4bdd3..9a5f78a 100644
 +import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableSubProvider
  import net.minecraft.advancements.AdvancementHolder
  import net.minecraft.core.HolderLookup
-@@ -44,9 +44,9 @@ import net.minecraft.data.advancements.AdvancementSubProvider
+@@ -44,9 +45,9 @@ import net.minecraft.data.advancements.AdvancementSubProvider
  import net.minecraft.data.info.BlockListReport
  import net.minecraft.data.info.ItemListReport
 -import net.minecraft.data.models.BlockModelGenerators
@@ -3959,21 +4694,21 @@ index 9e4bdd3..9a5f78a 100644
 +import net.minecraft.resources.Identifier
  import net.minecraft.world.level.biome.FeatureSorter
  import net.minecraft.world.level.storage.loot.LootTable
-@@ -78,5 +78,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -78,5 +79,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
 
          // モデル
 -        pack.addProvider { output: FabricDataOutput ->
 +        pack.addProvider { output: FabricPackOutput ->
              object : FabricModelProvider(output) {
                  override fun generateBlockStateModels(blockStateModelGenerator: BlockModelGenerators) = DataGenerationEvents.onGenerateBlockModel.fire { it(blockStateModelGenerator) }
-@@ -87,5 +87,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -87,5 +88,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
          // タグ
          TagGenerator.entries.forEach {
 -            pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
 +            pack.addProvider { output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
                  it.createProvider(output, registriesFuture)
              }
-@@ -93,7 +93,7 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -93,7 +94,7 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
 
          // 戦利品
 -        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
@@ -3983,7 +4718,7 @@ index 9e4bdd3..9a5f78a 100644
 +            object : FabricBlockLootSubProvider(output, registriesFuture) {
                  override fun generate() {
                      DataGenerationEvents.onGenerateBlockLootTable.fire { it(this, registries) }
-@@ -101,7 +101,7 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -101,7 +102,7 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
              }
          }
 -        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
@@ -3993,7 +4728,7 @@ index 9e4bdd3..9a5f78a 100644
 +            object : SimpleFabricLootTableSubProvider(output, registriesFuture, LootContextParamSets.CHEST) {
                  override fun generate(exporter: BiConsumer<ResourceKey<LootTable>, LootTable.Builder>) {
                      DataGenerationEvents.onGenerateChestLootTable.fire { it({ lootTableId, builder -> exporter.accept(lootTableId, builder) }, registries) }
-@@ -109,7 +109,7 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -109,7 +110,7 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
              }
          }
 -        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
@@ -4003,7 +4738,7 @@ index 9e4bdd3..9a5f78a 100644
 +            object : SimpleFabricLootTableSubProvider(output, registriesFuture, LootContextParamSets.ARCHAEOLOGY) {
                  override fun generate(exporter: BiConsumer<ResourceKey<LootTable>, LootTable.Builder>) {
                      DataGenerationEvents.onGenerateArchaeologyLootTable.fire { it({ lootTableId, builder -> exporter.accept(lootTableId, builder) }, registries) }
-@@ -117,7 +117,7 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -117,15 +118,15 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
              }
          }
 -        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
@@ -4012,8 +4747,9 @@ index 9e4bdd3..9a5f78a 100644
 -            object : SimpleFabricLootTableProvider(output, registriesFuture, LootContextParamSets.ENTITY) {
 +            object : SimpleFabricLootTableSubProvider(output, registriesFuture, LootContextParamSets.ENTITY) {
                  override fun generate(exporter: BiConsumer<ResourceKey<LootTable>, LootTable.Builder>) {
-                     DataGenerationEvents.onGenerateEntityLootTable.fire { it({ entityType, builder -> exporter.accept(entityType.defaultLootTable, builder) }, registries) }
-@@ -125,7 +125,7 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+-                    DataGenerationEvents.onGenerateEntityLootTable.fire { it({ entityType, builder -> exporter.accept(entityType.defaultLootTable, builder) }, registries) }
++                    DataGenerationEvents.onGenerateEntityLootTable.fire { it({ entityType, builder -> exporter.accept(entityType.defaultLootTable.orElseThrow(), builder) }, registries) }
+                 }
              }
          }
 -        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
@@ -4023,28 +4759,33 @@ index 9e4bdd3..9a5f78a 100644
 +            object : SimpleFabricLootTableSubProvider(output, registriesFuture, LootContextParamSets.ADVANCEMENT_REWARD) {
                  override fun generate(exporter: BiConsumer<ResourceKey<LootTable>, LootTable.Builder>) {
                      DataGenerationEvents.onGenerateAdvancementRewardLootTable.fire { it({ lootTableId, builder -> exporter.accept(lootTableId, builder) }, registries) }
-@@ -135,5 +135,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -135,12 +136,15 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
 
          // レシピ
 -        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
 +        pack.addProvider { output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
              object : FabricRecipeProvider(output, registriesFuture) {
-                 override fun buildRecipes(recipeOutput: RecipeOutput) = DataGenerationEvents.onGenerateRecipe.fire { it(recipeOutput) }
-@@ -142,5 +142,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+-                override fun buildRecipes(recipeOutput: RecipeOutput) = DataGenerationEvents.onGenerateRecipe.fire { it(recipeOutput) }
++                override fun getName() = "Recipes"
++
++                override fun createRecipeProvider(registries: HolderLookup.Provider, recipeOutput: RecipeOutput) =
++                    ModRecipeProvider(registries, recipeOutput)
+             }
+         }
 
          // Dynamic系
 -        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
 +        pack.addProvider { output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
              object : FabricDynamicRegistryProvider(output, registriesFuture) {
                  override fun getName() = "World Gen"
-@@ -154,5 +154,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -154,5 +158,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
 
          // PlacedFeatureの循環検出
 -        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
 +        pack.addProvider { output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
              object : DataProvider {
                  override fun getName() = "Feature Order Cycle Validation"
-@@ -171,10 +171,10 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -171,10 +175,10 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
 
          // 翻訳
 -        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
@@ -4057,70 +4798,70 @@ index 9e4bdd3..9a5f78a 100644
 +        pack.addProvider { output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
              object : FabricLanguageProvider(output, "ja_jp", registriesFuture) {
                  override fun generateTranslations(holderLookupProvider: HolderLookup.Provider, translationBuilder: TranslationBuilder) = DataGenerationEvents.onGenerateJapaneseTranslation.fire { it(translationBuilder) }
-@@ -183,5 +183,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -183,5 +187,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
 
          // owoのNine Patch Texture
 -        pack.addProvider { output: FabricDataOutput ->
 +        pack.addProvider { output: FabricPackOutput ->
              object : DataProvider {
                  private val pathResolver = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "nine_patch_textures")
-@@ -210,5 +210,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -210,5 +214,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
 
          // SE
 -        pack.addProvider { output: FabricDataOutput ->
 +        pack.addProvider { output: FabricPackOutput ->
              object : DataProvider {
                  private val destination = MirageFairy2024.identifier("sounds")
-@@ -216,5 +216,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -216,5 +220,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                  override fun run(writer: CachedOutput): CompletableFuture<*> {
 
 -                    val map = mutableMapOf<String, Pair<String?, List<ResourceLocation>>>()
 +                    val map = mutableMapOf<String, Pair<String?, List<Identifier>>>()
                      DataGenerationEvents.onGenerateSound.fire {
                          it { path, subtitle, sounds ->
-@@ -239,5 +239,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -239,5 +243,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
 
          // パーティクル
 -        pack.addProvider { output: FabricDataOutput ->
 +        pack.addProvider { output: FabricPackOutput ->
              object : DataProvider {
                  private val pathResolver = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "particles")
-@@ -245,5 +245,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -245,5 +249,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                  override fun run(writer: CachedOutput): CompletableFuture<*> {
 
 -                    val map = mutableMapOf<ResourceLocation, JsonElement>()
 +                    val map = mutableMapOf<Identifier, JsonElement>()
                      DataGenerationEvents.onGenerateParticles.fire {
                          it { identifier, jsonElement ->
-@@ -263,5 +263,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -263,5 +267,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
 
          // 進捗
 -        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
 +        pack.addProvider { output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
              AdvancementProvider(output, registriesFuture, listOf(object : AdvancementSubProvider {
                  override fun generate(registries: HolderLookup.Provider, writer: Consumer<AdvancementHolder>) {
-@@ -279,5 +279,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -279,5 +283,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
          // レポート
          /** @see [net.minecraft.data.Main.createStandardGenerator] */
 -        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
 +        pack.addProvider { output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
              val itemListReport = ItemListReport(output, registriesFuture)
              object : DataProvider {
-@@ -306,5 +306,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -306,5 +310,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
              }
          }
 -        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
 +        pack.addProvider { output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
              val blockListReport = BlockListReport(output, registriesFuture)
              object : DataProvider {
-@@ -338,5 +338,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -338,5 +342,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
 
      private fun neoForge(pack: FabricDataGenerator.Pack) {
 -        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
 +        pack.addProvider { output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
              object : DataProvider {
                  private val pathResolver = output.createPathProvider(PackOutput.Target.DATA_PACK, "data_maps")
-@@ -344,8 +344,8 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -344,8 +348,8 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                  override fun run(writer: CachedOutput): CompletableFuture<*> {
                      val registries = registriesFuture.join()
 -                    val registryMap = mutableMapOf<ResourceKey<out Registry<*>>, MutableMap<ResourceLocation, MutableMap<ResourceLocation, JsonElement>>>()
