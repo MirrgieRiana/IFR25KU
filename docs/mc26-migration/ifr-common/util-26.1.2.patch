@@ -1,0 +1,945 @@
+diff --git a/miragefairy2024/util/Advancement.kt b/miragefairy2024/util/Advancement.kt
+index 72260e0..78eb75a 100644
+--- a/miragefairy2024/util/Advancement.kt
++++ b/miragefairy2024/util/Advancement.kt
+@@ -11,15 +11,15 @@ import net.minecraft.advancements.AdvancementRewards
+ import net.minecraft.advancements.AdvancementType
+ import net.minecraft.advancements.Criterion
+-import net.minecraft.advancements.critereon.EntityPredicate
+-import net.minecraft.advancements.critereon.InventoryChangeTrigger
+-import net.minecraft.advancements.critereon.ItemPredicate
+-import net.minecraft.advancements.critereon.KilledTrigger
+-import net.minecraft.advancements.critereon.LocationPredicate
+-import net.minecraft.advancements.critereon.PlayerTrigger
++import net.minecraft.advancements.criterion.EntityPredicate
++import net.minecraft.advancements.criterion.InventoryChangeTrigger
++import net.minecraft.advancements.criterion.ItemPredicate
++import net.minecraft.advancements.criterion.KilledTrigger
++import net.minecraft.advancements.criterion.LocationPredicate
++import net.minecraft.advancements.criterion.PlayerTrigger
+ import net.minecraft.core.HolderLookup
+ import net.minecraft.core.registries.BuiltInRegistries
+ import net.minecraft.core.registries.Registries
+ import net.minecraft.resources.ResourceKey
+-import net.minecraft.resources.ResourceLocation
++import net.minecraft.resources.Identifier
+ import net.minecraft.tags.TagKey
+ import net.minecraft.world.entity.EntityType
+@@ -83,5 +83,5 @@ enum class AdvancementCardType(
+
+ class AdvancementCard(
+-    private val identifier: ResourceLocation,
++    private val identifier: Identifier,
+     private val context: Context,
+     private val icon: () -> ItemStack,
+@@ -118,5 +118,5 @@ class AdvancementCard(
+             return { registries ->
+                 Pair(
+-                    "visit_${structure.location().path}",
++                    "visit_${structure.identifier().path}",
+                     PlayerTrigger.TriggerInstance.located(
+                         LocationPredicate.Builder.inStructure(
+@@ -132,5 +132,5 @@ class AdvancementCard(
+             return { registries ->
+                 Pair(
+-                    biome.location().path,
++                    biome.identifier().path,
+                     PlayerTrigger.TriggerInstance.located(
+                         LocationPredicate.Builder.inBiome(
+@@ -153,5 +153,5 @@ class AdvancementCard(
+
+     sealed class Context
+-    class Root(val texture: ResourceLocation) : Context()
++    class Root(val texture: Identifier) : Context()
+     class Sub(val parent: suspend () -> AdvancementHolder) : Context()
+
+diff --git a/miragefairy2024/util/Attachment.kt b/miragefairy2024/util/Attachment.kt
+index db188dc..58e9c7e 100644
+--- a/miragefairy2024/util/Attachment.kt
++++ b/miragefairy2024/util/Attachment.kt
+@@ -4,24 +4,24 @@ import miragefairy2024.ModContext
+ import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget
+ import net.fabricmc.fabric.api.attachment.v1.AttachmentType
+-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents
++import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents
+ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
+
+-operator fun <T> AttachmentTarget.get(type: AttachmentType<T>) = AttachmentDelegate(this, type)
++operator fun <T : Any> AttachmentTarget.get(type: AttachmentType<T>) = AttachmentDelegate(this, type)
+
+-class AttachmentDelegate<T>(val value: AttachmentTarget, val type: AttachmentType<T>)
++class AttachmentDelegate<T : Any>(val value: AttachmentTarget, val type: AttachmentType<T>)
+
+-fun <T> AttachmentDelegate<T>.get(): T? {
++fun <T : Any> AttachmentDelegate<T>.get(): T? {
+     return this.value.getAttached(this.type)
+ }
+
+-fun <T> AttachmentDelegate<T>.getOrDefault(): T {
++fun <T : Any> AttachmentDelegate<T>.getOrDefault(): T {
+     return this.value.getAttached(this.type) ?: this.type.initializer()!!.get()
+ }
+
+-fun <T> AttachmentDelegate<T>.getOrCreate(): T {
++fun <T : Any> AttachmentDelegate<T>.getOrCreate(): T {
+     return this.value.getAttachedOrCreate(this.type)
+ }
+
+-fun <T> AttachmentDelegate<T>.set(data: T?) {
++fun <T : Any> AttachmentDelegate<T>.set(data: T?) {
+     if (data != null) {
+         this.value.setAttached(this.type, data) // ドキュメントに反して data == null で呼び出すと爆死する
+@@ -31,5 +31,5 @@ fun <T> AttachmentDelegate<T>.set(data: T?) {
+ }
+
+-fun <T> AttachmentDelegate<T>.modify(block: (T?) -> T?) {
++fun <T : Any> AttachmentDelegate<T>.modify(block: (T?) -> T?) {
+     val data = this.get()
+     val data2 = block(data)
+@@ -37,5 +37,5 @@ fun <T> AttachmentDelegate<T>.modify(block: (T?) -> T?) {
+ }
+
+-fun <T> AttachmentDelegate<T>.mutate(block: (T) -> Unit) {
++fun <T : Any> AttachmentDelegate<T>.mutate(block: (T) -> Unit) {
+     val data = this.get() ?: this.type.initializer()!!.get()
+     block(data)
+@@ -43,5 +43,5 @@ fun <T> AttachmentDelegate<T>.mutate(block: (T) -> Unit) {
+ }
+
+-fun <T> AttachmentDelegate<T>.sync() {
++fun <T : Any> AttachmentDelegate<T>.sync() {
+     this.set(this.get())
+ }
+@@ -58,5 +58,5 @@ fun AttachmentType<*>.register() {
+             }
+         }
+-        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register { player, _, _ ->
++        ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register { player, _, _ ->
+             AttachmentDelegate(player, this).sync()
+         }
+diff --git a/miragefairy2024/util/BiomeCondition.kt b/miragefairy2024/util/BiomeCondition.kt
+index de339e7..c7c9363 100644
+--- a/miragefairy2024/util/BiomeCondition.kt
++++ b/miragefairy2024/util/BiomeCondition.kt
+@@ -53,5 +53,5 @@ sealed class BiomeCondition {
+
+         override fun test(biome: Holder<Biome>) = biome isIn biomeKey
+-        override fun getDisplayName() = text { translate(biomeKey.location().toLanguageKey("biome")) }
++        override fun getDisplayName() = text { translate(biomeKey.identifier().toLanguageKey("biome")) }
+     }
+
+diff --git a/miragefairy2024/util/Block.kt b/miragefairy2024/util/Block.kt
+index a078361..facfd74 100644
+--- a/miragefairy2024/util/Block.kt
++++ b/miragefairy2024/util/Block.kt
+@@ -10,5 +10,5 @@ import net.minecraft.data.BlockFamily
+ import net.minecraft.data.models.model.TexturedModel
+ import net.minecraft.data.recipes.RecipeProvider
+-import net.minecraft.resources.ResourceLocation
++import net.minecraft.resources.Identifier
+ import net.minecraft.tags.TagKey
+ import net.minecraft.world.flag.FeatureFlagSet
+@@ -21,5 +21,5 @@ import net.minecraft.world.level.block.state.properties.Property
+ fun Block.getIdentifier() = BuiltInRegistries.BLOCK.getKey(this)
+
+-fun ResourceLocation.toBlock() = BuiltInRegistries.BLOCK.get(this)
++fun Identifier.toBlock() = BuiltInRegistries.BLOCK.get(this)
+
+ context(_: ModContext)
+diff --git a/miragefairy2024/util/BlockEntity.kt b/miragefairy2024/util/BlockEntity.kt
+index 0094e58..e82838d 100644
+--- a/miragefairy2024/util/BlockEntity.kt
++++ b/miragefairy2024/util/BlockEntity.kt
+@@ -1,4 +1,5 @@
+ package miragefairy2024.util
+
++import net.fabricmc.fabric.api.`object`.builder.v1.block.entity.FabricBlockEntityTypeBuilder
+ import net.minecraft.core.BlockPos
+ import net.minecraft.world.level.block.Block
+@@ -12,9 +13,5 @@ fun <E : BlockEntity> BlockEntityType(
+     blocks: Set<Block>,
+ ): BlockEntityType<E> {
+-    // BlockEntityType コンストラクタの dataType は @Nullable でないが、実際には何にも使われていない。
+-    // 他の個所では @Nullable である Util.fetchChoiceType(References.BLOCK_ENTITY, key) を渡しており、違反している。
+-    /** @see BlockEntityType.register */
+-    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+-    return BlockEntityType(creator, blocks, null)
++    return FabricBlockEntityTypeBuilder.create(creator).addBlocks(blocks).build()
+ }
+
+diff --git a/miragefairy2024/util/BlockStateGeneration.kt b/miragefairy2024/util/BlockStateGeneration.kt
+index 48b757a..86098ca 100644
+--- a/miragefairy2024/util/BlockStateGeneration.kt
++++ b/miragefairy2024/util/BlockStateGeneration.kt
+@@ -12,5 +12,5 @@ import net.minecraft.core.Direction
+ import net.minecraft.data.models.BlockModelGenerators
+ import net.minecraft.data.models.blockstates.BlockStateGenerator
+-import net.minecraft.resources.ResourceLocation
++import net.minecraft.resources.Identifier
+ import net.minecraft.world.level.block.Block
+ import net.minecraft.world.level.block.state.properties.Property
+@@ -70,5 +70,5 @@ enum class BlockStateVariantRotation(val degrees: Int) {
+ class BlockStateVariant(
+     private val parent: BlockStateVariant? = null,
+-    private val model: ResourceLocation? = null,
++    private val model: Identifier? = null,
+     private val x: BlockStateVariantRotation? = null,
+     private val y: BlockStateVariantRotation? = null,
+@@ -84,5 +84,5 @@ class BlockStateVariant(
+
+ fun BlockStateVariant.with(
+-    model: ResourceLocation? = null,
++    model: Identifier? = null,
+     x: BlockStateVariantRotation? = null,
+     y: BlockStateVariantRotation? = null,
+@@ -124,8 +124,8 @@ object VariantsBlockStateGenerationRegistrationScope
+
+ context(_: VariantsBlockStateGenerationRegistrationScope)
+-fun normal(model: ResourceLocation) = listOf(propertiesOf() with BlockStateVariant(model = model))
++fun normal(model: Identifier) = listOf(propertiesOf() with BlockStateVariant(model = model))
+
+ context(_: VariantsBlockStateGenerationRegistrationScope)
+-fun <T : Comparable<T>> List<BlockStateVariantEntry>.with(property: Property<T>, modelFunction: (ResourceLocation, PropertyEntry<T>) -> ResourceLocation): List<BlockStateVariantEntry> {
++fun <T : Comparable<T>> List<BlockStateVariantEntry>.with(property: Property<T>, modelFunction: (Identifier, PropertyEntry<T>) -> Identifier): List<BlockStateVariantEntry> {
+     return property.possibleValues.flatMap { value ->
+         this.map { (properties, variant) ->
+diff --git a/miragefairy2024/util/Channel.kt b/miragefairy2024/util/Channel.kt
+index ffb4171..654aa2f 100644
+--- a/miragefairy2024/util/Channel.kt
++++ b/miragefairy2024/util/Channel.kt
+@@ -9,10 +9,10 @@ import net.minecraft.network.RegistryFriendlyByteBuf
+ import net.minecraft.network.codec.StreamCodec
+ import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+-import net.minecraft.resources.ResourceLocation
++import net.minecraft.resources.Identifier
+ import net.minecraft.server.level.ServerLevel
+ import net.minecraft.server.level.ServerPlayer
+ import net.minecraft.world.phys.Vec3
+
+-abstract class Channel<P>(packetId: ResourceLocation) {
++abstract class Channel<P>(packetId: Identifier) {
+     val streamCodec = object : StreamCodec<RegistryFriendlyByteBuf, Payload<P>> {
+         override fun encode(`object`: RegistryFriendlyByteBuf, object2: Payload<P>) {
+diff --git a/miragefairy2024/util/Codec.kt b/miragefairy2024/util/Codec.kt
+index 53638b1..0157bbf 100644
+--- a/miragefairy2024/util/Codec.kt
++++ b/miragefairy2024/util/Codec.kt
+@@ -17,6 +17,6 @@ import java.time.Instant
+ import java.util.Optional
+
+-fun <B : ByteBuf, V> StreamCodec<B, V>.optional(): StreamCodec<B, Optional<V>> = ByteBufCodecs.optional(this)
+-fun <B : ByteBuf, V> StreamCodec<B, V>.list(): StreamCodec<B, List<V>> = this.apply(ByteBufCodecs.list())
++fun <B : ByteBuf, V : Any> StreamCodec<B, V>.optional(): StreamCodec<B, Optional<V>> = ByteBufCodecs.optional(this)
++fun <B : ByteBuf, V : Any> StreamCodec<B, V>.list(): StreamCodec<B, List<V>> = this.apply(ByteBufCodecs.list())
+
+ val INSTANT_CODEC: Codec<Instant> = Codec.LONG.xmap(Instant::ofEpochMilli, Instant::toEpochMilli)
+@@ -99,3 +99,3 @@ data class ItemStacks(val itemStacks: List<ItemStack>) {
+ fun dummyUnitStreamCodec(): StreamCodec<ByteBuf, Unit> = ByteBufCodecs.VAR_INT.map({ }, { 0 })
+
+-fun <T> ResourceKey<Registry<T>>.toHolderSetCodec(): Codec<HolderSet<T>> = RegistryCodecs.homogeneousList(this)
++fun <T : Any> ResourceKey<Registry<T>>.toHolderSetCodec(): Codec<HolderSet<T>> = RegistryCodecs.homogeneousList(this)
+diff --git a/miragefairy2024/util/DebugItem.kt b/miragefairy2024/util/DebugItem.kt
+index efc8d8b..c59913b 100644
+--- a/miragefairy2024/util/DebugItem.kt
++++ b/miragefairy2024/util/DebugItem.kt
+@@ -8,9 +8,9 @@ import net.minecraft.core.registries.BuiltInRegistries
+ import net.minecraft.data.models.model.ModelTemplates
+ import net.minecraft.data.models.model.TextureMapping
+-import net.minecraft.resources.ResourceLocation
++import net.minecraft.resources.Identifier
+ import net.minecraft.server.level.ServerLevel
+ import net.minecraft.server.level.ServerPlayer
+ import net.minecraft.world.InteractionHand
+-import net.minecraft.world.InteractionResultHolder
++import net.minecraft.world.InteractionResult
+ import net.minecraft.world.entity.player.Player
+ import net.minecraft.world.item.Item
+@@ -28,5 +28,5 @@ fun interface TextureSource {
+ fun Item.toTextureSource() = TextureSource { TextureMapping.layer0(this) }
+ fun Block.toTextureSource() = TextureSource { TextureMapping.layer0(this) }
+-fun ResourceLocation.toTextureSource() = TextureSource { TextureMapping.layer0(this) }
++fun Identifier.toTextureSource() = TextureSource { TextureMapping.layer0(this) }
+
+ context(_: ModContext)
+@@ -35,7 +35,7 @@ fun registerDebugItem(path: String, icon: TextureSource = Items.BOOK.toTextureSo
+         object : Item(Properties()) {
+             override fun getName(stack: ItemStack) = text { path.toUpperCamelCase(afterDelimiter = " ")() }
+-            override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
++            override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResult {
+                 action(level, user, hand, user.getItemInHand(hand))
+-                return InteractionResultHolder.sidedSuccess(user.getItemInHand(hand), level.isClientSide)
++                return if (level.isClientSide) InteractionResult.SUCCESS else InteractionResult.CONSUME
+             }
+         }
+@@ -65,5 +65,5 @@ fun registerServerDebugItem(path: String, icon: TextureSource = Items.BOOK.toTex
+ fun writeAction(player: Player, fileName: String, text: String) {
+     val file = File("debug").resolve(fileName)
+-    player.displayClientMessage(text { "Saved to "() + file() }, false)
++    player.sendSystemMessage(text { "Saved to "() + file() })
+     when {
+         file.parentFile.isDirectory -> Unit
+diff --git a/miragefairy2024/util/EntityType.kt b/miragefairy2024/util/EntityType.kt
+index 3f3e5da..748789b 100644
+--- a/miragefairy2024/util/EntityType.kt
++++ b/miragefairy2024/util/EntityType.kt
+@@ -2,5 +2,5 @@ package miragefairy2024.util
+
+ import net.minecraft.core.registries.BuiltInRegistries
+-import net.minecraft.resources.ResourceLocation
++import net.minecraft.resources.Identifier
+ import net.minecraft.world.entity.EntityType
+
+@@ -8,3 +8,3 @@ import net.minecraft.world.entity.EntityType
+ fun EntityType<*>.getIdentifier() = BuiltInRegistries.ENTITY_TYPE.getKey(this)
+
+-fun ResourceLocation.toEntityType() = BuiltInRegistries.ENTITY_TYPE.get(this)
++fun Identifier.toEntityType() = BuiltInRegistries.ENTITY_TYPE.get(this)
+diff --git a/miragefairy2024/util/Identifier.kt b/miragefairy2024/util/Identifier.kt
+index 836a585..abdabd7 100644
+--- a/miragefairy2024/util/Identifier.kt
++++ b/miragefairy2024/util/Identifier.kt
+@@ -3,16 +3,16 @@ package miragefairy2024.util
+ import net.minecraft.core.Registry
+ import net.minecraft.resources.ResourceKey
+-import net.minecraft.resources.ResourceLocation
++import net.minecraft.resources.Identifier
+
+-fun ResourceLocation(namespace: String, path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(namespace, path)
+-fun ResourceLocation(path: String): ResourceLocation = ResourceLocation.withDefaultNamespace(path)
+-fun String.toIdentifier(): ResourceLocation = ResourceLocation.parse(this)
++fun Identifier(namespace: String, path: String): Identifier = Identifier.fromNamespaceAndPath(namespace, path)
++fun Identifier(path: String): Identifier = Identifier.withDefaultNamespace(path)
++fun String.toIdentifier(): Identifier = Identifier.parse(this)
+
+-operator fun String.times(identifier: ResourceLocation) = ResourceLocation(identifier.namespace, this + identifier.path)
+-operator fun ResourceLocation.times(string: String) = ResourceLocation(this.namespace, this.path + string)
++operator fun String.times(identifier: Identifier) = Identifier(identifier.namespace, this + identifier.path)
++operator fun Identifier.times(string: String) = Identifier(this.namespace, this.path + string)
+
+-val ResourceLocation.string get() = this.toString()
+-val ResourceLocation.pathString get() = "${this.namespace}/${this.path}"
++val Identifier.string get() = this.toString()
++val Identifier.pathString get() = "${this.namespace}/${this.path}"
+
+
+-infix fun <T> ResourceKey<out Registry<T>>.with(value: ResourceLocation): ResourceKey<T> = ResourceKey.create(this, value)
++infix fun <T : Any> ResourceKey<out Registry<T>>.with(value: Identifier): ResourceKey<T> = ResourceKey.create(this, value)
+diff --git a/miragefairy2024/util/Ingredient.kt b/miragefairy2024/util/Ingredient.kt
+index 610e32d..562e2be 100644
+--- a/miragefairy2024/util/Ingredient.kt
++++ b/miragefairy2024/util/Ingredient.kt
+@@ -4,4 +4,5 @@ import miragefairy2024.ModContext
+ import miragefairy2024.ModEvents
+ import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer
++import net.minecraft.core.HolderGetter
+ import net.minecraft.tags.TagKey
+ import net.minecraft.world.item.Item
+@@ -10,6 +11,6 @@ import net.minecraft.world.item.crafting.Ingredient
+
+ fun Item.toIngredient(): Ingredient = Ingredient.of(this)
+-fun ItemStack.toIngredient(): Ingredient = Ingredient.of(this)
+-fun TagKey<Item>.toIngredient(): Ingredient = Ingredient.of(this)
++fun ItemStack.toIngredient(): Ingredient = Ingredient.of(this.item)
++fun TagKey<Item>.toIngredient(items: HolderGetter<Item>): Ingredient = Ingredient.of(items.getOrThrow(this))
+
+ @JvmName("toIngredientFromItems")
+@@ -17,5 +18,5 @@ fun Iterable<Item>.toIngredient(): Ingredient = Ingredient.of(*this.toList().toT
+
+ @JvmName("toIngredientFromItemStacks")
+-fun Iterable<ItemStack>.toIngredient(): Ingredient = Ingredient.of(*this.toList().toTypedArray())
++fun Iterable<ItemStack>.toIngredient(): Ingredient = Ingredient.of(*this.map { it.item }.toTypedArray())
+
+ context(_: ModContext)
+diff --git a/miragefairy2024/util/IngredientStack.kt b/miragefairy2024/util/IngredientStack.kt
+index 21d18e6..7e4408b 100644
+--- a/miragefairy2024/util/IngredientStack.kt
++++ b/miragefairy2024/util/IngredientStack.kt
+@@ -3,4 +3,5 @@ package miragefairy2024.util
+ import com.mojang.serialization.Codec
+ import com.mojang.serialization.codecs.RecordCodecBuilder
++import net.minecraft.core.HolderGetter
+ import net.minecraft.network.RegistryFriendlyByteBuf
+ import net.minecraft.network.codec.ByteBufCodecs
+@@ -37,5 +38,5 @@ fun Ingredient.toIngredientStack(amount: Int = 1) = IngredientStack(this, amount
+ fun ItemStack.toIngredientStack(amount: Int = 1) = IngredientStack(this, amount)
+ fun Item.toIngredientStack(amount: Int = 1) = this.defaultInstance.toIngredientStack(amount)
+-fun TagKey<Item>.toIngredientStack(amount: Int = 1) = IngredientStack(this.toIngredient(), amount)
++fun TagKey<Item>.toIngredientStack(items: HolderGetter<Item>, amount: Int = 1) = IngredientStack(this.toIngredient(items), amount)
+
+ @JvmName("toIngredientStackFromItems")
+@@ -45,3 +46,3 @@ fun Iterable<Item>.toIngredientStack(amount: Int = 1) = this.toIngredient().toIn
+ fun Iterable<ItemStack>.toIngredientStack(amount: Int = 1) = this.toIngredient().toIngredientStack(amount)
+
+-fun IngredientStack.toItemStacks(): List<ItemStack> = ingredient.items.map { it.copyWithCount(count) }
++fun IngredientStack.toItemStacks(): List<ItemStack> = ingredient.items().map { ItemStack(it, count) }.toList()
+diff --git a/miragefairy2024/util/Inventory.kt b/miragefairy2024/util/Inventory.kt
+index b2f4453..794fe95 100644
+--- a/miragefairy2024/util/Inventory.kt
++++ b/miragefairy2024/util/Inventory.kt
+@@ -259,7 +259,6 @@ fun List<ItemStack>.writeToNbt(nbt: CompoundTag, registries: HolderLookup.Provid
+     this.forEachIndexed { slotIndex, itemStack ->
+         if (itemStack.isNotEmpty) {
+-            var itemCompound = CompoundTag()
++            val itemCompound = itemStack.toNbt(registries) as CompoundTag
+             itemCompound.wrapper["Slot"].byte.set(slotIndex.toByte())
+-            itemCompound = itemStack.save(registries, itemCompound) as CompoundTag
+             nbtList.add(itemCompound)
+         }
+diff --git a/miragefairy2024/util/Item.kt b/miragefairy2024/util/Item.kt
+index d185654..d4c4c5e 100644
+--- a/miragefairy2024/util/Item.kt
++++ b/miragefairy2024/util/Item.kt
+@@ -2,5 +2,5 @@ package miragefairy2024.util
+
+ import net.minecraft.core.registries.BuiltInRegistries
+-import net.minecraft.resources.ResourceLocation
++import net.minecraft.resources.Identifier
+ import net.minecraft.world.item.Item
+
+@@ -8,3 +8,3 @@ import net.minecraft.world.item.Item
+ fun Item.getIdentifier() = BuiltInRegistries.ITEM.getKey(this)
+
+-fun ResourceLocation.toItem() = BuiltInRegistries.ITEM.get(this)
++fun Identifier.toItem() = BuiltInRegistries.ITEM.get(this)
+diff --git a/miragefairy2024/util/ItemGroup.kt b/miragefairy2024/util/ItemGroup.kt
+index 606d6f0..9d2b4ba 100644
+--- a/miragefairy2024/util/ItemGroup.kt
++++ b/miragefairy2024/util/ItemGroup.kt
+@@ -2,10 +2,10 @@ package miragefairy2024.util
+
+ import miragefairy2024.ModContext
+-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup
+-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
++import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents
++import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab
+ import net.minecraft.core.registries.BuiltInRegistries
+ import net.minecraft.core.registries.Registries
+ import net.minecraft.resources.ResourceKey
+-import net.minecraft.resources.ResourceLocation
++import net.minecraft.resources.Identifier
+ import net.minecraft.world.item.CreativeModeTab
+ import net.minecraft.world.item.Item
+@@ -14,5 +14,5 @@ import net.minecraft.world.item.ItemStack
+ context(_: ModContext)
+ fun (() -> Item).registerItemGroup(itemGroup: ResourceKey<CreativeModeTab>) {
+-    ItemGroupEvents.modifyEntriesEvent(itemGroup).register {
++    CreativeModeTabEvents.modifyOutputEvent(itemGroup).register {
+         it.accept(this())
+     }
+@@ -22,5 +22,5 @@ context(_: ModContext)
+ @Suppress("UnusedReceiverParameter")
+ fun (() -> Item).registerItemGroup(itemGroup: ResourceKey<CreativeModeTab>, supplier: () -> List<ItemStack>) {
+-    ItemGroupEvents.modifyEntriesEvent(itemGroup).register {
++    CreativeModeTabEvents.modifyOutputEvent(itemGroup).register {
+         supplier().forEach { itemStack ->
+             it.accept(itemStack)
+@@ -31,5 +31,5 @@ fun (() -> Item).registerItemGroup(itemGroup: ResourceKey<CreativeModeTab>, supp
+
+ class ItemGroupCard(
+-    val identifier: ResourceLocation,
++    val identifier: Identifier,
+     val enName: String,
+     val jaName: String,
+@@ -38,5 +38,5 @@ class ItemGroupCard(
+     val translation = Translation({ "itemGroup.${identifier.toLanguageKey()}" }, enName, jaName)
+     val itemGroupKey = Registries.CREATIVE_MODE_TAB with identifier
+-    val itemGroup: CreativeModeTab = FabricItemGroup.builder()
++    val itemGroup: CreativeModeTab = FabricCreativeModeTab.builder()
+         .icon(icon)
+         .title(text { translation() })
+diff --git a/miragefairy2024/util/ItemStack.kt b/miragefairy2024/util/ItemStack.kt
+index ea0c6e9..cbcaca8 100644
+--- a/miragefairy2024/util/ItemStack.kt
++++ b/miragefairy2024/util/ItemStack.kt
+@@ -5,4 +5,5 @@ import net.minecraft.core.HolderLookup
+ import net.minecraft.core.component.DataComponentType
+ import net.minecraft.core.component.DataComponents
++import net.minecraft.nbt.NbtOps
+ import net.minecraft.nbt.Tag
+ import net.minecraft.network.chat.Component
+@@ -19,6 +20,6 @@ val ItemStack.isNotEmpty get() = !this.isEmpty
+ val ItemStack.notEmptyOrNull get() = if (this.isNotEmpty) this else null
+
+-fun ItemStack.toNbt(registries: HolderLookup.Provider): Tag = this.save(registries)
+-fun Tag.toItemStack(registries: HolderLookup.Provider) = ItemStack.parse(registries, this).getOrNull()
++fun ItemStack.toNbt(registries: HolderLookup.Provider): Tag = ItemStack.CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow()
++fun Tag.toItemStack(registries: HolderLookup.Provider) = ItemStack.CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), this).result().getOrNull()
+
+ infix fun ItemStack.hasSameItem(other: ItemStack) = this.item == other.item
+@@ -41,5 +42,5 @@ infix fun ItemStack.isNotIn(tag: TagKey<Item>) = !(this isIn tag)
+ val ItemStack.durability get() = this.maxDamage - this.damageValue
+
+-fun <T> ItemStack.with(type: DataComponentType<T>, value: T): ItemStack = this.copy().also { it.set(type, value) }
++fun <T : Any> ItemStack.with(type: DataComponentType<T>, value: T): ItemStack = this.copy().also { it.set(type, value) }
+ fun ItemStack.withCustomName(customName: Component): ItemStack = this.with(DataComponents.CUSTOM_NAME, customName)
+ fun ItemStack.withCustomName(customName: String): ItemStack = this.with(DataComponents.CUSTOM_NAME, text { customName() })
+diff --git a/miragefairy2024/util/Level.kt b/miragefairy2024/util/Level.kt
+index 5558b9c..90b0c8f 100644
+--- a/miragefairy2024/util/Level.kt
++++ b/miragefairy2024/util/Level.kt
+@@ -32,5 +32,5 @@ fun Level.getEnvironmentalWeatherAt(blockPos: BlockPos): Biome.Precipitation {
+     if (!this.isRaining) return Biome.Precipitation.NONE
+     val biome = this.getBiome(blockPos).value()
+-    return biome.getPrecipitationAt(blockPos)
++    return biome.getPrecipitationAt(blockPos, this.seaLevel)
+ }
+
+@@ -40,5 +40,5 @@ fun Level.getWeatherAt(blockPos: BlockPos): Biome.Precipitation {
+     if (this.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, blockPos).y > blockPos.y) return Biome.Precipitation.NONE
+     val biome = this.getBiome(blockPos).value()
+-    return biome.getPrecipitationAt(blockPos)
++    return biome.getPrecipitationAt(blockPos, this.seaLevel)
+ }
+
+@@ -178,5 +178,5 @@ fun spaceVisitor(
+ fun breakBlock(itemStack: ItemStack, level: Level, blockPos: BlockPos, player: ServerPlayer): Boolean {
+     val blockState = level.getBlockState(blockPos)
+-    if (!itemStack.item.canAttackBlock(blockState, level, blockPos, player)) return false // このツールは採掘そのものができない
++    if (!itemStack.canDestroyBlock(blockState, level, blockPos, player)) return false // このツールは採掘そのものができない
+     val blockEntity = level.getBlockEntity(blockPos)
+     val block = blockState.block
+diff --git a/miragefairy2024/util/Model.kt b/miragefairy2024/util/Model.kt
+index 47acf6c..2357172 100644
+--- a/miragefairy2024/util/Model.kt
++++ b/miragefairy2024/util/Model.kt
+@@ -13,5 +13,5 @@ import net.minecraft.data.models.model.TextureMapping
+ import net.minecraft.data.models.model.TextureSlot
+ import net.minecraft.data.models.model.TexturedModel
+-import net.minecraft.resources.ResourceLocation
++import net.minecraft.resources.Identifier
+ import net.minecraft.world.item.Item
+ import net.minecraft.world.item.ItemDisplayContext
+@@ -26,5 +26,5 @@ import java.util.function.Supplier
+
+ fun Model(creator: (TextureMapping) -> ModelData): ModelTemplate = object : ModelTemplate(Optional.empty(), Optional.empty()) {
+-    override fun create(id: ResourceLocation, textures: TextureMapping, modelCollector: BiConsumer<ResourceLocation, Supplier<JsonElement>>): ResourceLocation {
++    override fun create(id: Identifier, textures: TextureMapping, modelCollector: BiConsumer<Identifier, Supplier<JsonElement>>): Identifier {
+         modelCollector.accept(id) { creator(textures).toJsonElement() }
+         return id
+@@ -32,10 +32,10 @@ fun Model(creator: (TextureMapping) -> ModelData): ModelTemplate = object : Mode
+ }
+
+-fun Model(parent: ResourceLocation, vararg textureKeys: TextureSlot) = ModelTemplate(Optional.of(parent), Optional.empty(), *textureKeys)
++fun Model(parent: Identifier, vararg textureKeys: TextureSlot) = ModelTemplate(Optional.of(parent), Optional.empty(), *textureKeys)
+
+-fun Model(parent: ResourceLocation, variant: String, vararg textureKeys: TextureSlot) = ModelTemplate(Optional.of(parent), Optional.of(variant), *textureKeys)
++fun Model(parent: Identifier, variant: String, vararg textureKeys: TextureSlot) = ModelTemplate(Optional.of(parent), Optional.of(variant), *textureKeys)
+
+ class ModelData(
+-    val parent: ResourceLocation? = null,
++    val parent: Identifier? = null,
+     val ambientOcclusion: Boolean? = null,
+     val textures: ModelTexturesData? = null,
+@@ -147,5 +147,5 @@ class ModelFaceData(
+ // Util
+
+-fun TextureMapping(vararg entries: Pair<TextureSlot, ResourceLocation>, initializer: TextureMapping.() -> Unit = {}): TextureMapping {
++fun TextureMapping(vararg entries: Pair<TextureSlot, Identifier>, initializer: TextureMapping.() -> Unit = {}): TextureMapping {
+     val textureMapping = TextureMapping()
+     entries.forEach {
+@@ -159,10 +159,10 @@ val TextureSlot.string get() = this.toString()
+
+ infix fun ModelTemplate.with(textureMapping: TextureMapping): TexturedModel = TexturedModel.createDefault({ textureMapping }, this).get(Blocks.AIR)
+-fun ModelTemplate.with(vararg textureEntries: Pair<TextureSlot, ResourceLocation>) = this with TextureMapping(*textureEntries)
++fun ModelTemplate.with(vararg textureEntries: Pair<TextureSlot, Identifier>) = this with TextureMapping(*textureEntries)
+
+-fun createEmptyModel(particleTexture: ResourceLocation): TexturedModel {
++fun createEmptyModel(particleTexture: Identifier): TexturedModel {
+     return Model { textureMapping ->
+         ModelData(
+-            parent = ResourceLocation("block/block"),
++            parent = Identifier("block/block"),
+             textures = ModelTexturesData(
+                 TextureSlot.PARTICLE.id to textureMapping.get(TextureSlot.PARTICLE).string,
+@@ -177,5 +177,5 @@ fun createEmptyModel(particleTexture: ResourceLocation): TexturedModel {
+
+ context(_: ModContext)
+-fun registerModelGeneration(identifierGetter: () -> ResourceLocation, texturedModelCreator: () -> TexturedModel) = DataGenerationEvents.onGenerateBlockModel {
++fun registerModelGeneration(identifierGetter: () -> Identifier, texturedModelCreator: () -> TexturedModel) = DataGenerationEvents.onGenerateBlockModel {
+     val texturedModel = texturedModelCreator()
+     texturedModel.template.create(identifierGetter(), texturedModel.mapping, it.modelOutput)
+diff --git a/miragefairy2024/util/NbtWrapper.kt b/miragefairy2024/util/NbtWrapper.kt
+index 1392431..1b5e6f1 100644
+--- a/miragefairy2024/util/NbtWrapper.kt
++++ b/miragefairy2024/util/NbtWrapper.kt
+@@ -123,13 +123,13 @@ val NbtProperty<Tag?, Tag?>.list get() = NbtProperty<ListTag?, ListTag?>({ this.
+ val NbtProperty<Tag?, Tag?>.compound get() = NbtProperty<CompoundTag?, CompoundTag?>({ this.get()?.castOrNull() }, { this.set(it) })
+
+-val NbtProperty<Tag?, Tag?>.byte get() = NbtProperty<Byte?, Byte?>({ this.get()?.castOrNull<NumericTag>()?.asByte }, { this.set(it?.let { a -> ByteTag.valueOf(a) }) })
+-val NbtProperty<Tag?, Tag?>.short get() = NbtProperty<Short?, Short?>({ this.get()?.castOrNull<NumericTag>()?.asShort }, { this.set(it?.let { a -> ShortTag.valueOf(a) }) })
+-val NbtProperty<Tag?, Tag?>.int get() = NbtProperty<Int?, Int?>({ this.get()?.castOrNull<NumericTag>()?.asInt }, { this.set(it?.let { a -> IntTag.valueOf(a) }) })
+-val NbtProperty<Tag?, Tag?>.long get() = NbtProperty<Long?, Long?>({ this.get()?.castOrNull<NumericTag>()?.asLong }, { this.set(it?.let { a -> LongTag.valueOf(a) }) })
+-val NbtProperty<Tag?, Tag?>.float get() = NbtProperty<Float?, Float?>({ this.get()?.castOrNull<NumericTag>()?.asFloat }, { this.set(it?.let { a -> FloatTag.valueOf(a) }) })
+-val NbtProperty<Tag?, Tag?>.double get() = NbtProperty<Double?, Double?>({ this.get()?.castOrNull<NumericTag>()?.asDouble }, { this.set(it?.let { a -> DoubleTag.valueOf(a) }) })
+-val NbtProperty<Tag?, Tag?>.number get() = NbtProperty<Number?, Number?>({ this.get()?.castOrNull<NumericTag>()?.asNumber }, { this.set(it?.let { a -> DoubleTag.valueOf(a.toDouble()) }) })
+-val NbtProperty<Tag?, Tag?>.string get() = NbtProperty<String?, String?>({ this.get()?.castOrNull<StringTag>()?.asString }, { this.set(it?.toNbtString()) })
+-val NbtProperty<Tag?, Tag?>.boolean get() = NbtProperty<Boolean?, Boolean?>({ this.get()?.castOrNull<NumericTag>()?.asByte?.let { it != 0.toByte() } }, { this.set(it?.let { a -> ByteTag.valueOf(a) }) })
++val NbtProperty<Tag?, Tag?>.byte get() = NbtProperty<Byte?, Byte?>({ this.get()?.castOrNull<NumericTag>()?.byteValue() }, { this.set(it?.let { a -> ByteTag.valueOf(a) }) })
++val NbtProperty<Tag?, Tag?>.short get() = NbtProperty<Short?, Short?>({ this.get()?.castOrNull<NumericTag>()?.shortValue() }, { this.set(it?.let { a -> ShortTag.valueOf(a) }) })
++val NbtProperty<Tag?, Tag?>.int get() = NbtProperty<Int?, Int?>({ this.get()?.castOrNull<NumericTag>()?.intValue() }, { this.set(it?.let { a -> IntTag.valueOf(a) }) })
++val NbtProperty<Tag?, Tag?>.long get() = NbtProperty<Long?, Long?>({ this.get()?.castOrNull<NumericTag>()?.longValue() }, { this.set(it?.let { a -> LongTag.valueOf(a) }) })
++val NbtProperty<Tag?, Tag?>.float get() = NbtProperty<Float?, Float?>({ this.get()?.castOrNull<NumericTag>()?.floatValue() }, { this.set(it?.let { a -> FloatTag.valueOf(a) }) })
++val NbtProperty<Tag?, Tag?>.double get() = NbtProperty<Double?, Double?>({ this.get()?.castOrNull<NumericTag>()?.doubleValue() }, { this.set(it?.let { a -> DoubleTag.valueOf(a) }) })
++val NbtProperty<Tag?, Tag?>.number get() = NbtProperty<Number?, Number?>({ this.get()?.castOrNull<NumericTag>()?.asNumber()?.orElse(null) }, { this.set(it?.let { a -> DoubleTag.valueOf(a.toDouble()) }) })
++val NbtProperty<Tag?, Tag?>.string get() = NbtProperty<String?, String?>({ this.get()?.castOrNull<StringTag>()?.value() }, { this.set(it?.toNbtString()) })
++val NbtProperty<Tag?, Tag?>.boolean get() = NbtProperty<Boolean?, Boolean?>({ this.get()?.castOrNull<NumericTag>()?.byteValue()?.let { it != 0.toByte() } }, { this.set(it?.let { a -> ByteTag.valueOf(a) }) })
+
+ @get:JvmName("listGetter")
+@@ -140,34 +140,34 @@ val NbtProperty<Tag, Nothing>.compound get() = NbtProperty<CompoundTag?, Nothing
+
+ @get:JvmName("byteGetter")
+-val NbtProperty<Tag, Nothing>.byte get() = NbtProperty<Byte?, Nothing>({ this.get().castOrNull<NumericTag>()?.asByte }, {})
++val NbtProperty<Tag, Nothing>.byte get() = NbtProperty<Byte?, Nothing>({ this.get().castOrNull<NumericTag>()?.byteValue() }, {})
+
+ @get:JvmName("shortGetter")
+-val NbtProperty<Tag, Nothing>.short get() = NbtProperty<Short?, Nothing>({ this.get().castOrNull<NumericTag>()?.asShort }, {})
++val NbtProperty<Tag, Nothing>.short get() = NbtProperty<Short?, Nothing>({ this.get().castOrNull<NumericTag>()?.shortValue() }, {})
+
+ @get:JvmName("intGetter")
+-val NbtProperty<Tag, Nothing>.int get() = NbtProperty<Int?, Nothing>({ this.get().castOrNull<NumericTag>()?.asInt }, {})
++val NbtProperty<Tag, Nothing>.int get() = NbtProperty<Int?, Nothing>({ this.get().castOrNull<NumericTag>()?.intValue() }, {})
+
+ @get:JvmName("longGetter")
+-val NbtProperty<Tag, Nothing>.long get() = NbtProperty<Long?, Nothing>({ this.get().castOrNull<NumericTag>()?.asLong }, {})
++val NbtProperty<Tag, Nothing>.long get() = NbtProperty<Long?, Nothing>({ this.get().castOrNull<NumericTag>()?.longValue() }, {})
+
+ @get:JvmName("floatGetter")
+-val NbtProperty<Tag, Nothing>.float get() = NbtProperty<Float?, Nothing>({ this.get().castOrNull<NumericTag>()?.asFloat }, {})
++val NbtProperty<Tag, Nothing>.float get() = NbtProperty<Float?, Nothing>({ this.get().castOrNull<NumericTag>()?.floatValue() }, {})
+
+ @get:JvmName("doubleGetter")
+-val NbtProperty<Tag, Nothing>.double get() = NbtProperty<Double?, Nothing>({ this.get().castOrNull<NumericTag>()?.asDouble }, {})
++val NbtProperty<Tag, Nothing>.double get() = NbtProperty<Double?, Nothing>({ this.get().castOrNull<NumericTag>()?.doubleValue() }, {})
+
+ @get:JvmName("numberGetter")
+-val NbtProperty<Tag, Nothing>.number get() = NbtProperty<Number?, Nothing>({ this.get().castOrNull<NumericTag>()?.asNumber }, {})
++val NbtProperty<Tag, Nothing>.number get() = NbtProperty<Number?, Nothing>({ this.get().castOrNull<NumericTag>()?.asNumber()?.orElse(null) }, {})
+
+ @get:JvmName("stringGetter")
+-val NbtProperty<Tag, Nothing>.string get() = NbtProperty<String?, Nothing>({ this.get().castOrNull<StringTag>()?.asString }, {})
++val NbtProperty<Tag, Nothing>.string get() = NbtProperty<String?, Nothing>({ this.get().castOrNull<StringTag>()?.value() }, {})
+
+ @get:JvmName("booleanGetter")
+-val NbtProperty<Tag, Nothing>.boolean get() = NbtProperty<Boolean?, Nothing>({ this.get().castOrNull<NumericTag>()?.asByte?.let { it != 0.toByte() } }, {})
++val NbtProperty<Tag, Nothing>.boolean get() = NbtProperty<Boolean?, Nothing>({ this.get().castOrNull<NumericTag>()?.byteValue()?.let { it != 0.toByte() } }, {})
+
+ val NbtProperty<Tag?, Tag?>.map
+     get() = NbtProperty<Map<String, Tag>?, Map<String, Tag>?>({
+         val nbt = this.get()?.castOrNull<CompoundTag>() ?: return@NbtProperty null
+-        nbt.allKeys.associate { key -> key!! to nbt[key]!! }
++        nbt.keySet().associateWith { nbt.get(it)!! }
+     }, {
+         this.set(it?.let { a ->
+diff --git a/miragefairy2024/util/Player.kt b/miragefairy2024/util/Player.kt
+index 5a1b7c4..7d2724b 100644
+--- a/miragefairy2024/util/Player.kt
++++ b/miragefairy2024/util/Player.kt
+@@ -1,4 +1,5 @@
+ package miragefairy2024.util
+
++import net.minecraft.server.level.ServerLevel
+ import net.minecraft.world.InteractionHand
+ import net.minecraft.world.entity.Entity
+@@ -9,5 +10,6 @@ import net.minecraft.world.item.ItemStack
+ /** @param itemStack 内部でコピーされるため、破壊されません。 */
+ fun Entity.obtain(itemStack: ItemStack) {
+-    val itemEntity = this.spawnAtLocation(itemStack.copy(), 0.5F)
++    val level = this.level() as? ServerLevel ?: return
++    val itemEntity = this.spawnAtLocation(level, itemStack.copy(), 0.5F)
+     if (itemEntity != null) {
+         itemEntity.setNoPickUpDelay()
+diff --git a/miragefairy2024/util/Recipe.kt b/miragefairy2024/util/Recipe.kt
+index c8fb523..38d7863 100644
+--- a/miragefairy2024/util/Recipe.kt
++++ b/miragefairy2024/util/Recipe.kt
+@@ -10,11 +10,11 @@ import mirrg.kotlin.gson.hydrogen.jsonElement
+ import mirrg.kotlin.gson.hydrogen.jsonObject
+ import net.fabricmc.fabric.api.loot.v3.LootTableEvents
+-import net.fabricmc.fabric.api.registry.FuelRegistry
+-import net.minecraft.advancements.critereon.EnchantmentPredicate
+-import net.minecraft.advancements.critereon.ItemEnchantmentsPredicate
+-import net.minecraft.advancements.critereon.ItemPredicate
+-import net.minecraft.advancements.critereon.ItemSubPredicates
+-import net.minecraft.advancements.critereon.LocationPredicate
+-import net.minecraft.advancements.critereon.MinMaxBounds
++import net.fabricmc.fabric.api.registry.FuelValueEvents
++import net.minecraft.advancements.criterion.EnchantmentPredicate
++import net.minecraft.advancements.criterion.ItemEnchantmentsPredicate
++import net.minecraft.advancements.criterion.ItemPredicate
++import net.minecraft.advancements.criterion.ItemSubPredicates
++import net.minecraft.advancements.criterion.LocationPredicate
++import net.minecraft.advancements.criterion.MinMaxBounds
+ import net.minecraft.core.HolderLookup
+ import net.minecraft.core.HolderSet
+@@ -30,5 +30,5 @@ import net.minecraft.data.recipes.SimpleCookingRecipeBuilder
+ import net.minecraft.data.recipes.SpecialRecipeBuilder
+ import net.minecraft.resources.ResourceKey
+-import net.minecraft.resources.ResourceLocation
++import net.minecraft.resources.Identifier
+ import net.minecraft.tags.TagKey
+ import net.minecraft.world.entity.EntityType
+@@ -72,5 +72,5 @@ fun <T : RecipeBuilder> T.group(item: Item) = this.also { it.group(recipeGroupRe
+ class RecipeGenerationSettings<T> {
+     val listeners = mutableListOf<(T) -> Unit>()
+-    val idModifiers = mutableListOf<(ResourceLocation) -> ResourceLocation>()
++    val idModifiers = mutableListOf<(Identifier) -> Identifier>()
+     var recipeCategory = RecipeCategory.MISC
+     var noGroup = false
+@@ -88,5 +88,5 @@ infix fun <T : RecipeBuilder> RecipeGenerationSettings<T>.on(tag: TagKey<Item>)
+
+ infix fun <T> RecipeGenerationSettings<T>.modId(modId: String) = this.apply {
+-    this.idModifiers += { ResourceLocation(modId, it.path) }
++    this.idModifiers += { Identifier(modId, it.path) }
+ }
+
+@@ -390,5 +390,5 @@ fun (() -> Item).registerComposterInput(chance: Float) {
+         it.accept(
+             Registries.ITEM,
+-            ResourceLocation("neoforge", "compostables"),
++            Identifier("neoforge", "compostables"),
+             BuiltInRegistries.ITEM.getResourceKey(this()).get(),
+             jsonObject(
+@@ -402,5 +402,8 @@ fun (() -> Item).registerComposterInput(chance: Float) {
+ context(_: ModContext)
+ fun (() -> Item).registerFuel(ticks: Int) = ModEvents.onInitialize {
+-    FuelRegistry.INSTANCE.add(this(), ticks)
++    val item = this()
++    FuelValueEvents.BUILD.register { builder, _ ->
++        builder.add(item, ticks)
++    }
+ }
+
+diff --git a/miragefairy2024/util/Registry.kt b/miragefairy2024/util/Registry.kt
+index 4797425..39e936f 100644
+--- a/miragefairy2024/util/Registry.kt
++++ b/miragefairy2024/util/Registry.kt
+@@ -10,7 +10,6 @@ import net.minecraft.core.HolderLookup
+ import net.minecraft.core.Registry
+ import net.minecraft.resources.ResourceKey
+-import net.minecraft.resources.ResourceLocation
++import net.minecraft.resources.Identifier
+ import net.minecraft.tags.TagKey
+-import kotlin.jvm.optionals.getOrElse
+
+ object RegistryEvents {
+@@ -18,5 +17,5 @@ object RegistryEvents {
+ }
+
+-class Registration<T : Any, U : T>(val registry: Registry<T>, val identifier: ResourceLocation, val creator: suspend () -> U) : () -> U {
++class Registration<T : Any, U : T>(val registry: Registry<T>, val identifier: Identifier, val creator: suspend () -> U) : () -> U {
+
+     private val value = CompletableDeferred<U>()
+@@ -48,9 +47,9 @@ fun Registration<*, *>.register() {
+
+
+-val <T> Registry<T>.sortedEntrySet: List<Map.Entry<ResourceKey<T>, T>> get() = this.entrySet().sortedBy { it.key.location() }
++val <T : Any> Registry<T>.sortedEntrySet: List<Map.Entry<ResourceKey<T>, T>> get() = this.entrySet().sortedBy { it.key.identifier() }
+
+ fun <T : Any> Registry<T>.getResourceKeyOrNull(value: T): ResourceKey<T>? = this.getResourceKey(value).orNull
+
+-fun <T : Any> Registry<T>.getHolderOrNull(key: ResourceKey<T>): Holder.Reference<T>? = this.getHolder(key).orNull
++fun <T : Any> Registry<T>.getHolderOrNull(key: ResourceKey<T>): Holder.Reference<T>? = this.get(key).orNull
+
+ fun <T : Any> Registry<T>.getHolderOfOrNull(value: T) = this.getResourceKeyOrNull(value).or { return null }.let { this.getHolderOrNull(it) }
+@@ -58,15 +57,15 @@ fun <T : Any> Registry<T>.getHolderOfOrNull(value: T) = this.getResourceKeyOrNul
+ fun <T : Any> Registry<T>.isIn(value: T, tag: TagKey<T>) = this.getHolderOfOrNull(value).or { return false } isIn tag
+
+-operator fun <T> Registry<T>.get(tag: TagKey<T>): Iterable<Holder<T>> = this.getTag(tag).getOrElse { emptyList() }
++operator fun <T : Any> Registry<T>.get(tag: TagKey<T>): Iterable<Holder<T>> = this.getTagOrEmpty(tag)
+
+
+-operator fun <T> HolderLookup.Provider.get(registry: ResourceKey<Registry<T>>): HolderLookup.RegistryLookup<T> = this.lookupOrThrow(registry)
++operator fun <T : Any> HolderLookup.Provider.get(registry: ResourceKey<Registry<T>>): HolderLookup.RegistryLookup<T> = this.lookupOrThrow(registry)
+
+-operator fun <T> HolderLookup.Provider.get(registry: ResourceKey<Registry<T>>, key: ResourceKey<T>): Holder.Reference<T> = this.lookupOrThrow(registry).getOrThrow(key)
++operator fun <T : Any> HolderLookup.Provider.get(registry: ResourceKey<Registry<T>>, key: ResourceKey<T>): Holder.Reference<T> = this.lookupOrThrow(registry).getOrThrow(key)
+
+
+-infix fun <T, H : Holder<T>> H.isIn(key: ResourceKey<T>) = this.`is`(key)
+-infix fun <T, H : Holder<T>> H.isNotIn(key: ResourceKey<T>) = !(this isIn key)
++infix fun <T : Any, H : Holder<T>> H.isIn(key: ResourceKey<T>) = this.`is`(key)
++infix fun <T : Any, H : Holder<T>> H.isNotIn(key: ResourceKey<T>) = !(this isIn key)
+
+-infix fun <T, H : Holder<T>> H.isIn(tag: TagKey<T>) = this.`is`(tag)
+-infix fun <T, H : Holder<T>> H.isNotIn(tag: TagKey<T>) = !(this isIn tag)
++infix fun <T : Any, H : Holder<T>> H.isIn(tag: TagKey<T>) = this.`is`(tag)
++infix fun <T : Any, H : Holder<T>> H.isNotIn(tag: TagKey<T>) = !(this isIn tag)
+diff --git a/miragefairy2024/util/Rei.kt b/miragefairy2024/util/Rei.kt
+index e6aa279..be2562f 100644
+--- a/miragefairy2024/util/Rei.kt
++++ b/miragefairy2024/util/Rei.kt
+@@ -24,10 +24,10 @@ fun Iterable<EntryStack<*>>.toEntryIngredient(): EntryIngredient = EntryIngredie
+ fun IngredientStack.toEntryIngredient(): EntryIngredient {
+     if (ingredient.isEmpty) return EntryIngredient.empty()
+-    val itemStacks = ingredient.items
++    val itemStacks = toItemStacks()
+     if (itemStacks.size == 0) return EntryIngredient.empty()
+-    if (itemStacks.size == 1) return itemStacks.single().copyWithCount(count).toEntryIngredient()
++    if (itemStacks.size == 1) return itemStacks.single().toEntryIngredient()
+     return itemStacks
+         .filter { it.isNotEmpty }
+-        .mapNotNull { it.copyWithCount(count).toEntryStack() }
++        .mapNotNull { it.toEntryStack() }
+         .toEntryIngredient()
+ }
+diff --git a/miragefairy2024/util/SurfaceNoise.kt b/miragefairy2024/util/SurfaceNoise.kt
+index f1c4370..51f949e 100644
+--- a/miragefairy2024/util/SurfaceNoise.kt
++++ b/miragefairy2024/util/SurfaceNoise.kt
+@@ -22,5 +22,5 @@ val SURFACE_NOISE_STANDARD_DEVIATIONS = mapOf(
+
+ private fun getStandardDeviation(noiseKey: ResourceKey<NormalNoise.NoiseParameters>): Double {
+-    return SURFACE_NOISE_STANDARD_DEVIATIONS[noiseKey] ?: throw IllegalArgumentException("Standard deviation is not measured: ${noiseKey.location()}")
++    return SURFACE_NOISE_STANDARD_DEVIATIONS[noiseKey] ?: throw IllegalArgumentException("Standard deviation is not measured: ${noiseKey.identifier()}")
+ }
+
+diff --git a/miragefairy2024/util/Tag.kt b/miragefairy2024/util/Tag.kt
+index 711c70d..2cbb456 100644
+--- a/miragefairy2024/util/Tag.kt
++++ b/miragefairy2024/util/Tag.kt
+@@ -9,5 +9,5 @@ import net.minecraft.core.Registry
+ import net.minecraft.core.registries.Registries
+ import net.minecraft.resources.ResourceKey
+-import net.minecraft.resources.ResourceLocation
++import net.minecraft.resources.Identifier
+ import net.minecraft.tags.TagKey
+ import net.minecraft.world.damagesource.DamageType
+@@ -20,10 +20,10 @@ import net.minecraft.world.level.levelgen.structure.Structure
+ import java.util.concurrent.CompletableFuture
+
+-fun <T> ResourceLocation.toTag(registry: ResourceKey<Registry<T>>): TagKey<T> = TagKey.create(registry, this)
+-fun ResourceLocation.toItemTag(): TagKey<Item> = this.toTag(Registries.ITEM)
+-fun ResourceLocation.toBlockTag(): TagKey<Block> = this.toTag(Registries.BLOCK)
+-fun ResourceLocation.toBiomeTag(): TagKey<Biome> = this.toTag(Registries.BIOME)
+-fun ResourceLocation.toDamageTypeTag(): TagKey<DamageType> = this.toTag(Registries.DAMAGE_TYPE)
+-fun ResourceLocation.toStructureTag(): TagKey<Structure> = this.toTag(Registries.STRUCTURE)
++fun <T : Any> Identifier.toTag(registry: ResourceKey<Registry<T>>): TagKey<T> = TagKey.create(registry, this)
++fun Identifier.toItemTag(): TagKey<Item> = this.toTag(Registries.ITEM)
++fun Identifier.toBlockTag(): TagKey<Block> = this.toTag(Registries.BLOCK)
++fun Identifier.toBiomeTag(): TagKey<Biome> = this.toTag(Registries.BIOME)
++fun Identifier.toDamageTypeTag(): TagKey<DamageType> = this.toTag(Registries.DAMAGE_TYPE)
++fun Identifier.toStructureTag(): TagKey<Structure> = this.toTag(Registries.STRUCTURE)
+
+ val TagKey<Block>.generator @JvmName("getBlockGenerator") get() = Pair(this, TagGenerator.BLOCK)
+@@ -35,5 +35,5 @@ val TagKey<DamageType>.generator @JvmName("getDamageTypeGenerator") get() = Pair
+ val TagKey<Enchantment>.generator @JvmName("getEnchantmentGenerator") get() = Pair(this, TagGenerator.ENCHANTMENT)
+
+-class TagGenerator<T>(
++class TagGenerator<T : Any>(
+     private val registryKey: ResourceKey<out Registry<T>>,
+     private val providerFactory: (TagGenerator<T>.(FabricDataOutput, CompletableFuture<HolderLookup.Provider>) -> FabricTagProvider<T>)? = null,
+@@ -41,5 +41,5 @@ class TagGenerator<T>(
+     companion object {
+         val entries = mutableListOf<TagGenerator<*>>()
+-        private operator fun <T> TagGenerator<T>.not() = this.also { entries.add(it) }
++        private operator fun <T : Any> TagGenerator<T>.not() = this.also { entries.add(it) }
+
+         val BLOCK = !TagGenerator(Registries.BLOCK) { output, registriesFuture ->
+@@ -81,5 +81,5 @@ class TagGenerator<T>(
+
+ context(_: ModContext)
+-fun <T> Pair<TagKey<T>, TagGenerator<T>>.registerChild(elementGetter: () -> T) {
++fun <T : Any> Pair<TagKey<T>, TagGenerator<T>>.registerChild(elementGetter: () -> T) {
+     this.second.eventRegistry {
+         it(this.first).add(elementGetter())
+@@ -88,5 +88,5 @@ fun <T> Pair<TagKey<T>, TagGenerator<T>>.registerChild(elementGetter: () -> T) {
+
+ context(_: ModContext)
+-fun <T> Pair<TagKey<T>, TagGenerator<T>>.registerChild(resourceLocation: ResourceLocation) {
++fun <T : Any> Pair<TagKey<T>, TagGenerator<T>>.registerChild(resourceLocation: Identifier) {
+     this.second.eventRegistry {
+         it(this.first).add(resourceLocation)
+@@ -95,5 +95,5 @@ fun <T> Pair<TagKey<T>, TagGenerator<T>>.registerChild(resourceLocation: Resourc
+
+ context(_: ModContext)
+-fun <T> Pair<TagKey<T>, TagGenerator<T>>.registerChild(resourceKey: ResourceKey<T>) {
++fun <T : Any> Pair<TagKey<T>, TagGenerator<T>>.registerChild(resourceKey: ResourceKey<T>) {
+     this.second.eventRegistry {
+         it(this.first).add(resourceKey)
+@@ -102,5 +102,5 @@ fun <T> Pair<TagKey<T>, TagGenerator<T>>.registerChild(resourceKey: ResourceKey<
+
+ context(_: ModContext)
+-fun <T> Pair<TagKey<T>, TagGenerator<T>>.registerChild(tag: TagKey<T>) {
++fun <T : Any> Pair<TagKey<T>, TagGenerator<T>>.registerChild(tag: TagKey<T>) {
+     this.second.eventRegistry {
+         it(this.first).addOptionalTag(tag)
+diff --git a/miragefairy2024/util/TextScope.kt b/miragefairy2024/util/TextScope.kt
+index d146119..c103657 100644
+--- a/miragefairy2024/util/TextScope.kt
++++ b/miragefairy2024/util/TextScope.kt
+@@ -21,5 +21,5 @@ fun translate(key: String): Component = Component.translatable(key)
+
+ context(_: TextScope)
+-fun translate(key: String, vararg args: Any?): Component = Component.translatable(key, *args)
++fun translate(key: String, vararg args: Any): Component = Component.translatable(key, *args)
+
+ context(_: TextScope)
+@@ -28,5 +28,5 @@ operator fun Component.plus(text: Component): Component = Component.empty().appe
+ context(_: TextScope)
+ operator fun File.invoke() = Component.literal(name).withStyle {
+-    it.withHoverEvent(HoverEvent(HoverEvent.Action.SHOW_TEXT, text { absoluteFile.canonicalPath() }))
+-    it.withClickEvent(ClickEvent(ClickEvent.Action.OPEN_FILE, absoluteFile.canonicalPath))
++    it.withHoverEvent(HoverEvent.ShowText(text { absoluteFile.canonicalPath() }))
++    it.withClickEvent(ClickEvent.OpenFile(absoluteFile.canonicalPath))
+ }.underline
+diff --git a/miragefairy2024/util/Translation.kt b/miragefairy2024/util/Translation.kt
+index 6c5099e..10c5c21 100644
+--- a/miragefairy2024/util/Translation.kt
++++ b/miragefairy2024/util/Translation.kt
+@@ -43,5 +43,5 @@ fun (() -> EntityType<*>).enJa(name: EnJa) {
+ context(_: ModContext)
+ @JvmName("enJaTagKey")
+-fun <T> TagKey<T>.enJa(name: EnJa) {
++fun <T : Any> TagKey<T>.enJa(name: EnJa) {
+     en { this.translationKey to name.en }
+     ja { this.translationKey to name.ja }
+diff --git a/miragefairy2024/util/WorldGen.kt b/miragefairy2024/util/WorldGen.kt
+index 23901d1..8115aaf 100644
+--- a/miragefairy2024/util/WorldGen.kt
++++ b/miragefairy2024/util/WorldGen.kt
+@@ -18,5 +18,5 @@ import net.minecraft.data.worldgen.BootstrapContext
+ import net.minecraft.data.worldgen.placement.PlacementUtils
+ import net.minecraft.resources.ResourceKey
+-import net.minecraft.resources.ResourceLocation
++import net.minecraft.resources.Identifier
+ import net.minecraft.tags.BiomeTags
+ import net.minecraft.tags.TagKey
+@@ -62,15 +62,15 @@ infix fun Holder<ConfiguredFeature<*, *>>.with(placementModifiers: List<Placemen
+
+ context(context: BootstrapContext<*>)
+-operator fun <T> ResourceKey<Registry<T>>.get(key: ResourceKey<T>): Holder<T> {
++operator fun <T : Any> ResourceKey<Registry<T>>.get(key: ResourceKey<T>): Holder<T> {
+     return context.lookup(this).getOrThrow(key)
+ }
+
+ context(context: BootstrapContext<*>)
+-operator fun <T> ResourceKey<Registry<T>>.get(key: TagKey<T>): HolderSet.Named<T> {
++operator fun <T : Any> ResourceKey<Registry<T>>.get(key: TagKey<T>): HolderSet.Named<T> {
+     return context.lookup(this).getOrThrow(key)
+ }
+
+ context(_: ModContext)
+-fun <T : Any> registerDynamicGeneration(registryKey: ResourceKey<out Registry<T>>, identifier: ResourceLocation, creator: BootstrapContext<T>.() -> T): ResourceKey<T> {
++fun <T : Any> registerDynamicGeneration(registryKey: ResourceKey<out Registry<T>>, identifier: Identifier, creator: BootstrapContext<T>.() -> T): ResourceKey<T> {
+     val key = registryKey with identifier
+     registerDynamicGeneration(key, creator)
+@@ -91,9 +91,9 @@ fun <T : Any> registerDynamicGeneration(key: ResourceKey<T>, creator: BootstrapC
+ }
+
+-class FeatureGenerationScope<C : FeatureConfiguration>(val feature: Feature<C>, val identifier: ResourceLocation)
+-class ConfiguredFeatureGenerationScope<C : FeatureConfiguration>(val configuredFeatureKey: ResourceKey<ConfiguredFeature<*, *>>, val identifier: ResourceLocation)
++class FeatureGenerationScope<C : FeatureConfiguration>(val feature: Feature<C>, val identifier: Identifier)
++class ConfiguredFeatureGenerationScope<C : FeatureConfiguration>(val configuredFeatureKey: ResourceKey<ConfiguredFeature<*, *>>, val identifier: Identifier)
+
+ context(_: ModContext)
+-fun <C : FeatureConfiguration> Feature<C>.generator(identifier: ResourceLocation, block: FeatureGenerationScope<C>.() -> Unit) {
++fun <C : FeatureConfiguration> Feature<C>.generator(identifier: Identifier, block: FeatureGenerationScope<C>.() -> Unit) {
+     block(FeatureGenerationScope(this, identifier))
+ }
+@@ -309,5 +309,5 @@ fun StructureProcessorList(vararg processors: StructureProcessor): StructureProc
+
+ context(_: BootstrapContext<*>)
+-fun SinglePoolElement(location: ResourceLocation, processorsKey: ResourceKey<StructureProcessorList>, projection: StructureTemplatePool.Projection): StructurePoolElement {
++fun SinglePoolElement(location: Identifier, processorsKey: ResourceKey<StructureProcessorList>, projection: StructureTemplatePool.Projection): StructurePoolElement {
+     return StructurePoolElement.single(location.string, Registries.PROCESSOR_LIST[processorsKey]).apply(projection)
+ }

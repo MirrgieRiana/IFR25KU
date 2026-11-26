@@ -30,13 +30,29 @@ loom {
     splitEnvironmentSourceSets()
 }
 
-sourceSets.main {
-    if (!utilitiesOnly) {
-        java.srcDir(repositoryRoot.dir("common/src/main/java"))
+val preparePortedUtilities = tasks.register<Sync>("preparePortedUtilities") {
+    from(repositoryRoot.dir("common/src/main/kotlin/miragefairy2024/util")) {
+        into("miragefairy2024/util")
     }
-    kotlin.srcDir(repositoryRoot.dir("common/src/main/kotlin"))
+    into(layout.buildDirectory.dir("portedUtilities"))
+
+    val migrationPatch = layout.projectDirectory.file("util-26.1.2.patch")
+    inputs.file(migrationPatch)
+    doLast {
+        val outputPath = destinationDir.relativeTo(repositoryRoot.asFile).invariantSeparatorsPath
+        providers.exec {
+            workingDir(repositoryRoot.asFile)
+            commandLine("git", "apply", "--no-index", "--directory=$outputPath", "--", migrationPatch.asFile.absolutePath)
+        }.result.get().assertNormalExitValue()
+    }
+}
+
+sourceSets.main {
     if (utilitiesOnly) {
-        kotlin.include("miragefairy2024/util/**")
+        kotlin.srcDir(preparePortedUtilities)
+    } else {
+        java.srcDir(repositoryRoot.dir("common/src/main/java"))
+        kotlin.srcDir(repositoryRoot.dir("common/src/main/kotlin"))
     }
 }
 
