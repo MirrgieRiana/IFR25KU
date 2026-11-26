@@ -100,7 +100,11 @@ private class AdapterFixture(vararg views: TestView) {
                 widgets += widget
                 val remover = context.addRenderable(WidgetRegistration(widget, view.interactive) { RenderOverflow.UNBOUNDED })
                 removers += remover
-                val beforeRenderRemover = view.beforeRender?.let { listener -> context.screenEventSource.onBeforeRender.register(listener) }
+                val beforeRenderRemover = view.beforeRender?.let { listener ->
+                    context.screenEventSource.onBeforeRender.register {
+                        listener()
+                    }
+                }
                 object : ViewController {
                     override fun setOffset(offset: IntPoint) = widget.setPosition(offset.x, offset.y)
                     override fun detach() = throw UnsupportedOperationException()
