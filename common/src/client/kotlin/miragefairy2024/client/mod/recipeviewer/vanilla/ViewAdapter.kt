@@ -58,6 +58,7 @@ interface ViewAdapterHost {
 class ViewAdapter(val host: ViewAdapterHost) {
 
     private val screenEventSource = ScreenEventSource()
+    private val viewPlacerCache = CachingEvaluator { createVanillaViewPlacer(screenEventSource) }
     private val rootViewCache = CachingEvaluator { host.createRootView(screenEventSource) }
     private var isInitialized = false
     private var isOpened = false
@@ -107,7 +108,8 @@ class ViewAdapter(val host: ViewAdapterHost) {
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = host.registerMenuSlotPlacement(slotId, clipBounds)
         }
         viewController = rootView.attachTo(host.getUiOffset()) { view, bounds ->
-            host.getViewPlacerRegistry().place(context, view, bounds)
+            val registry = host.getViewPlacerRegistry()
+            if (registry === VANILLA_VIEW_PLACER_REGISTRY) viewPlacerCache.evaluate().place(context, view, bounds) else registry.place(context, view, bounds)
         }
         isInitialized = true
     }
@@ -143,6 +145,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
         if (isOpened) {
             isOpened = false
             screenEventSource.onDisposing.fire()
+            viewPlacerCache.reset()
         }
         rootViewCache.reset()
         disposePlacement()
