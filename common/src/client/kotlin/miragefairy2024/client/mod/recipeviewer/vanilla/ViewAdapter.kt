@@ -10,6 +10,7 @@ import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
+import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import miragefairy2024.util.fire
 import mirrg.kotlin.helium.CachingEvaluator
@@ -61,8 +62,8 @@ class ViewAdapter(val host: ViewAdapterHost) {
     private var isInitialized = false
     private var isOpened = false
     private var viewController: ViewController? = null
-    private val onBeforeRender = screenEventSource.onBeforeRender
-    private val onTick = screenEventSource.onTick
+    private val onBeforeRender = EventRegistry<() -> Unit>()
+    private val onTick = EventRegistry<() -> Unit>()
 
     private class MouseClickSentinel : GuiEventListener, NarratableEntry {
 
@@ -122,11 +123,13 @@ class ViewAdapter(val host: ViewAdapterHost) {
     /** このルートのウィジェットを描き始める前に呼ぶのだ～🌱 */
     fun beforeRender() {
         onBeforeRender.fire()
+        screenEventSource.onBeforeRender.fire()
     }
 
     /** ホストの tick を配置済みの View へ通知するのだ～🌱 */
     fun tick() {
         onTick.fire()
+        screenEventSource.onTick.fire()
     }
 
     /** 子の相対位置・寸法・登録を維持して移動するのだ～🌱 */
