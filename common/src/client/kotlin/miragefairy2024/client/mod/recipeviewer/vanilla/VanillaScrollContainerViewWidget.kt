@@ -218,6 +218,10 @@ abstract class VanillaScrollContainerViewWidget(
             guiGraphics.disableScissor()
         }
 
+        if (isActive && isFocused && focused == null && width > 0 && height > 0) {
+            guiGraphics.renderOutline(x, y, width, height, 0xFFFFFFFF.toInt())
+        }
+
     }
 
     /** ホイール入力から、このコンテナのスクロール軸に適用する入力値を返すのだ～🌱 */
