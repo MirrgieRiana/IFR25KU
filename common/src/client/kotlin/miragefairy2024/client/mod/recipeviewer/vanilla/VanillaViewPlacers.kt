@@ -31,7 +31,6 @@ import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YInventoryScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.util.EventRegistry
-import miragefairy2024.util.Remover
 import miragefairy2024.util.fire
 import miragefairy2024.util.observe
 import miragefairy2024.util.observeAndInitialize
