@@ -61,6 +61,8 @@ class ViewAdapter(val host: ViewAdapterHost) {
     private var isInitialized = false
     private var isOpened = false
     private var viewController: ViewController? = null
+    private val onBeforeRender = screenEventSource.onBeforeRender
+    private val onTick = screenEventSource.onTick
 
     private class MouseClickSentinel : GuiEventListener, NarratableEntry {
 
@@ -98,8 +100,8 @@ class ViewAdapter(val host: ViewAdapterHost) {
             override val origin = host.getUiOffset()
             override val canPlaceMenuSlots = host.canPlaceMenuSlots()
             override val screenEventSource = this@ViewAdapter.screenEventSource
-            override val onBeforeRender = this@ViewAdapter.screenEventSource.onBeforeRender
-            override val onTick = this@ViewAdapter.screenEventSource.onTick
+            override val onBeforeRender = this@ViewAdapter.onBeforeRender
+            override val onTick = this@ViewAdapter.onTick
             override fun addRenderable(registration: WidgetRegistration) = if (registration.interactive) host.addRenderableWidget(registration.widget) else host.addRenderableOnly(registration.widget)
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = host.registerMenuSlotPlacement(slotId, clipBounds)
         }
@@ -119,12 +121,12 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     /** このルートのウィジェットを描き始める前に呼ぶのだ～🌱 */
     fun beforeRender() {
-        screenEventSource.onBeforeRender.fire()
+        onBeforeRender.fire()
     }
 
     /** ホストの tick を配置済みの View へ通知するのだ～🌱 */
     fun tick() {
-        screenEventSource.onTick.fire()
+        onTick.fire()
     }
 
     /** 子の相対位置・寸法・登録を維持して移動するのだ～🌱 */
@@ -148,11 +150,11 @@ class ViewAdapter(val host: ViewAdapterHost) {
         removeMouseClickSentinel()
         val controller = viewController
         viewController = null
-        screenEventSource.onBeforeRender.toList().forEach {
-            screenEventSource.onBeforeRender.remove(it)
+        onBeforeRender.toList().forEach {
+            onBeforeRender.remove(it)
         }
-        screenEventSource.onTick.toList().forEach {
-            screenEventSource.onTick.remove(it)
+        onTick.toList().forEach {
+            onTick.remove(it)
         }
         if (controller != null) controller.dispose()
     }
