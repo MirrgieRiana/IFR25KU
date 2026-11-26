@@ -16,6 +16,23 @@ index 16abbb7..5e22bd8 100644
 +        void renderItemDecorations(GuiGraphicsExtractor graphics, Font font, ItemStack stack, int x, int y, String text);
      }
  }
+diff --git a/common/src/client/java/miragefairy2024/client/mixins/mixin/GameRendererAccessor.java b/common/src/client/java/miragefairy2024/client/mixins/mixin/GameRendererAccessor.java
+new file mode 100644
+index 0000000..81db8df
+--- /dev/null
++++ b/common/src/client/java/miragefairy2024/client/mixins/mixin/GameRendererAccessor.java
+@@ -0,0 +1,11 @@
++package miragefairy2024.client.mixins.mixin;
++
++import net.minecraft.client.renderer.GameRenderer;
++import org.spongepowered.asm.mixin.Mixin;
++import org.spongepowered.asm.mixin.gen.Invoker;
++
++@Mixin(GameRenderer.class)
++public interface GameRendererAccessor {
++    @Invoker("shouldRenderBlockOutline")
++    boolean mirageFairy2024$shouldRenderBlockOutline();
++}
 diff --git a/common/src/client/java/miragefairy2024/client/mixins/mixin/GuiGraphicsMixin.java b/common/src/client/java/miragefairy2024/client/mixins/mixin/GuiGraphicsMixin.java
 index fb9ea2d..74c1a9d 100644
 --- a/common/src/client/java/miragefairy2024/client/mixins/mixin/GuiGraphicsMixin.java
@@ -41,7 +58,7 @@ index fb9ea2d..74c1a9d 100644
      }
  }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/ClientProxyImpl.kt b/common/src/client/kotlin/miragefairy2024/client/ClientProxyImpl.kt
-index 142b859..dcb99b4 100644
+index 142b859..add8fbf 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/ClientProxyImpl.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/ClientProxyImpl.kt
 @@ -25,5 +25,5 @@ import net.minecraft.client.gui.screens.Screen
@@ -72,6 +89,13 @@ index 142b859..dcb99b4 100644
 +
      override fun registerCutoutRenderLayer(block: () -> Block) {
          RenderTypeRegistry.register(RenderType.cutout(), block())
+@@ -122,5 +124,5 @@ class ClientProxyImpl : ClientProxy<Screen> {
+
+     override fun addToast(rootView: View) {
+-        Minecraft.getInstance().toasts.addToast(ViewToast(rootView))
++        Minecraft.getInstance().toastManager.addToast(ViewToast(rootView))
+     }
+
 @@ -153,5 +155,5 @@ class RenderingProxyBlockEntityRenderer<T>(
              }
 
@@ -132,16 +156,170 @@ index 48d2317..f5a394c 100644
          }
      }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/CommonClientModule.kt b/common/src/client/kotlin/miragefairy2024/client/mod/CommonClientModule.kt
-index 37a5127..663d024 100644
+index 37a5127..c848fa9 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/CommonClientModule.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/mod/CommonClientModule.kt
-@@ -17,5 +17,5 @@ import net.minecraft.client.renderer.LevelRenderer
- import net.minecraft.client.renderer.LightTexture
- import net.minecraft.client.renderer.RenderStateShard
+@@ -1,7 +1,10 @@
+ package miragefairy2024.client.mod
+
+-import com.mojang.blaze3d.vertex.DefaultVertexFormat
+-import com.mojang.blaze3d.vertex.VertexFormat
++import com.mojang.blaze3d.pipeline.BlendFunction
++import com.mojang.blaze3d.pipeline.ColorTargetState
++import com.mojang.blaze3d.pipeline.RenderPipeline
++import miragefairy2024.MirageFairy2024
+ import miragefairy2024.ModContext
++import miragefairy2024.client.mixins.mixin.GameRendererAccessor
+ import miragefairy2024.client.mod.fairy.soulStreamKeyMappingCard
+ import miragefairy2024.client.mod.fairy.toggleCollectionEnabledKeyMappingCard
+@@ -11,69 +14,86 @@ import miragefairy2024.mod.common.RenderBlockPosesOutlineContext
+ import miragefairy2024.util.isValid
+ import mirrg.kotlin.helium.max
+-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
++import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey
++import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
+ import net.minecraft.client.KeyMapping
+ import net.minecraft.client.Minecraft
+ import net.minecraft.client.renderer.LevelRenderer
+-import net.minecraft.client.renderer.LightTexture
+-import net.minecraft.client.renderer.RenderStateShard
 -import net.minecraft.client.renderer.RenderType
++import net.minecraft.client.renderer.RenderPipelines
++import net.minecraft.client.renderer.rendertype.LayeringTransform
++import net.minecraft.client.renderer.rendertype.RenderSetup
 +import net.minecraft.client.renderer.rendertype.RenderType
  import net.minecraft.core.BlockPos
- import java.util.OptionalDouble
+-import java.util.OptionalDouble
++import net.minecraft.util.ARGB
++import net.minecraft.util.LightCoordsUtil
++import java.util.Optional
+ import kotlin.math.roundToInt
+ import kotlin.math.sin
+
+ private val LINES_NO_DEPTH by lazy {
++    val pipeline = RenderPipeline.builder(RenderPipelines.LINES_SNIPPET)
++        .withLocation(MirageFairy2024.identifier("pipeline/lines_no_depth"))
++        .withColorTargetState(ColorTargetState(BlendFunction.TRANSLUCENT))
++        .withDepthStencilState(Optional.empty())
++        .withCull(false)
++        .build()
+     RenderType.create(
+         "miragefairy2024:lines_no_depth",
+-        DefaultVertexFormat.POSITION_COLOR_NORMAL,
+-        VertexFormat.Mode.LINES,
+-        1536,
+-        RenderType.CompositeState.builder()
+-            .setShaderState(RenderType.RENDERTYPE_LINES_SHADER)
+-            .setLineState(RenderStateShard.LineStateShard(OptionalDouble.empty()))
+-            .setLayeringState(RenderType.VIEW_OFFSET_Z_LAYERING)
+-            .setTransparencyState(RenderType.TRANSLUCENT_TRANSPARENCY)
+-            .setOutputState(RenderType.MAIN_TARGET)
+-            .setDepthTestState(RenderType.NO_DEPTH_TEST)
+-            .setWriteMaskState(RenderType.COLOR_WRITE)
+-            .setCullState(RenderType.NO_CULL)
+-            .createCompositeState(false)
++        RenderSetup.builder(pipeline)
++            .bufferSize(1536)
++            .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
++            .createRenderSetup(),
+     )
+ }
+
++private class OutlineDrawState(val outlines: List<Outline>, val lineWidth: Float) {
++    class Outline(val blockPoses: Set<BlockPos>, val color: Int)
++}
++
++private val OUTLINE_DRAW_STATE = RenderStateDataKey.create<OutlineDrawState>()
++
+ context(_: ModContext)
+ fun initCommonClientModule() {
+-    CommonRenderingEvents.onRenderBlockPosesOutline.subscribe { listener ->
+-        WorldRenderEvents.LAST.register { context ->
+-            val minecraft = Minecraft.getInstance() ?: return@register
+-            val level = minecraft.level ?: return@register
+-            val player = minecraft.player ?: return@register
+-            if (!player.isValid) return@register
+-            if (!context.blockOutlines()) return@register
++    LevelRenderEvents.END_EXTRACTION.register { context ->
++        val minecraft = Minecraft.getInstance()
++        val level = context.level()
++        val player = minecraft.player ?: return@register
++        if (!player.isValid) return@register
++        if (!(context.gameRenderer() as GameRendererAccessor).`mirageFairy2024$shouldRenderBlockOutline`()) return@register
+
+-            val blockPosesOutline = listener.getBlockPoses(object : RenderBlockPosesOutlineContext {
+-                override val level get() = level
+-                override val player get() = player
+-                override val hitResult get() = minecraft.hitResult
+-            }) ?: return@register
+-            if (blockPosesOutline.blockPoses.isEmpty()) return@register
+-
+-            val poseStack = context.matrixStack()!!
+-            val cameraPosition = context.camera().position
++        val outlineContext = object : RenderBlockPosesOutlineContext {
++            override val level get() = level
++            override val player get() = player
++            override val hitResult get() = minecraft.hitResult
++        }
++        val outlines = CommonRenderingEvents.onRenderBlockPosesOutline.getAllImmediately().mapNotNull { listener ->
++            val outline = listener.getBlockPoses(outlineContext) ?: return@mapNotNull null
++            if (outline.blockPoses.isEmpty()) return@mapNotNull null
+
+-            val vertexConsumer = context.consumers()!!.getBuffer(LINES_NO_DEPTH)
+-            val pose = poseStack.last().pose()
+-            val packedLight = LevelRenderer.getLightColor(level, blockPosesOutline.baseBlockPos)
+-            val skyLightLevel = LightTexture.sky(packedLight)
+-            val blockLightLevel = LightTexture.block(packedLight)
++            val packedLight = LevelRenderer.getLightCoords(level, outline.baseBlockPos)
++            val skyLightLevel = LightCoordsUtil.sky(packedLight)
++            val blockLightLevel = LightCoordsUtil.block(packedLight)
+             val skyFactor = 0.15 + 0.85 * (skyLightLevel.toDouble() / 15.0)
+             val blockFactor = 0.15 + 0.85 * (blockLightLevel.toDouble() / 15.0)
+             val lightFactor = skyFactor max blockFactor
+-            val red = (((blockPosesOutline.rgb shr 16) and 0xFF) * lightFactor).roundToInt().coerceIn(0, 255)
+-            val green = (((blockPosesOutline.rgb shr 8) and 0xFF) * lightFactor).roundToInt().coerceIn(0, 255)
+-            val blue = ((blockPosesOutline.rgb and 0xFF) * lightFactor).roundToInt().coerceIn(0, 255)
++            val red = (((outline.rgb shr 16) and 0xFF) * lightFactor).roundToInt().coerceIn(0, 255)
++            val green = (((outline.rgb shr 8) and 0xFF) * lightFactor).roundToInt().coerceIn(0, 255)
++            val blue = ((outline.rgb and 0xFF) * lightFactor).roundToInt().coerceIn(0, 255)
+             val theta = (System.nanoTime() % 2_000_000_000L).toDouble() / 1_000_000_000.0 * 2.0 * Math.PI
+             val alpha = (255.0 * (0.5 + 0.25 * sin(theta))).roundToInt()
+-            collectEdges(blockPosesOutline.blockPoses) { x0, y0, z0, x1, y1, z1 ->
++            OutlineDrawState.Outline(outline.blockPoses.toSet(), ARGB.color(alpha, red, green, blue))
++        }
++        context.levelState().setData(OUTLINE_DRAW_STATE, OutlineDrawState(outlines, minecraft.window.appropriateLineWidth))
++    }
++
++    LevelRenderEvents.END_MAIN.register { context ->
++        val drawState = context.levelState().getData(OUTLINE_DRAW_STATE) ?: return@register
++        if (drawState.outlines.isEmpty()) return@register
++
++        val cameraPosition = context.levelState().cameraRenderState.pos
++        val bufferSource = context.bufferSource()
++        val vertexConsumer = bufferSource.getBuffer(LINES_NO_DEPTH)
++        val pose = context.poseStack().last().pose()
++        drawState.outlines.forEach { outline ->
++            collectEdges(outline.blockPoses) { x0, y0, z0, x1, y1, z1 ->
+                 // ワールド座標のままFloatにすると、原点から遠い場所では刻みが粗くなって線が震えてしまうから、Doubleでカメラからの相対位置にしてからFloatにするのだ～🌱
+                 val relativeX0 = (x0 - cameraPosition.x).toFloat()
+@@ -85,12 +105,15 @@ fun initCommonClientModule() {
+                 vertexConsumer
+                     .addVertex(pose, relativeX0, relativeY0, relativeZ0)
+-                    .setColor(red, green, blue, alpha)
++                    .setColor(outline.color)
+                     .setNormal(relativeX1 - relativeX0, relativeY1 - relativeY0, relativeZ1 - relativeZ0)
++                    .setLineWidth(drawState.lineWidth)
+                 vertexConsumer
+                     .addVertex(pose, relativeX1, relativeY1, relativeZ1)
+-                    .setColor(red, green, blue, alpha)
++                    .setColor(outline.color)
+                     .setNormal(relativeX1 - relativeX0, relativeY1 - relativeY0, relativeZ1 - relativeZ0)
++                    .setLineWidth(drawState.lineWidth)
+             }
+         }
++        bufferSource.endBatch(LINES_NO_DEPTH)
+     }
+ }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/FairyBuildingClientModule.kt b/common/src/client/kotlin/miragefairy2024/client/mod/FairyBuildingClientModule.kt
 index ac1298f..98b0e7f 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/FairyBuildingClientModule.kt
@@ -229,7 +407,7 @@ index 016ee36..29baee8 100644
      }
  }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/MachineClientModule.kt b/common/src/client/kotlin/miragefairy2024/client/mod/MachineClientModule.kt
-index bf4d527..4f62f2e 100644
+index bf4d527..b26b528 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/MachineClientModule.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/mod/MachineClientModule.kt
 @@ -25,7 +25,8 @@ import miragefairy2024.util.text
@@ -288,18 +466,36 @@ index bf4d527..4f62f2e 100644
 +    override fun render(view: TexturedArrowView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
          val rate = view.durationMilliSeconds?.let {
              (System.nanoTime() / 1_000_000 floorMod it).toDouble() / it.toDouble()
-@@ -123,4 +128,5 @@ object TexturedArrowViewRenderer : ViewRenderer<TexturedArrowView, Unit> {
+@@ -123,11 +128,12 @@ object TexturedArrowViewRenderer : ViewRenderer<TexturedArrowView, Unit> {
          view.backgroundTexture?.let {
              graphics.blit(
 +                RenderPipelines.GUI_TEXTURED,
                  it.id,
                  bounds.x,
-@@ -138,4 +144,5 @@ object TexturedArrowViewRenderer : ViewRenderer<TexturedArrowView, Unit> {
+                 bounds.y,
+-                bounds.sizeX,
+-                bounds.sizeY,
+                 it.bounds.x.toFloat(),
+                 it.bounds.y.toFloat(),
++                bounds.sizeX,
++                bounds.sizeY,
+                 it.bounds.sizeX,
+                 it.bounds.sizeY,
+@@ -138,11 +144,12 @@ object TexturedArrowViewRenderer : ViewRenderer<TexturedArrowView, Unit> {
          view.foregroundTexture?.let {
              graphics.blit(
 +                RenderPipelines.GUI_TEXTURED,
                  it.id,
                  bounds.x,
+                 bounds.y,
+-                (bounds.sizeX.toDouble() * rate).roundToInt(),
+-                bounds.sizeY,
+                 it.bounds.x.toFloat(),
+                 it.bounds.y.toFloat(),
++                (bounds.sizeX.toDouble() * rate).roundToInt(),
++                bounds.sizeY,
+                 (it.bounds.sizeX.toDouble() * rate).roundToInt(),
+                 it.bounds.sizeY,
 @@ -159,13 +166,14 @@ abstract class SimpleMachineScreen<H : SimpleMachineScreenHandler>(card: SimpleM
      }
 
@@ -362,6 +558,82 @@ index bf4d527..4f62f2e 100644
 +                RenderPipelines.GUI_TEXTURED,
                  FuelViewRenderer.TEXTURE,
                  leftPos + fuelBound.x - 1,
+diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/entity/AntimatterBolt.kt b/common/src/client/kotlin/miragefairy2024/client/mod/entity/AntimatterBolt.kt
+index 4aa6f05..ad0220f 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/mod/entity/AntimatterBolt.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/mod/entity/AntimatterBolt.kt
+@@ -7,15 +7,16 @@ import miragefairy2024.mod.entity.AntimatterBoltCard
+ import miragefairy2024.mod.entity.AntimatterBoltEntity
+ import miragefairy2024.util.times
+-import net.minecraft.client.model.HierarchicalModel
+ import net.minecraft.client.model.geom.ModelPart
+ import net.minecraft.client.model.geom.PartPose
+ import net.minecraft.client.model.geom.builders.CubeListBuilder
+-import net.minecraft.client.renderer.MultiBufferSource
++import net.minecraft.client.renderer.SubmitNodeCollector
+ import net.minecraft.client.renderer.entity.EntityRenderer
+ import net.minecraft.client.renderer.entity.EntityRendererProvider
++import net.minecraft.client.renderer.rendertype.RenderTypes
++import net.minecraft.client.renderer.state.level.CameraRenderState
+ import net.minecraft.client.renderer.texture.OverlayTexture
+ import net.minecraft.util.Mth
+
+-class AntimatterBoltEntityRenderer(context: EntityRendererProvider.Context) : EntityRenderer<AntimatterBoltEntity>(context) {
++class AntimatterBoltEntityRenderer(context: EntityRendererProvider.Context) : EntityRenderer<AntimatterBoltEntity, BoltRenderState>(context) {
+     companion object {
+         val MAIN = EntityModelLayerCard(AntimatterBoltCard.identifier, "main", 16, 16) {
+@@ -24,24 +25,22 @@ class AntimatterBoltEntityRenderer(context: EntityRendererProvider.Context) : En
+     }
+
+-    private val texture = "textures/entity/" * AntimatterBoltCard.identifier * ".png"
++    private val renderType = RenderTypes.entityCutout("textures/entity/" * AntimatterBoltCard.identifier * ".png")
++    private val modelPart: ModelPart = context.bakeLayer(MAIN.entityModelLayer)
+
+-    private val model = object : HierarchicalModel<AntimatterBoltEntity>() {
+-        private val modelPart: ModelPart = context.bakeLayer(MAIN.entityModelLayer)
+-        override fun setupAnim(entity: AntimatterBoltEntity, limbAngle: Float, limbDistance: Float, animationProgress: Float, headYaw: Float, headPitch: Float) = Unit
+-        override fun root() = modelPart
+-    }
++    override fun createRenderState() = BoltRenderState()
+
+-    override fun getTextureLocation(entity: AntimatterBoltEntity) = texture
++    override fun extractRenderState(entity: AntimatterBoltEntity, state: BoltRenderState, tickDelta: Float) {
++        super.extractRenderState(entity, state, tickDelta)
++        state.yRotation = (Mth.lerp(tickDelta, entity.yRotO, entity.yRot) - 90.0F) / 180F * Mth.PI
++        state.zRotation = Mth.lerp(tickDelta, entity.xRotO, entity.xRot) / 180F * Mth.PI
++    }
+
+-    override fun render(entity: AntimatterBoltEntity, yaw: Float, tickDelta: Float, matrices: PoseStack, vertexConsumers: MultiBufferSource, light: Int) {
++    override fun submit(state: BoltRenderState, matrices: PoseStack, collector: SubmitNodeCollector, camera: CameraRenderState) {
+         matrices.stack {
+-            matrices.mulPose(Axis.YP.rotation((Mth.lerp(tickDelta, entity.yRotO, entity.yRot) - 90.0F) / 180F * Mth.PI))
+-            matrices.mulPose(Axis.ZP.rotation(Mth.lerp(tickDelta, entity.xRotO, entity.xRot) / 180F * Mth.PI))
+-
+-            model.setupAnim(entity, tickDelta, 0.0F, -0.1F, 0.0F, 0.0F)
+-            val vertexConsumer = vertexConsumers.getBuffer(model.renderType(texture))
+-            model.renderToBuffer(matrices, vertexConsumer, light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF.toInt())
++            matrices.mulPose(Axis.YP.rotation(state.yRotation))
++            matrices.mulPose(Axis.ZP.rotation(state.zRotation))
++            collector.submitModelPart(modelPart, matrices, renderType, state.lightCoords, OverlayTexture.NO_OVERLAY, null)
+         }
+-        super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light)
++        super.submit(state, matrices, collector, camera)
+     }
+ }
+diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/entity/BoltRenderState.kt b/common/src/client/kotlin/miragefairy2024/client/mod/entity/BoltRenderState.kt
+new file mode 100644
+index 0000000..cb21caf
+--- /dev/null
++++ b/common/src/client/kotlin/miragefairy2024/client/mod/entity/BoltRenderState.kt
+@@ -0,0 +1,8 @@
++package miragefairy2024.client.mod.entity
++
++import net.minecraft.client.renderer.entity.state.EntityRenderState
++
++class BoltRenderState : EntityRenderState() {
++    var yRotation = 0F
++    var zRotation = 0F
++}
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/entity/EntityClientModule.kt b/common/src/client/kotlin/miragefairy2024/client/mod/entity/EntityClientModule.kt
 index 4b8da14..e9e2172 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/entity/EntityClientModule.kt
@@ -380,6 +652,68 @@ index 4b8da14..e9e2172 100644
 +    identifier: Identifier,
      layerName: String,
      private val textureWidth: Int,
+diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/entity/EtheroballisticBolt.kt b/common/src/client/kotlin/miragefairy2024/client/mod/entity/EtheroballisticBolt.kt
+index da97e31..aee4ca4 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/mod/entity/EtheroballisticBolt.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/mod/entity/EtheroballisticBolt.kt
+@@ -7,15 +7,16 @@ import miragefairy2024.mod.entity.EtheroballisticBoltCard
+ import miragefairy2024.mod.entity.EtheroballisticBoltEntity
+ import miragefairy2024.util.times
+-import net.minecraft.client.model.HierarchicalModel
+ import net.minecraft.client.model.geom.ModelPart
+ import net.minecraft.client.model.geom.PartPose
+ import net.minecraft.client.model.geom.builders.CubeListBuilder
+-import net.minecraft.client.renderer.MultiBufferSource
++import net.minecraft.client.renderer.SubmitNodeCollector
+ import net.minecraft.client.renderer.entity.EntityRenderer
+ import net.minecraft.client.renderer.entity.EntityRendererProvider
++import net.minecraft.client.renderer.rendertype.RenderTypes
++import net.minecraft.client.renderer.state.level.CameraRenderState
+ import net.minecraft.client.renderer.texture.OverlayTexture
+ import net.minecraft.util.Mth
+
+-class EtheroballisticBoltEntityRenderer(context: EntityRendererProvider.Context) : EntityRenderer<EtheroballisticBoltEntity>(context) {
++class EtheroballisticBoltEntityRenderer(context: EntityRendererProvider.Context) : EntityRenderer<EtheroballisticBoltEntity, BoltRenderState>(context) {
+     companion object {
+         val MAIN = EntityModelLayerCard(EtheroballisticBoltCard.identifier, "main", 16, 16) {
+@@ -24,24 +25,22 @@ class EtheroballisticBoltEntityRenderer(context: EntityRendererProvider.Context)
+     }
+
+-    private val texture = "textures/entity/" * EtheroballisticBoltCard.identifier * ".png"
++    private val renderType = RenderTypes.entityCutout("textures/entity/" * EtheroballisticBoltCard.identifier * ".png")
++    private val modelPart: ModelPart = context.bakeLayer(MAIN.entityModelLayer)
+
+-    private val model = object : HierarchicalModel<EtheroballisticBoltEntity>() {
+-        private val modelPart: ModelPart = context.bakeLayer(MAIN.entityModelLayer)
+-        override fun setupAnim(entity: EtheroballisticBoltEntity, limbAngle: Float, limbDistance: Float, animationProgress: Float, headYaw: Float, headPitch: Float) = Unit
+-        override fun root() = modelPart
+-    }
++    override fun createRenderState() = BoltRenderState()
+
+-    override fun getTextureLocation(entity: EtheroballisticBoltEntity) = texture
++    override fun extractRenderState(entity: EtheroballisticBoltEntity, state: BoltRenderState, tickDelta: Float) {
++        super.extractRenderState(entity, state, tickDelta)
++        state.yRotation = (Mth.lerp(tickDelta, entity.yRotO, entity.yRot) - 90.0F) / 180F * Mth.PI
++        state.zRotation = (Mth.lerp(tickDelta, entity.xRotO, entity.xRot) / 180F - 0.5F) * Mth.PI
++    }
+
+-    override fun render(entity: EtheroballisticBoltEntity, yaw: Float, tickDelta: Float, matrices: PoseStack, vertexConsumers: MultiBufferSource, light: Int) {
++    override fun submit(state: BoltRenderState, matrices: PoseStack, collector: SubmitNodeCollector, camera: CameraRenderState) {
+         matrices.stack {
+-            matrices.mulPose(Axis.YP.rotation((Mth.lerp(tickDelta, entity.yRotO, entity.yRot) - 90.0F) / 180F * Mth.PI))
+-            matrices.mulPose(Axis.ZP.rotation((Mth.lerp(tickDelta, entity.xRotO, entity.xRot) / 180F - 0.5F) * Mth.PI))
+-
+-            model.setupAnim(entity, tickDelta, 0.0F, -0.1F, 0.0F, 0.0F)
+-            val vertexConsumer = vertexConsumers.getBuffer(model.renderType(texture))
+-            model.renderToBuffer(matrices, vertexConsumer, light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF.toInt())
++            matrices.mulPose(Axis.YP.rotation(state.yRotation))
++            matrices.mulPose(Axis.ZP.rotation(state.zRotation))
++            collector.submitModelPart(modelPart, matrices, renderType, state.lightCoords, OverlayTexture.NO_OVERLAY, null)
+         }
+-        super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light)
++        super.submit(state, matrices, collector, camera)
+     }
+ }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/fairy/SoulStreamScreen.kt b/common/src/client/kotlin/miragefairy2024/client/mod/fairy/SoulStreamScreen.kt
 index d15cb11..236623c 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/fairy/SoulStreamScreen.kt
@@ -1281,25 +1615,92 @@ index d8b4b02..d4bbbff 100644
              .drawBack(view.drawBackground)
              .also { widget ->
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiContainerWidget.kt b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiContainerWidget.kt
-index 300297f..c654993 100644
+index 300297f..d4a7ab6 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiContainerWidget.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiContainerWidget.kt
-@@ -8,5 +8,5 @@ import miragefairy2024.util.Remover
+@@ -8,5 +8,8 @@ import miragefairy2024.util.Remover
  import miragefairy2024.util.fire
  import miragefairy2024.util.removeOn
 -import net.minecraft.client.gui.GuiGraphics
 +import net.minecraft.client.gui.GuiGraphicsExtractor
++import net.minecraft.client.input.CharacterEvent
++import net.minecraft.client.input.KeyEvent
++import net.minecraft.client.input.MouseButtonEvent
 
  // me.shedaniel.rei.impl.client.gui.widget.MergedWidget
-@@ -98,5 +98,5 @@ class ReiContainerWidget : Widget() {
+@@ -38,8 +41,8 @@ class ReiContainerWidget : Widget() {
+     }
+
+-    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
++    override fun mouseClicked(event: MouseButtonEvent, doubleClick: Boolean): Boolean {
+         return widgets.toList().any {
+-            if (it.containsMouse(mouseX, mouseY)) {
+-                it.mouseClicked(mouseX, mouseY, button)
++            if (it.containsMouse(event.x(), event.y())) {
++                it.mouseClicked(event, doubleClick)
+             } else {
+                 false
+@@ -48,8 +51,8 @@ class ReiContainerWidget : Widget() {
+     }
+
+-    override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
++    override fun mouseDragged(event: MouseButtonEvent, dragX: Double, dragY: Double): Boolean {
+         return widgets.toList().any {
+-            if (it.isDragging || it.containsMouse(mouseX, mouseY)) {
+-                it.mouseDragged(mouseX, mouseY, button, dragX, dragY)
++            if (it.isDragging || it.containsMouse(event.x(), event.y())) {
++                it.mouseDragged(event, dragX, dragY)
+             } else {
+                 false
+@@ -58,8 +61,8 @@ class ReiContainerWidget : Widget() {
+     }
+
+-    override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
++    override fun mouseReleased(event: MouseButtonEvent): Boolean {
+         return widgets.toList().any {
+-            if (it.isDragging || it.containsMouse(mouseX, mouseY)) {
+-                it.mouseReleased(mouseX, mouseY, button)
++            if (it.isDragging || it.containsMouse(event.x(), event.y())) {
++                it.mouseReleased(event)
+             } else {
+                 false
+@@ -79,26 +82,26 @@ class ReiContainerWidget : Widget() {
+
+
+-    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
++    override fun keyPressed(event: KeyEvent): Boolean {
+         return widgets.toList().any {
+-            it.keyPressed(keyCode, scanCode, modifiers)
++            it.keyPressed(event)
+         }
+     }
+
+-    override fun keyReleased(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
++    override fun keyReleased(event: KeyEvent): Boolean {
+         return widgets.toList().any {
+-            it.keyReleased(keyCode, scanCode, modifiers)
++            it.keyReleased(event)
+         }
+     }
+
+-    override fun charTyped(codePoint: Char, modifiers: Int): Boolean {
++    override fun charTyped(event: CharacterEvent): Boolean {
+         return widgets.toList().any {
+-            it.charTyped(codePoint, modifiers)
++            it.charTyped(event)
+         }
+     }
 
 
 -    override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-+    override fun render(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
++    override fun extractRenderState(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
          widgets.forEach {
-             it.render(guiGraphics, mouseX, mouseY, partialTick)
+-            it.render(guiGraphics, mouseX, mouseY, partialTick)
++            it.extractRenderState(guiGraphics, mouseX, mouseY, partialTick)
+         }
+     }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiTextWidget.kt b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiTextWidget.kt
-index 5bd9bd1..7db2f31 100644
+index 5bd9bd1..3d29b30 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiTextWidget.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiTextWidget.kt
 @@ -10,5 +10,5 @@ import miragefairy2024.mod.recipeviewer.view.sized
@@ -1313,7 +1714,7 @@ index 5bd9bd1..7db2f31 100644
      private val startNanoTime by lazy { System.nanoTime() }
 
 -    override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-+    override fun render(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
++    override fun extractRenderState(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
          val color = if (REIRuntime.getInstance().isDarkThemeEnabled) view.color.darkModeArgb else view.color.lightModeArgb
          if (view.scroll && font.width(view.text.value) > view.evaluateActualSizeX()) {
 @@ -43,5 +43,5 @@ class ReiTextWidget(private val offset: IntPoint, private val view: TextView) :
@@ -1324,39 +1725,46 @@ index 5bd9bd1..7db2f31 100644
                  font,
                  view.text.value,
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiViewPlacers.kt b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiViewPlacers.kt
-index d1204e1..5e27a2a 100644
+index d1204e1..81b91da 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiViewPlacers.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiViewPlacers.kt
 @@ -26,5 +26,5 @@ context(_: ModContext)
  fun initReiViewPlacers() {
      REI_VIEW_PLACER_REGISTRY.register { widgets, view: InputSlotView, bounds ->
 -        val entryIngredient = view.ingredientStack.toEntryIngredient()
-+        val entryIngredient = (view.ingredientStack?.toEntryIngredient() ?: EntryIngredient.of(emptyList()))
++        val entryIngredient = (view.ingredientStack?.toEntryIngredient() ?: EntryIngredient.empty())
              .let {
                  if (view.additionalTooltip.isNotEmpty()) {
 @@ -40,5 +40,5 @@ fun initReiViewPlacers() {
      }
      REI_VIEW_PLACER_REGISTRY.register { widgets, view: CatalystSlotView, bounds ->
 -        val entryIngredient = view.ingredientStack.toEntryIngredient()
-+        val entryIngredient = (view.ingredientStack?.toEntryIngredient() ?: EntryIngredient.of(emptyList()))
++        val entryIngredient = (view.ingredientStack?.toEntryIngredient() ?: EntryIngredient.empty())
              .let {
                  if (view.additionalTooltip.isNotEmpty()) {
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiViewRendererWidget.kt b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiViewRendererWidget.kt
-index df995f4..56ac1b0 100644
+index df995f4..25a279d 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiViewRendererWidget.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiViewRendererWidget.kt
-@@ -7,5 +7,5 @@ import miragefairy2024.mod.recipeviewer.view.PlaceableView
+@@ -7,6 +7,8 @@ import miragefairy2024.mod.recipeviewer.view.PlaceableView
  import miragefairy2024.util.toReiRectangle
  import mirrg.kotlin.helium.Slot
 -import net.minecraft.client.gui.GuiGraphics
 +import net.minecraft.client.gui.GuiGraphicsExtractor
  import net.minecraft.client.gui.components.events.GuiEventListener
++import net.minecraft.client.input.KeyEvent
++import net.minecraft.client.input.MouseButtonEvent
 
-@@ -17,4 +17,4 @@ class ReiViewRendererWidget<V : PlaceableView, S>(private val renderer: ViewRend
-     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int) = renderer.mouseClicked(view, state, bounds2, mouseX.toInt(), mouseY.toInt(), button)
-     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = renderer.keyPressed(view, state, bounds2, keyCode, scanCode, modifiers)
+ class ReiViewRendererWidget<V : PlaceableView, S>(private val renderer: ViewRenderer<V, S>, private val view: V, private val bounds2: IntRectangle) : WidgetWithBounds() {
+@@ -15,6 +17,6 @@ class ReiViewRendererWidget<V : PlaceableView, S>(private val renderer: ViewRend
+     override fun getBounds() = boundsCache
+     override fun children() = listOf<GuiEventListener>()
+-    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int) = renderer.mouseClicked(view, state, bounds2, mouseX.toInt(), mouseY.toInt(), button)
+-    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = renderer.keyPressed(view, state, bounds2, keyCode, scanCode, modifiers)
 -    override fun render(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) = renderer.render(view, state, bounds2, context, mouseX, mouseY, containsMouse(mouseX, mouseY), delta)
-+    override fun render(context: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, delta: Float) = renderer.render(view, state, bounds2, context, mouseX, mouseY, containsMouse(mouseX, mouseY), delta)
++    override fun mouseClicked(event: MouseButtonEvent, doubleClick: Boolean) = renderer.mouseClicked(view, state, bounds2, event.x().toInt(), event.y().toInt(), event.button())
++    override fun keyPressed(event: KeyEvent) = renderer.keyPressed(view, state, bounds2, event.key(), event.scancode(), event.modifiers())
++    override fun extractRenderState(context: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, delta: Float) = renderer.render(view, state, bounds2, context, mouseX, mouseY, containsMouse(mouseX, mouseY), delta)
  }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/MessageViewScreen.kt b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/MessageViewScreen.kt
 index f90dea5..3e13055 100644
@@ -2258,23 +2666,58 @@ index c2111e1..68b2378 100644
 -
  }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/util/ViewToast.kt b/common/src/client/kotlin/miragefairy2024/client/util/ViewToast.kt
-index 7d67d23..c94b350 100644
+index 7d67d23..17eb8aa 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/util/ViewToast.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/util/ViewToast.kt
-@@ -11,5 +11,5 @@ import miragefairy2024.mod.recipeviewer.view.View
+@@ -11,8 +11,9 @@ import miragefairy2024.mod.recipeviewer.view.View
  import miragefairy2024.util.Remover
  import net.minecraft.client.Minecraft
 -import net.minecraft.client.gui.GuiGraphics
++import net.minecraft.client.gui.Font
 +import net.minecraft.client.gui.GuiGraphicsExtractor
  import net.minecraft.client.gui.components.AbstractWidget
  import net.minecraft.client.gui.components.toasts.Toast
-@@ -62,5 +62,5 @@ class ViewToast(rootView: View) : Toast {
+-import net.minecraft.client.gui.components.toasts.ToastComponent
++import net.minecraft.client.gui.components.toasts.ToastManager
+
+ /** View を Screen なしで表示するトーストなのだ～🌱 */
+@@ -23,4 +24,5 @@ class ViewToast(rootView: View) : Toast {
+     private val widgetSlots = mutableListOf<WidgetSlot>()
+     private var size = IntPoint.ZERO
++    private var visibility = Toast.Visibility.SHOW
+
+     private val viewAdapter = ViewAdapter(object : ViewAdapterHost {
+@@ -62,11 +64,16 @@ class ViewToast(rootView: View) : Toast {
      override fun height() = size.y
 
 -    override fun render(guiGraphics: GuiGraphics, toastComponent: ToastComponent, timeSinceLastVisible: Long): Toast.Visibility {
-+    override fun render(guiGraphics: GuiGraphicsExtractor, toastComponent: ToastComponent, timeSinceLastVisible: Long): Toast.Visibility {
++    override fun getWantedVisibility() = visibility
++
++    override fun update(toastManager: ToastManager, timeSinceLastVisible: Long) {
++        visibility = if (timeSinceLastVisible >= 5000.0 * toastManager.notificationDisplayTimeMultiplier) Toast.Visibility.HIDE else Toast.Visibility.SHOW
++    }
++
++    override fun extractRenderState(guiGraphics: GuiGraphicsExtractor, font: Font, timeSinceLastVisible: Long) {
          viewAdapter.beforeRender()
-         val partialTick = Minecraft.getInstance().timer.getGameTimeDeltaPartialTick(true)
+-        val partialTick = Minecraft.getInstance().timer.getGameTimeDeltaPartialTick(true)
++        val partialTick = Minecraft.getInstance().deltaTracker.getGameTimeDeltaPartialTick(true)
+         widgetSlots.forEach {
+-            it.widget.render(guiGraphics, -1000, -1000, partialTick)
++            it.widget.extractRenderState(guiGraphics, -1000, -1000, partialTick)
+         }
+-        return if (timeSinceLastVisible >= 5000.0 * toastComponent.notificationDisplayTimeMultiplier) Toast.Visibility.HIDE else Toast.Visibility.SHOW
+     }
+
+diff --git a/common/src/client/resources/miragefairy2024.client.mixins.json b/common/src/client/resources/miragefairy2024.client.mixins.json
+index f4ed60d..489f47a 100644
+--- a/common/src/client/resources/miragefairy2024.client.mixins.json
++++ b/common/src/client/resources/miragefairy2024.client.mixins.json
+@@ -6,4 +6,5 @@
+     "AbstractContainerScreenMixin",
+     "ClientLevelMixin",
++    "GameRendererAccessor",
+     "GuiGraphicsMixin",
+     "ItemRendererMixin",
 diff --git a/common/src/clientTest/kotlin/miragefairy2024/client/mod/recipeviewer/common/GhostRecipeItemViewRendererTest.kt b/common/src/clientTest/kotlin/miragefairy2024/client/mod/recipeviewer/common/GhostRecipeItemViewRendererTest.kt
 index 2c32024..42ea2a2 100644
 --- a/common/src/clientTest/kotlin/miragefairy2024/client/mod/recipeviewer/common/GhostRecipeItemViewRendererTest.kt
@@ -12118,6 +12561,27 @@ index 6ed82b8..0000000
 -        }
 -    }
 -}
+diff --git a/fabric/src/client/kotlin/miragefairy2024/client/fabric/MirageFairy2024FabricReiClientPlugin.kt b/fabric/src/client/kotlin/miragefairy2024/client/fabric/MirageFairy2024FabricReiClientPlugin.kt
+index d13f02f..c3f4966 100644
+--- a/fabric/src/client/kotlin/miragefairy2024/client/fabric/MirageFairy2024FabricReiClientPlugin.kt
++++ b/fabric/src/client/kotlin/miragefairy2024/client/fabric/MirageFairy2024FabricReiClientPlugin.kt
+@@ -5,7 +5,5 @@ import me.shedaniel.rei.api.client.registry.category.CategoryRegistry
+ import me.shedaniel.rei.api.client.registry.display.DisplayRegistry
+ import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry
+-import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
+ import miragefairy2024.client.mod.recipeviewer.rei.ReiClientEvents
+-import miragefairy2024.mod.recipeviewer.rei.ReiEvents
+
+ @Suppress("unused")
+@@ -19,8 +17,4 @@ class MirageFairy2024FabricReiClientPlugin : REIClientPlugin {
+     }
+
+-    override fun registerItemComparators(registry: ItemComparatorRegistry) {
+-        ReiEvents.onRegisterItemComparators.fire { it(registry) }
+-    }
+-
+     override fun registerScreens(registry: ScreenRegistry) {
+         ReiClientEvents.onRegisterScreens.fire { it(registry) }
 diff --git a/fabric/src/client/resources/miragefairy2024.client.fabric.mixins.json b/fabric/src/client/resources/miragefairy2024.client.fabric.mixins.json
 index be77bdc..b336062 100644
 --- a/fabric/src/client/resources/miragefairy2024.client.fabric.mixins.json
@@ -12663,6 +13127,28 @@ index c8f8170..0000000
 -        }
 -    }
 -}
+diff --git a/neoforge/src/main/kotlin/miragefairy2024/client/neoforge/MirageFairy2024NeoForgeReiClientPlugin.kt b/neoforge/src/main/kotlin/miragefairy2024/client/neoforge/MirageFairy2024NeoForgeReiClientPlugin.kt
+index e666b7d..dc94dba 100644
+--- a/neoforge/src/main/kotlin/miragefairy2024/client/neoforge/MirageFairy2024NeoForgeReiClientPlugin.kt
++++ b/neoforge/src/main/kotlin/miragefairy2024/client/neoforge/MirageFairy2024NeoForgeReiClientPlugin.kt
+@@ -5,8 +5,6 @@ import me.shedaniel.rei.api.client.registry.category.CategoryRegistry
+ import me.shedaniel.rei.api.client.registry.display.DisplayRegistry
+ import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry
+-import me.shedaniel.rei.api.common.entry.comparison.ItemComparatorRegistry
+ import me.shedaniel.rei.forge.REIPluginClient
+ import miragefairy2024.client.mod.recipeviewer.rei.ReiClientEvents
+-import miragefairy2024.mod.recipeviewer.rei.ReiEvents
+
+ @REIPluginClient
+@@ -21,8 +19,4 @@ class MirageFairy2024NeoForgeReiClientPlugin : REIClientPlugin {
+     }
+
+-    override fun registerItemComparators(registry: ItemComparatorRegistry) {
+-        ReiEvents.onRegisterItemComparators.fire { it(registry) }
+-    }
+-
+     override fun registerScreens(registry: ScreenRegistry) {
+         ReiClientEvents.onRegisterScreens.fire { it(registry) }
 diff --git a/neoforge/src/main/kotlin/miragefairy2024/neoforge/MirageFairy2024NeoForgeMod.kt b/neoforge/src/main/kotlin/miragefairy2024/neoforge/MirageFairy2024NeoForgeMod.kt
 index bfcb146..eff5bda 100644
 --- a/neoforge/src/main/kotlin/miragefairy2024/neoforge/MirageFairy2024NeoForgeMod.kt

@@ -192,6 +192,21 @@ REI 26.1.819 の表示シリアライザーは、永続化用の `MapCodec` と�
 
 26.1.2 のクラスパスで、パーティクルのクライアント側コードを含む選択コンパイルが通ったのだ～🌱 ゲーム内での描画結果は未確認なのだぁ…🌧️
 
+### クライアントの Widget、トースト、飛翔体、輪郭表示なのだ～🌱
+
+REI 26.1.819 の Widget は、型付きのマウス・キーイベントを子 Widget に転送し、`extractRenderState` で描画するのだ～🌱 アイテム比較器は両ローダーの `REICommonPlugin` に登録するのだ～🌱 トーストは可視時間の判定を `ToastManager` の更新時に行い、View の描画は抽出時に行うのだ～🌱 加工機械の矢印では、移行後の `blit` が取る引数順に合わせたのだ～🌱
+
+アンチマターボルトとエーテロバリスティックボルトは補間後の 2 軸の角度を `EntityRenderState` に保存し、モデルにそれぞれ従来の向きを適用するのだ～🌱 採掘範囲の輪郭表示は、`END_EXTRACTION` でブロック座標と色をスナップショットし、`END_MAIN` で深度テストなしの線を描くのだ～🌱 描画条件にはバニラの `GameRenderer.shouldRenderBlockOutline` を使うのだ～🌱 [Fabric のワールド描画資料](https://docs.fabricmc.net/26.1.2/develop/rendering/world)
+
+REI の Widget の選択コンパイルが通ったのだ～🌱 共通・Fabric のメインとクライアントを含む Kotlin 473 ファイルの一括解析では、エラー診断がパーティクル移行前の 1188 件から 833 件になり、上記の変更先には診断が出なかったのだ～🌱 クライアントの実行確認には未移行箇所の解消が必要なのだぁ…🌧️
+
+| ソース | 診断を残している API の変更 |
+| --- | --- |
+| `ReiClientSupport.kt` | クライアント側で `RecipeManager` と `RecipeHolder` を使う既存の経路がなくなったのだぁ…🌧️ REI の新しいクライアント用 Filler は `RecipeDisplay` を受け取るので、独自レシピのデータを表示とサイズ計測に渡す方法を変更する必要があるのだぁ…🌧️ |
+| `client/mod/entity/ChaosCube.kt` | `Model.renderToBuffer` は `final` になり、8 個のパーツへ個別にクォータニオンを適用する既存の描画を上書きできないのだぁ…🌧️ ダメージ時の色やアウトラインを保ちながら、パーツの描画を新しい提出 API に移す必要があるのだぁ…🌧️ |
+| `ClientProxyImpl.kt` と妖精クエスト・妖精像 | 旧アイテムモデル、色プロバイダー、ブロックエンティティの即時描画を置き換える必要があるのだぁ…🌧️ |
+| ソウルストリームと EMI | ソウルストリームが使う owo-lib の 26.1.2 向け NeoForge 版と、EMI の 26.1.2 向け対応版を確認できていないのだぁ…🌧️ |
+
 ### 移行資料なのだ～🌱
 
 - 26.1 系では JDK 25 と非リマップ版 Loom を使い、依存の宣言は `implementation` や `compileOnly` に移すのだ～🌱 今回はクリエイティブタブ、ディメンション移動イベント、燃料登録を、新しい Fabric API に置き換えたのだ～🌱 タグのデータ生成は `FabricPackOutput` と `FabricTagsProvider` の `TagAppender` に合わせる必要があるのだ～🌱 [Fabric の 26.1 移行案内](https://fabricmc.net/2026/03/14/261.html) [Fabric API の移行表](https://docs.fabricmc.net/de_de/develop/porting/26.1/fabric-api)
