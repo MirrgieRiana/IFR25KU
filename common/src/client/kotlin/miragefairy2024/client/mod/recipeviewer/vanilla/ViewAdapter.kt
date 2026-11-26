@@ -123,11 +123,13 @@ class ViewAdapter(val host: ViewAdapterHost) {
     /** このルートのウィジェットを描き始める前に呼ぶのだ～🌱 */
     fun beforeRender() {
         onBeforeRender.fire()
+        screenEventSource.onBeforeRender.fire()
     }
 
     /** ホストの tick を配置済みの View へ通知するのだ～🌱 */
     fun tick() {
         onTick.fire()
+        screenEventSource.onTick.fire()
     }
 
     /** 子の相対位置・寸法・登録を維持して移動するのだ～🌱 */

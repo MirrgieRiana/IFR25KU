@@ -25,4 +25,10 @@ class ScreenEventSource {
      */
     val onDisposing = EventRegistry<() -> Unit>()
 
+    /** ホストがウィジェットを描画する直前に通知するのだ～🌱 */
+    val onBeforeRender = EventRegistry<() -> Unit>()
+
+    /** ホストの tick を通知するのだ～🌱 */
+    val onTick = EventRegistry<() -> Unit>()
+
 }
