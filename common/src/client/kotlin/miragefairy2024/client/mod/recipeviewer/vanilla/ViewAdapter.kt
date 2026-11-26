@@ -51,6 +51,7 @@ interface ViewAdapterHost {
 /**
  * View のサイズ計算と配置を登録先へ中継し、ホストの入力処理を補正するのだ～🌱
  * ホストを初期化するときは [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter.init] を呼ぶのだ～🌱
+ * 画面を持つホストでは、その呼び出しが正常に完了した直後に [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter.opened] を呼ぶのだ～🌱
  * ホストが表示終了を通知できる場合は、最後の描画を終えてから [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter.removed] を呼ぶのだ～🌱
  */
 class ViewAdapter(val host: ViewAdapterHost) {
