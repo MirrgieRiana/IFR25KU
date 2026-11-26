@@ -59,8 +59,12 @@ context(_: ModContext)
 fun initVanillaViewPlacers() {
     fun placeScrollContainerView(context: VanillaViewPlacerContext, widget: VanillaScrollContainerViewWidget): ViewController {
         val controller = context place WidgetRegistration(widget, true) { RenderOverflow.NONE }
+        val onBeforeRender = EventRegistry<() -> Unit>()
+        context.screenEventSource.onBeforeRender.observe(context.screenEventSource.onDisposing) {
+            onBeforeRender.fire()
+        }
         // 子の差し替えだけで全長が変わった場合も、描画前に寸法を通知するのだ～🌱
-        val boundsRemover = context.onBeforeRender.register {
+        val boundsRemover = onBeforeRender.register {
             widget.updateScrollBounds()
         }
         return object : ViewController {
