@@ -3,6 +3,8 @@ package miragefairy2024.colormaker
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import java.awt.Insets
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseWheelEvent
 import javax.swing.JPanel
 import kotlin.math.roundToInt
 
@@ -52,9 +54,11 @@ class PanelSliderField(private val min: Int, private val max: Int, private val c
                     if (value.modifying) return@register
                     value.set(it, c)
                 }
-                c.addMouseWheelListener { e ->
-                    value.set((value.get() + -e.preciseWheelRotation.toInt()).coerceIn(min, max))
-                }
+                c.addMouseWheelListener(object : MouseAdapter() {
+                    override fun mouseWheelMoved(e: MouseWheelEvent) {
+                        value.set((value.get() + -e.preciseWheelRotation.toInt()).coerceIn(min, max))
+                    }
+                })
                 value.register { _, it, source ->
                     if (source == c) return@register
                     c.value.set(it)

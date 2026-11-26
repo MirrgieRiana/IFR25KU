@@ -9,6 +9,7 @@ import java.awt.event.ComponentEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.event.MouseMotionAdapter
+import java.awt.event.MouseWheelEvent
 import java.awt.image.BufferedImage
 import javax.swing.JPanel
 import kotlin.math.roundToInt
@@ -40,9 +41,11 @@ class ColorSlider(private val steps: Int, private val colorFunction: (Float) -> 
                 value.set((e.x.toFloat() / (width - 1)).coerceIn(0F, 1F), this@ColorSlider)
             }
         })
-        addMouseWheelListener { e ->
-            value.set((value.get() + -e.preciseWheelRotation.toFloat() / steps.toFloat()).coerceIn(0F, 1F), this@ColorSlider)
-        }
+        addMouseWheelListener(object : MouseAdapter() {
+            override fun mouseWheelMoved(e: MouseWheelEvent) {
+                value.set((value.get() + -e.preciseWheelRotation.toFloat() / steps.toFloat()).coerceIn(0F, 1F), this@ColorSlider)
+            }
+        })
 
         value.register { _, _, _ ->
             repaint()
