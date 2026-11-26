@@ -695,10 +695,11 @@ class VanillaViewPlacersTest {
                                 controller.detach()
                             }
                             Assertions.assertTrue(widgets.isEmpty())
-                            Assertions.assertTrue(context.screenEventSource.onBeforeRender.toList().isEmpty())
+                            Assertions.assertEquals(1, context.screenEventSource.onBeforeRender.toList().size)
                             Assertions.assertEquals(1, scrollOffset.toList().size)
                         }
                     } finally {
+                        context.screenEventSource.onDisposing.fire()
                         connection.remove()
                     }
                     Assertions.assertTrue(scrollOffset.toList().isEmpty())
@@ -758,6 +759,7 @@ class VanillaViewPlacersTest {
                     val child = widget.children().single() as AbstractWidget
                     Assertions.assertEquals(if (horizontal) IntPoint(-65, 20) else IntPoint(10, -55), IntPoint(child.x, child.y))
                 } finally {
+                    context.screenEventSource.onDisposing.fire()
                     controller.dispose()
                     controller.detach()
                     connection.remove()
@@ -769,7 +771,7 @@ class VanillaViewPlacersTest {
     }
 
     @Test
-    fun `同じ画面のスクロール領域は描画前の購読を共有し画面終了時に解除するのだ`() {
+    fun `描画前通知の中継はスクロール領域の再配置をまたいで画面終了まで存続するのだ`() {
         val context = createScrollbarPlacerContext(mutableListOf())
         val screenEventSource = context.screenEventSource
 
@@ -781,20 +783,31 @@ class VanillaViewPlacersTest {
 
         val first = attachScroll()
         val second = attachScroll()
-        try {
-            Assertions.assertEquals(1, screenEventSource.onBeforeRender.toList().size)
+        val relay = try {
             Assertions.assertEquals(1, screenEventSource.onDisposing.toList().size)
             Assertions.assertTrue(context.onBeforeRender.toList().isEmpty())
-
-            screenEventSource.onDisposing.fire()
-            Assertions.assertTrue(screenEventSource.onBeforeRender.toList().isEmpty())
-            Assertions.assertTrue(screenEventSource.onDisposing.toList().isEmpty())
+            screenEventSource.onBeforeRender.toList().single()
         } finally {
             first.dispose()
             first.detach()
             second.dispose()
             second.detach()
         }
+
+        Assertions.assertSame(relay, screenEventSource.onBeforeRender.toList().single())
+        Assertions.assertEquals(1, screenEventSource.onDisposing.toList().size)
+
+        val replacement = attachScroll()
+        try {
+            Assertions.assertSame(relay, screenEventSource.onBeforeRender.toList().single())
+            Assertions.assertEquals(1, screenEventSource.onDisposing.toList().size)
+        } finally {
+            screenEventSource.onDisposing.fire()
+            replacement.dispose()
+            replacement.detach()
+        }
+        Assertions.assertTrue(screenEventSource.onBeforeRender.toList().isEmpty())
+        Assertions.assertTrue(screenEventSource.onDisposing.toList().isEmpty())
     }
 
     @Test

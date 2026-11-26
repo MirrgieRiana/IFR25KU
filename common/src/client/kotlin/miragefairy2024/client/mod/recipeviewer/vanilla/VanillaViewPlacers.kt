@@ -66,13 +66,7 @@ private class ScrollBoundsBeforeRender(screenEventSource: ScreenEventSource) : (
 
     override fun invoke() = listeners.fire()
 
-    fun register(listener: () -> Unit): Remover {
-        val remover = listeners.register(listener)
-        return Remover {
-            remover.remove()
-            if (listeners.toList().isEmpty()) disconnect()
-        }
-    }
+    fun register(listener: () -> Unit): Remover = listeners.register(listener)
 
     private fun disconnect() {
         beforeRenderRemover.remove()
