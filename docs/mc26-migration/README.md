@@ -68,9 +68,9 @@
 | 配布用の jar への同梱 | 両方とも入ったのだ～🌱 |
 | パッケージ名の変換 | 両方とも `mc26experiment/shadow/mirrg/kotlin/` 配下へ移ったのだ～🌱 |
 
-`.kotlin_module` の扱いが、1.21.1 向けの `main` とは変わるのだ～🌱
+`.kotlin_module` の扱いを、Gradle 9.8.1 への移行前の Minecraft 1.21.1 向けビルドと、26.1.2 の実験環境で比較したのだ～🌱
 
-| 項目 | `main` の Shadow | 26.1.2 の Shadow 9.2.2 |
+| 項目 | 1.21.1 の Shadow 8.1.1 | 26.1.2 の Shadow 9.2.2 |
 | --- | --- | --- |
 | ファイル名 | `META-INF/mirrg.kotlin.kotlin_module` のまま | `META-INF/net.mc26experiment_mirrg.kotlin_module` のまま |
 | 中身のパッケージ名 | 元のまま | 変換先を指すのだ～🌱 |

@@ -19,4 +19,4 @@ include("neoforge")
 include("site")
 
 include("wave-maker")
-include("color-maker")
+include("dev-tools")

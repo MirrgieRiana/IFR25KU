@@ -4,6 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.magicplant.contents.getTraitPower
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
@@ -88,7 +89,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
     override fun stillValid(player: Player) = true
     override fun quickMoveStack(player: Player, slot: Int): ItemStack = slots[slot].item
 
-    override fun createRootView(title: Component, playerInventoryTitle: Component) = TraitListScreenContent(this, title).view
+    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource) = TraitListScreenContent(this, title).view
 
 }
 

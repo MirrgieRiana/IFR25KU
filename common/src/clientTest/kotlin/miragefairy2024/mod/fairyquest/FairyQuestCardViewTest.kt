@@ -1,6 +1,7 @@
 package miragefairy2024.mod.fairyquest
 
 import kotlinx.coroutines.runBlocking
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
@@ -64,7 +65,7 @@ class FairyQuestCardViewTest {
         val inventory = Inventory(Mockito.mock(Player::class.java))
         val menu = FairyQuestCardScreenHandler(0, inventory, recipe, ContainerLevelAccess.NULL)
         val slots = menu.slots
-        val rootView = menu.createRootView(cardTitle, text { "inventory"() })
+        val rootView = menu.createRootView(cardTitle, text { "inventory"() }, ScreenEventSource())
         val proxy: RenderingProxy = object : RenderingProxy {
             override fun calculateTextWidth(text: FormattedText) = text.string.length * 6
             override fun calculateTextWidth(text: FormattedCharSequence) = throw UnsupportedOperationException()

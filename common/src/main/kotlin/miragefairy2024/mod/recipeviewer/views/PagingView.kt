@@ -116,7 +116,9 @@ class PagingView : ParentView<Alignment>() {
             }
         }
 
-        pageIndex.observeAndInitialize(onClosed) { _, _ -> load() }
+        pageIndex.observeAndInitialize(onClosed) { _, _ ->
+            load()
+        }
 
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {

@@ -71,7 +71,9 @@ fun initSoundEventModule() {
     SoundEventChannel.registerServerToClientPayloadType()
     SoundEventCard.entries.forEach { card ->
         Registration(BuiltInRegistries.SOUND_EVENT, card.identifier) { card.soundEvent }.register()
-        DataGenerationEvents.onGenerateSound { it(card.path, card.translation.keyGetter(), card.sounds) }
+        DataGenerationEvents.onGenerateSound {
+            it(card.path, card.translation.keyGetter(), card.sounds)
+        }
         card.translation.enJa()
     }
 }

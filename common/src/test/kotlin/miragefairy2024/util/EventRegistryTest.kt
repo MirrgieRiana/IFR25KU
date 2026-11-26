@@ -12,15 +12,21 @@ class EventRegistryTest {
     fun `発火中に解除したリスナーには同じ発火で通知しないのだ～🌱`() {
         val event = EventRegistry<() -> Unit>()
         val notifications = mutableListOf<Int>()
-        val addedListener: () -> Unit = { notifications += 4 }
+        val addedListener: () -> Unit = {
+            notifications += 4
+        }
         lateinit var remover: Remover
         event.register {
             notifications += 1
             remover.remove()
             event.add(addedListener)
         }
-        remover = event.register { notifications += 2 }
-        event.register { notifications += 3 }
+        remover = event.register {
+            notifications += 2
+        }
+        event.register {
+            notifications += 3
+        }
 
         event.fire()
         assertEquals(listOf(1, 3), notifications)
@@ -150,7 +156,9 @@ class EventRegistryTest {
         val notifications = mutableListOf<Pair<Int, Int>>()
         value.register { _, new ->
             if (new == 20) {
-                value.registerAndInitialize { old, latest -> notifications += Pair(old, latest) }
+                value.registerAndInitialize { old, latest ->
+                    notifications += Pair(old, latest)
+                }
                 value.value = 30
             }
         }
@@ -165,8 +173,12 @@ class EventRegistryTest {
         val value = ObservableValue(10)
         val notifications = mutableListOf<Pair<Int, Int>>()
         lateinit var remover: Remover
-        value.register { _, _ -> remover.remove() }
-        remover = value.register { old, new -> notifications += Pair(old, new) }
+        value.register { _, _ ->
+            remover.remove()
+        }
+        remover = value.register { old, new ->
+            notifications += Pair(old, new)
+        }
 
         value.value = 20
 
