@@ -13,7 +13,6 @@ import io.wispforest.owo.ui.core.Insets
 import io.wispforest.owo.ui.core.OwoUIAdapter
 import io.wispforest.owo.ui.core.Sizing
 import io.wispforest.owo.ui.core.Surface
-import io.wispforest.owo.ui.core.VerticalAlignment
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.RenderingEvent
@@ -21,7 +20,6 @@ import miragefairy2024.client.util.ClickableContainer
 import miragefairy2024.client.util.KeyMappingCard
 import miragefairy2024.client.util.LayeredImageButton
 import miragefairy2024.client.util.LayeredImageToggleButton
-import miragefairy2024.client.util.SlotType
 import miragefairy2024.client.util.WidgetSprites
 import miragefairy2024.client.util.inventoryNameLabel
 import miragefairy2024.client.util.invoke
@@ -32,6 +30,7 @@ import miragefairy2024.client.util.tooltipContainer
 import miragefairy2024.client.util.verticalScroll
 import miragefairy2024.client.util.verticalSpace
 import miragefairy2024.mod.AttachmentChangedEvent
+import miragefairy2024.mod.common.SlotType
 import miragefairy2024.mod.fairy.COLLECTION_DISABLED_TRANSLATION
 import miragefairy2024.mod.fairy.COLLECTION_ENABLED_ATTACHMENT_TYPE
 import miragefairy2024.mod.fairy.COLLECTION_ENABLED_TRANSLATION
@@ -72,10 +71,12 @@ import miragefairy2024.util.size
 import miragefairy2024.util.text
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
+import net.fabricmc.fabric.api.client.screen.v1.Screens
 import net.minecraft.client.KeyMapping
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.ImageButton
+import net.minecraft.client.gui.components.Tooltip
 import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.client.gui.screens.inventory.InventoryScreen
 import net.minecraft.network.chat.Component
@@ -107,7 +108,7 @@ val BUTTON_14_BACKGROUND = WidgetSprites(
     MirageFairy2024.identifier("button_14/background_focused"),
 )
 
-context(ModContext)
+context(_: ModContext)
 fun initSoulStreamClientModule() {
 
     // GUI登録
@@ -120,49 +121,25 @@ fun initSoulStreamClientModule() {
     ScreenEvents.AFTER_INIT.register { _, screen, _, _ ->
         if (screen is InventoryScreen) {
 
-            val onMouseClick = mutableListOf<() -> Unit>()
-
-            // 中央揃えコンテナ
-            val uiAdapter = OwoUIAdapter.create(screen, Containers::stack)
-            uiAdapter.rootComponent.apply {
-                alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
-
-                // 位置決定用パネル
-                child(Containers.stack(Sizing.content(), Sizing.content()).apply {
-                    alignment(HorizontalAlignment.RIGHT, VerticalAlignment.TOP)
-
-                    fun updatePosition() {
-                        if (!screen.recipeBookComponent.isVisible) {
-                            sizing(Sizing.fixed(146), Sizing.fixed(46))
-                        } else {
-                            sizing(Sizing.fixed(300), Sizing.fixed(46))
-                        }
-                    }
-                    updatePosition()
-                    onMouseClick += {
-                        updatePosition()
-                        uiAdapter.inflateAndMount()
-                    }
-
-                    // ボタン
-                    val buttonWidgetSprites = WidgetSprites(MirageFairy2024.identifier("soul_stream_button"), MirageFairy2024.identifier("soul_stream_button_highlighted"))
-                    child(ImageButton(0, 0, 20, 20, buttonWidgetSprites) {
-                        lastMousePositionInInventory = Pair(Minecraft.getInstance().mouseHandler.xpos(), Minecraft.getInstance().mouseHandler.ypos())
-                        screen.onClose()
-                        OpenSoulStreamChannel.sendToServer(Unit)
-                    }.apply {
-                        tooltip(text { OPEN_SOUL_STREAM_KEY_TRANSLATION() + "("() + soulStreamKeyMappingCard() + ")"() })
-                    })
-
-                })
-
+            // ボタン
+            val buttonWidgetSprites = WidgetSprites(MirageFairy2024.identifier("soul_stream_button"), MirageFairy2024.identifier("soul_stream_button_highlighted"))
+            val button: ImageButton = ImageButton(0, 0, 20, 20, buttonWidgetSprites) {
+                lastMousePositionInInventory = Pair(Minecraft.getInstance().mouseHandler.xpos(), Minecraft.getInstance().mouseHandler.ypos())
+                screen.onClose()
+                OpenSoulStreamChannel.sendToServer(Unit)
+            }.also {
+                it.tooltip = Tooltip.create(text { OPEN_SOUL_STREAM_KEY_TRANSLATION() + "("() + soulStreamKeyMappingCard() + ")"() })
             }
-            uiAdapter.inflateAndMount()
+            Screens.getButtons(screen).add(button)
+
+            fun updatePosition() {
+                val offsetX = if (screen.recipeBookComponent.isVisible) 130 else 53
+                button.setPosition(screen.width / 2 + offsetX, screen.height / 2 - 23)
+            }
+            updatePosition()
 
             ScreenMouseEvents.afterMouseClick(screen).register { _, _, _, _ ->
-                onMouseClick.forEach {
-                    it()
-                }
+                updatePosition()
             }
 
         }
@@ -329,7 +306,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                 //child(verticalSpace(3))
 
                 child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-                    surface(Surface.tiled(SlotType.FAIRY.texture, 18, 18))
+                    surface(Surface.tiled(SlotType.FAIRY.viewTexture.id, 18, 18))
                     repeat(9) { index ->
                         child(slotContainer(slotAsComponent(9 * 3 + 9 + index), type = null))
                     }
@@ -338,7 +315,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                 child(verticalSpace(4))
 
                 child(verticalScroll(Sizing.fill(100), Sizing.expand(), 18).apply {
-                    surface(Surface.tiled(SlotType.NORMAL.texture, 18, 18))
+                    surface(Surface.tiled(SlotType.NORMAL.viewTexture.id, 18, 18))
                     scrollbar(ScrollContainer.Scrollbar.vanilla())
                     scrollStep(18)
                     (9 until menu.soulStream.size).chunked(9).forEach { indices ->
@@ -358,7 +335,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
 
                 // プレイヤーインベントリ
                 child(Containers.verticalFlow(Sizing.content(), Sizing.content()).apply {
-                    surface(Surface.tiled(SlotType.NORMAL.texture, 18, 18))
+                    surface(Surface.tiled(SlotType.NORMAL.viewTexture.id, 18, 18))
                     repeat(3) { r ->
                         child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
                             repeat(9) { c ->
@@ -369,7 +346,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                 })
                 child(verticalSpace(4))
                 child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-                    surface(Surface.tiled(SlotType.NORMAL.texture, 18, 18))
+                    surface(Surface.tiled(SlotType.NORMAL.viewTexture.id, 18, 18))
                     repeat(9) { c ->
                         child(slotContainer(slotAsComponent(9 * 3 + c), type = null))
                     }

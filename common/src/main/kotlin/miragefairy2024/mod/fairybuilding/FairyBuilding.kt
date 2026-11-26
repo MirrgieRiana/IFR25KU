@@ -102,7 +102,7 @@ abstract class FairyBuildingCard<B : FairyBuildingBlock, E : FairyBuildingBlockE
     open fun createPropertyConfigurations(): List<MachineScreenHandler.PropertyConfiguration<E>> = listOf()
 
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 

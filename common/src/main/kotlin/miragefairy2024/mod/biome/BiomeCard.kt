@@ -30,7 +30,7 @@ abstract class BiomeCard(
     val translation = Translation({ identifier.toLanguageKey("biome") }, name)
     val advancement = advancementCreator?.invoke(this)
 
-    context(ModContext)
+    context(_: ModContext)
     open fun init() {
 
         registerDynamicGeneration(key) {

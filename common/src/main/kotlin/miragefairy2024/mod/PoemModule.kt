@@ -19,7 +19,7 @@ import net.minecraft.world.item.ItemStack
 
 val itemPoemListTable = mutableMapOf<Item, PoemList>()
 
-context(ModContext)
+context(_: ModContext)
 fun initPoemModule() {
     ModEvents.onClientInit {
         clientProxy!!.registerItemTooltipCallback { stack, context, lines ->
@@ -57,14 +57,14 @@ interface Poem {
     val type: PoemType
     fun getText(itemStack: ItemStack, context: Item.TooltipContext): Iterable<Component>
 
-    context(ModContext)
+    context(_: ModContext)
     fun init(item: () -> Item) = Unit
 }
 
 class InternalPoem(override val type: PoemType, private val key: String, private val en: String, private val ja: String) : Poem {
     override fun getText(itemStack: ItemStack, context: Item.TooltipContext) = listOf(text { translate("${itemStack.item.descriptionId}.$key").formatted(type.color) })
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init(item: () -> Item) {
         en { "${item().descriptionId}.$key" to en }
         ja { "${item().descriptionId}.$key" to ja }
@@ -104,13 +104,13 @@ fun PoemList.text(type: PoemType, text: Component) = this + TextPoem(type, text)
 
 // Util
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Item).registerPoem(poemList: PoemList) = ModEvents.onInitialize {
     require(this() !in itemPoemListTable)
     itemPoemListTable[this()] = poemList
 }
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Item).registerPoemGeneration(poemList: PoemList) {
     poemList.poems.forEach {
         it.init(this)

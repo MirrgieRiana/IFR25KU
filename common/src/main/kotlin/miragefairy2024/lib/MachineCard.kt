@@ -30,9 +30,9 @@ import net.minecraft.world.level.block.state.BlockState
 @Suppress("LeakingThis") // ブートストラップ問題のため解決不可能なので妥協する
 abstract class MachineCard<B : Block, E : MachineBlockEntity<E>, H : MachineScreenHandler> {
     companion object {
-        context(C)
+        context(card: C)
         inline fun <C, reified E> BlockEntityAccessor(crossinline creator: (card: C, blockPos: BlockPos, blockState: BlockState) -> E) = object : BlockEntityAccessor<E> {
-            override fun create(blockPos: BlockPos, blockState: BlockState) = creator(this@C, blockPos, blockState)
+            override fun create(blockPos: BlockPos, blockState: BlockState) = creator(card, blockPos, blockState)
             override fun castOrThrow(blockEntity: BlockEntity?) = blockEntity as E
             override fun castOrNull(blockEntity: BlockEntity?) = blockEntity as? E
         }
@@ -125,7 +125,7 @@ abstract class MachineCard<B : Block, E : MachineBlockEntity<E>, H : MachineScre
     val advancement = createAdvancement()
 
 
-    context(ModContext)
+    context(_: ModContext)
     open fun init() {
 
         block.register()

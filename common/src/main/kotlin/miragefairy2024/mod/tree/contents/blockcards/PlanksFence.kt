@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.Block
 class TreePlanksFenceBlockCard(configuration: TreeBlockConfiguration, private val parent: () -> Block) : TreeBlockCard(configuration) {
     override fun createSettings() = createPlankSettings()
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 

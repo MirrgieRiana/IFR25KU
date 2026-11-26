@@ -1296,8 +1296,8 @@ class ParentMotifs {
 // レシピ
 
 class MotifCardRecipes {
-    val recipes = mutableListOf<context(ModContext)(MotifCard) -> Unit>()
-    fun onInit(recipe: context(ModContext)(MotifCard) -> Unit): MotifCardRecipes {
+    val recipes = mutableListOf<context(ModContext) (MotifCard) -> Unit>()
+    fun onInit(recipe: context(ModContext) (MotifCard) -> Unit): MotifCardRecipes {
         recipes += recipe
         return this
     }
@@ -1335,7 +1335,7 @@ private operator fun MotifCardRecipes.plus(tag: TagKey<EntityType<*>>) = this.on
 // Initializer
 
 fun interface Initializer {
-    context(ModContext)
+    context(_: ModContext)
     fun init(motif: MotifCard)
 }
 
@@ -1437,13 +1437,13 @@ operator fun Motif.contains(child: Motif): Boolean = child == this || child.pare
 operator fun Motif?.contains(child: Motif?) = this == null || child != null && child in this
 
 
-context(ModContext)
+context(modContext: ModContext)
 fun initMotif() {
     MotifCard.entries.forEach { card ->
         Registration(motifRegistry, card.identifier) { card }.register()
         card.translation.enJa()
         card.recipes.recipes.forEach {
-            it(this@ModContext, card)
+            it(modContext, card)
         }
         card.initializers.forEach {
             it.init(card)

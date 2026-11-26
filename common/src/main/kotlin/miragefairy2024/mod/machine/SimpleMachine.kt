@@ -65,7 +65,7 @@ abstract class SimpleMachineCard<B : SimpleMachineBlock, E : SimpleMachineBlockE
 
     fun match(level: Level, inventory: SimpleMachineRecipeInput) = level.recipeManager.getRecipeFor(recipeType, inventory, level).getOrNull()
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 
@@ -81,12 +81,12 @@ abstract class SimpleMachineCard<B : SimpleMachineBlock, E : SimpleMachineBlockE
 
     }
 
-    context(ModContext)
+    context(_: ModContext)
     open fun registerBlockStateGeneration() {
         block.registerVariantsBlockStateGeneration { normal("block/" * block().getIdentifier()).withHorizontalRotation(HorizontalDirectionalBlock.FACING) }
     }
 
-    context(ModContext)
+    context(_: ModContext)
     open fun registerBlockLootTableGeneration() {
         block.registerDefaultLootTableGeneration()
     }

@@ -17,7 +17,7 @@ import net.minecraft.world.item.enchantment.Enchantments
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount
 
 class TreeHollowLogBlockCard(configuration: TreeBlockConfiguration, log: () -> TreeBlockCard, private val wisp: () -> Item) : TreeHorizontalFacingLogBlockCard(configuration, log) {
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
 

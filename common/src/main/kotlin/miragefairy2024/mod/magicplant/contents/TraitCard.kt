@@ -354,7 +354,7 @@ fun getTraitPower(level: Int): Int {
 }
 
 
-context(ModContext)
+context(_: ModContext)
 fun initTraitCard() {
     TraitCard.entries.forEach { card ->
         card.textTranslation.enJa()

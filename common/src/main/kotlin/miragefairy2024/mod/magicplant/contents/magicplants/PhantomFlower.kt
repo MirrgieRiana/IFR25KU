@@ -52,6 +52,7 @@ object PhantomFlowerCard : AbstractMirageFlowerCard<PhantomFlowerBlock>() {
         { HarvestNotation.Crop(MaterialCard.PHANTOM_LEAVES.item().createItemStack(), TraitEffectKeyCard.LEAVES_PRODUCTION.traitEffectKey.name) },
         { HarvestNotation.Crop(MaterialCard.PHANTOM_DROP.item().createItemStack(), TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name) },
     )
+
     override fun getFruitDrops(count: Int, random: RandomSource) = getMirageFlour(count, random)
     override fun getLeafDrops(count: Int, random: RandomSource) = listOf(MaterialCard.PHANTOM_LEAVES.item().createItemStack(count))
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.PHANTOM_DROP.item().createItemStack(count))
@@ -105,7 +106,7 @@ object PhantomFlowerCard : AbstractMirageFlowerCard<PhantomFlowerBlock>() {
         type = AdvancementCardType.GOAL,
     )
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
         LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG.generator.registerChild(block)

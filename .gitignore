@@ -52,7 +52,7 @@ vendor/
 /backup
 /**/generated/resources/.cache
 /.kotlin
-/logs/
+logs/
 desktop.ini
 /.architectury-transformer
 /modrinth_token.txt
@@ -63,3 +63,6 @@ unpackedAssets
 .claude/
 !.claude/skills/
 .wrangler/
+
+# GitHub Desktop
+/state/inuse.*.lock

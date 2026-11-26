@@ -13,7 +13,6 @@ import miragefairy2024.mod.tool.ToolConfiguration
 import miragefairy2024.mod.tool.merge
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
-import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.mutate
 import miragefairy2024.util.text
@@ -26,7 +25,7 @@ fun <T : ToolConfiguration> T.obtainFairy(appearanceRateBonus: Double) = this.me
 object ObtainFairyToolEffectType : DoubleAddToolEffectType<ToolConfiguration>() {
     private val TRANSLATION = Translation({ "item.${MirageFairy2024.identifier("fairy_mining_tool").toLanguageKey()}.obtain_fairy" }, "Obtain a fairy when mined or killed", "採掘・撃破時に妖精を入手")
 
-    context(ModContext)
+    context(_: ModContext)
     fun init() {
         TRANSLATION.enJa()
     }

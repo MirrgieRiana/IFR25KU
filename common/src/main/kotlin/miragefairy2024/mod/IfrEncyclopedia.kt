@@ -21,7 +21,6 @@ import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
 import miragefairy2024.mod.recipeviewer.views.Child
 import miragefairy2024.mod.recipeviewer.views.ImageButtonView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextChildrenGenerator
-import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.PagingView
 import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.StackView
@@ -31,6 +30,7 @@ import miragefairy2024.mod.recipeviewer.views.XListView
 import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
+import miragefairy2024.mod.recipeviewer.views.createView
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.onClick
@@ -40,12 +40,12 @@ import miragefairy2024.util.EnJa
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Translation
-import miragefairy2024.util.configure
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.enJa
 import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
 import miragefairy2024.util.register
+import miragefairy2024.util.registerAndInitialize
 import miragefairy2024.util.sortedEntrySet
 import miragefairy2024.util.text
 import miragefairy2024.util.toIngredientStack
@@ -199,17 +199,17 @@ class IfrEncyclopediaEntryCard(
 }
 
 /**
- * タイトルと本文の文字色なのだ～🌱
+ * 図鑑の文字色なのだ～🌱
  * 背景のテクスチャはダークモードでも替わらないから、暗い側も同じ色にするのだ～🌱
  */
-private val TEXT_COLOR = ColorPair(0xFF493208.toInt(), 0xFF493208.toInt())
+val IFR_ENCYCLOPEDIA_TEXT_COLOR = ColorPair(0xFF493208.toInt(), 0xFF493208.toInt())
 
 /** 段落の間に挟む縦の隙間なのだ～🌱 */
 private val PARAGRAPH_SPACE_CHILDREN_GENERATOR = ChildrenGenerator { _, _ ->
     listOf(Child(Alignment.START, YSpaceView(4)))
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initIfrEncyclopedia() {
     IfrEncyclopediaEntryCard.entries.forEach { card ->
         card.titleTranslation.enJa()
@@ -217,6 +217,7 @@ fun initIfrEncyclopedia() {
     }
 
     IfrEncyclopediaRecipeViewerCategoryCard.init()
+    initIfrEncyclopediaPageScreen()
 }
 
 val onOpenIfrEncyclopediaPageScreen = EventRegistry<(IfrEncyclopediaEntryCard) -> Boolean>()
@@ -248,7 +249,7 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
             view.sizingY = Sizing.FILL
 
             // 背景
-            view += NinePatchImageView(NinePatchTextureCard.IFR_ENCYCLOPEDIA_BACKGROUND.texture, 22, 22, 22, 22, 22, 22)
+            view += NinePatchTextureCard.IFR_ENCYCLOPEDIA_BACKGROUND.createView()
 
             view += YListView().configure {
                 view.sizingX = Sizing.FILL
@@ -258,11 +259,10 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
                 view += TextView(text { recipeEntry.recipe.titleTranslation() }).configure {
                     view.sizingX = Sizing.FILL
                     view.alignmentX = Alignment.CENTER
-                    view.color = TEXT_COLOR
+                    view.color = IFR_ENCYCLOPEDIA_TEXT_COLOR
                     view.shadow = false
                     view.scroll = true
-                    view.tooltip = listOf(text { recipeEntry.recipe.titleTranslation() })
-                }
+                }.tooltip(text { recipeEntry.recipe.titleTranslation() })
 
                 view += YSpaceView(5)
 
@@ -278,9 +278,9 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
                     position.weight = 1.0
                     recipeEntry.recipe.getParagraphs().forEachIndexed { index, paragraph ->
                         if (index > 0) view += PARAGRAPH_SPACE_CHILDREN_GENERATOR
-                        view += MultiLineTextChildrenGenerator(paragraph) { Alignment.START }.configure {
-                            onTextViewCreated.register {
-                                it.color = TEXT_COLOR
+                        view += MultiLineTextChildrenGenerator(paragraph) { Alignment.START }.also { childrenGenerator ->
+                            childrenGenerator.onTextViewCreated.register {
+                                it.color = IFR_ENCYCLOPEDIA_TEXT_COLOR
                                 it.shadow = false
                             }
                         }
@@ -320,11 +320,9 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
                         view.hoveredTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_left.png"), IntPoint(12, 36), IntRectangle(0, 12, 12, 12))
                         view.disabledTexture = ViewTexture(MirageFairy2024.identifier("textures/gui/sprites/button_14_left.png"), IntPoint(12, 36), IntRectangle(0, 24, 12, 12))
 
-                        fun update() {
+                        pageIndex.registerAndInitialize { _, _ ->
                             view.enabled.value = pageIndex.value > 0
                         }
-                        pageIndex.register { _, _ -> update() }
-                        update()
 
                         view.onClick.register {
                             pageIndex.value -= 1
@@ -337,14 +335,12 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
                         position.alignmentY = Alignment.CENTER
                         view.sizingX = Sizing.FILL
                         view.alignmentX = Alignment.CENTER
-                        view.color = TEXT_COLOR
+                        view.color = IFR_ENCYCLOPEDIA_TEXT_COLOR
                         view.shadow = false
 
-                        fun update() {
+                        pageIndex.registerAndInitialize { _, _ ->
                             view.text.value = text { "${pageIndex.value + 1}"() }.visualOrderText
                         }
-                        pageIndex.register { _, _ -> update() }
-                        update()
                     }.minContentSizeX(32)
 
                     // 右ボタン
@@ -357,9 +353,8 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
                         fun update() {
                             view.enabled.value = pageIndex.value < pageCount.value - 1
                         }
-                        pageIndex.register { _, _ -> update() }
-                        pageCount.register { _, _ -> update() }
-                        update()
+                        pageIndex.registerAndInitialize { _, _ -> update() }
+                        pageCount.registerAndInitialize { _, _ -> update() }
 
                         view.onClick.register {
                             pageIndex.value += 1

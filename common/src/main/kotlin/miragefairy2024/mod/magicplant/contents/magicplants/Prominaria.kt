@@ -65,6 +65,7 @@ object ProminariaCard : AbstractProminariaCard<ProminariaBlock>() {
         { HarvestNotation.Crop(MaterialCard.PROMINARIA_BERRY.item().createItemStack(), TraitEffectKeyCard.FRUITS_PRODUCTION.traitEffectKey.name) },
         { HarvestNotation.Crop(MaterialCard.PROMINITE.item().createItemStack(), TraitEffectKeyCard.RARE_PRODUCTION.traitEffectKey.name) },
     )
+
     override fun getFruitDrops(count: Int, random: RandomSource) = listOf(MaterialCard.PROMINARIA_BERRY.item().createItemStack(count))
     override fun getRareDrops(count: Int, random: RandomSource) = listOf(MaterialCard.PROMINITE.item().createItemStack(count))
 
@@ -101,7 +102,7 @@ object ProminariaCard : AbstractProminariaCard<ProminariaBlock>() {
         type = AdvancementCardType.NORMAL,
     )
 
-    context(ModContext)
+    context(_: ModContext)
     override fun init() {
         super.init()
         Feature.FLOWER.generator(blockIdentifier) {

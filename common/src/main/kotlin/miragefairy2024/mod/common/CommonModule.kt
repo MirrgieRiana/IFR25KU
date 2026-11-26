@@ -10,6 +10,8 @@ import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.fairy.MotifCard
 import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.materials.MaterialCard
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.platformProxy
 import miragefairy2024.util.AdvancementCard
 import miragefairy2024.util.AdvancementCardType
@@ -39,6 +41,7 @@ import mirrg.kotlin.helium.join
 import net.minecraft.commands.Commands
 import net.minecraft.core.Holder
 import net.minecraft.core.registries.Registries
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.biome.Biome
@@ -60,6 +63,21 @@ val rootAdvancement = AdvancementCard(
     type = AdvancementCardType.SILENT,
 )
 
+enum class SlotType(texture: ResourceLocation, size: IntPoint, val margin: IntPoint) {
+    NORMAL(MirageFairy2024.identifier("textures/gui/slot.png"), IntPoint(18, 18), IntPoint(1, 1)),
+    FAIRY(MirageFairy2024.identifier("textures/gui/fairy_slot.png"), IntPoint(18, 18), IntPoint(1, 1)),
+    ;
+
+    val viewTexture = ViewTexture(texture, size)
+}
+
+enum class KeyMappingType {
+    PLACE_ITEM,
+    OPEN_TOOLTIP_VIEWER,
+    OPEN_SOUL_STREAM,
+    TOGGLE_COLLECTION_ENABLED,
+}
+
 val guiAlwaysTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.always" }, "Always", "常時")
 val guiFullScreenTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.full_screen" }, "Click to full screen", "クリックで全画面表示")
 val guiBackToGameTranslation = Translation({ "gui.${MirageFairy2024.identifier("common").toLanguageKey()}.back_to_game" }, "Back to game", "ゲームに戻る")
@@ -68,7 +86,7 @@ val guiRareDropTranslation = Translation({ "gui.${MirageFairy2024.identifier("co
 
 val deadPlayerCommandExceptionType = DynamicCommandExceptionType { text { guiDeadPlayerTranslation(it) } }
 
-context(ModContext)
+context(_: ModContext)
 fun initCommonModule() {
     mirageFairy2024ItemGroupCard.init()
 

@@ -16,7 +16,6 @@ import miragefairy2024.mod.recipeviewer.views.XSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.EnJa
-import miragefairy2024.util.blue
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.getIdentifier
 import miragefairy2024.util.lightPurple
@@ -68,15 +67,15 @@ class HarvestNotation(val seed: ItemStack, val crops: List<Crop>) {
     }
 }
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Item).registerHarvestNotation(vararg crops: () -> HarvestNotation.Crop) = this.registerHarvestNotation(crops.asIterable())
 
-context(ModContext)
+context(_: ModContext)
 fun (() -> Item).registerHarvestNotation(crops: Iterable<() -> HarvestNotation.Crop>) = ModEvents.onInitialize {
     HarvestNotation.register(this().getIdentifier(), HarvestNotation(this().createItemStack(), crops.map { it() }))
 }
 
-context(ModContext)
+context(_: ModContext)
 fun initHarvestNotationModule() {
     HarvestNotationRecipeViewerCategoryCard.init()
 }

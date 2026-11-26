@@ -16,8 +16,8 @@ API(5)
   /** 名前の合うプロジェクトが無ければ NULL を返して、呼び出し元がそれを伝えるのだ～🌱 */
   projectOf: name ->
     : name == "" ? :
-      AthanorProject.new()::ALSO ( project =>
-        project.tasks.check = AthanorTask.new()::ALSO ( task =>
+      AthanorProject::NEW()::ALSO ( project =>
+        project.tasks.check = AthanorTask::NEW()::ALSO ( task =>
           task.name = "check"
           task.action = () -> OUT << "CHECK SUCCESSFUL"
         )

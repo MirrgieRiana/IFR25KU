@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.HitResult
 
-context(ModContext)
+context(_: ModContext)
 fun initFairyDreamGain() {
 
     // 妖精の夢回収判定
