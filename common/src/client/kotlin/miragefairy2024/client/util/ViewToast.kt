@@ -4,6 +4,7 @@ import miragefairy2024.client.mod.recipeviewer.renderingProxy
 import miragefairy2024.client.mod.recipeviewer.vanilla.VANILLA_VIEW_PLACER_REGISTRY
 import miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter
 import miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapterHost
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.View
@@ -32,7 +33,7 @@ class ViewToast(rootView: View) : Toast {
         override fun getRegionSizeX() = 1000
         override fun getRegionSizeY() = 1000
 
-        override fun createRootView() = rootView
+        override fun createRootView(screenEventSource: ScreenEventSource) = rootView
 
         override fun getUiOffset() = IntPoint.ZERO
         override fun setUiSize(uiSize: IntPoint) = run { size = uiSize }

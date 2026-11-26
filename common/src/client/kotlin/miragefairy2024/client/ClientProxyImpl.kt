@@ -14,6 +14,7 @@ import miragefairy2024.client.mod.recipeviewer.vanilla.ViewContainerScreen
 import miragefairy2024.client.util.ViewToast
 import miragefairy2024.client.util.ellipsize
 import miragefairy2024.client.util.stack
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.View
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
@@ -104,7 +105,7 @@ class ClientProxyImpl : ClientProxy<Screen> {
     override fun <T> registerViewScreen(menuType: MenuType<T>) where T : AbstractContainerMenu, T : ViewProviderMenu {
         MenuScreens.register(menuType) { menu, playerInventory, title ->
             object : ViewContainerScreen<T>(menu, playerInventory, title) {
-                override fun createRootView() = menu.createRootView(title, playerInventoryTitle)
+                override fun createRootView(screenEventSource: ScreenEventSource) = menu.createRootView(title, playerInventoryTitle)
             }
         }
     }

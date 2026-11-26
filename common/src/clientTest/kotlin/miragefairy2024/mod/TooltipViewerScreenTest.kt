@@ -4,6 +4,7 @@ import miragefairy2024.ClientProxy
 import miragefairy2024.MessageViewScreenDefinition
 import miragefairy2024.clientProxy
 import miragefairy2024.mod.common.KeyMappingType
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.ViewController
@@ -45,7 +46,7 @@ class TooltipViewerScreenTest {
     @Test
     fun `画面を開くと検索欄が空でスクロール位置は先頭になるのだ`() {
         fun withViews(definition: MessageViewScreenDefinition, block: (TextFieldView, YScrollContainerView) -> Unit) {
-            val view = definition.rootViewFactory()
+            val view = definition.rootViewFactory(ScreenEventSource())
             view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
             val textFields = mutableListOf<TextFieldView>()
             val scrollViews = mutableListOf<YScrollContainerView>()

@@ -18,6 +18,7 @@ import miragefairy2024.mod.fairy.SoulStreamScreenHandler
 import miragefairy2024.mod.fairy.getFairyMotif
 import miragefairy2024.mod.fairy.soulStreamScreenHandlerType
 import miragefairy2024.mod.passiveskill.PassiveSkillEffectFilter
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.invoke
@@ -131,7 +132,7 @@ fun initSoulStreamClientModule() {
 
 class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : ViewContainerScreen<SoulStreamScreenHandler>(handler, playerInventory, title) {
 
-    override fun createRootView(): View {
+    override fun createRootView(screenEventSource: ScreenEventSource): View {
         return menu.createRootView(title, enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, text { toggleCollectionEnabledKeyMappingCard() }) {
             SetCollectionEnabledChannel.sendToServer(it)
         }
