@@ -1303,33 +1303,83 @@ class MotifCardRecipes {
     }
 }
 
-private fun MotifCardRecipes.fairyStatueFountainRecipe(rarity: FairyStatueFountainBlock.Rarity) = this.onInit { FairyStatueFountainBlock.recipes += FairyStatueFountainBlock.Recipe(it, rarity) }
+private fun MotifCardRecipes.fairyStatueFountainRecipe(rarity: FairyStatueFountainBlock.Rarity): MotifCardRecipes {
+    return this.onInit {
+        FairyStatueFountainBlock.recipes += FairyStatueFountainBlock.Recipe(it, rarity)
+    }
+}
+
 private val MotifCardRecipes.R get() = this.fairyStatueFountainRecipe(FairyStatueFountainBlock.Rarity.R)
 private val MotifCardRecipes.SR get() = this.fairyStatueFountainRecipe(FairyStatueFountainBlock.Rarity.SR)
 private val MotifCardRecipes.PICKUP_SR get() = this.fairyStatueFountainRecipe(FairyStatueFountainBlock.Rarity.PICKUP_SR).SR
 private val MotifCardRecipes.SSR get() = this.fairyStatueFountainRecipe(FairyStatueFountainBlock.Rarity.SSR)
 private val MotifCardRecipes.PICKUP_SSR get() = this.fairyStatueFountainRecipe(FairyStatueFountainBlock.Rarity.PICKUP_SSR).SSR
 
-private fun MotifCardRecipes.common() = this.onInit { COMMON_MOTIF_RECIPES += CommonMotifRecipe(it, BiomeCondition.Always) }
-private fun MotifCardRecipes.common(biome: ResourceKey<Biome>) = this.onInit { COMMON_MOTIF_RECIPES += CommonMotifRecipe(it, BiomeCondition.BiomeKey(biome)) }
-private fun MotifCardRecipes.common(biomeTag: TagKey<Biome>) = this.onInit { COMMON_MOTIF_RECIPES += CommonMotifRecipe(it, BiomeCondition.BiomeTag(biomeTag)) }
+private fun MotifCardRecipes.common(): MotifCardRecipes {
+    return this.onInit {
+        COMMON_MOTIF_RECIPES += CommonMotifRecipe(it, BiomeCondition.Always)
+    }
+}
+
+private fun MotifCardRecipes.common(biome: ResourceKey<Biome>): MotifCardRecipes {
+    return this.onInit {
+        COMMON_MOTIF_RECIPES += CommonMotifRecipe(it, BiomeCondition.BiomeKey(biome))
+    }
+}
+
+private fun MotifCardRecipes.common(biomeTag: TagKey<Biome>): MotifCardRecipes {
+    return this.onInit {
+        COMMON_MOTIF_RECIPES += CommonMotifRecipe(it, BiomeCondition.BiomeTag(biomeTag))
+    }
+}
+
 private val MotifCardRecipes.always get() = this.common()
 private val MotifCardRecipes.overworld get() = this.common(ConventionalBiomeTags.IS_OVERWORLD)
 private val MotifCardRecipes.nether get() = this.common(ConventionalBiomeTags.IS_NETHER)
 private val MotifCardRecipes.end get() = this.common(ConventionalBiomeTags.IS_END)
 
-private fun MotifCardRecipes.item(item: () -> Item) = this.onInit { ModEvents.onInitialize { FairyDreamRecipes.ITEM.register(item(), it) } }
-private fun MotifCardRecipes.block(block: () -> Block) = this.onInit { ModEvents.onInitialize { FairyDreamRecipes.BLOCK.register(block(), it) } }
-private operator fun MotifCardRecipes.plus(entityType: EntityType<*>) = this.onInit { FairyDreamRecipes.ENTITY_TYPE.register(entityType, it) }
+private fun MotifCardRecipes.item(item: () -> Item): MotifCardRecipes {
+    return this.onInit {
+        ModEvents.onInitialize {
+            FairyDreamRecipes.ITEM.register(item(), it)
+        }
+    }
+}
+
+private fun MotifCardRecipes.block(block: () -> Block): MotifCardRecipes {
+    return this.onInit {
+        ModEvents.onInitialize {
+            FairyDreamRecipes.BLOCK.register(block(), it)
+        }
+    }
+}
+
+private operator fun MotifCardRecipes.plus(entityType: EntityType<*>): MotifCardRecipes {
+    return this.onInit {
+        FairyDreamRecipes.ENTITY_TYPE.register(entityType, it)
+    }
+}
 
 @JvmName("plusItemTag")
-private operator fun MotifCardRecipes.plus(tag: TagKey<Item>) = this.onInit { FairyDreamRecipes.ITEM.registerFromTag(tag, it) }
+private operator fun MotifCardRecipes.plus(tag: TagKey<Item>): MotifCardRecipes {
+    return this.onInit {
+        FairyDreamRecipes.ITEM.registerFromTag(tag, it)
+    }
+}
 
 @JvmName("plusBlockTag")
-private operator fun MotifCardRecipes.plus(tag: TagKey<Block>) = this.onInit { FairyDreamRecipes.BLOCK.registerFromTag(tag, it) }
+private operator fun MotifCardRecipes.plus(tag: TagKey<Block>): MotifCardRecipes {
+    return this.onInit {
+        FairyDreamRecipes.BLOCK.registerFromTag(tag, it)
+    }
+}
 
 @JvmName("plusEntityTypeTag")
-private operator fun MotifCardRecipes.plus(tag: TagKey<EntityType<*>>) = this.onInit { FairyDreamRecipes.ENTITY_TYPE.registerFromTag(tag, it) }
+private operator fun MotifCardRecipes.plus(tag: TagKey<EntityType<*>>): MotifCardRecipes {
+    return this.onInit {
+        FairyDreamRecipes.ENTITY_TYPE.registerFromTag(tag, it)
+    }
+}
 
 
 // Initializer

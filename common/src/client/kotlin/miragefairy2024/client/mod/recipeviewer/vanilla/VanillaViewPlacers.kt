@@ -130,14 +130,18 @@ fun initVanillaViewPlacers() {
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: BeforeRenderView, _ ->
-        val remover = context.onBeforeRender.register { view.onBeforeRender.fire() }
+        val remover = context.onBeforeRender.register {
+            view.onBeforeRender.fire()
+        }
         object : ViewController {
             override fun setOffset(offset: IntPoint) = Unit
             override fun detach() = remover.remove()
         }
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TickView, _ ->
-        val remover = context.onTick.register { view.onTick.fire() }
+        val remover = context.onTick.register {
+            view.onTick.fire()
+        }
         object : ViewController {
             override fun setOffset(offset: IntPoint) = Unit
             override fun detach() = Unit
