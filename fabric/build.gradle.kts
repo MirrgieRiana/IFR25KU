@@ -265,6 +265,10 @@ curseforge {
 tasks.named("publishFabricPublicationToCurseForge").configure { dependsOn(tasks.named("remapJar")) }
 rootProject.tasks.named("upload").configure { dependsOn(tasks.named("publishFabricPublicationToCurseForge")) }
 
+tasks.named<Test>("test") {
+    exclude("miragefairy2024/MapColorViewerGeneratorMain.class", "miragefairy2024/MapColorViewerGeneratorMain\$*.class")
+}
+
 tasks.named<ProcessResources>("processResources") {
     inputs.property("version", project.version)
 
