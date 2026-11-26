@@ -30,13 +30,15 @@ loom {
     splitEnvironmentSourceSets()
 }
 
-val preparePortedUtilities = tasks.register<Sync>("preparePortedUtilities") {
-    from(repositoryRoot.dir("common/src/main/kotlin/miragefairy2024/util")) {
-        into("miragefairy2024/util")
+val preparePortedSources = tasks.register<Sync>("preparePortedSources") {
+    from(repositoryRoot) {
+        include("common/src/**/*.kt", "common/src/**/*.java")
+        include("fabric/src/**/*.kt", "fabric/src/**/*.java")
+        include("neoforge/src/**/*.kt", "neoforge/src/**/*.java")
     }
-    into(layout.buildDirectory.dir("portedUtilities"))
+    into(layout.buildDirectory.dir("portedSources"))
 
-    val migrationPatch = layout.projectDirectory.file("util-26.1.2.patch")
+    val migrationPatch = layout.projectDirectory.file("sources-26.1.2.patch")
     inputs.file(migrationPatch)
     doLast {
         val outputPath = destinationDir.relativeTo(repositoryRoot.asFile).invariantSeparatorsPath
@@ -47,13 +49,25 @@ val preparePortedUtilities = tasks.register<Sync>("preparePortedUtilities") {
     }
 }
 
+val portedCommon = preparePortedSources.map { it.destinationDir.resolve("common/src") }
+val migrationSources = providers.gradleProperty("migrationSources").orNull?.split(",").orEmpty()
+
 sourceSets.main {
+    kotlin.srcDir(portedCommon.map { it.resolve("main/kotlin") })
     if (utilitiesOnly) {
-        kotlin.srcDir(preparePortedUtilities)
+        kotlin.include("miragefairy2024/util/**")
     } else {
-        java.srcDir(repositoryRoot.dir("common/src/main/java"))
-        kotlin.srcDir(repositoryRoot.dir("common/src/main/kotlin"))
+        java.srcDir(portedCommon.map { it.resolve("main/java") })
+        if (migrationSources.isNotEmpty()) {
+            kotlin.include(migrationSources)
+            java.include(migrationSources)
+        }
     }
+}
+
+sourceSets.named("client") {
+    kotlin.srcDir(portedCommon.map { it.resolve("client/kotlin") })
+    java.srcDir(portedCommon.map { it.resolve("client/java") })
 }
 
 java {

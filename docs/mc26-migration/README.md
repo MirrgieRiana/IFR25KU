@@ -108,7 +108,7 @@ IFR 本体のソースを一部ずつコンパイラーに渡し、`ResourceLoca
 
 ### 機能モジュールを外して `util` だけをコンパイルするのだ～🌱
 
-`-PutilitiesOnly` を付けると、 `preparePortedUtilities` が IFR 本体の `common/src/main/kotlin/miragefairy2024/util` から 51 ファイルを `ifr-common/build/portedUtilities` にコピーし、 `git apply` で `util-26.1.2.patch` を適用するのだ～🌱 Kotlin は生成されたコピーをコンパイルし、 `mirrg` は依存するサブプロジェクトとして扱うのだ～🌱 実行には JDK 25 と Git が必要なのだ～🌱
+`preparePortedSources` は `common`、 `fabric`、 `neoforge` の Java・Kotlin ソースを `ifr-common/build/portedSources` にコピーし、 `git apply` で `sources-26.1.2.patch` を適用するのだ～🌱 `-PutilitiesOnly` を付けると、生成したコピーの `util` 51 ファイルをコンパイルするのだ～🌱 `mirrg` は依存するサブプロジェクトとして扱い、実行には JDK 25 と Git が必要なのだ～🌱
 
 ```sh
 ./gradlew -Dorg.gradle.jvmargs=-Xmx2G -Pkotlin.compiler.execution.strategy=in-process -PutilitiesOnly -p docs/mc26-migration/ifr-common :compileKotlin
@@ -120,9 +120,27 @@ IFR 本体のソースを一部ずつコンパイラーに渡し、`ResourceLoca
 | 作業用コピーで `ResourceLocation` を `Identifier` に置換 | 14 ファイルが変わり、811 件になったのだ～🌱 |
 | 上記に加えて `Identifier.kt` の `ResourceKey.with` を `<T : Any>` に変更 | 808 件になり、`Identifier.kt` の診断は 0 件になったのだ～🌱 |
 | 両方の変更を適用した `Identifier.kt` だけをコンパイル | 成功し、`IdentifierKt.class` が生成されたのだ～🌱 |
-| パッチを適用した `util` 51 ファイル | 29 ファイルを修正し、Kotlin のエラー診断が 622 件になったのだ～🌱 |
+| `6efbd4e35` のパッチを適用した `util` 51 ファイル | 29 ファイルを修正し、Kotlin のエラー診断が 622 件になったのだ～🌱 |
 
 診断数には、対象から外した `ModContext` や `DataGenerationEvents` への参照、そこから派生する型推論のエラーも含まれるのだ～🌱 `Identifier.kt`、 `ItemStack.kt`、 `NbtWrapper.kt`、 `TextScope.kt`、 `BlockEntity.kt` はパッチ適用後の実行で診断が 0 件だったのだ～🌱 `util` 全体のコンパイルには、 `Ingredient.EMPTY` を使う表示スロット、レシピ・タグ・ルートのデータ生成 API、クライアントの描画・モデル API などの対応も必要なのだぁ…🌧️
+
+
+### モジュールを順に追加する実験なのだ～🌱
+
+`-PmigrationSources` にパッケージルートからの相対パスやグロブをカンマ区切りで渡すと、選んだソースをコンパイルできるのだ～🌱 `Initialization.kt` と `MirageFairy2024.kt` に集まっていた定義から、全モジュールを初期化する処理とデータ生成のイベントを別ファイルへ移し、実コードの共通初期化だけを選べるようにしたのだ～🌱
+
+```sh
+./gradlew -p docs/mc26-migration/ifr-common '-PmigrationSources=miragefairy2024/Initialization.kt,miragefairy2024/MirageFairy2024.kt,miragefairy2024/util/Identifier.kt,miragefairy2024/mod/RecipeGroupModule.kt' :compileKotlin
+```
+
+| 実行条件 | 結果 |
+| --- | --- |
+| 共通初期化と `RecipeGroupModule` | 上のコマンドでコンパイルを確認したのだ～🌱 |
+| 上記と NinePatch テクスチャ、パーティクル、ステータス効果、サウンド | 26.1.2 のクライアント側クラスを検証用に加えたクラスパスでコンパイルを確認したのだ～🌱 |
+
+ソース全体に Minecraft と Fabric API のクラスの改名を反映したのだ～🌱 戻り値が旧 `InteractionResultHolder` や `ItemInteractionResult` の実装は `InteractionResult` に移し、クライアントとサーバーで異なる成功結果を返す箇所は分岐を維持したのだ～🌱 パーティクルの座標には `Vec3.STREAM_CODEC` を使い、サウンドパケットは従来どおり識別子を送るのだ～🌱
+
+モデル生成でクライアント側の型を参照する箇所には、ローダーごとのデータ生成と実行時クラスパスの検証が必要なのだ～🌱 `common` 全体のコンパイルは、Kotlin の解析中に診断を取得できず、対象を絞って検証を進めているのだぁ…🌧️
 
 ### 移行資料なのだ～🌱
 
