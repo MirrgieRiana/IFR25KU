@@ -36,11 +36,12 @@ import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.onClick
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.mod.recipeviewer.views.tooltip
+import miragefairy2024.mod.recipeviewer.views.wrapClickable
 import miragefairy2024.util.Registration
-import miragefairy2024.util.fire
 import miragefairy2024.util.Translation
 import miragefairy2024.util.darkGray
 import miragefairy2024.util.enJa
+import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
 import miragefairy2024.util.join
 import miragefairy2024.util.plus
@@ -116,12 +117,7 @@ private class TraitListScreenContent(menu: TraitListScreenHandler, title: Compon
                         view.text.value = trait.getName().style(trait.style)
                         view.alignmentX = Alignment.CENTER
                         view.shadow = false
-                    }.onClick {
-                        onOpenTraitEncyclopediaPageScreen.fire {
-                            if (it(trait)) return@onClick true
-                        }
-                        false
-                    }.tooltip(text { guiFullScreenTranslation() })
+                    }
 
                     view += YSpaceView(5)
 
@@ -194,7 +190,15 @@ private class TraitListScreenContent(menu: TraitListScreenHandler, title: Compon
                             view += scrollbarView
                         }
                         connectScrollbar(scrollView.view, scrollbarView.view)
-                    }
+                    }.wrapClickable {
+                        view.hoverOverlayColor = 0x00000000
+                        view.onClick.register {
+                            onOpenTraitEncyclopediaPageScreen.fire {
+                                if (it(trait)) return@register true
+                            }
+                            false
+                        }
+                    }.tooltip(text { guiFullScreenTranslation() })
 
                 }
             }

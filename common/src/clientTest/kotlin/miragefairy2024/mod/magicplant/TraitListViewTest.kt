@@ -139,10 +139,14 @@ class TraitListViewTest {
                 Assertions.assertTrue(ClickableViewRenderer.mouseClicked(row, Slot(Unit), rowBounds, rowBounds.x, rowBounds.y, 0))
                 Mockito.verify(soundManager).play(Mockito.any(SoundInstance::class.java))
 
-                val heading = placements.keys.filterIsInstance<ClickableView>().single { placements.getValue(it).y < bodyBounds.y }
-                val headingBounds = placements.getValue(heading)
-                val tooltip = placements.keys.filterIsInstance<TooltipView>().single { placements.getValue(it) == headingBounds }
-                Assertions.assertEquals(listOf(text { guiFullScreenTranslation() }), tooltip.tooltipProvider(headingBounds.x, headingBounds.y))
+                val selectedBodyScrollView = placements.keys.filterIsInstance<YScrollContainerView>().single { it !== listScrollView }
+                val poemBounds = placements.getValue(selectedBodyScrollView)
+                val poem = placements.keys.filterIsInstance<ClickableView>().single { placements.getValue(it) == poemBounds }
+                val tooltip = placements.keys.filterIsInstance<TooltipView>().single { placements.getValue(it) == poemBounds }
+                Assertions.assertEquals(listOf(text { guiFullScreenTranslation() }), tooltip.tooltipProvider(poemBounds.x, poemBounds.y))
+                val selectedBodyScrollbar = placements.keys.filterIsInstance<YFlatScrollbarView>().single { it !== listScrollbarView }
+                val placedViews = placements.keys.toList()
+                Assertions.assertTrue(placedViews.indexOf(selectedBodyScrollbar) < placedViews.indexOf(poem))
 
                 val openedTraits = mutableListOf<Trait>()
                 val remover = onOpenTraitEncyclopediaPageScreen.register {
@@ -150,7 +154,7 @@ class TraitListViewTest {
                     true
                 }
                 try {
-                    Assertions.assertTrue(ClickableViewRenderer.mouseClicked(heading, Slot(Unit), headingBounds, headingBounds.x, headingBounds.y, 0))
+                    Assertions.assertTrue(ClickableViewRenderer.mouseClicked(poem, Slot(Unit), poemBounds, poemBounds.x, poemBounds.y, 0))
                     Assertions.assertEquals(listOf(traits[1]), openedTraits)
                 } finally {
                     remover.remove()
