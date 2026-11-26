@@ -108,7 +108,7 @@ IFR 本体のソースを一部ずつコンパイラーに渡し、`ResourceLoca
 
 ### 機能モジュールを外して `util` だけをコンパイルするのだ～🌱
 
-`preparePortedSources` は `common`、 `fabric`、 `neoforge` の Java・Kotlin ソースを `ifr-common/build/portedSources` にコピーし、 `git apply` で `sources-26.1.2.patch` を適用するのだ～🌱 `-PutilitiesOnly` を付けると、生成したコピーの `util` 51 ファイルをコンパイルするのだ～🌱 `mirrg` は依存するサブプロジェクトとして扱い、実行には JDK 25 と Git が必要なのだ～🌱
+`preparePortedSources` は `common`、 `fabric`、 `neoforge` の Java・Kotlin ソースと一部の Mixin 設定を `ifr-common/build/portedSources` にコピーし、 `git apply` で `sources-26.1.2.patch` を適用するのだ～🌱 `-PutilitiesOnly` を付けると、生成したコピーの `util` 51 ファイルをコンパイルするのだ～🌱 `mirrg` は依存するサブプロジェクトとして扱い、実行には JDK 25 と Git が必要なのだ～🌱
 
 ```sh
 ./gradlew -Dorg.gradle.jvmargs=-Xmx2G -Pkotlin.compiler.execution.strategy=in-process -PutilitiesOnly -p docs/mc26-migration/ifr-common :compileKotlin
@@ -173,6 +173,18 @@ Fabric 側のデータ生成コードは `-PmigrationFabric` でコンパイル�
 | ソース | 診断を残している API の変更 |
 | --- | --- |
 | `ViewContainerScreen.kt` | `imageWidth` と `imageHeight` はコンストラクターで決まる `final` フィールドになり、ルート View の計測後に画面寸法を書き換える既存の処理を移せないのだぁ…🌧️ スロットのハイライトも個別の非公開メソッドで描画するため、従来のクリッピングには別の変更が必要なのだぁ…🌧️ |
+
+### 共通モジュールの一括解析とローダー別の検証なのだ～🌱
+
+鉱石の圧縮・解凍レシピは、データ生成側のアイテムレジストリを使って材料タグを解決するのだ～🌱 バッグは新しいインベントリのアクセサーを使い、装備を参照するパッシブスキルは防具 4 スロットを従来の順で調べるのだ～🌱 魔法植物では `VegetationBlock` を継承し、ブロックエンティティの更新パケットには従来の NBT キーで特性とフラグを載せるのだ～🌱
+
+Fabric の選択コンパイルで、エンチャント、ブロックのドロップ、食事の Mixin と、それらが使うプラットフォームプロキシの Kotlin・Java コンパイルを確認したのだ～🌱 エンチャントの照会と採掘のルートコンテキストは `ItemInstance` を受け取り、最後に食べた食品を記録するコールバックは `FoodProperties.onConsume` からスタックの消費前に呼ぶのだ～🌱 Fabric のブロックファミリー生成は、新しい `Variant` を Mixin のアクセサーで渡すのだ～🌱
+
+ModDevGradle の `createMinecraftArtifacts` で NeoForge 26.1.2.117 のパッチ適用済み Minecraft を生成し、`PlatformProxy` と `NeoForgePlatformProxy` をそのクラスパスでコンパイルしたのだ～🌱 登録とクライアント初期化を含む NeoForge 本体のビルドには、共通モジュールとクライアント側の移植も要るのだぁ…🌧️ [NeoForge 26.1 の移行資料](https://docs.neoforged.net/primer/docs/26.1/neo/)
+
+REI 26.1.819 の表示シリアライザーは、永続化用の `MapCodec` と通信の `StreamCodec` を登録するのだ～🌱 永続化時の `RecipeEntry` フィールドと、合成したレシピをロケーションから除外する条件を引き継いだのだ～🌱
+
+`common/src/main` の Kotlin 379 ファイルを一括で解析し、モジュールの依存ファイルを含めた診断を取得できたのだ～🌱 残る箇所には、廃止された `DimensionType.natural` を参照する魔法植物とパッシブスキル、旧 2 色モデルを指定するカオスキューブのスポーンエッグ、26.1.2 の対応版を確認できていない EMI があるのだぁ…🌧️
 
 ### 移行資料なのだ～🌱
 

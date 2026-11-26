@@ -36,6 +36,8 @@ val preparePortedSources = tasks.register<Sync>("preparePortedSources") {
         include("common/src/**/*.kt", "common/src/**/*.java")
         include("fabric/src/**/*.kt", "fabric/src/**/*.java")
         include("neoforge/src/**/*.kt", "neoforge/src/**/*.java")
+        include("common/src/main/resources/miragefairy2024.mixins.json")
+        include("fabric/src/main/resources/fabric.mod.json", "fabric/src/main/resources/miragefairy2024.fabric.mixins.json", "fabric/src/main/resources/miragefairy2024.accesswidener")
     }
     into(layout.buildDirectory.dir("portedSources"))
 
@@ -58,6 +60,7 @@ val migrationClientSources = providers.gradleProperty("migrationClientSources").
 
 sourceSets.main {
     kotlin.srcDir(portedCommon.map { it.resolve("main/kotlin") })
+    resources.srcDir(portedCommon.map { it.resolve("main/resources") })
     if (utilitiesOnly) {
         kotlin.include("miragefairy2024/util/**")
     } else {
@@ -65,6 +68,7 @@ sourceSets.main {
         if (migrationFabric) {
             kotlin.srcDir(portedFabric.map { it.resolve("main/kotlin") })
             java.srcDir(portedFabric.map { it.resolve("main/java") })
+            resources.srcDir(portedFabric.map { it.resolve("main/resources") })
         }
         if (migrationSources.isNotEmpty()) {
             kotlin.include(migrationSources)
