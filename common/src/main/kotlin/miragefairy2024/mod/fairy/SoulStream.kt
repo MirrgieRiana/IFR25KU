@@ -141,6 +141,7 @@ val soulStreamScreenHandlerType = Registration(BuiltInRegistries.MENU, MirageFai
 
 class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val soulStream: Container) : AbstractContainerMenu(soulStreamScreenHandlerType(), syncId) {
 
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     private var screenContent: SoulStreamScreenContent? = null
 
     init {
@@ -170,25 +171,39 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
     fun createRootView(
         title: Component,
         screenEventSource: ScreenEventSource,
+        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
         enabledPassiveSkillEffectFilters: ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>,
+        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
         enableGlobalFairyHighlight: ObservableValue<Boolean>,
+        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
         collectionToggleKeyText: Component,
+        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
         setCollectionEnabled: (Boolean) -> Unit,
     ): View {
+        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
         val screenContent = SoulStreamScreenContent(
             this,
             screenEventSource,
+            // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
             enabledPassiveSkillEffectFilters,
+            // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
             enableGlobalFairyHighlight,
+            // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
             collectionToggleKeyText,
+            // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
             setCollectionEnabled,
         )
+        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
         this.screenContent = screenContent
+        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
         return screenContent.createView(title)
     }
 
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     fun disposeView() {
+        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
         screenContent?.dispose()
+        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
         screenContent = null
     }
 

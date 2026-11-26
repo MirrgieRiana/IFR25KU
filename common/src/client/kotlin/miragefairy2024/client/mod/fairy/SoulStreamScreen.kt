@@ -133,13 +133,18 @@ fun initSoulStreamClientModule() {
 class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : ViewContainerScreen<SoulStreamScreenHandler>(handler, playerInventory, title) {
 
     override fun createRootView(screenEventSource: ScreenEventSource): View {
+        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
         return menu.createRootView(
             title,
             screenEventSource,
+            // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
             enabledPassiveSkillEffectFilters,
+            // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
             enableGlobalFairyHighlight,
+            // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
             text { toggleCollectionEnabledKeyMappingCard() }
         ) {
+            // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
             SetCollectionEnabledChannel.sendToServer(it)
         }
     }

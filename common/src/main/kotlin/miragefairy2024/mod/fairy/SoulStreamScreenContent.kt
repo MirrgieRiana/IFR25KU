@@ -65,7 +65,6 @@ private val BUTTON_14_BACKGROUND = LayeredImageButtonView.Sprites(
 )
 
 class SoulStreamScreenContent(
-    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     private val menu: SoulStreamScreenHandler,
     private val screenEventSource: ScreenEventSource,
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
@@ -80,9 +79,11 @@ class SoulStreamScreenContent(
 
     private val player: Player = menu.playerInventory.player
 
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     private val onViewClosed = EventRegistry<() -> Unit>()
     private var lastUpdateEventNanoTime = 0L
 
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     fun createView(title: Component): View {
         return View {
             // 灰色背景
@@ -417,6 +418,7 @@ class SoulStreamScreenContent(
         }
     }
 
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     fun dispose() {
         onViewClosed.fire()
     }
