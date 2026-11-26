@@ -54,6 +54,7 @@ val portedCommon = preparePortedSources.map { it.destinationDir.resolve("common/
 val portedFabric = preparePortedSources.map { it.destinationDir.resolve("fabric/src") }
 val migrationFabric = providers.gradleProperty("migrationFabric").isPresent
 val migrationSources = providers.gradleProperty("migrationSources").orNull?.split(",").orEmpty()
+val migrationClientSources = providers.gradleProperty("migrationClientSources").orNull?.split(",").orEmpty()
 
 sourceSets.main {
     kotlin.srcDir(portedCommon.map { it.resolve("main/kotlin") })
@@ -78,6 +79,10 @@ sourceSets.named("client") {
     if (migrationFabric) {
         kotlin.srcDir(portedFabric.map { it.resolve("client/kotlin") })
         java.srcDir(portedFabric.map { it.resolve("client/java") })
+    }
+    if (migrationClientSources.isNotEmpty()) {
+        kotlin.include(migrationClientSources)
+        java.include(migrationClientSources)
     }
 }
 

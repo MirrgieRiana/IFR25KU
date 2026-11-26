@@ -162,6 +162,18 @@ Fabric 側のデータ生成コードは `-PmigrationFabric` でコンパイル�
 | バイオームと魔法植物の群生 | `RandomPatchConfiguration` と `Feature.RANDOM_PATCH` ・ `Feature.FLOWER` が削除され、従来の試行回数と位置の選び方を保つには互換実装が必要なのだぁ…🌧️ |
 | `ApostleWandItem.kt` | クラフト余剰アイテムの取得は `final` になり、同じアイテム自身を返す処理は旧方式でオーバーライドできなくなったのだぁ…🌧️ |
 
+### 食品、加工機械の燃料、GUI 描画、樹木の配置なのだ～🌱
+
+食品の満腹度と隠し満腹度は `FoodProperties` に置き、使用時間とステータス効果は `Consumable` に移したのだ～🌱 アタノールの燃料判定は、インベントリ、メニュー、レシピ表示のそれぞれでワールドの `FuelValues` を参照するのだ～🌱 カスタム材料は、新しい `CustomIngredient` のコーデックと `SlotDisplay` へ移し、表示に使うスタックに独自のデータコンポーネントを含めているのだ～🌱
+
+`-PmigrationClientSources` にグロブやソースファイルのパスを渡すと、クライアント側も対象を選んで `:compileClientKotlin` と `:compileClientJava` を実行できるのだ～🌱 NinePatch とツールチップ背景の描画、GUI のアイテム装飾コールバックを `GuiGraphicsExtractor` に移したのだ～🌱 旧 View のマウスとキーの入力は、新しいイベント型で受け取るのだ～🌱 [Fabric の GUI 描画資料](https://docs.fabricmc.net/26.1.2/develop/rendering/gui/custom-screens)
+
+ハイメヴィスカとプラスチックの木は、大小 4 種類の幹・葉の配置クラスを `WorldGenLevel` に移したのだ～🌱 幹の直下が置換可能なときにだけ、種類に応じて土か樹脂セメントを置くのだ～🌱
+
+| ソース | 診断を残している API の変更 |
+| --- | --- |
+| `ViewContainerScreen.kt` | `imageWidth` と `imageHeight` はコンストラクターで決まる `final` フィールドになり、ルート View の計測後に画面寸法を書き換える既存の処理を移せないのだぁ…🌧️ スロットのハイライトも個別の非公開メソッドで描画するため、従来のクリッピングには別の変更が必要なのだぁ…🌧️ |
+
 ### 移行資料なのだ～🌱
 
 - 26.1 系では JDK 25 と非リマップ版 Loom を使い、依存の宣言は `implementation` や `compileOnly` に移すのだ～🌱 今回はクリエイティブタブ、ディメンション移動イベント、燃料登録を、新しい Fabric API に置き換えたのだ～🌱 タグのデータ生成は `FabricPackOutput` と `FabricTagsProvider` の `TagAppender` に合わせる必要があるのだ～🌱 [Fabric の 26.1 移行案内](https://fabricmc.net/2026/03/14/261.html) [Fabric API の移行表](https://docs.fabricmc.net/de_de/develop/porting/26.1/fabric-api)
