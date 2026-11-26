@@ -105,3 +105,20 @@ IFR 本体のソースを一部ずつコンパイラーに渡し、`ResourceLoca
 | `util/DebugItem.kt` | アイテム使用時に返す `InteractionResultHolder` |
 | `mod/tool/ToolMaterial.kt` | ツール素材を定義する `Tier` |
 | `util/Ingredient.kt` | `ItemStack` や `TagKey<Item>` を直接渡している `Ingredient.of` |
+
+### 機能モジュールを外して `util` だけをコンパイルするのだ～🌱
+
+`-PutilitiesOnly` を付けると、IFR 本体から `common/src/main/kotlin/miragefairy2024/util` の 51 ファイルをコンパイル対象にするのだ～🌱 `mirrg` は依存するサブプロジェクトとして扱うのだ～🌱
+
+```sh
+./gradlew -Dorg.gradle.jvmargs=-Xmx2G -Pkotlin.compiler.execution.strategy=in-process -PutilitiesOnly -p docs/mc26-migration/ifr-common :compileKotlin
+```
+
+| 実行条件 | 結果 |
+| --- | --- |
+| `util` 51 ファイル | 29 秒で終了し、Kotlin は 923 件のエラー診断を返したのだ～🌱 |
+| 作業用コピーで `ResourceLocation` を `Identifier` に置換 | 14 ファイルが変わり、811 件になったのだ～🌱 |
+| 上記に加えて `Identifier.kt` の `ResourceKey.with` を `<T : Any>` に変更 | 808 件になり、`Identifier.kt` の診断は 0 件になったのだ～🌱 |
+| 両方の変更を適用した `Identifier.kt` だけをコンパイル | 成功し、`IdentifierKt.class` が生成されたのだ～🌱 |
+
+診断数には、対象から外した `ModContext` や `DataGenerationEvents` への参照、そこから派生する型推論のエラーも含まれるのだ～🌱 `InteractionResultHolder` と `Ingredient.of` の API 差分は、識別子を置換したあとも残ったのだぁ…🌧️

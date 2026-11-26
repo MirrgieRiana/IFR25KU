@@ -11,6 +11,7 @@ val experiment = Properties().apply {
     file("../gradle.properties").inputStream().use { load(it) }
 }
 val repositoryRoot = layout.projectDirectory.dir("../../..")
+val utilitiesOnly = providers.gradleProperty("utilitiesOnly").isPresent
 
 repositories {
     mavenCentral()
@@ -30,8 +31,13 @@ loom {
 }
 
 sourceSets.main {
-    java.srcDir(repositoryRoot.dir("common/src/main/java"))
+    if (!utilitiesOnly) {
+        java.srcDir(repositoryRoot.dir("common/src/main/java"))
+    }
     kotlin.srcDir(repositoryRoot.dir("common/src/main/kotlin"))
+    if (utilitiesOnly) {
+        kotlin.include("miragefairy2024/util/**")
+    }
 }
 
 java {
