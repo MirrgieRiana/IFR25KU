@@ -149,6 +149,19 @@ IFR 本体のソースを一部ずつコンパイラーに渡し、`ResourceLoca
 
 モデル生成でクライアント側の型を参照する箇所には、ローダーごとのデータ生成と実行時クラスパスの検証が必要なのだ～🌱 `common` 全体は、Kotlin の解析中に診断を取得できず、対象を絞って検証を進めているのだぁ…🌧️
 
+### ツール、バイオーム、ブロックエンティティ、Fabric のデータ生成なのだ～🌱
+
+アイテムとブロックの登録時に ID をプロパティへ渡し、ツールの耐久値、採掘規則、修理材料を `ToolMaterial` とデータコンポーネントへ移したのだ～🌱 バイオームの色や燃焼速度は `EnvironmentAttributes` に移し、モブのスポーンの重みは `SpawnerData` とは別に渡すのだ～🌱
+
+設置アイテムとインベントリを含む範囲のコンパイルを確認したのだ～🌱 ブロックエンティティの保存には `ValueInput` と `ValueOutput` を使い、従来の NBT キーとスロット番号を引き継ぐのだ～🌱 26.1.2 の Codec で、既存のブロックステート JSON 130 件を読み込み、スロット 3 と 200 を含む旧形式のインベントリを、同じ NBT に書き戻せることを確認したのだ～🌱
+
+Fabric 側のデータ生成コードは `-PmigrationFabric` でコンパイル対象に含められるのだ～🌱 新しいモデルプロバイダーに対応し、アイテムレポートはレジストリのデフォルトコンポーネントから `reports/items.json` に集計するのだ～🌱 選択コンパイルではモジュールの初期化と `canCraftInDimensions` の診断が残っていて、データ生成の実行には追加の移植が必要なのだぁ…🌧️
+
+| ソース | 診断を残している API の変更 |
+| --- | --- |
+| バイオームと魔法植物の群生 | `RandomPatchConfiguration` と `Feature.RANDOM_PATCH` ・ `Feature.FLOWER` が削除され、従来の試行回数と位置の選び方を保つには互換実装が必要なのだぁ…🌧️ |
+| `ApostleWandItem.kt` | クラフト余剰アイテムの取得は `final` になり、同じアイテム自身を返す処理は旧方式でオーバーライドできなくなったのだぁ…🌧️ |
+
 ### 移行資料なのだ～🌱
 
 - 26.1 系では JDK 25 と非リマップ版 Loom を使い、依存の宣言は `implementation` や `compileOnly` に移すのだ～🌱 今回はクリエイティブタブ、ディメンション移動イベント、燃料登録を、新しい Fabric API に置き換えたのだ～🌱 タグのデータ生成は `FabricPackOutput` と `FabricTagsProvider` の `TagAppender` に合わせる必要があるのだ～🌱 [Fabric の 26.1 移行案内](https://fabricmc.net/2026/03/14/261.html) [Fabric API の移行表](https://docs.fabricmc.net/de_de/develop/porting/26.1/fabric-api)

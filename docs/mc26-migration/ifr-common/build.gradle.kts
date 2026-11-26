@@ -51,6 +51,8 @@ val preparePortedSources = tasks.register<Sync>("preparePortedSources") {
 }
 
 val portedCommon = preparePortedSources.map { it.destinationDir.resolve("common/src") }
+val portedFabric = preparePortedSources.map { it.destinationDir.resolve("fabric/src") }
+val migrationFabric = providers.gradleProperty("migrationFabric").isPresent
 val migrationSources = providers.gradleProperty("migrationSources").orNull?.split(",").orEmpty()
 
 sourceSets.main {
@@ -59,6 +61,10 @@ sourceSets.main {
         kotlin.include("miragefairy2024/util/**")
     } else {
         java.srcDir(portedCommon.map { it.resolve("main/java") })
+        if (migrationFabric) {
+            kotlin.srcDir(portedFabric.map { it.resolve("main/kotlin") })
+            java.srcDir(portedFabric.map { it.resolve("main/java") })
+        }
         if (migrationSources.isNotEmpty()) {
             kotlin.include(migrationSources)
             java.include(migrationSources)
@@ -69,6 +75,10 @@ sourceSets.main {
 sourceSets.named("client") {
     kotlin.srcDir(portedCommon.map { it.resolve("client/kotlin") })
     java.srcDir(portedCommon.map { it.resolve("client/java") })
+    if (migrationFabric) {
+        kotlin.srcDir(portedFabric.map { it.resolve("client/kotlin") })
+        java.srcDir(portedFabric.map { it.resolve("client/java") })
+    }
 }
 
 java {
