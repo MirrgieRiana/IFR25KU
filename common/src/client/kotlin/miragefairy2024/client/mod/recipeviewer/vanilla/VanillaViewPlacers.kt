@@ -44,6 +44,8 @@ import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.components.Tooltip
 import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.network.chat.Component
+import java.lang.ref.WeakReference
+import java.util.WeakHashMap
 
 private infix fun VanillaViewPlacerContext.place(registration: WidgetRegistration): ViewController {
     val onDetached = EventRegistry<() -> Unit>()
@@ -57,30 +59,23 @@ private infix fun VanillaViewPlacerContext.place(registration: WidgetRegistratio
     }
 }
 
-private class ScrollBoundsBeforeRender(screenEventSource: ScreenEventSource) : () -> Unit {
-    private val listeners = EventRegistry<() -> Unit>()
-    private val beforeRenderRemover = screenEventSource.onBeforeRender.register(this)
-    private val disposingRemover = screenEventSource.onDisposing.register {
-        disconnect()
-    }
-
-    override fun invoke() = listeners.fire()
-
-    fun register(listener: () -> Unit): Remover = listeners.register(listener)
-
-    private fun disconnect() {
-        beforeRenderRemover.remove()
-        disposingRemover.remove()
-    }
-}
-
 context(_: ModContext)
 fun initVanillaViewPlacers() {
+    // 中継はイベントソースの購読が保持し、トーストの終了後はイベントソースと一緒に回収されるのだ～🌱
+    val scrollBoundsBeforeRenderRegistries = WeakHashMap<ScreenEventSource, WeakReference<EventRegistry<() -> Unit>>>()
     fun placeScrollContainerView(context: VanillaViewPlacerContext, widget: VanillaScrollContainerViewWidget): ViewController {
         val controller = context place WidgetRegistration(widget, true) { RenderOverflow.NONE }
         val screenEventSource = context.screenEventSource
-        val beforeRender = screenEventSource.onBeforeRender.toList().firstNotNullOfOrNull { it as? ScrollBoundsBeforeRender }
-            ?: ScrollBoundsBeforeRender(screenEventSource)
+        val beforeRender = scrollBoundsBeforeRenderRegistries[screenEventSource]?.get() ?: EventRegistry<() -> Unit>().also { registry ->
+            scrollBoundsBeforeRenderRegistries[screenEventSource] = WeakReference(registry)
+            val remover = screenEventSource.onBeforeRender.register {
+                registry.fire()
+            }
+            Remover {
+                remover.remove()
+                scrollBoundsBeforeRenderRegistries.remove(screenEventSource)
+            }.removeOn(screenEventSource.onDisposing)
+        }
         // 子の差し替えだけで全長が変わった場合も、描画前に寸法を通知するのだ～🌱
         val boundsRemover = beforeRender.register {
             widget.updateScrollBounds()
