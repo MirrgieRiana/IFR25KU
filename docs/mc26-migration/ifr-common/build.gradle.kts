@@ -38,6 +38,7 @@ val preparePortedSources = tasks.register<Sync>("preparePortedSources") {
         include("neoforge/src/**/*.kt", "neoforge/src/**/*.java")
         include("common/src/main/resources/miragefairy2024.mixins.json")
         include("fabric/src/main/resources/fabric.mod.json", "fabric/src/main/resources/miragefairy2024.fabric.mixins.json", "fabric/src/main/resources/miragefairy2024.accesswidener")
+        include("fabric/src/client/resources/miragefairy2024.client.fabric.mixins.json", "neoforge/src/main/resources/miragefairy2024.client.neoforge.mixins.json")
     }
     into(layout.buildDirectory.dir("portedSources"))
 
@@ -83,6 +84,7 @@ sourceSets.named("client") {
     if (migrationFabric) {
         kotlin.srcDir(portedFabric.map { it.resolve("client/kotlin") })
         java.srcDir(portedFabric.map { it.resolve("client/java") })
+        resources.srcDir(portedFabric.map { it.resolve("client/resources") })
     }
     if (migrationClientSources.isNotEmpty()) {
         kotlin.include(migrationClientSources)

@@ -452,26 +452,237 @@ index 1c2788e..79ccbb5 100644
 +        if (minusBitCount > 0) graphics.text(font, "$minusBitCount", x + 19 - 2 - font.width("$minusBitCount"), y, ChatFormatting.DARK_RED.color!!, false)
      }
  }
+diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/particle/AdditiveParticleRenderType.kt b/common/src/client/kotlin/miragefairy2024/client/mod/particle/AdditiveParticleRenderType.kt
+index 220198e..67c40ba 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/mod/particle/AdditiveParticleRenderType.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/mod/particle/AdditiveParticleRenderType.kt
+@@ -1,32 +1,19 @@
+ package miragefairy2024.client.mod.particle
+
+-import com.mojang.blaze3d.platform.GlStateManager
+-import com.mojang.blaze3d.systems.RenderSystem
+-import com.mojang.blaze3d.vertex.BufferBuilder
+-import com.mojang.blaze3d.vertex.DefaultVertexFormat
+-import com.mojang.blaze3d.vertex.Tesselator
+-import com.mojang.blaze3d.vertex.VertexFormat
++import com.mojang.blaze3d.pipeline.BlendFunction
++import com.mojang.blaze3d.pipeline.ColorTargetState
++import com.mojang.blaze3d.pipeline.RenderPipeline
++import com.mojang.blaze3d.platform.DestFactor
++import com.mojang.blaze3d.platform.SourceFactor
+ import miragefairy2024.MirageFairy2024
+-import net.minecraft.client.particle.ParticleRenderType
+-import net.minecraft.client.renderer.texture.TextureAtlas
+-import net.minecraft.client.renderer.texture.TextureManager
++import net.minecraft.client.particle.SingleQuadParticle
++import net.minecraft.client.renderer.RenderPipelines
+
+-/**
+- * 加算合成でパーティクルを描画するのだ～🌱
+- * バニラの [net.minecraft.client.particle.ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT] から、合成関数だけを加算へ替えたものなのだ～🌱
+- *
+- * [net.minecraft.client.particle.ParticleEngine.render] は、この種別ごとに [miragefairy2024.client.mod.particle.AdditiveParticleRenderType.begin] を 1 回だけ呼んで、そのキューの全頂点をまとめて描画するのだ～🌱
+- * だから、専用の種別を持つことで、他の MOD のパーティクルを巻き込まずに合成関数を選べるのだ～🌱
+- */
+-object AdditiveParticleRenderType : ParticleRenderType {
+-    override fun begin(tesselator: Tesselator, textureManager: TextureManager): BufferBuilder {
+-        RenderSystem.depthMask(true)
+-        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES)
+-        RenderSystem.enableBlend()
+-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE)
+-        return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE)
+-    }
+-
+-    // バニラの種別と同じく、クラッシュレポートに出る名前を与えるのだ～🌱
+-    override fun toString() = "${MirageFairy2024.MOD_ID}:additive"
+-}
++val additiveParticleLayer = SingleQuadParticle.Layer(
++    true,
++    SingleQuadParticle.Layer.TRANSLUCENT.textureAtlasLocation(),
++    RenderPipeline.builder(RenderPipelines.PARTICLE_SNIPPET)
++        .withLocation(MirageFairy2024.identifier("pipeline/additive_particle"))
++        .withColorTargetState(ColorTargetState(BlendFunction(SourceFactor.SRC_ALPHA, DestFactor.ONE)))
++        .build(),
++)
+diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/particle/AttractingParticle.kt b/common/src/client/kotlin/miragefairy2024/client/mod/particle/AttractingParticle.kt
+index 13e5fe8..45c031b 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/mod/particle/AttractingParticle.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/mod/particle/AttractingParticle.kt
+@@ -4,8 +4,8 @@ import net.minecraft.client.multiplayer.ClientLevel
+ import net.minecraft.client.particle.Particle
+ import net.minecraft.client.particle.ParticleProvider
+-import net.minecraft.client.particle.ParticleRenderType
+ import net.minecraft.client.particle.SpriteSet
+-import net.minecraft.client.particle.TextureSheetParticle
++import net.minecraft.client.particle.SingleQuadParticle
+ import net.minecraft.core.particles.SimpleParticleType
++import net.minecraft.util.RandomSource
+
+ class AttractingParticle internal constructor(
+@@ -13,5 +13,6 @@ class AttractingParticle internal constructor(
+     fromX: Double, fromY: Double, fromZ: Double,
+     toX: Double, toY: Double, toZ: Double,
+-) : TextureSheetParticle(level, fromX, fromY, fromZ, 0.0, 0.0, 0.0) {
++    spriteProvider: SpriteSet,
++) : SingleQuadParticle(level, fromX, fromY, fromZ, 0.0, 0.0, 0.0, spriteProvider.first()) {
+     private val aX: Double
+     private val aY: Double
+@@ -27,7 +28,8 @@ class AttractingParticle internal constructor(
+         aZ = (toZ - fromZ) / (lifetime * (lifetime + 1) / 2.0)
+         quadSize *= 0.3F
++        setSprite(spriteProvider.get(random))
+     }
+
+-    override fun getRenderType(): ParticleRenderType = ParticleRenderType.PARTICLE_SHEET_OPAQUE
++    override fun getLayer() = Layer.OPAQUE
+
+     override fun move(dx: Double, dy: Double, dz: Double) {
+@@ -44,9 +46,5 @@ class AttractingParticle internal constructor(
+
+     class Factory(private val spriteProvider: SpriteSet) : ParticleProvider<SimpleParticleType> {
+-        override fun createParticle(defaultParticleType: SimpleParticleType, level: ClientLevel, d: Double, e: Double, f: Double, g: Double, h: Double, i: Double): Particle {
+-            val particle = AttractingParticle(level, d, e, f, g, h, i)
+-            particle.pickSprite(spriteProvider)
+-            return particle
+-        }
++        override fun createParticle(defaultParticleType: SimpleParticleType, level: ClientLevel, d: Double, e: Double, f: Double, g: Double, h: Double, i: Double, random: RandomSource): Particle = AttractingParticle(level, d, e, f, g, h, i, spriteProvider)
+     }
+ }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/particle/MagicSquareParticle.kt b/common/src/client/kotlin/miragefairy2024/client/mod/particle/MagicSquareParticle.kt
-index 5e8ec33..3e7335d 100644
+index 5e8ec33..3627a85 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/particle/MagicSquareParticle.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/mod/particle/MagicSquareParticle.kt
-@@ -10,5 +10,5 @@ import mirrg.kotlin.hydrogen.blueOfRgb
+@@ -1,5 +1,4 @@
+ package miragefairy2024.client.mod.particle
+
+-import com.mojang.blaze3d.vertex.VertexConsumer
+ import miragefairy2024.ModContext
+ import miragefairy2024.mod.particle.MagicSquareParticleChannel
+@@ -10,17 +9,16 @@ import mirrg.kotlin.hydrogen.blueOfRgb
  import mirrg.kotlin.hydrogen.greenOfRgb
  import mirrg.kotlin.hydrogen.redOfRgb
 -import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider
 +import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteSet
  import net.minecraft.client.Camera
  import net.minecraft.client.Minecraft
-@@ -49,5 +49,5 @@ fun createMagicSquareParticleFactory() = { spriteProvider: SpriteSet ->
- class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, private val targetPosition: Vec3, spriteProvider: SpriteSet) : TextureSheetParticle(level, x, y, z) {
+ import net.minecraft.client.multiplayer.ClientLevel
+ import net.minecraft.client.particle.ParticleProvider
+-import net.minecraft.client.particle.ParticleRenderType
+ import net.minecraft.client.particle.SpriteSet
+-import net.minecraft.client.particle.TextureSheetParticle
+-import net.minecraft.client.renderer.LightTexture
++import net.minecraft.client.particle.SingleQuadParticle
++import net.minecraft.client.renderer.state.level.QuadParticleRenderState
++import net.minecraft.util.LightCoordsUtil
+ import net.minecraft.util.Mth
+ import net.minecraft.world.phys.Vec3
+ import org.joml.Quaternionf
+-import org.joml.Vector3f
+ import kotlin.math.roundToInt
+
+@@ -42,12 +40,13 @@ fun initMagicSquareParticle() {
+
+ fun createMagicSquareParticleFactory() = { spriteProvider: SpriteSet ->
+-    ParticleProvider<MagicSquareParticleEffect> { parameters, level, x, y, z, _, _, _ ->
++    ParticleProvider<MagicSquareParticleEffect> { parameters, level, x, y, z, _, _, _, _ ->
+         MagicSquareParticle(level, x, y, z, parameters.targetPosition, spriteProvider)
+     }
+ }
+
+-class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, private val targetPosition: Vec3, spriteProvider: SpriteSet) : TextureSheetParticle(level, x, y, z) {
++class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, private val targetPosition: Vec3, spriteProvider: SpriteSet) : SingleQuadParticle(level, x, y, z, spriteProvider.first()) {
 
 -    private val sprites = (spriteProvider as FabricSpriteProvider).sprites
++    private var layerLightCoords = 0
 +    private val sprites = (spriteProvider as FabricSpriteSet).sprites
 
      var color1 = 0xFFF4D3
+@@ -94,5 +93,5 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, p
+     }
+
+-    override fun render(vertexConsumer: VertexConsumer, camera: Camera, tickDelta: Float) {
++    override fun extract(renderState: QuadParticleRenderState, camera: Camera, tickDelta: Float) {
+         (0 until LAYER_COUNT).forEach { layer ->
+             val ticks = LAYER_TICKS[layer]
+@@ -112,11 +111,10 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, p
+             alpha = value
+
+-            val brightness = getLayerLightColor(tickDelta, ticks)
+-            buildGeometry(vertexConsumer, camera, tickDelta, false, brightness)
+-            buildGeometry(vertexConsumer, camera, tickDelta, true, brightness)
++            layerLightCoords = getLayerLightCoords(tickDelta, ticks)
++            extractLayers(renderState, camera, tickDelta)
+         }
+     }
+
+-    private fun buildGeometry(vertexConsumer: VertexConsumer, camera: Camera, tickDelta: Float, flip: Boolean, brightness: Int) {
++    private fun extractLayers(renderState: QuadParticleRenderState, camera: Camera, tickDelta: Float) {
+
+         val offsetX = (targetPosition.x - x).toFloat()
+@@ -128,34 +126,9 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, p
+
+         val quaternionf = Quaternionf().rotationYXZ(yaw, pitch, Mth.lerp(tickDelta, oRoll, roll))
+-        if (flip) quaternionf.rotateY(-Mth.PI)
+-
+-        val size = getQuadSize(tickDelta)
+-
+-        val cameraPos = camera.position
+-        val translateX = (Mth.lerp(tickDelta.toDouble(), xo, x) - cameraPos.x()).toFloat()
+-        val translateY = (Mth.lerp(tickDelta.toDouble(), yo, y) - cameraPos.y()).toFloat()
+-        val translateZ = (Mth.lerp(tickDelta.toDouble(), zo, z) - cameraPos.z()).toFloat()
+-
+-        val vector3fs = arrayOf(
+-            Vector3f(-1.0F, -1.0F, 0.0F),
+-            Vector3f(-1.0F, 1.0F, 0.0F),
+-            Vector3f(1.0F, 1.0F, 0.0F),
+-            Vector3f(1.0F, -1.0F, 0.0F),
+-        )
+-        vector3fs.forEach { vector3f ->
+-            vector3f.rotate(quaternionf)
+-            vector3f.mul(size)
+-            vector3f.add(translateX, translateY, translateZ)
+-        }
+-
+-        vertex(vertexConsumer, vector3fs[0], u1, v1, brightness)
+-        vertex(vertexConsumer, vector3fs[1], u1, v0, brightness)
+-        vertex(vertexConsumer, vector3fs[2], u0, v0, brightness)
+-        vertex(vertexConsumer, vector3fs[3], u0, v1, brightness)
++        extractRotatedQuad(renderState, camera, quaternionf, tickDelta)
++        extractRotatedQuad(renderState, camera, quaternionf.rotateY(-Mth.PI), tickDelta)
+     }
+
+-    private fun vertex(vertexConsumer: VertexConsumer, pos: Vector3f, u: Float, v: Float, light: Int) {
+-        vertexConsumer.addVertex(pos.x(), pos.y(), pos.z()).setUv(u, v).setColor(rCol, gCol, bCol, alpha).setLight(light)
+-    }
++    override fun getLightCoords(partialTick: Float) = layerLightCoords
+
+     override fun tick() {
+@@ -169,16 +142,16 @@ class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, p
+     }
+
+-    override fun getQuadSize(tickDelta: Float) = quadSize * (1F - 0.2F * Mth.cos((age.toFloat() + tickDelta) / 80F * Mth.TWO_PI))
++    override fun getQuadSize(tickDelta: Float) = quadSize * (1F - 0.2F * Mth.cos(((age.toFloat() + tickDelta) / 80F * Mth.TWO_PI).toDouble()))
+
+-    private fun getLayerLightColor(tint: Float, ticks: Array<Float>): Int {
+-        val brightness = super.getLightColor(tint)
+-        val oldSkyLight = LightTexture.sky(brightness)
+-        val oldBlockLight = LightTexture.block(brightness)
++    private fun getLayerLightCoords(tint: Float, ticks: Array<Float>): Int {
++        val brightness = super.getLightCoords(tint)
++        val oldSkyLight = LightCoordsUtil.sky(brightness)
++        val oldBlockLight = LightCoordsUtil.block(brightness)
+         val skyLight = oldSkyLight
+         val blockLight = oldBlockLight max (15F * getValue(tint, ticks)).roundToInt()
+-        return LightTexture.pack(blockLight, skyLight)
++        return LightCoordsUtil.pack(blockLight, skyLight)
+     }
+
+-    override fun getRenderType(): ParticleRenderType = ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT
++    override fun getLayer() = Layer.TRANSLUCENT
+
+     companion object {
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/particle/ParticleClientModule.kt b/common/src/client/kotlin/miragefairy2024/client/mod/particle/ParticleClientModule.kt
-index 30b7e59..f8b18b6 100644
+index 30b7e59..50b94da 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/particle/ParticleClientModule.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/mod/particle/ParticleClientModule.kt
 @@ -3,5 +3,5 @@ package miragefairy2024.client.mod.particle
@@ -481,7 +692,7 @@ index 30b7e59..f8b18b6 100644
 +import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry
  import net.minecraft.client.particle.EndRodParticle
  import net.minecraft.client.particle.FlyTowardsPositionParticle
-@@ -15,10 +15,10 @@ private const val HAIMEVISKA_SAP_RGB = 0x80C8EE
+@@ -15,28 +15,28 @@ private const val HAIMEVISKA_SAP_RGB = 0x80C8EE
  context(_: ModContext)
  fun initParticleClientModule() {
 -    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.MISSION.particleType, SuspendedTownParticle::HappyVillagerProvider)
@@ -497,8 +708,12 @@ index 30b7e59..f8b18b6 100644
 +    ParticleProviderRegistry.getInstance().register(ParticleTypeCard.ATTRACTING_MAGIC.particleType, AttractingParticle::Factory)
 +    ParticleProviderRegistry.getInstance().register(ParticleTypeCard.AURA.particleType) { spriteProvider ->
          val factory = EndRodParticle.Provider(spriteProvider)
-         ParticleProvider { parameters, level, x, y, z, velocityX, velocityY, velocityZ ->
-@@ -28,15 +28,15 @@ fun initParticleClientModule() {
+-        ParticleProvider { parameters, level, x, y, z, velocityX, velocityY, velocityZ ->
+-            factory.createParticle(parameters, level, x, y, z, velocityX, velocityY, velocityZ)?.also { particle ->
++        ParticleProvider { parameters, level, x, y, z, velocityX, velocityY, velocityZ, random ->
++            factory.createParticle(parameters, level, x, y, z, velocityX, velocityY, velocityZ, random)?.also { particle ->
+                 particle.lifetime = 20 + level.random.nextInt(12)
+             }
          }
      }
 -    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.CHAOS_STONE.particleType, createRollingFallingParticleFactory(0.0F))
@@ -514,17 +729,195 @@ index 30b7e59..f8b18b6 100644
 -    ParticleFactoryRegistry.getInstance().register(ParticleTypeCard.SPARKLE.particleType, createSparkleParticleFactory())
 +    ParticleProviderRegistry.getInstance().register(ParticleTypeCard.CHAOS_STONE.particleType, createRollingFallingParticleFactory(0.0F))
 +    ParticleProviderRegistry.getInstance().register(ParticleTypeCard.HAIMEVISKA_BLOSSOM.particleType, createRollingFallingParticleFactory(1.0F))
-+    ParticleProviderRegistry.getInstance().register(ParticleTypeCard.DRIPPING_HAIMEVISKA_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Dripping(level, x, y, z, spriteProvider, HAIMEVISKA_SAP_RGB, ParticleTypeCard.FALLING_HAIMEVISKA_SAP.particleType) } }
-+    ParticleProviderRegistry.getInstance().register(ParticleTypeCard.FALLING_HAIMEVISKA_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Falling(level, x, y, z, spriteProvider, HAIMEVISKA_SAP_RGB, ParticleTypeCard.LANDING_HAIMEVISKA_SAP.particleType) } }
-+    ParticleProviderRegistry.getInstance().register(ParticleTypeCard.LANDING_HAIMEVISKA_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Landing(level, x, y, z, spriteProvider, HAIMEVISKA_SAP_RGB) } }
-+    ParticleProviderRegistry.getInstance().register(ParticleTypeCard.DRIPPING_PLASTIC_TREE_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Dripping(level, x, y, z, spriteProvider, PLASTIC_TREE_SAP_RGB, ParticleTypeCard.FALLING_PLASTIC_TREE_SAP.particleType) } }
-+    ParticleProviderRegistry.getInstance().register(ParticleTypeCard.FALLING_PLASTIC_TREE_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Falling(level, x, y, z, spriteProvider, PLASTIC_TREE_SAP_RGB, ParticleTypeCard.LANDING_PLASTIC_TREE_SAP.particleType) } }
-+    ParticleProviderRegistry.getInstance().register(ParticleTypeCard.LANDING_PLASTIC_TREE_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _ -> SapParticle.Landing(level, x, y, z, spriteProvider, PLASTIC_TREE_SAP_RGB) } }
++    ParticleProviderRegistry.getInstance().register(ParticleTypeCard.DRIPPING_HAIMEVISKA_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _, _ -> SapParticle.Dripping(level, x, y, z, spriteProvider, HAIMEVISKA_SAP_RGB, ParticleTypeCard.FALLING_HAIMEVISKA_SAP.particleType) } }
++    ParticleProviderRegistry.getInstance().register(ParticleTypeCard.FALLING_HAIMEVISKA_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _, _ -> SapParticle.Falling(level, x, y, z, spriteProvider, HAIMEVISKA_SAP_RGB, ParticleTypeCard.LANDING_HAIMEVISKA_SAP.particleType) } }
++    ParticleProviderRegistry.getInstance().register(ParticleTypeCard.LANDING_HAIMEVISKA_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _, _ -> SapParticle.Landing(level, x, y, z, spriteProvider, HAIMEVISKA_SAP_RGB) } }
++    ParticleProviderRegistry.getInstance().register(ParticleTypeCard.DRIPPING_PLASTIC_TREE_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _, _ -> SapParticle.Dripping(level, x, y, z, spriteProvider, PLASTIC_TREE_SAP_RGB, ParticleTypeCard.FALLING_PLASTIC_TREE_SAP.particleType) } }
++    ParticleProviderRegistry.getInstance().register(ParticleTypeCard.FALLING_PLASTIC_TREE_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _, _ -> SapParticle.Falling(level, x, y, z, spriteProvider, PLASTIC_TREE_SAP_RGB, ParticleTypeCard.LANDING_PLASTIC_TREE_SAP.particleType) } }
++    ParticleProviderRegistry.getInstance().register(ParticleTypeCard.LANDING_PLASTIC_TREE_SAP.particleType) { spriteProvider -> ParticleProvider { _, level, x, y, z, _, _, _, _ -> SapParticle.Landing(level, x, y, z, spriteProvider, PLASTIC_TREE_SAP_RGB) } }
 +    ParticleProviderRegistry.getInstance().register(ParticleTypeCard.MAGIC_SQUARE.particleType, createMagicSquareParticleFactory())
 +    ParticleProviderRegistry.getInstance().register(ParticleTypeCard.SULFUR_SMOKE.particleType, createSulfurSmokeParticleFactory())
 +    ParticleProviderRegistry.getInstance().register(ParticleTypeCard.SPARKLE.particleType, createSparkleParticleFactory())
 
      initMagicSquareParticle()
+diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/particle/RollingFallingParticle.kt b/common/src/client/kotlin/miragefairy2024/client/mod/particle/RollingFallingParticle.kt
+index 56c8081..0dec818 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/mod/particle/RollingFallingParticle.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/mod/particle/RollingFallingParticle.kt
+@@ -4,13 +4,12 @@ import mirrg.kotlin.helium.atLeast
+ import mirrg.kotlin.helium.atMost
+ import net.minecraft.client.particle.ParticleProvider
+-import net.minecraft.client.particle.ParticleRenderType
+ import net.minecraft.client.particle.SpriteSet
+-import net.minecraft.client.particle.TextureSheetParticle
++import net.minecraft.client.particle.SingleQuadParticle
+ import net.minecraft.core.particles.SimpleParticleType
+ import net.minecraft.util.Mth
+
+ fun createRollingFallingParticleFactory(velocityAngleFactor: Float) = { spriteProvider: SpriteSet ->
+-    ParticleProvider<SimpleParticleType> { _, level, x, y, z, _, _, _ ->
+-        object : TextureSheetParticle(level, x, y, z) {
++    ParticleProvider<SimpleParticleType> { _, level, x, y, z, _, _, _, _ ->
++        object : SingleQuadParticle(level, x, y, z, spriteProvider.first()) {
+
+             private var velocityAngle = 0F
+@@ -24,5 +23,5 @@ fun createRollingFallingParticleFactory(velocityAngleFactor: Float) = { spritePr
+             }
+
+-            override fun getRenderType(): ParticleRenderType = ParticleRenderType.PARTICLE_SHEET_OPAQUE
++            override fun getLayer() = Layer.OPAQUE
+             override fun getQuadSize(tickDelta: Float): Float {
+                 val actualAge = age.toFloat() + tickDelta
+diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/particle/SapParticle.kt b/common/src/client/kotlin/miragefairy2024/client/mod/particle/SapParticle.kt
+index 79b6350..02c1a96 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/mod/particle/SapParticle.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/mod/particle/SapParticle.kt
+@@ -3,7 +3,6 @@ package miragefairy2024.client.mod.particle
+ import miragefairy2024.client.util.setRgb
+ import net.minecraft.client.multiplayer.ClientLevel
+-import net.minecraft.client.particle.ParticleRenderType
+ import net.minecraft.client.particle.SpriteSet
+-import net.minecraft.client.particle.TextureSheetParticle
++import net.minecraft.client.particle.SingleQuadParticle
+ import net.minecraft.core.particles.ParticleOptions
+ import net.minecraft.sounds.SoundEvents
+@@ -11,12 +10,13 @@ import net.minecraft.sounds.SoundSource
+
+ @Suppress("LeakingThis")
+-open class SapParticle(level: ClientLevel, x: Double, y: Double, z: Double, rgb: Int) : TextureSheetParticle(level, x, y, z) {
++open class SapParticle(level: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet, rgb: Int) : SingleQuadParticle(level, x, y, z, spriteProvider.first()) {
+     init {
+         setSize(0.01F, 0.01F)
+         gravity = 0.06F
+         setRgb(rgb)
++        setSprite(spriteProvider.get(random))
+     }
+
+-    override fun getRenderType(): ParticleRenderType = ParticleRenderType.PARTICLE_SHEET_OPAQUE
++    override fun getLayer() = Layer.OPAQUE
+
+     override fun tick() {
+@@ -50,7 +50,6 @@ open class SapParticle(level: ClientLevel, x: Double, y: Double, z: Double, rgb:
+     }
+
+-    class Dripping(level: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet, rgb: Int, private val particleEffect: ParticleOptions) : SapParticle(level, x, y, z, rgb) {
++    class Dripping(level: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet, rgb: Int, private val particleEffect: ParticleOptions) : SapParticle(level, x, y, z, spriteProvider, rgb) {
+         init {
+-            pickSprite(spriteProvider)
+             gravity *= 0.01F
+             lifetime = 100
+@@ -68,7 +67,6 @@ open class SapParticle(level: ClientLevel, x: Double, y: Double, z: Double, rgb:
+     }
+
+-    class Falling(level: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet, rgb: Int, private val particleEffect: ParticleOptions) : SapParticle(level, x, y, z, rgb) {
++    class Falling(level: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet, rgb: Int, private val particleEffect: ParticleOptions) : SapParticle(level, x, y, z, spriteProvider, rgb) {
+         init {
+-            pickSprite(spriteProvider)
+             gravity = 0.01F
+             lifetime = (64.0 / (level.random.nextDouble() * 0.8 + 0.2)).toInt()
+@@ -84,7 +82,6 @@ open class SapParticle(level: ClientLevel, x: Double, y: Double, z: Double, rgb:
+     }
+
+-    class Landing(level: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet, rgb: Int) : SapParticle(level, x, y, z, rgb) {
++    class Landing(level: ClientLevel, x: Double, y: Double, z: Double, spriteProvider: SpriteSet, rgb: Int) : SapParticle(level, x, y, z, spriteProvider, rgb) {
+         init {
+-            pickSprite(spriteProvider)
+             lifetime = (128.0 / (level.random.nextDouble() * 0.8 + 0.2)).toInt()
+         }
+diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/particle/SparkleParticle.kt b/common/src/client/kotlin/miragefairy2024/client/mod/particle/SparkleParticle.kt
+index 73ad219..afc6f90 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/mod/particle/SparkleParticle.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/mod/particle/SparkleParticle.kt
+@@ -1,14 +1,13 @@
+ package miragefairy2024.client.mod.particle
+
+-import com.mojang.blaze3d.vertex.VertexConsumer
+ import mirrg.kotlin.helium.atLeast
+ import mirrg.kotlin.helium.atMost
+ import net.minecraft.client.Camera
+ import net.minecraft.client.particle.ParticleProvider
+-import net.minecraft.client.particle.ParticleRenderType
+ import net.minecraft.client.particle.SpriteSet
+-import net.minecraft.client.particle.TextureSheetParticle
+-import net.minecraft.client.renderer.LightTexture
++import net.minecraft.client.particle.SingleQuadParticle
++import net.minecraft.client.renderer.state.level.QuadParticleRenderState
+ import net.minecraft.core.particles.SimpleParticleType
++import net.minecraft.util.LightCoordsUtil
+ import net.minecraft.util.Mth
+ import org.joml.Quaternionf
+@@ -52,11 +51,11 @@ private const val OUTER_LAYER_SPIN_TICKS = -54.0F
+ private fun getTwinkleFactor(ticks: Float, minRate: Float): Float {
+     val phase = ticks / TWINKLE_PERIOD_TICKS * Mth.TWO_PI
+-    val rate = (Mth.sin(phase) + 1.0F) / 2.0F
++    val rate = (Mth.sin(phase.toDouble()) + 1.0F) / 2.0F
+     return Mth.lerp(rate, minRate, 1.0F)
+ }
+
+ fun createSparkleParticleFactory() = { spriteProvider: SpriteSet ->
+-    ParticleProvider<SimpleParticleType> { _, level, x, y, z, _, _, _ ->
+-        object : TextureSheetParticle(level, x, y, z) {
++    ParticleProvider<SimpleParticleType> { _, level, x, y, z, _, _, _, _ ->
++        object : SingleQuadParticle(level, x, y, z, spriteProvider.first()) {
+
+             /** 描いている最中のレイヤーの、表示サイズの倍率なのだ～🌱 */
+@@ -66,13 +65,13 @@ fun createSparkleParticleFactory() = { spriteProvider: SpriteSet ->
+                 quadSize *= 0.4F + Math.random().toFloat() * 0.2F
+                 lifetime = LIFETIME_TICKS
+-                pickSprite(spriteProvider)
++                setSprite(spriteProvider.get(random))
+             }
+
+-            override fun getRenderType(): ParticleRenderType = AdditiveParticleRenderType
++            override fun getLayer() = additiveParticleLayer
+
+-            /** [net.minecraft.client.particle.GlowParticle.getLightColor] と同じく、周りの明るさに関わらず自分で光るのだ～🌱 */
+-            override fun getLightColor(partialTick: Float): Int {
+-                val originalLightColor = super.getLightColor(partialTick)
+-                return LightTexture.pack(15, LightTexture.sky(originalLightColor))
++            /** [net.minecraft.client.particle.GlowParticle.getLightCoords] と同じく、周りの明るさに関わらず自分で光るのだ～🌱 */
++            override fun getLightCoords(partialTick: Float): Int {
++                val originalLightColor = super.getLightCoords(partialTick)
++                return LightCoordsUtil.pack(15, LightCoordsUtil.sky(originalLightColor))
+             }
+
+@@ -88,7 +87,7 @@ fun createSparkleParticleFactory() = { spriteProvider: SpriteSet ->
+             /**
+              * 同じテクスチャを、大きさと回転の向きだけを変えて 2 枚重ねるのだ～🌱
+-             * [net.minecraft.client.particle.SingleQuadParticle.render] は 1 枚しか描かないから、レイヤーごとに向きを組み立てて描くのだ～🌱
++             * [net.minecraft.client.particle.SingleQuadParticle.extract] は 1 枚しか描かないから、レイヤーごとに向きを組み立てて描くのだ～🌱
+              */
+-            override fun render(buffer: VertexConsumer, camera: Camera, partialTicks: Float) {
++            override fun extract(renderState: QuadParticleRenderState, camera: Camera, partialTicks: Float) {
+                 /**
+                  * @param spinTicks 負の値にすると、内側とは逆向きに回るのだ～🌱
+@@ -100,5 +99,5 @@ fun createSparkleParticleFactory() = { spriteProvider: SpriteSet ->
+                     facingCameraMode.setRotation(quaternion, camera, partialTicks)
+                     quaternion.rotateZ((age.toFloat() + partialTicks) / spinTicks * Mth.TWO_PI)
+-                    renderRotatedQuad(buffer, camera, quaternion, partialTicks)
++                    extractRotatedQuad(renderState, camera, quaternion, partialTicks)
+                 }
+
+diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/particle/SulfurSmokeParticle.kt b/common/src/client/kotlin/miragefairy2024/client/mod/particle/SulfurSmokeParticle.kt
+index 348f55e..34a8513 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/mod/particle/SulfurSmokeParticle.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/mod/particle/SulfurSmokeParticle.kt
+@@ -16,5 +16,5 @@ private const val WIND_HORIZONTAL_ACCELERATION = 0.002
+
+ fun createSulfurSmokeParticleFactory() = { spriteProvider: SpriteSet ->
+-    ParticleProvider<SimpleParticleType> { _, level, x, y, z, xSpeed, ySpeed, zSpeed ->
++    ParticleProvider<SimpleParticleType> { _, level, x, y, z, xSpeed, ySpeed, zSpeed, _ ->
+         /**
+          * バニラの白い煙が、灰色の煙の色だけを差し替えたものなので、それに倣ったのだぁ✨
+@@ -43,6 +43,6 @@ fun createSulfurSmokeParticleFactory() = { spriteProvider: SpriteSet ->
+                 // 火山の噴煙は真上には昇らず、風を受けて横へたなびくのだ～🌱 風向きはワールド全体で共通で、ゆっくりとひとまわりするのだぁ✨
+                 val windAngle = level.gameTime / WIND_CYCLE_TICKS * Mth.TWO_PI
+-                xd += Mth.cos(windAngle) * WIND_HORIZONTAL_ACCELERATION
+-                zd += Mth.sin(windAngle) * WIND_HORIZONTAL_ACCELERATION
++                xd += Mth.cos(windAngle.toDouble()) * WIND_HORIZONTAL_ACCELERATION
++                zd += Mth.sin(windAngle.toDouble()) * WIND_HORIZONTAL_ACCELERATION
+             }
+         }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/ViewRenderer.kt b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/ViewRenderer.kt
 index cdba3c6..be32023 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/ViewRenderer.kt
@@ -1703,6 +2096,20 @@ index cd0de8b..59cfe75 100644
 +        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, foregroundSprites.get(value.value, isHoveredOrFocused), x, y, width, height)
      }
  }
+diff --git a/common/src/client/kotlin/miragefairy2024/client/util/Particle.kt b/common/src/client/kotlin/miragefairy2024/client/util/Particle.kt
+index f94d656..13605d5 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/util/Particle.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/util/Particle.kt
+@@ -4,7 +4,7 @@ import mirrg.kotlin.hydrogen.blueOfRgb
+ import mirrg.kotlin.hydrogen.greenOfRgb
+ import mirrg.kotlin.hydrogen.redOfRgb
+-import net.minecraft.client.particle.Particle
++import net.minecraft.client.particle.SingleQuadParticle
+
+-fun Particle.setRgb(rgb: Int) {
++fun SingleQuadParticle.setRgb(rgb: Int) {
+     this.setColor(
+         rgb.redOfRgb.toFloat() / 255F,
 diff --git a/common/src/client/kotlin/miragefairy2024/client/util/Rendering.kt b/common/src/client/kotlin/miragefairy2024/client/util/Rendering.kt
 index c2111e1..68b2378 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/util/Rendering.kt
@@ -11655,6 +12062,75 @@ index ac72a93..4695365 100644
 +    "FoodPropertiesMixin",
      "LivingEntityMixin",
      "PlayerEntityMixin",
+diff --git a/fabric/src/client/java/miragefairy2024/client/fabric/mixins/mixin/ParticleEngineMixin.java b/fabric/src/client/java/miragefairy2024/client/fabric/mixins/mixin/ParticleEngineMixin.java
+deleted file mode 100644
+index 6ed82b8..0000000
+--- a/fabric/src/client/java/miragefairy2024/client/fabric/mixins/mixin/ParticleEngineMixin.java
++++ /dev/null
+@@ -1,50 +0,0 @@
+-package miragefairy2024.client.fabric.mixins.mixin;
+-
+-import com.google.common.collect.ImmutableList;
+-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+-import com.mojang.blaze3d.systems.RenderSystem;
+-import com.mojang.blaze3d.vertex.MeshData;
+-import miragefairy2024.client.mod.particle.AdditiveParticleRenderType;
+-import net.minecraft.client.particle.ParticleEngine;
+-import net.minecraft.client.particle.ParticleRenderType;
+-import org.spongepowered.asm.mixin.Final;
+-import org.spongepowered.asm.mixin.Mixin;
+-import org.spongepowered.asm.mixin.Mutable;
+-import org.spongepowered.asm.mixin.Shadow;
+-import org.spongepowered.asm.mixin.injection.At;
+-import org.spongepowered.asm.mixin.injection.Inject;
+-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+-
+-import java.util.List;
+-
+-@Mixin(ParticleEngine.class)
+-public class ParticleEngineMixin {
+-    @Shadow
+-    @Final
+-    @Mutable
+-    private static List<ParticleRenderType> RENDER_ORDER;
+-
+-    // Fabricのパーティクル描画は、この定数に並んだ種別だけを順に回るのだ～🌱
+-    // NeoForgeの側は本体のパッチでこの定数に依らない形になっているから、この問題はFabric側だけに存在するのだ～🌱
+-    @Inject(method = "<clinit>", at = @At("TAIL"))
+-    private static void addAdditiveParticleRenderType(CallbackInfo ci) {
+-        // 定数を丸ごと組み直すのではなく現在の値を元に末尾へ1個加えるから、他のMODが足した種別とも共存できるのだ～🌱
+-        RENDER_ORDER = ImmutableList.<ParticleRenderType>builder().addAll(RENDER_ORDER).add(AdditiveParticleRenderType.INSTANCE).build();
+-    }
+-
+-    // 加算合成のパーティクルがブレンディング関数を書き換えるのに、描画の終わりにブレンドを無効化するだけではリセットされないのだ～🌱
+-    // 水中や炎の画面効果はブレンディング関数を設定せずにブレンドを有効化するから、リセットしないとそれらが加算合成で描かれてしまうのだ～🌱
+-    // メソッド全体の末尾ではなく種別ごとの描画の呼び出しを包むことで、後続の種別がブレンディング関数を設定しない場合にも汚染されないのだ～🌱
+-    @WrapOperation(
+-        method = "render(Lnet/minecraft/client/renderer/LightTexture;Lnet/minecraft/client/Camera;F)V",
+-        at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/BufferUploader;drawWithShader(Lcom/mojang/blaze3d/vertex/MeshData;)V")
+-    )
+-    private void resetBlendFunc(MeshData meshData, Operation<Void> original) {
+-        try {
+-            original.call(meshData);
+-        } finally {
+-            RenderSystem.defaultBlendFunc();
+-        }
+-    }
+-}
+diff --git a/fabric/src/client/resources/miragefairy2024.client.fabric.mixins.json b/fabric/src/client/resources/miragefairy2024.client.fabric.mixins.json
+index be77bdc..b336062 100644
+--- a/fabric/src/client/resources/miragefairy2024.client.fabric.mixins.json
++++ b/fabric/src/client/resources/miragefairy2024.client.fabric.mixins.json
+@@ -3,7 +3,5 @@
+   "package": "miragefairy2024.client.fabric.mixins.mixin",
+   "compatibilityLevel": "JAVA_17",
+-  "client": [
+-    "ParticleEngineMixin"
+-  ],
++  "client": [],
+   "injectors": {
+     "defaultRequire": 1
 diff --git a/fabric/src/main/java/miragefairy2024/fabric/mixins/api/ItemEnchantmentsCallback.java b/fabric/src/main/java/miragefairy2024/fabric/mixins/api/ItemEnchantmentsCallback.java
 index c40e412..e4e3779 100644
 --- a/fabric/src/main/java/miragefairy2024/fabric/mixins/api/ItemEnchantmentsCallback.java
@@ -12152,6 +12628,41 @@ index 8b7dabe..e7ece1a 100644
 +  ],
    "injectors": {
      "defaultRequire": 1
+diff --git a/neoforge/src/main/java/miragefairy2024/client/neoforge/mixins/mixin/ParticleEngineMixin.java b/neoforge/src/main/java/miragefairy2024/client/neoforge/mixins/mixin/ParticleEngineMixin.java
+deleted file mode 100644
+index c8f8170..0000000
+--- a/neoforge/src/main/java/miragefairy2024/client/neoforge/mixins/mixin/ParticleEngineMixin.java
++++ /dev/null
+@@ -1,29 +0,0 @@
+-package miragefairy2024.client.neoforge.mixins.mixin;
+-
+-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+-import com.mojang.blaze3d.systems.RenderSystem;
+-import com.mojang.blaze3d.vertex.MeshData;
+-import net.minecraft.client.particle.ParticleEngine;
+-import org.spongepowered.asm.mixin.Mixin;
+-import org.spongepowered.asm.mixin.injection.At;
+-
+-// NeoForgeは引数の多いオーバーロードを足していて、3引数の側はそちらへ委譲するだけの非推奨になっているのだ～🌱
+-// だから、本体が実際に通る5引数の側だけを狙うのだ～🌱
+-@Mixin(ParticleEngine.class)
+-public class ParticleEngineMixin {
+-    // 加算合成のパーティクルがブレンディング関数を書き換えるのに、描画の終わりにブレンドを無効化するだけではリセットされないのだ～🌱
+-    // 水中や炎の画面効果はブレンディング関数を設定せずにブレンドを有効化するから、リセットしないとそれらが加算合成で描かれてしまうのだ～🌱
+-    // メソッド全体の末尾ではなく種別ごとの描画の呼び出しを包むことで、後続の種別がブレンディング関数を設定しない場合にも汚染されないのだ～🌱
+-    @WrapOperation(
+-        method = "render(Lnet/minecraft/client/renderer/LightTexture;Lnet/minecraft/client/Camera;FLnet/minecraft/client/renderer/culling/Frustum;Ljava/util/function/Predicate;)V",
+-        at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/BufferUploader;drawWithShader(Lcom/mojang/blaze3d/vertex/MeshData;)V")
+-    )
+-    private void resetBlendFunc(MeshData meshData, Operation<Void> original) {
+-        try {
+-            original.call(meshData);
+-        } finally {
+-            RenderSystem.defaultBlendFunc();
+-        }
+-    }
+-}
 diff --git a/neoforge/src/main/kotlin/miragefairy2024/neoforge/MirageFairy2024NeoForgeMod.kt b/neoforge/src/main/kotlin/miragefairy2024/neoforge/MirageFairy2024NeoForgeMod.kt
 index bfcb146..eff5bda 100644
 --- a/neoforge/src/main/kotlin/miragefairy2024/neoforge/MirageFairy2024NeoForgeMod.kt
@@ -12198,3 +12709,16 @@ index 40390f1..902fec4 100644
 -    override fun setFullBlock(blockFamilyProvider: Any, block: ResourceLocation) = throw UnsupportedOperationException()
 +    override fun setFullBlock(blockFamilyProvider: Any, block: Identifier) = throw UnsupportedOperationException()
  }
+diff --git a/neoforge/src/main/resources/miragefairy2024.client.neoforge.mixins.json b/neoforge/src/main/resources/miragefairy2024.client.neoforge.mixins.json
+index 7ebd83f..e35fc61 100644
+--- a/neoforge/src/main/resources/miragefairy2024.client.neoforge.mixins.json
++++ b/neoforge/src/main/resources/miragefairy2024.client.neoforge.mixins.json
+@@ -3,7 +3,5 @@
+   "package": "miragefairy2024.client.neoforge.mixins.mixin",
+   "compatibilityLevel": "JAVA_17",
+-  "client": [
+-    "ParticleEngineMixin"
+-  ],
++  "client": [],
+   "injectors": {
+     "defaultRequire": 1

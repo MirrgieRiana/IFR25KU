@@ -186,6 +186,12 @@ REI 26.1.819 の表示シリアライザーは、永続化用の `MapCodec` と�
 
 `common/src/main` の Kotlin 379 ファイルを一括で解析し、モジュールの依存ファイルを含めた診断を取得できたのだ～🌱 残る箇所には、廃止された `DimensionType.natural` を参照する魔法植物とパッシブスキル、旧 2 色モデルを指定するカオスキューブのスポーンエッグ、26.1.2 の対応版を確認できていない EMI があるのだぁ…🌧️
 
+### クライアントのパーティクル描画なのだ～🌱
+
+樹液、硫黄の煙、花びら、引き寄せ魔法などを `SingleQuadParticle` に移したのだ～🌱 魔法陣は各層を表裏 2 枚の四角形に分け、色、透明度、光量と回転を描画状態に登録するのだ～🌱 スパークルの加算合成は専用の `RenderPipeline` で設定し、旧描画順とブレンド状態を操作していた両ローダーの Mixin を外したのだ～🌱
+
+26.1.2 のクラスパスで、パーティクルのクライアント側コードを含む選択コンパイルが通ったのだ～🌱 ゲーム内での描画結果は未確認なのだぁ…🌧️
+
 ### 移行資料なのだ～🌱
 
 - 26.1 系では JDK 25 と非リマップ版 Loom を使い、依存の宣言は `implementation` や `compileOnly` に移すのだ～🌱 今回はクリエイティブタブ、ディメンション移動イベント、燃料登録を、新しい Fabric API に置き換えたのだ～🌱 タグのデータ生成は `FabricPackOutput` と `FabricTagsProvider` の `TagAppender` に合わせる必要があるのだ～🌱 [Fabric の 26.1 移行案内](https://fabricmc.net/2026/03/14/261.html) [Fabric API の移行表](https://docs.fabricmc.net/de_de/develop/porting/26.1/fabric-api)
