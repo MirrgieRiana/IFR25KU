@@ -21,6 +21,7 @@ class ScreenEventSource {
      * 最初の配置が完了した画面を外す際に、配置を破棄する前に通知するのだ～🌱
      * このイベントの処理中に、このイベントへリスナーを登録する操作の挙動は保証しないのだ～🌱
      * [miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource.onOpened] または [miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource.onDisposing] の処理中に、いずれかのイベントを同期的に発火させる操作の挙動は保証しないのだ～🌱
+     * このイベントの処理中に、この画面の終了処理への同期的な再入を引き起こす操作の挙動は保証しないのだ～🌱
      */
     val onDisposing = EventRegistry<() -> Unit>()
 
