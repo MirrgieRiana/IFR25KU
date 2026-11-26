@@ -49,6 +49,7 @@ import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
 import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
+import miragefairy2024.util.observe
 import miragefairy2024.util.register
 import miragefairy2024.util.text
 import net.minecraft.SharedConstants
@@ -125,6 +126,41 @@ class VanillaViewPlacersTest {
                     view.disposals += 1
                 }
             }
+        }
+    }
+
+    @Test
+    fun `画面の開始通知はウィジェットの登録後に届き終了通知は配置の破棄前に届くのだ`() {
+        GuiTestEnvironment().use {
+            val minecraft: Minecraft = Minecraft.getInstance()
+            Mockito.`when`(minecraft.lastInputType).thenReturn(InputType.MOUSE)
+            Mockito.`when`(minecraft.narrator).thenReturn(Mockito.mock(GameNarrator::class.java))
+
+            val child = PlacerTestView()
+            val calls = mutableListOf<String>()
+            val definition = MessageViewScreenDefinition(text { empty() }) { screenEventSource ->
+                screenEventSource.onOpened.observe(screenEventSource.onDisposing) {
+                    val screen = checkNotNull(minecraft.screen)
+                    Assertions.assertEquals(1, screen.children().filterIsInstance<AbstractWidget>().size)
+                    calls += "opened"
+                }
+                screenEventSource.onDisposing.observe(screenEventSource.onDisposing) {
+                    Assertions.assertEquals(0, child.disposals)
+                    calls += "disposing"
+                }
+                DynamicView(child)
+            }
+            val screen = MessageViewScreen(null, definition)
+            minecraft.screen = screen
+            try {
+                screen.init(minecraft, 200, 200)
+                Assertions.assertEquals(listOf("opened"), calls)
+            } finally {
+                screen.removed()
+            }
+
+            Assertions.assertEquals(listOf("opened", "disposing"), calls)
+            Assertions.assertEquals(1, child.disposals)
         }
     }
 
