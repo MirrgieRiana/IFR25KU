@@ -1,6 +1,7 @@
 package miragefairy2024
 
 import miragefairy2024.mod.common.KeyMappingType
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.View
 import net.minecraft.core.BlockPos
@@ -76,7 +77,7 @@ interface RenderingProxyBlockEntity {
     fun render(renderingProxy: RenderingProxy, tickDelta: Float, light: Int, overlay: Int) = Unit
 }
 
-class MessageViewScreenDefinition(val title: Component, val rootViewFactory: () -> View) {
+class MessageViewScreenDefinition(val title: Component, val rootViewFactory: (ScreenEventSource) -> View) {
 
     /** false にすると、設定画面の背景になるのだ～🌱 */
     var transparentBackground = true

@@ -1,6 +1,7 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.client.mod.recipeviewer.RenderOverflow
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
@@ -112,7 +113,7 @@ private class AdapterFixture(vararg views: TestView) {
         }
         override fun getViewPlacerRegistry() = viewPlacerRegistry
 
-        override fun createRootView(): View {
+        override fun createRootView(screenEventSource: ScreenEventSource): View {
             disposalsBeforeCreate += disposals
             return XListView().also { root ->
                 views.forEach {
@@ -281,7 +282,7 @@ class ViewAdapterTest {
             override fun canPlaceMenuSlots() = false
             override fun getRegionSizeX() = 300
             override fun getRegionSizeY() = 80
-            override fun createRootView() = rootView
+            override fun createRootView(screenEventSource: ScreenEventSource) = rootView
             override fun getUiOffset() = IntPoint.ZERO
             override fun setUiSize(uiSize: IntPoint) = run { size = uiSize }
             override fun init() {
@@ -327,7 +328,7 @@ class ViewAdapterTest {
         val host: ViewAdapterHost = Mockito.mock(ViewAdapterHost::class.java)
         Mockito.`when`(host.getRenderingProxy()).thenReturn(ADAPTER_RENDERING_PROXY)
         Mockito.`when`(host.getViewPlacerRegistry()).thenReturn(registry)
-        Mockito.`when`(host.createRootView()).thenReturn(TestView(false))
+        Mockito.`when`(host.createRootView(Mockito.any(ScreenEventSource::class.java) ?: ScreenEventSource())).thenReturn(TestView(false))
         Mockito.`when`(host.getUiOffset()).thenReturn(IntPoint.ZERO)
         Mockito.`when`(host.canPlaceMenuSlots()).thenReturn(true)
         val slotId = 3

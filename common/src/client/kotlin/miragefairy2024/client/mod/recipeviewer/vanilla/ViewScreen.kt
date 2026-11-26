@@ -1,6 +1,7 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.client.mod.recipeviewer.renderingProxy
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.View
@@ -16,7 +17,7 @@ import org.lwjgl.glfw.GLFW
 /** 中身を View のツリーで構築する画面なのだ～🌱 */
 abstract class ViewScreen(title: Component) : Screen(title) {
 
-    protected abstract fun createRootView(): View
+    protected abstract fun createRootView(screenEventSource: ScreenEventSource): View
 
     private val viewAdapter = ViewAdapter(object : ViewAdapterHost {
 
@@ -28,7 +29,7 @@ abstract class ViewScreen(title: Component) : Screen(title) {
         override fun getRegionSizeX() = this@ViewScreen.width
         override fun getRegionSizeY() = this@ViewScreen.height
 
-        override fun createRootView() = this@ViewScreen.createRootView()
+        override fun createRootView(screenEventSource: ScreenEventSource) = this@ViewScreen.createRootView(screenEventSource)
 
         override fun getUiOffset() = IntPoint.ZERO
         override fun setUiSize(uiSize: IntPoint) = Unit
@@ -54,7 +55,10 @@ abstract class ViewScreen(title: Component) : Screen(title) {
 
     })
 
-    override fun init() = viewAdapter.init()
+    override fun init() {
+        viewAdapter.init()
+        viewAdapter.opened()
+    }
 
     override fun tick() {
         super.tick()
