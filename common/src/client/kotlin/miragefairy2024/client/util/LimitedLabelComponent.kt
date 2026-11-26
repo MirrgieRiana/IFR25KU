@@ -32,7 +32,9 @@ open class LimitedLabelComponent(protected var text: Component) : BaseComponent(
     init {
         wrappedText = ArrayList()
         maxWidth = Int.MAX_VALUE
-        lineHeight.observe { `$`: Int? -> notifyParentIfMounted() }
+        lineHeight.observe { `$`: Int? ->
+            notifyParentIfMounted()
+        }
     }
 
     fun text(text: Component): LimitedLabelComponent {

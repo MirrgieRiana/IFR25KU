@@ -1,10 +1,10 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.client.mod.recipeviewer.RenderOverflow
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
-import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import net.minecraft.client.gui.components.AbstractWidget
 
@@ -15,8 +15,7 @@ interface VanillaViewPlacerContext {
     val origin: IntPoint
 
     val canPlaceMenuSlots: Boolean
-    val onBeforeRender: EventRegistry<() -> Unit>
-    val onTick: EventRegistry<() -> Unit>
+    val screenEventSource: ScreenEventSource
 
     fun addRenderable(registration: WidgetRegistration): Remover
     fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover

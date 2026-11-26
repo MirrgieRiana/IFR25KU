@@ -22,7 +22,6 @@ import miragefairy2024.mod.recipeviewer.views.FilledRectangleView
 import miragefairy2024.mod.recipeviewer.views.LayeredImageButtonView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextView
-import miragefairy2024.mod.recipeviewer.views.TickView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
 import miragefairy2024.mod.recipeviewer.views.View
 import miragefairy2024.mod.recipeviewer.views.XListView
@@ -394,9 +393,9 @@ class SoulStreamScreenContent(
                                 }
                                 connectScrollbar(scrollView, scrollbarView)
 
-                                view += TickView {
+                                screenEventSource.onTick.observe(screenEventSource.onDisposing) {
                                     val now = System.nanoTime()
-                                    if (now - lastUpdateEventNanoTime < 100_000_000) return@TickView
+                                    if (now - lastUpdateEventNanoTime < 100_000_000) return@observe
                                     lastUpdateEventNanoTime = now
 
                                     val newEffectList = collectEffectList()

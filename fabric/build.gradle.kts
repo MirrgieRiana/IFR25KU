@@ -10,7 +10,7 @@ import net.fabricmc.loom.task.RemapJarTask
 import publishing.CurseforgeClient
 
 plugins {
-    id("com.github.johnrengelman.shadow")
+    id("com.gradleup.shadow")
     id("com.modrinth.minotaur")
     id("io.github.themrmilchmann.curseforge-publish")
 }
