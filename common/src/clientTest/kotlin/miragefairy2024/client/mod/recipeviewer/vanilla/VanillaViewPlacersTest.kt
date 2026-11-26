@@ -695,7 +695,7 @@ class VanillaViewPlacersTest {
                                 controller.detach()
                             }
                             Assertions.assertTrue(widgets.isEmpty())
-                            Assertions.assertTrue(context.onBeforeRender.toList().isEmpty())
+                            Assertions.assertTrue(context.screenEventSource.onBeforeRender.toList().isEmpty())
                             Assertions.assertEquals(1, scrollOffset.toList().size)
                         }
                     } finally {
@@ -747,13 +747,13 @@ class VanillaViewPlacersTest {
                     content.content.value = SpaceView(IntPoint(25, 25))
                     widget.render(environment.graphics, 20, 30, 0.0F)
                     Assertions.assertEquals(100, bar.contentLength)
-                    context.onBeforeRender.fire()
+                    context.screenEventSource.onBeforeRender.fire()
                     Assertions.assertEquals(25, bar.contentLength)
                     Assertions.assertEquals(50, bar.viewportLength)
                     Assertions.assertEquals(75.25, scrollOffset.value)
                     Assertions.assertEquals(75.25, barOffset.value)
                     content.content.value = leaf
-                    context.onBeforeRender.fire()
+                    context.screenEventSource.onBeforeRender.fire()
                     Assertions.assertEquals(100, bar.contentLength)
                     val child = widget.children().single() as AbstractWidget
                     Assertions.assertEquals(if (horizontal) IntPoint(-65, 20) else IntPoint(10, -55), IntPoint(child.x, child.y))
@@ -762,7 +762,7 @@ class VanillaViewPlacersTest {
                     controller.detach()
                     connection.remove()
                 }
-                Assertions.assertTrue(context.onBeforeRender.toList().isEmpty())
+                Assertions.assertTrue(context.screenEventSource.onBeforeRender.toList().isEmpty())
             }
         }
     }
