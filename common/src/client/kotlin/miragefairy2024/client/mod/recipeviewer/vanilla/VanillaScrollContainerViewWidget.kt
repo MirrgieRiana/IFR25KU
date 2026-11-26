@@ -2,10 +2,8 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.client.util.getActualFocused
 import miragefairy2024.mod.recipeviewer.SCROLL_AREA_TRANSLATION
-import miragefairy2024.mod.recipeviewer.view.ContextViewPlacer
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.view.intersect
@@ -41,22 +39,14 @@ import java.util.Optional
 import kotlin.math.roundToInt
 
 /** 子 Widget の描画・入力・フォーカス・読み上げを中継するスクロール領域なのだ～🌱 */
-abstract class VanillaScrollContainerViewWidget internal constructor(
+abstract class VanillaScrollContainerViewWidget(
     protected val view: ScrollContainerView,
     private val scrollOffsetValue: ObservableValue<Double>,
     bounds: IntRectangle,
     context: VanillaViewPlacerContext,
-    placer: ContextViewPlacer<VanillaViewPlacerContext, PlaceableView>,
+    registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
 ) :
     AbstractContainerWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }), MouseCaptureContainer {
-
-    constructor(
-        view: ScrollContainerView,
-        scrollOffsetValue: ObservableValue<Double>,
-        bounds: IntRectangle,
-        context: VanillaViewPlacerContext,
-        registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
-    ) : this(view, scrollOffsetValue, bounds, context, registry::place)
 
 
     // Widget の登録なのだ～🌱
@@ -475,7 +465,7 @@ abstract class VanillaScrollContainerViewWidget internal constructor(
         updateScrollBounds()
         val initialScrollOffset = scrollOffsetValue.value.roundToInt()
         childController = view.childView.attachTo(getChildOffset(initialScrollOffset)) { childView, childBounds ->
-            placer.place(childContext, childView, childBounds)
+            registry.place(childContext, childView, childBounds)
         }
         scrollOffsetValue.observeAndInitialize(onClosed) { old, new ->
             if (disposed) return@observeAndInitialize
@@ -488,25 +478,18 @@ abstract class VanillaScrollContainerViewWidget internal constructor(
 
 }
 
-class VanillaXScrollContainerViewWidget internal constructor(
+class VanillaXScrollContainerViewWidget(
     view: XScrollContainerView,
     bounds: IntRectangle,
     context: VanillaViewPlacerContext,
-    placer: ContextViewPlacer<VanillaViewPlacerContext, PlaceableView>,
+    registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
 ) : VanillaScrollContainerViewWidget(
     view,
     view.scrollOffsetX,
     bounds,
     context,
-    placer,
+    registry,
 ) {
-
-    constructor(
-        view: XScrollContainerView,
-        bounds: IntRectangle,
-        context: VanillaViewPlacerContext,
-        registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
-    ) : this(view, bounds, context, registry::place)
 
     // 領域とサイズなのだ～🌱
 
@@ -534,25 +517,18 @@ class VanillaXScrollContainerViewWidget internal constructor(
 
 }
 
-class VanillaYScrollContainerViewWidget internal constructor(
+class VanillaYScrollContainerViewWidget(
     view: YScrollContainerView,
     bounds: IntRectangle,
     context: VanillaViewPlacerContext,
-    placer: ContextViewPlacer<VanillaViewPlacerContext, PlaceableView>,
+    registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
 ) : VanillaScrollContainerViewWidget(
     view,
     view.scrollOffsetY,
     bounds,
     context,
-    placer,
+    registry,
 ) {
-
-    constructor(
-        view: YScrollContainerView,
-        bounds: IntRectangle,
-        context: VanillaViewPlacerContext,
-        registry: ViewPlacerRegistry<VanillaViewPlacerContext>,
-    ) : this(view, bounds, context, registry::place)
 
     // 領域とサイズなのだ～🌱
 
