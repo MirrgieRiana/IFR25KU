@@ -3,6 +3,7 @@ package miragefairy2024.mod.magicplant
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.NinePatchTextureCard
+import miragefairy2024.mod.common.guiFullScreenTranslation
 import miragefairy2024.mod.magicplant.contents.getTraitPower
 import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
@@ -36,6 +37,7 @@ import miragefairy2024.mod.recipeviewer.views.onClick
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.mod.recipeviewer.views.tooltip
 import miragefairy2024.util.Registration
+import miragefairy2024.util.fire
 import miragefairy2024.util.Translation
 import miragefairy2024.util.darkGray
 import miragefairy2024.util.enJa
@@ -114,7 +116,12 @@ private class TraitListScreenContent(menu: TraitListScreenHandler, title: Compon
                         view.text.value = trait.getName().style(trait.style)
                         view.alignmentX = Alignment.CENTER
                         view.shadow = false
-                    }
+                    }.onClick {
+                        onOpenTraitEncyclopediaPageScreen.fire {
+                            if (it(trait)) return@onClick true
+                        }
+                        false
+                    }.tooltip(text { guiFullScreenTranslation() })
 
                     view += YSpaceView(5)
 
