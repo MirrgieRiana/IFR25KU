@@ -82,8 +82,6 @@ private class AdapterFixture(vararg views: TestView) {
     val initializedSizes = mutableListOf<IntPoint>()
     val disposalsBeforeCreate = mutableListOf<Int>()
     var onDispose: () -> Unit = { }
-    lateinit var placementContext: VanillaViewPlacerContext
-        private set
     val host: ViewAdapterHost = object : ViewAdapterHost {
         override fun getScreen() = this@AdapterFixture.screen
         override fun canPlaceMenuSlots() = false
@@ -98,7 +96,6 @@ private class AdapterFixture(vararg views: TestView) {
         override fun getRenderingProxy() = ADAPTER_RENDERING_PROXY
         private val viewPlacerRegistry = ViewPlacerRegistry<VanillaViewPlacerContext>().also {
             it.register(TestView::class.java) { context, view, bounds ->
-                placementContext = context
                 val widget = RecordingWidget(bounds)
                 widgets += widget
                 val remover = context.addRenderable(WidgetRegistration(widget, view.interactive) { RenderOverflow.UNBOUNDED })
@@ -384,45 +381,6 @@ class ViewAdapterTest {
         adapter.removed()
         adapter.beforeRender()
         assertEquals(2, calls)
-    }
-
-    @Test
-    fun `配置への描画前通知を初期化で中継し画面を開き直すと登録し直すのだ`() {
-        val fixture = AdapterFixture(TestView(true))
-        val adapter = fixture.adapter
-        val context = fixture.placementContext
-        val source = context.screenEventSource
-        val placements = context.onBeforeRenderForPlacements
-        var calls = 0
-        val remover = placements.register {
-            calls += 1
-        }
-
-        try {
-            adapter.beforeRender()
-            assertEquals(1, calls)
-
-            adapter.opened()
-            fixture.init()
-            Assertions.assertSame(placements, fixture.placementContext.onBeforeRenderForPlacements)
-            assertEquals(1, source.onDisposing.toList().size)
-            adapter.beforeRender()
-            assertEquals(2, calls)
-
-            adapter.removed()
-            assertTrue(source.onBeforeRender.toList().isEmpty())
-            assertTrue(source.onDisposing.toList().isEmpty())
-            adapter.beforeRender()
-            assertEquals(2, calls)
-
-            fixture.init()
-            adapter.opened()
-            adapter.beforeRender()
-            assertEquals(3, calls)
-        } finally {
-            remover.remove()
-            adapter.removed()
-        }
     }
 
     @Test

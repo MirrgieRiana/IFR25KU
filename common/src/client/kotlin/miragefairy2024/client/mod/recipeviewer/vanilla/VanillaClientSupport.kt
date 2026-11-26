@@ -20,9 +20,6 @@ interface VanillaViewPlacerContext {
     val onBeforeRender: EventRegistry<() -> Unit>
     val onTick: EventRegistry<() -> Unit>
 
-    /** ホストの描画前イベントを配置済みの View に中継するのだ～🌱 */
-    val onBeforeRenderForPlacements: EventRegistry<() -> Unit>
-
     fun addRenderable(registration: WidgetRegistration): Remover
     fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover
 }

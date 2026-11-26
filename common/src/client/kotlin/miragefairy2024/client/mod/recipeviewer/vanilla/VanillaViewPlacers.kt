@@ -9,6 +9,7 @@ import miragefairy2024.client.mod.recipeviewer.common.ImageViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TextViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TooltipViewRenderer
 import miragefairy2024.client.util.LayeredImageButton
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
@@ -31,6 +32,7 @@ import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YInventoryScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.util.EventRegistry
+import miragefairy2024.util.Remover
 import miragefairy2024.util.fire
 import miragefairy2024.util.observe
 import miragefairy2024.util.observeAndInitialize
@@ -55,12 +57,38 @@ private infix fun VanillaViewPlacerContext.place(registration: WidgetRegistratio
     }
 }
 
+private class ScrollBoundsBeforeRender(screenEventSource: ScreenEventSource) : () -> Unit {
+    private val listeners = EventRegistry<() -> Unit>()
+    private val beforeRenderRemover = screenEventSource.onBeforeRender.register(this)
+    private val disposingRemover = screenEventSource.onDisposing.register {
+        disconnect()
+    }
+
+    override fun invoke() = listeners.fire()
+
+    fun register(listener: () -> Unit): Remover {
+        val remover = listeners.register(listener)
+        return Remover {
+            remover.remove()
+            if (listeners.toList().isEmpty()) disconnect()
+        }
+    }
+
+    private fun disconnect() {
+        beforeRenderRemover.remove()
+        disposingRemover.remove()
+    }
+}
+
 context(_: ModContext)
 fun initVanillaViewPlacers() {
     fun placeScrollContainerView(context: VanillaViewPlacerContext, widget: VanillaScrollContainerViewWidget): ViewController {
         val controller = context place WidgetRegistration(widget, true) { RenderOverflow.NONE }
+        val screenEventSource = context.screenEventSource
+        val beforeRender = screenEventSource.onBeforeRender.toList().firstNotNullOfOrNull { it as? ScrollBoundsBeforeRender }
+            ?: ScrollBoundsBeforeRender(screenEventSource)
         // 子の差し替えだけで全長が変わった場合も、描画前に寸法を通知するのだ～🌱
-        val boundsRemover = context.onBeforeRenderForPlacements.register {
+        val boundsRemover = beforeRender.register {
             widget.updateScrollBounds()
         }
         return object : ViewController {
