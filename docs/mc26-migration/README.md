@@ -1,9 +1,9 @@
 # Minecraft 26.1.2 の最小限の環境なのだ～🌱
 
-ここにあるのは、Minecraft 26.1.2 向けのビルド環境を、最小限の MOD を新規に作って実測したときの、ビルドスクリプトの複製なのだ～🌱
+このディレクトリの直下には、Minecraft 26.1.2 向けのビルド環境を、最小限の MOD を新規に作って実測したときの、ビルドスクリプトの複製があるのだ～🌱
 
 本番の移行の設計の、参照用の資料なのだ～🌱
-ここに置いてあるファイルは、ビルドには 1 個も参加しないのだ～🌱
+`ifr-common` には、IFR 本体のソースを 26.1.2 でコンパイルするための独立したビルドがあるのだ～🌱
 
 ## ファイルの対応なのだ～🌱
 
@@ -84,3 +84,24 @@ Shadow のプラグインを、サブプロジェクトの `plugins` ブロッ�
 ルートで `apply false` を使って宣言して、サブプロジェクトでは版を書かずに適用するのだ～🌱
 
 NeoForge 側では、common のソースセットを `mods { }` へ登録しないと、Mixin の設定ファイルが見つからずに起動が落ちるのだ～🌱
+
+## IFR 本体の common をコンパイルする実験なのだ～🌱
+
+`ifr-common` は、リポジトリ内の `common/src/main` と `mirrg.kotlin/src/main/kotlin` を参照する独立した Gradle ビルドなのだ～🌱 Minecraft 26.1.2 の非リマップ版 Loom を使うのだ～🌱
+
+JDK 25 を `JAVA_HOME` に設定して、リポジトリのルートから次を実行するのだ～🌱 PowerShell では `./gradlew` を `.\gradlew.bat` に置き換えるのだ～🌱
+
+```sh
+./gradlew -Dorg.gradle.jvmargs=-Xmx4G -Pkotlin.compiler.execution.strategy=in-process -p docs/mc26-migration/ifr-common :compileKotlin
+```
+
+Fabric API、Architectury API、TerraBlender Fabric、REI 26.1.819 を解決し、Gson と SLF4J を `compileOnly` で参照する `mirrg` のコンパイルを通したのだ～🌱 REI 26.1.819 は 26.1.2 向けの Fabric と NeoForge で配布されているのだ～🌱 [REI の配布一覧](https://modrinth.com/mod/rei/versions)
+
+IFR 本体のソースを一部ずつコンパイラーに渡し、`ResourceLocation`、`InteractionResultHolder`、`Tier` の参照が解決できないことを確認したのだぁ…🌧️ 26.1.2 のクラスパスには `Identifier`、`InteractionResult`、`ToolMaterial` があり、`Ingredient.of` が受け取る型も変わっていたのだぁ…🌧️
+
+| IFR のソース | 26.1.2 への移植箇所 |
+| --- | --- |
+| `util/Identifier.kt` | リソース ID の型とファクトリー呼び出し |
+| `util/DebugItem.kt` | アイテム使用時に返す `InteractionResultHolder` |
+| `mod/tool/ToolMaterial.kt` | ツール素材を定義する `Tier` |
+| `util/Ingredient.kt` | `ItemStack` や `TagKey<Item>` を直接渡している `Ingredient.of` |
