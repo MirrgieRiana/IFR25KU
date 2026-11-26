@@ -16,9 +16,9 @@ private fun MarkdownScope.fork() = MarkdownScope(this.type)
 context(scope: MarkdownScope)
 private val (MarkdownScope.() -> Unit).strings
     get(): List<String> {
-        val forkedScope = scope.fork()
-        this(forkedScope)
-        return forkedScope.strings
+        val newScope = scope.fork()
+        this(newScope)
+        return newScope.strings
     }
 
 context(scope: MarkdownScope)
