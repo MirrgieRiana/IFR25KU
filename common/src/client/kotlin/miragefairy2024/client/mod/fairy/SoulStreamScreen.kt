@@ -133,7 +133,13 @@ fun initSoulStreamClientModule() {
 class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : ViewContainerScreen<SoulStreamScreenHandler>(handler, playerInventory, title) {
 
     override fun createRootView(screenEventSource: ScreenEventSource): View {
-        return menu.createRootView(title, enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, text { toggleCollectionEnabledKeyMappingCard() }) {
+        return menu.createRootView(
+            title,
+            screenEventSource,
+            enabledPassiveSkillEffectFilters,
+            enableGlobalFairyHighlight,
+            text { toggleCollectionEnabledKeyMappingCard() }
+        ) {
             SetCollectionEnabledChannel.sendToServer(it)
         }
     }

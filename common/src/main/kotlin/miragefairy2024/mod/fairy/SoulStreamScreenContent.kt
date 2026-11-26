@@ -10,6 +10,7 @@ import miragefairy2024.mod.passiveskill.collect
 import miragefairy2024.mod.passiveskill.effects.ManaBoostPassiveSkillEffect
 import miragefairy2024.mod.passiveskill.findPassiveSkillProviders
 import miragefairy2024.mod.passiveskill.passiveSkillEffectRegistry
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
@@ -66,6 +67,7 @@ private val BUTTON_14_BACKGROUND = LayeredImageButtonView.Sprites(
 class SoulStreamScreenContent(
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     private val menu: SoulStreamScreenHandler,
+    private val screenEventSource: ScreenEventSource,
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     private val enabledPassiveSkillEffectFilters: ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>,
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）

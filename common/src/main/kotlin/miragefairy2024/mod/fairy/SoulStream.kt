@@ -6,6 +6,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
 import miragefairy2024.clientProxy
 import miragefairy2024.mod.passiveskill.PassiveSkillEffectFilter
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.util.Channel
 import miragefairy2024.util.EnJa
@@ -168,12 +169,20 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
 
     fun createRootView(
         title: Component,
+        screenEventSource: ScreenEventSource,
         enabledPassiveSkillEffectFilters: ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>,
         enableGlobalFairyHighlight: ObservableValue<Boolean>,
         collectionToggleKeyText: Component,
         setCollectionEnabled: (Boolean) -> Unit,
     ): View {
-        val screenContent = SoulStreamScreenContent(this, enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, collectionToggleKeyText, setCollectionEnabled)
+        val screenContent = SoulStreamScreenContent(
+            this,
+            screenEventSource,
+            enabledPassiveSkillEffectFilters,
+            enableGlobalFairyHighlight,
+            collectionToggleKeyText,
+            setCollectionEnabled,
+        )
         this.screenContent = screenContent
         return screenContent.createView(title)
     }
