@@ -15,7 +15,7 @@ plugins {
     //id("maven-publish")
     kotlin("jvm") version "2.2.21" apply false
     id("architectury-plugin") version "3.4-SNAPSHOT"
-    id("com.github.johnrengelman.shadow") version "8.1.1" apply false
+    id("com.gradleup.shadow") version "9.2.2" apply false
     id("com.modrinth.minotaur") version "2.+"
     id("io.github.themrmilchmann.curseforge-publish") version "0.8.0"
     application
@@ -158,7 +158,8 @@ subprojects.filter { it.name in listOf("common", "fabric", "neoforge") }.f {
     }
 
     tasks.register<UnpackSourcesTask>("unpackSources") {
-        dependsOn(tasks.firstOrNull { it.name == "genSources" })
+        val genSourcesTask = tasks.firstOrNull { it.name == "genSources" }
+        if (genSourcesTask != null) dependsOn(genSourcesTask)
         outputDirectory = project.layout.projectDirectory.dir("unpackedSources")
     }
 

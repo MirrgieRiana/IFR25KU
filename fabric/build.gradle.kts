@@ -10,7 +10,7 @@ import net.fabricmc.loom.task.RemapJarTask
 import publishing.CurseforgeClient
 
 plugins {
-    id("com.github.johnrengelman.shadow")
+    id("com.gradleup.shadow")
     id("com.modrinth.minotaur")
     id("io.github.themrmilchmann.curseforge-publish")
 }
@@ -264,6 +264,11 @@ curseforge {
 }
 tasks.named("publishFabricPublicationToCurseForge").configure { dependsOn(tasks.named("remapJar")) }
 rootProject.tasks.named("upload").configure { dependsOn(tasks.named("publishFabricPublicationToCurseForge")) }
+
+tasks.named<Test>("test") {
+    include("**/*.class")
+    exclude("miragefairy2024/MapColorViewerGeneratorMain.class", "miragefairy2024/MapColorViewerGeneratorMain\$*.class")
+}
 
 tasks.named<ProcessResources>("processResources") {
     inputs.property("version", project.version)
