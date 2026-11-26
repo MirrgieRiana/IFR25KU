@@ -207,6 +207,16 @@ REI の Widget の選択コンパイルが通ったのだ～🌱 共通・Fabric
 | `ClientProxyImpl.kt` と妖精クエスト・妖精像 | 旧アイテムモデル、色プロバイダー、ブロックエンティティの即時描画を置き換える必要があるのだぁ…🌧️ |
 | ソウルストリームと EMI | ソウルストリームが使う owo-lib の 26.1.2 向け NeoForge 版と、EMI の 26.1.2 向け対応版を確認できていないのだぁ…🌧️ |
 
+### ソウルストリーム、キーバインド、ブロックの着色なのだ～🌱
+
+Fabric の実験では `-PmigrationOwo` で owo-lib `0.13.1+26.1` をクライアントのコンパイルクラスパスに追加できるのだ～🌱 ソウルストリームは `BaseOwoContainerScreen` と名前の変わった旧 UI のクラスを使い、既存のバニラ Widget を `wrapVanillaWidget` で配置するのだ～🌱 ラベルとキーバインドの Kotlin、対応するクライアント Mixin の Java、Mixin 設定のリソース処理が選択ビルドで通ったのだ～🌱 owo-lib の 26.1.2 対応版は Fabric・Quilt 向けがあり、NeoForge 向けは確認できていないのだぁ…🌧️ [owo-lib のリリース](https://github.com/wisp-forest/owo-lib/releases/tag/0.13.1%2B26.1)
+
+ブロックの着色は `BlockTintSource` に移し、登録先の葉のモデルが参照するインデックス 0 の色を保持したのだ～🌱 アイテム側の色と描画レイヤーにはモデルの移行が必要なのだぁ…🌧️ 精錬エンチャントはルートコンテキストの `ItemInstance` を受け取り、ツールが採掘対象に適合する条件を引き継いだのだ～🌱 [Fabric のブロック着色資料](https://docs.fabricmc.net/26.1.2/develop/blocks/block-tinting)
+
+NeoForge 26.1.2.117 のパッチ適用済み Minecraft、Forgified Fabric API `0.155.3+26.1.2+3.5.10`、NeoForge 版 REI 26.1.819 を先に解決するクラスパスでも、共通・クライアント・NeoForge の Kotlin をまとめて解析したのだ～🌱 NeoForge 固有の Kotlin に出た診断は、未解決の EMI に関するものだったのだぁ…🌧️ [Forgified Fabric API のリリース](https://github.com/Sinytra/ForgifiedFabricAPI/releases/tag/0.155.3%2B26.1.2%2B3.5.10)
+
+owo-lib を加えた Fabric の一括解析は Kotlin 473 ファイルを対象に、280 件のエラー診断を返したのだ～🌱 うちメイン側に 77 件、EMI 統合のファイルに 158 件が出たのだ～🌱 ソウルストリームと owo の UI で移行したクラスには診断が出なかったのだ～🌱 26.1.2 でのゲーム起動、両ローダーの配布用 JAR とデータ生成には、残っている依存と API の対応が必要なのだぁ…🌧️
+
 ### 移行資料なのだ～🌱
 
 - 26.1 系では JDK 25 と非リマップ版 Loom を使い、依存の宣言は `implementation` や `compileOnly` に移すのだ～🌱 今回はクリエイティブタブ、ディメンション移動イベント、燃料登録を、新しい Fabric API に置き換えたのだ～🌱 タグのデータ生成は `FabricPackOutput` と `FabricTagsProvider` の `TagAppender` に合わせる必要があるのだ～🌱 [Fabric の 26.1 移行案内](https://fabricmc.net/2026/03/14/261.html) [Fabric API の移行表](https://docs.fabricmc.net/de_de/develop/porting/26.1/fabric-api)

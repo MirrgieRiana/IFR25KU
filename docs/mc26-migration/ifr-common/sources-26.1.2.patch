@@ -16,6 +16,24 @@ index 16abbb7..5e22bd8 100644
 +        void renderItemDecorations(GuiGraphicsExtractor graphics, Font font, ItemStack stack, int x, int y, String text);
      }
  }
+diff --git a/common/src/client/java/miragefairy2024/client/mixins/mixin/AbstractRecipeBookScreenAccessor.java b/common/src/client/java/miragefairy2024/client/mixins/mixin/AbstractRecipeBookScreenAccessor.java
+new file mode 100644
+index 0000000..3e25e6b
+--- /dev/null
++++ b/common/src/client/java/miragefairy2024/client/mixins/mixin/AbstractRecipeBookScreenAccessor.java
+@@ -0,0 +1,12 @@
++package miragefairy2024.client.mixins.mixin;
++
++import net.minecraft.client.gui.screens.inventory.AbstractRecipeBookScreen;
++import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
++import org.spongepowered.asm.mixin.Mixin;
++import org.spongepowered.asm.mixin.gen.Accessor;
++
++@Mixin(AbstractRecipeBookScreen.class)
++public interface AbstractRecipeBookScreenAccessor {
++    @Accessor("recipeBookComponent")
++    RecipeBookComponent<?> mirageFairy2024$getRecipeBookComponent();
++}
 diff --git a/common/src/client/java/miragefairy2024/client/mixins/mixin/GameRendererAccessor.java b/common/src/client/java/miragefairy2024/client/mixins/mixin/GameRendererAccessor.java
 new file mode 100644
 index 0000000..81db8df
@@ -32,6 +50,25 @@ index 0000000..81db8df
 +public interface GameRendererAccessor {
 +    @Invoker("shouldRenderBlockOutline")
 +    boolean mirageFairy2024$shouldRenderBlockOutline();
++}
+diff --git a/common/src/client/java/miragefairy2024/client/mixins/mixin/GuiGraphicsExtractorAccessor.java b/common/src/client/java/miragefairy2024/client/mixins/mixin/GuiGraphicsExtractorAccessor.java
+new file mode 100644
+index 0000000..006cc5a
+--- /dev/null
++++ b/common/src/client/java/miragefairy2024/client/mixins/mixin/GuiGraphicsExtractorAccessor.java
+@@ -0,0 +1,13 @@
++package miragefairy2024.client.mixins.mixin;
++
++import net.minecraft.client.gui.Font;
++import net.minecraft.client.gui.GuiGraphicsExtractor;
++import net.minecraft.network.chat.Style;
++import org.spongepowered.asm.mixin.Mixin;
++import org.spongepowered.asm.mixin.gen.Invoker;
++
++@Mixin(GuiGraphicsExtractor.class)
++public interface GuiGraphicsExtractorAccessor {
++    @Invoker("componentHoverEffect")
++    void mirageFairy2024$componentHoverEffect(Font font, Style style, int mouseX, int mouseY);
 +}
 diff --git a/common/src/client/java/miragefairy2024/client/mixins/mixin/GuiGraphicsMixin.java b/common/src/client/java/miragefairy2024/client/mixins/mixin/GuiGraphicsMixin.java
 index fb9ea2d..74c1a9d 100644
@@ -58,45 +95,88 @@ index fb9ea2d..74c1a9d 100644
      }
  }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/ClientProxyImpl.kt b/common/src/client/kotlin/miragefairy2024/client/ClientProxyImpl.kt
-index 142b859..add8fbf 100644
+index 142b859..1314a07 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/ClientProxyImpl.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/ClientProxyImpl.kt
-@@ -25,5 +25,5 @@ import net.minecraft.client.gui.screens.Screen
+@@ -19,18 +19,22 @@ import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
+ import miragefairy2024.mod.recipeviewer.view.View
+ import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
++import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry
+ import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
+ import net.minecraft.client.Minecraft
++import net.minecraft.client.color.block.BlockTintSource
+ import net.minecraft.client.gui.screens.MenuScreens
+ import net.minecraft.client.gui.screens.Screen
  import net.minecraft.client.renderer.BiomeColors
  import net.minecraft.client.renderer.MultiBufferSource
 -import net.minecraft.client.renderer.RenderType
 +import net.minecraft.client.renderer.rendertype.RenderType
  import net.minecraft.client.renderer.blockentity.BlockEntityRenderer
  import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
-@@ -32,5 +32,5 @@ import net.minecraft.client.resources.model.ModelResourceLocation
+ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers
+ import net.minecraft.client.resources.model.ModelResourceLocation
++import net.minecraft.core.BlockPos
  import net.minecraft.network.chat.Component
  import net.minecraft.network.chat.FormattedText
 -import net.minecraft.resources.ResourceLocation
 +import net.minecraft.resources.Identifier
++import net.minecraft.util.ARGB
  import net.minecraft.util.FormattedCharSequence
  import net.minecraft.world.entity.player.Player
-@@ -40,5 +40,5 @@ import net.minecraft.world.item.Item
+@@ -40,5 +44,5 @@ import net.minecraft.world.item.Item
  import net.minecraft.world.item.ItemDisplayContext
  import net.minecraft.world.item.ItemStack
 -import net.minecraft.world.level.BlockAndTintGetter
 +import net.minecraft.client.renderer.block.BlockAndTintGetter
  import net.minecraft.world.level.FoliageColor
  import net.minecraft.world.level.GrassColor
-@@ -56,4 +56,6 @@ class ClientProxyImpl : ClientProxy<Screen> {
+@@ -46,4 +50,5 @@ import net.minecraft.world.level.block.Block
+ import net.minecraft.world.level.block.entity.BlockEntity
+ import net.minecraft.world.level.block.entity.BlockEntityType
++import net.minecraft.world.level.block.state.BlockState
+
+ class ClientProxyImpl : ClientProxy<Screen> {
+@@ -56,4 +61,6 @@ class ClientProxyImpl : ClientProxy<Screen> {
      override fun getItemTooltip(itemStack: ItemStack): List<Component> = Screen.getTooltipFromItem(Minecraft.getInstance(), itemStack)
 
 +    override fun getFuelValues() = Minecraft.getInstance().level?.fuelValues()
 +
      override fun registerCutoutRenderLayer(block: () -> Block) {
          RenderTypeRegistry.register(RenderType.cutout(), block())
-@@ -122,5 +124,5 @@ class ClientProxyImpl : ClientProxy<Screen> {
+@@ -68,12 +75,14 @@ class ClientProxyImpl : ClientProxy<Screen> {
+     override fun getBlockColorProvider(block: Block): BlockColorProvider {
+         return BlockColorProvider { blockState, level, blockPos, tintIndex ->
+-            Minecraft.getInstance().blockColors.getColor(blockState, level as BlockAndTintGetter?, blockPos, tintIndex)
++            val source = Minecraft.getInstance().blockColors.getTintSource(blockState, tintIndex) ?: return@BlockColorProvider -1
++            if (level == null || blockPos == null) source.color(blockState) else source.colorInWorld(blockState, level as BlockAndTintGetter, blockPos)
+         }
+     }
+
+     override fun registerBlockColorProvider(block: () -> Block, provider: BlockColorProvider) {
+-        ColorProviderRegistry.BLOCK.register({ blockState, world, blockPos, tintIndex ->
+-            provider(blockState, world, blockPos, tintIndex)
+-        }, block())
++        BlockColorRegistry.register(listOf(object : BlockTintSource {
++            override fun color(blockState: BlockState) = ARGB.opaque(provider(blockState, null, null, 0))
++            override fun colorInWorld(blockState: BlockState, world: BlockAndTintGetter, blockPos: BlockPos) = ARGB.opaque(provider(blockState, world, blockPos, 0))
++        }), block())
+     }
+
+@@ -83,5 +92,5 @@ class ClientProxyImpl : ClientProxy<Screen> {
+
+     override fun getFoliageBlockColorProvider() = BlockColorProvider { _, level, blockPos, _ ->
+-        if (level == null || blockPos == null) FoliageColor.getDefaultColor() else BiomeColors.getAverageFoliageColor(level as BlockAndTintGetter, blockPos)
++        if (level == null || blockPos == null) FoliageColor.FOLIAGE_DEFAULT else BiomeColors.getAverageFoliageColor(level as BlockAndTintGetter, blockPos)
+     }
+
+@@ -122,5 +131,5 @@ class ClientProxyImpl : ClientProxy<Screen> {
 
      override fun addToast(rootView: View) {
 -        Minecraft.getInstance().toasts.addToast(ViewToast(rootView))
 +        Minecraft.getInstance().toastManager.addToast(ViewToast(rootView))
      }
 
-@@ -153,5 +155,5 @@ class RenderingProxyBlockEntityRenderer<T>(
+@@ -153,5 +162,5 @@ class RenderingProxyBlockEntityRenderer<T>(
              }
 
 -            override fun renderCutoutBlock(identifier: ResourceLocation, variant: String?, red: Float, green: Float, blue: Float, light: Int, overlay: Int) {
@@ -156,7 +236,7 @@ index 48d2317..f5a394c 100644
          }
      }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/CommonClientModule.kt b/common/src/client/kotlin/miragefairy2024/client/mod/CommonClientModule.kt
-index 37a5127..c848fa9 100644
+index 37a5127..296f2a3 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/CommonClientModule.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/mod/CommonClientModule.kt
 @@ -1,7 +1,10 @@
@@ -172,10 +252,11 @@ index 37a5127..c848fa9 100644
 +import miragefairy2024.client.mixins.mixin.GameRendererAccessor
  import miragefairy2024.client.mod.fairy.soulStreamKeyMappingCard
  import miragefairy2024.client.mod.fairy.toggleCollectionEnabledKeyMappingCard
-@@ -11,69 +14,86 @@ import miragefairy2024.mod.common.RenderBlockPosesOutlineContext
+@@ -11,69 +14,87 @@ import miragefairy2024.mod.common.RenderBlockPosesOutlineContext
  import miragefairy2024.util.isValid
  import mirrg.kotlin.helium.max
 -import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
++import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState
 +import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey
 +import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
  import net.minecraft.client.KeyMapping
@@ -287,11 +368,11 @@ index 37a5127..c848fa9 100644
 -            collectEdges(blockPosesOutline.blockPoses) { x0, y0, z0, x1, y1, z1 ->
 +            OutlineDrawState.Outline(outline.blockPoses.toSet(), ARGB.color(alpha, red, green, blue))
 +        }
-+        context.levelState().setData(OUTLINE_DRAW_STATE, OutlineDrawState(outlines, minecraft.window.appropriateLineWidth))
++        (context.levelState() as FabricRenderState).setData(OUTLINE_DRAW_STATE, OutlineDrawState(outlines, minecraft.window.appropriateLineWidth))
 +    }
 +
 +    LevelRenderEvents.END_MAIN.register { context ->
-+        val drawState = context.levelState().getData(OUTLINE_DRAW_STATE) ?: return@register
++        val drawState = (context.levelState() as FabricRenderState).getData(OUTLINE_DRAW_STATE) ?: return@register
 +        if (drawState.outlines.isEmpty()) return@register
 +
 +        val cameraPosition = context.levelState().cameraRenderState.pos
@@ -302,7 +383,7 @@ index 37a5127..c848fa9 100644
 +            collectEdges(outline.blockPoses) { x0, y0, z0, x1, y1, z1 ->
                  // ワールド座標のままFloatにすると、原点から遠い場所では刻みが粗くなって線が震えてしまうから、Doubleでカメラからの相対位置にしてからFloatにするのだ～🌱
                  val relativeX0 = (x0 - cameraPosition.x).toFloat()
-@@ -85,12 +105,15 @@ fun initCommonClientModule() {
+@@ -85,12 +106,15 @@ fun initCommonClientModule() {
                  vertexConsumer
                      .addVertex(pose, relativeX0, relativeY0, relativeZ0)
 -                    .setColor(red, green, blue, alpha)
@@ -558,6 +639,28 @@ index bf4d527..b26b528 100644
 +                RenderPipelines.GUI_TEXTURED,
                  FuelViewRenderer.TEXTURE,
                  leftPos + fuelBound.x - 1,
+diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/PlacedItemClientModule.kt b/common/src/client/kotlin/miragefairy2024/client/mod/PlacedItemClientModule.kt
+index 15bb51e..be61c71 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/mod/PlacedItemClientModule.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/mod/PlacedItemClientModule.kt
+@@ -23,5 +23,5 @@ val placeItemKeyMappingCard = KeyMappingCard(
+     PLACE_ITEM_KEY_TRANSLATION.keyGetter(),
+     GLFW.GLFW_KEY_Z,
+-    KeyMapping.CATEGORY_GAMEPLAY,
++    KeyMapping.Category.GAMEPLAY,
+ ) run@{
+
+diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/TooltipViewerClientModule.kt b/common/src/client/kotlin/miragefairy2024/client/mod/TooltipViewerClientModule.kt
+index f943b15..9559319 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/mod/TooltipViewerClientModule.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/mod/TooltipViewerClientModule.kt
+@@ -11,5 +11,5 @@ val tooltipViewerKeyMappingCard = KeyMappingCard(
+     OPEN_TOOLTIP_VIEWER_KEY_TRANSLATION.keyGetter(),
+     InputConstants.UNKNOWN.value,
+-    KeyMapping.CATEGORY_INVENTORY,
++    KeyMapping.Category.INVENTORY,
+ ) {
+     openTooltipViewerScreen()
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/entity/AntimatterBolt.kt b/common/src/client/kotlin/miragefairy2024/client/mod/entity/AntimatterBolt.kt
 index 4aa6f05..ad0220f 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/entity/AntimatterBolt.kt
@@ -714,23 +817,301 @@ index da97e31..aee4ca4 100644
 +        super.submit(state, matrices, collector, camera)
      }
  }
+diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/fairy/CollectionEnabledClientModule.kt b/common/src/client/kotlin/miragefairy2024/client/mod/fairy/CollectionEnabledClientModule.kt
+index fe8cd8b..84b7368 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/mod/fairy/CollectionEnabledClientModule.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/mod/fairy/CollectionEnabledClientModule.kt
+@@ -15,5 +15,5 @@ val toggleCollectionEnabledKeyMappingCard = KeyMappingCard(
+     TOGGLE_COLLECTION_ENABLED_KEY_TRANSLATION.keyGetter(),
+     InputConstants.UNKNOWN.value,
+-    KeyMapping.CATEGORY_GAMEPLAY,
++    KeyMapping.Category.GAMEPLAY,
+ ) {
+     val player = Minecraft.getInstance().player ?: return@KeyMappingCard
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/fairy/SoulStreamScreen.kt b/common/src/client/kotlin/miragefairy2024/client/mod/fairy/SoulStreamScreen.kt
-index d15cb11..236623c 100644
+index d15cb11..e118180 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/fairy/SoulStreamScreen.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/mod/fairy/SoulStreamScreen.kt
-@@ -81,5 +81,5 @@ import net.minecraft.client.gui.components.WidgetSprites
+@@ -2,8 +2,7 @@ package miragefairy2024.client.mod.fairy
+
+ import com.mojang.blaze3d.platform.InputConstants
+-import com.mojang.blaze3d.systems.RenderSystem
+-import io.wispforest.owo.ui.base.BaseOwoHandledScreen
+-import io.wispforest.owo.ui.component.Components
+-import io.wispforest.owo.ui.container.Containers
++import io.wispforest.owo.ui.base.BaseOwoContainerScreen
++import io.wispforest.owo.ui.component.UIComponents
++import io.wispforest.owo.ui.container.UIContainers
+ import io.wispforest.owo.ui.container.FlowLayout
+ import io.wispforest.owo.ui.container.ScrollContainer
+@@ -17,9 +16,9 @@ import miragefairy2024.MirageFairy2024
+ import miragefairy2024.ModContext
+ import miragefairy2024.client.mixins.api.RenderingEvent
++import miragefairy2024.client.mixins.mixin.AbstractRecipeBookScreenAccessor
+ import miragefairy2024.client.util.ClickableContainer
+ import miragefairy2024.client.util.KeyMappingCard
+ import miragefairy2024.client.util.LayeredImageButton
+ import miragefairy2024.client.util.LayeredImageToggleButton
+-import miragefairy2024.client.util.WidgetSprites
+ import miragefairy2024.client.util.inventoryNameLabel
+ import miragefairy2024.client.util.invoke
+@@ -75,11 +74,14 @@ import net.fabricmc.fabric.api.client.screen.v1.Screens
+ import net.minecraft.client.KeyMapping
+ import net.minecraft.client.Minecraft
+-import net.minecraft.client.gui.GuiGraphics
++import net.minecraft.client.gui.GuiGraphicsExtractor
+ import net.minecraft.client.gui.components.ImageButton
+ import net.minecraft.client.gui.components.Tooltip
+ import net.minecraft.client.gui.components.WidgetSprites
  import net.minecraft.client.gui.screens.inventory.InventoryScreen
++import net.minecraft.client.input.KeyEvent
++import net.minecraft.client.renderer.RenderPipelines
  import net.minecraft.network.chat.Component
 -import net.minecraft.resources.ResourceLocation
 +import net.minecraft.resources.Identifier
++import net.minecraft.util.ARGB
  import net.minecraft.world.entity.player.Inventory
  import org.lwjgl.glfw.GLFW
-@@ -97,5 +97,5 @@ val soulStreamKeyMappingCard = KeyMappingCard(
+@@ -89,5 +91,5 @@ val soulStreamKeyMappingCard = KeyMappingCard(
+     OPEN_SOUL_STREAM_KEY_TRANSLATION.keyGetter(),
+     GLFW.GLFW_KEY_K,
+-    KeyMapping.CATEGORY_INVENTORY,
++    KeyMapping.Category.INVENTORY,
+ ) {
+     lastMousePositionInInventory = null
+@@ -97,5 +99,5 @@ val soulStreamKeyMappingCard = KeyMappingCard(
  var lastMousePositionInInventory: Pair<Double, Double>? = null
 
 -var enabledPassiveSkillEffectFilters = ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>(mapOf())
 +var enabledPassiveSkillEffectFilters = ObservableValue<Map<Identifier, PassiveSkillEffectFilter<*>>>(mapOf())
  var enableGlobalFairyHighlight = ObservableValue(false)
+
+@@ -129,16 +131,17 @@ fun initSoulStreamClientModule() {
+                 OpenSoulStreamChannel.sendToServer(Unit)
+             }.also {
+-                it.tooltip = Tooltip.create(text { OPEN_SOUL_STREAM_KEY_TRANSLATION() + "("() + soulStreamKeyMappingCard() + ")"() })
++                it.setTooltip(Tooltip.create(text { OPEN_SOUL_STREAM_KEY_TRANSLATION() + "("() + soulStreamKeyMappingCard() + ")"() }))
+             }
+-            Screens.getButtons(screen).add(button)
++            Screens.getWidgets(screen).add(button)
+
+             fun updatePosition() {
+-                val offsetX = if (screen.recipeBookComponent.isVisible) 130 else 53
++                val offsetX = if ((screen as AbstractRecipeBookScreenAccessor).`mirageFairy2024$getRecipeBookComponent`().isVisible) 130 else 53
+                 button.setPosition(screen.width / 2 + offsetX, screen.height / 2 - 23)
+             }
+             updatePosition()
+
+-            ScreenMouseEvents.afterMouseClick(screen).register { _, _, _, _ ->
++            ScreenMouseEvents.afterMouseClick(screen).register { _, _, consumed ->
+                 updatePosition()
++                consumed
+             }
+
+@@ -171,31 +174,24 @@ fun initSoulStreamClientModule() {
+         graphics.fill(x, y, x + 16, y + 16, 0x88FFFF00.toInt())
+
+-        graphics.push()
+-        graphics.translate(0.0, 0.0, 200.0)
+-        RenderSystem.enableBlend()
+-        graphics.setColor(1f, 1f, 1f, alpha)
+-        graphics.blit(FILTER_OVERLAY_TEXTURE, x, y, 0F, 0F, 16, 16, 16, 16)
+-        graphics.setColor(1f, 1f, 1f, 1f)
+-        RenderSystem.disableBlend()
+-        graphics.pop()
++        graphics.blit(RenderPipelines.GUI_TEXTURED, FILTER_OVERLAY_TEXTURE, x, y, 0F, 0F, 16, 16, 16, 16, ARGB.white(alpha))
+     }
+
+ }
+
+-class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : BaseOwoHandledScreen<FlowLayout, SoulStreamScreenHandler>(handler, playerInventory, title) {
++class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : BaseOwoContainerScreen<FlowLayout, SoulStreamScreenHandler>(handler, playerInventory, title) {
+
+     // カーソルをインベントリ画面での位置に戻す
+     private var isFirst = true
+-    override fun render(vanillaContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
++    override fun extractRenderState(vanillaContext: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, delta: Float) {
+         if (isFirst) {
+             isFirst = false
+             if (lastMousePositionInInventory != null) {
+-                InputConstants.grabOrReleaseMouse(this.minecraft!!.window.window, InputConstants.CURSOR_NORMAL, lastMousePositionInInventory!!.first, lastMousePositionInInventory!!.second)
++                InputConstants.grabOrReleaseMouse(this.minecraft!!.window, InputConstants.CURSOR_NORMAL, lastMousePositionInInventory!!.first, lastMousePositionInInventory!!.second)
+             }
+         }
+-        super.render(vanillaContext, mouseX, mouseY, delta)
++        super.extractRenderState(vanillaContext, mouseX, mouseY, delta)
+     }
+
+-    override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::horizontalFlow)
++    override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, UIContainers::horizontalFlow)
+     override fun build(rootComponent: FlowLayout) {
+         rootComponent.apply {
+@@ -206,28 +202,28 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
+
+             // 左ペイン
+-            child(Containers.verticalFlow(Sizing.expand(50), Sizing.fill()).apply {
++            child(UIContainers.verticalFlow(Sizing.expand(50), Sizing.fill()).apply {
+                 padding(Insets.of(0, 20, 0, 0)) // レシピMOD用に下部を保護
+                 gap(2)
+
+                 // 左ペインボタン
+-                child(Containers.horizontalFlow(Sizing.fill(), Sizing.content()).apply {
++                child(UIContainers.horizontalFlow(Sizing.fill(), Sizing.content()).apply {
+                     gap(2)
+
+                     // ハイライトリセットボタン
+-                    child(LayeredImageButton(14, 14, BUTTON_14_BACKGROUND, run {
++                    child(UIComponents.wrapVanillaWidget(LayeredImageButton(14, 14, BUTTON_14_BACKGROUND, run {
+                         WidgetSprites(MirageFairy2024.identifier("button_14/clear_foreground"))
+                     }).apply {
+-                        tooltip(text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() })
++                        setTooltip(Tooltip.create(text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() }))
+
+                         onClick.register {
+                             enabledPassiveSkillEffectFilters.value = mapOf()
+                         }
+-                    })
++                    }))
+
+                     // グローバル検索トグルボタン
+-                    child(LayeredImageToggleButton(14, 14, BUTTON_14_BACKGROUND, run {
++                    child(UIComponents.wrapVanillaWidget(LayeredImageToggleButton(14, 14, BUTTON_14_BACKGROUND, run {
+                         WidgetSprites(MirageFairy2024.identifier("button_14/global_search_foreground"))
+                     }).apply {
+-                        tooltip(text { SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION() })
++                        setTooltip(Tooltip.create(text { SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION() }))
+
+                         enableGlobalFairyHighlight.observeAndInitialize(onClose) { _, _ ->
+@@ -237,5 +233,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
+                             enableGlobalFairyHighlight.value = value.value
+                         }
+-                    })
++                    }))
+
+                 })
+@@ -254,7 +250,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
+                             // 実装しても微妙なのが多すぎて折り畳み可能にしないといけないかも
+
+-                            child().child(Components.label(text { SOUL_STREAM_PASSIVE_SKILL_EFFECT_TRANSLATION().blue.bold }).horizontalTextAlignment(HorizontalAlignment.CENTER).horizontalSizing(Sizing.fill()))
+-                            child().child(Containers.verticalFlow(Sizing.fill(), Sizing.content()).apply {
+-                                passiveSkillEffectRegistry.entrySet().sortedBy { it.key.location() }.forEach { (_, effect) ->
++                            child().child(UIComponents.label(text { SOUL_STREAM_PASSIVE_SKILL_EFFECT_TRANSLATION().blue.bold }).horizontalTextAlignment(HorizontalAlignment.CENTER).horizontalSizing(Sizing.fill()))
++                            child().child(UIContainers.verticalFlow(Sizing.fill(), Sizing.content()).apply {
++                                passiveSkillEffectRegistry.entrySet().sortedBy { it.key.identifier() }.forEach { (_, effect) ->
+                                     fun <T : Any> f(effect: PassiveSkillEffect<T>) {
+                                         val samples = motifRegistry.entrySet()
+@@ -272,5 +268,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
+                                                     true
+                                                 }
+-                                                child(Components.label(Component.empty()).apply {
++                                                child(UIComponents.label(Component.empty()).apply {
+                                                     updateLabel = {
+                                                         if (filter.identifier in enabledPassiveSkillEffectFilters.value) {
+@@ -300,5 +296,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
+
+             // メインコンテナ
+-            child(Containers.verticalFlow(Sizing.fixed(18 * 9 + 18), Sizing.fill()).apply {
++            child(UIContainers.verticalFlow(Sizing.fixed(18 * 9 + 18), Sizing.fill()).apply {
+
+                 //child(inventoryNameLabel(title))
+@@ -306,5 +302,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
+                 //child(verticalSpace(3))
+
+-                child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
++                child(UIContainers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
+                     surface(Surface.tiled(SlotType.FAIRY.viewTexture.id, 18, 18))
+                     repeat(9) { index ->
+@@ -320,5 +316,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
+                     scrollStep(18)
+                     (9 until menu.soulStream.size).chunked(9).forEach { indices ->
+-                        child().child(Containers.horizontalFlow(Sizing.fill(100), Sizing.content()).apply {
++                        child().child(UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content()).apply {
+                             indices.forEach { index ->
+                                 child(slotContainer(slotAsComponent(9 * 3 + 9 + index), type = null))
+@@ -335,8 +331,8 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
+
+                 // プレイヤーインベントリ
+-                child(Containers.verticalFlow(Sizing.content(), Sizing.content()).apply {
++                child(UIContainers.verticalFlow(Sizing.content(), Sizing.content()).apply {
+                     surface(Surface.tiled(SlotType.NORMAL.viewTexture.id, 18, 18))
+                     repeat(3) { r ->
+-                        child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
++                        child(UIContainers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
+                             repeat(9) { c ->
+                                 child(slotContainer(slotAsComponent(9 * r + c), type = null))
+@@ -346,5 +342,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
+                 })
+                 child(verticalSpace(4))
+-                child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
++                child(UIContainers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
+                     surface(Surface.tiled(SlotType.NORMAL.viewTexture.id, 18, 18))
+                     repeat(9) { c ->
+@@ -361,14 +357,14 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
+
+             // 右ペイン
+-            child(Containers.verticalFlow(Sizing.expand(50), Sizing.fill()).apply {
++            child(UIContainers.verticalFlow(Sizing.expand(50), Sizing.fill()).apply {
+                 padding(Insets.of(0, 20, 0, 0)) // レシピMOD用に下部を保護
+                 gap(2)
+
+                 // 右ペインボタン
+-                child(Containers.horizontalFlow(Sizing.fill(), Sizing.content()).apply {
++                child(UIContainers.horizontalFlow(Sizing.fill(), Sizing.content()).apply {
+                     gap(2)
+
+                     // 収集効果の有効化切り替えボタン
+-                    child(LayeredImageToggleButton(14, 14, BUTTON_14_BACKGROUND, run {
++                    child(UIComponents.wrapVanillaWidget(LayeredImageToggleButton(14, 14, BUTTON_14_BACKGROUND, run {
+                         WidgetSprites(
+                             MirageFairy2024.identifier("button_14/collection_enabled_foreground"),
+@@ -381,5 +377,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
+                         fun update() {
+                             value.value = player.collectionEnabled.getOrDefault()
+-                            tooltip(text { (if (value.value) COLLECTION_ENABLED_TRANSLATION() else COLLECTION_DISABLED_TRANSLATION()) + " ("() + toggleCollectionEnabledKeyMappingCard() + ")"() })
++                            setTooltip(Tooltip.create(text { (if (value.value) COLLECTION_ENABLED_TRANSLATION() else COLLECTION_DISABLED_TRANSLATION()) + " ("() + toggleCollectionEnabledKeyMappingCard() + ")"() }))
+                         }
+                         AttachmentChangedEvent.eventRegistry.observe(onClose) { identifier ->
+@@ -394,5 +390,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
+                             }
+                         }
+-                    })
++                    }))
+
+                 })
+@@ -416,5 +412,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
+
+                                 if (result.map.isEmpty()) {
+-                                    container.child(Components.label(text { SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION().red }))
++                                    container.child(UIComponents.label(text { SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION().red }))
+                                 } else {
+                                     result.map.keys.sortedBy { passiveSkillEffectRegistry.getKey(it) }.forEach { effect ->
+@@ -422,5 +418,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
+                                             val value = result[effect]
+                                             effect.getTexts(value).forEach {
+-                                                container.child(Components.label(it.gold).tooltip(it.gold))
++                                                container.child(UIComponents.label(it.gold).tooltip(it.gold))
+                                             }
+                                         }
+@@ -443,5 +439,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
+     }
+
+-    override fun renderLabels(context: GuiGraphics, mouseX: Int, mouseY: Int) = Unit
++    override fun extractLabels(context: GuiGraphicsExtractor, mouseX: Int, mouseY: Int) = Unit
+
+     private val onUpdateListeners = mutableListOf<() -> Unit>()
+@@ -460,10 +456,10 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
+
+     // キー入力で閉じる
+-    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+-        if (soulStreamKeyMappingCard.keyMapping.matches(keyCode, scanCode)) {
++    override fun keyPressed(event: KeyEvent): Boolean {
++        if (soulStreamKeyMappingCard.keyMapping.matches(event)) {
+             onClose()
+             return true
+         }
+-        return super.keyPressed(keyCode, scanCode, modifiers)
++        return super.keyPressed(event)
+     }
 
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/fairyquest/FairyQuestClientModule.kt b/common/src/client/kotlin/miragefairy2024/client/mod/fairyquest/FairyQuestClientModule.kt
 index 7d51bba..504471d 100644
@@ -2414,17 +2795,163 @@ index 96ebac4..bd601bb 100644
 +        return super.keyPressed(event)
      }
 
+diff --git a/common/src/client/kotlin/miragefairy2024/client/util/BorderLayout.kt b/common/src/client/kotlin/miragefairy2024/client/util/BorderLayout.kt
+index 226abd5..f85c6a5 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/util/BorderLayout.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/util/BorderLayout.kt
+@@ -1,9 +1,9 @@
+ package miragefairy2024.client.util
+
+-import io.wispforest.owo.ui.container.Containers
++import io.wispforest.owo.ui.container.UIContainers
+ import io.wispforest.owo.ui.container.StackLayout
+-import io.wispforest.owo.ui.container.WrappingParentComponent
++import io.wispforest.owo.ui.container.WrappingParentUIComponent
+ import io.wispforest.owo.ui.core.Insets
+-import io.wispforest.owo.ui.core.OwoUIDrawContext
++import io.wispforest.owo.ui.core.OwoUIGraphics
+ import io.wispforest.owo.ui.core.Size
+ import io.wispforest.owo.ui.core.Sizing
+@@ -14,5 +14,5 @@ fun leftBorderLayout(horizontalSizing: Sizing, verticalSizing: Sizing) = BorderL
+ fun rightBorderLayout(horizontalSizing: Sizing, verticalSizing: Sizing) = BorderLayout(BorderLayout.Direction.RIGHT, horizontalSizing, verticalSizing)
+
+-class BorderLayout(val direction: Direction, horizontalSizing: Sizing, verticalSizing: Sizing) : WrappingParentComponent<StackLayout>(horizontalSizing, verticalSizing, Containers.stack(horizontalSizing, verticalSizing)) {
++class BorderLayout(val direction: Direction, horizontalSizing: Sizing, verticalSizing: Sizing) : WrappingParentUIComponent<StackLayout>(horizontalSizing, verticalSizing, UIContainers.stack(horizontalSizing, verticalSizing)) {
+
+     enum class Direction {
+@@ -24,14 +24,14 @@ class BorderLayout(val direction: Direction, horizontalSizing: Sizing, verticalS
+
+     private val child1 = when (direction) {
+-        Direction.TOP -> Containers.verticalFlow(horizontalSizing, Sizing.content())
+-        Direction.BOTTOM -> Containers.verticalFlow(horizontalSizing, Sizing.fill(100))
+-        Direction.LEFT -> Containers.horizontalFlow(Sizing.content(), verticalSizing)
+-        Direction.RIGHT -> Containers.horizontalFlow(Sizing.fill(100), verticalSizing)
++        Direction.TOP -> UIContainers.verticalFlow(horizontalSizing, Sizing.content())
++        Direction.BOTTOM -> UIContainers.verticalFlow(horizontalSizing, Sizing.fill(100))
++        Direction.LEFT -> UIContainers.horizontalFlow(Sizing.content(), verticalSizing)
++        Direction.RIGHT -> UIContainers.horizontalFlow(Sizing.fill(100), verticalSizing)
+     }
+     private val child2 = when (direction) {
+-        Direction.TOP -> Containers.verticalFlow(horizontalSizing, Sizing.fill(100))
+-        Direction.BOTTOM -> Containers.verticalFlow(horizontalSizing, Sizing.content())
+-        Direction.LEFT -> Containers.horizontalFlow(Sizing.fill(100), verticalSizing)
+-        Direction.RIGHT -> Containers.horizontalFlow(Sizing.content(), verticalSizing)
++        Direction.TOP -> UIContainers.verticalFlow(horizontalSizing, Sizing.fill(100))
++        Direction.BOTTOM -> UIContainers.verticalFlow(horizontalSizing, Sizing.content())
++        Direction.LEFT -> UIContainers.horizontalFlow(Sizing.fill(100), verticalSizing)
++        Direction.RIGHT -> UIContainers.horizontalFlow(Sizing.content(), verticalSizing)
+     }
+
+@@ -78,5 +78,5 @@ class BorderLayout(val direction: Direction, horizontalSizing: Sizing, verticalS
+     }
+
+-    override fun draw(context: OwoUIDrawContext, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) {
++    override fun draw(context: OwoUIGraphics, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) {
+         super.draw(context, mouseX, mouseY, partialTicks, delta)
+         drawChildren(context, mouseX, mouseY, partialTicks, delta, childView)
+diff --git a/common/src/client/kotlin/miragefairy2024/client/util/ClickableContainer.kt b/common/src/client/kotlin/miragefairy2024/client/util/ClickableContainer.kt
+index 7341ed0..dc82b08 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/util/ClickableContainer.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/util/ClickableContainer.kt
+@@ -1,11 +1,12 @@
+ package miragefairy2024.client.util
+
+-import io.wispforest.owo.ui.component.Components
+-import io.wispforest.owo.ui.container.WrappingParentComponent
+-import io.wispforest.owo.ui.core.OwoUIDrawContext
++import io.wispforest.owo.ui.component.UIComponents
++import io.wispforest.owo.ui.container.WrappingParentUIComponent
++import io.wispforest.owo.ui.core.OwoUIGraphics
+ import io.wispforest.owo.ui.core.Sizing
+ import miragefairy2024.util.EventRegistry
++import net.minecraft.client.input.MouseButtonEvent
+
+-class ClickableContainer(horizontalSizing: Sizing, verticalSizing: Sizing) : WrappingParentComponent<OwoComponent>(horizontalSizing, verticalSizing, Components.spacer(0)) {
++class ClickableContainer(horizontalSizing: Sizing, verticalSizing: Sizing) : WrappingParentUIComponent<OwoComponent>(horizontalSizing, verticalSizing, UIComponents.spacer(0)) {
+     // これを設定してもchildが受け取ってしまうのでカーソルを設定することができない
+     // see: io.wispforest.owo.ui.core.OwoUIAdapter.render
+@@ -16,5 +17,5 @@ class ClickableContainer(horizontalSizing: Sizing, verticalSizing: Sizing) : Wra
+     override fun canFocus(source: FocusSource) = source == FocusSource.KEYBOARD_CYCLE
+
+-    override fun draw(context: OwoUIDrawContext, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) {
++    override fun draw(context: OwoUIGraphics, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) {
+         super.draw(context, mouseX, mouseY, partialTicks, delta)
+         drawChildren(context, mouseX, mouseY, partialTicks, delta, childView)
+@@ -25,6 +26,6 @@ class ClickableContainer(horizontalSizing: Sizing, verticalSizing: Sizing) : Wra
+
+     val onClick = EventRegistry<() -> Boolean>()
+-    override fun onMouseDown(mouseX: Double, mouseY: Double, button: Int): Boolean {
+-        if (super.onMouseDown(mouseX, mouseY, button)) return true
++    override fun onMouseDown(event: MouseButtonEvent, doubleClick: Boolean): Boolean {
++        if (super.onMouseDown(event, doubleClick)) return true
+         return onClick.toList().any { it() }
+     }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/util/Gui.kt b/common/src/client/kotlin/miragefairy2024/client/util/Gui.kt
-index 34553d9..b65a5e6 100644
+index 34553d9..cd0d442 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/util/Gui.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/util/Gui.kt
-@@ -17,5 +17,5 @@ import net.minecraft.client.gui.components.events.ContainerEventHandler
+@@ -1,7 +1,7 @@
+ package miragefairy2024.client.util
+
+-import io.wispforest.owo.ui.component.Components
++import io.wispforest.owo.ui.component.UIComponents
+ import io.wispforest.owo.ui.component.LabelComponent
+-import io.wispforest.owo.ui.container.Containers
++import io.wispforest.owo.ui.container.UIContainers
+ import io.wispforest.owo.ui.container.FlowLayout
+ import io.wispforest.owo.ui.container.ScrollContainer
+@@ -17,12 +17,12 @@ import net.minecraft.client.gui.components.events.ContainerEventHandler
  import net.minecraft.client.gui.components.events.GuiEventListener
  import net.minecraft.network.chat.Component
 -import net.minecraft.resources.ResourceLocation
 +import net.minecraft.resources.Identifier
 
- typealias OwoComponent = io.wispforest.owo.ui.core.Component
+-typealias OwoComponent = io.wispforest.owo.ui.core.Component
+-typealias FocusSource = io.wispforest.owo.ui.core.Component.FocusSource
+-typealias DismountReason = io.wispforest.owo.ui.core.Component.DismountReason
++typealias OwoComponent = io.wispforest.owo.ui.core.UIComponent
++typealias FocusSource = io.wispforest.owo.ui.core.UIComponent.FocusSource
++typealias DismountReason = io.wispforest.owo.ui.core.UIComponent.DismountReason
+
+ fun slotContainer(slotComponent: OwoComponent, type: SlotType? = SlotType.NORMAL): FlowLayout {
+-    return Containers.verticalFlow(Sizing.content(), Sizing.content()).apply {
++    return UIContainers.verticalFlow(Sizing.content(), Sizing.content()).apply {
+         padding(Insets.of(1))
+         if (type != null) surface(Surface.tiled(type.viewTexture.id, 18, 18))
+@@ -32,9 +32,9 @@ fun slotContainer(slotComponent: OwoComponent, type: SlotType? = SlotType.NORMAL
+ }
+
+-fun horizontalSpace(width: Int): FlowLayout = Containers.verticalFlow(Sizing.fixed(width), Sizing.content())
++fun horizontalSpace(width: Int): FlowLayout = UIContainers.verticalFlow(Sizing.fixed(width), Sizing.content())
+
+-fun verticalSpace(height: Int): FlowLayout = Containers.verticalFlow(Sizing.content(), Sizing.fixed(height))
++fun verticalSpace(height: Int): FlowLayout = UIContainers.verticalFlow(Sizing.content(), Sizing.fixed(height))
+
+-fun inventoryNameLabel(name: Component, horizontalTextAlignment: HorizontalAlignment? = HorizontalAlignment.LEFT): LabelComponent = Components.label(name).apply {
++fun inventoryNameLabel(name: Component, horizontalTextAlignment: HorizontalAlignment? = HorizontalAlignment.LEFT): LabelComponent = UIComponents.label(name).apply {
+     margins(Insets.of(0, 0, 1, 1))
+     sizing(Sizing.fill(100), Sizing.content())
+@@ -44,5 +44,5 @@ fun inventoryNameLabel(name: Component, horizontalTextAlignment: HorizontalAlign
+
+ fun verticalScroll(horizontalSizing: Sizing, verticalSizing: Sizing, scrollbarThiccness: Int, overlapped: Boolean = false): ScrollContainer<FlowLayout> {
+-    return Containers.verticalScroll(horizontalSizing, verticalSizing, Containers.verticalFlow(horizontalSizing, Sizing.content()).apply {
++    return UIContainers.verticalScroll(horizontalSizing, verticalSizing, UIContainers.verticalFlow(horizontalSizing, Sizing.content()).apply {
+         if (!overlapped) padding(Insets.of(0, 0, 0, scrollbarThiccness))
+     }).apply {
+@@ -52,5 +52,5 @@ fun verticalScroll(horizontalSizing: Sizing, verticalSizing: Sizing, scrollbarTh
+
+ fun horizontalScroll(horizontalSizing: Sizing, verticalSizing: Sizing, scrollbarThiccness: Int, overlapped: Boolean = false): ScrollContainer<FlowLayout> {
+-    return Containers.horizontalScroll(horizontalSizing, verticalSizing, Containers.horizontalFlow(Sizing.content(), verticalSizing).apply {
++    return UIContainers.horizontalScroll(horizontalSizing, verticalSizing, UIContainers.horizontalFlow(Sizing.content(), verticalSizing).apply {
+         if (!overlapped) padding(Insets.of(0, scrollbarThiccness, 0, 0))
+     }).apply {
+@@ -60,5 +60,5 @@ fun horizontalScroll(horizontalSizing: Sizing, verticalSizing: Sizing, scrollbar
+
+ fun tooltipContainer(horizontalSizing: Sizing, verticalSizing: Sizing): FlowLayout {
+-    return Containers.verticalFlow(horizontalSizing, verticalSizing).apply {
++    return UIContainers.verticalFlow(horizontalSizing, verticalSizing).apply {
+         surface(Surface.TOOLTIP)
+         padding(Insets.of(4))
 @@ -99,5 +99,5 @@ class CompressionVerticalFlow(verticalSizing: Sizing) : FlowLayout(Sizing.conten
  }
 
@@ -2433,21 +2960,30 @@ index 34553d9..b65a5e6 100644
 
  /**
 diff --git a/common/src/client/kotlin/miragefairy2024/client/util/KeyMapping.kt b/common/src/client/kotlin/miragefairy2024/client/util/KeyMapping.kt
-index be8fc66..5c68131 100644
+index be8fc66..f05e5ee 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/util/KeyMapping.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/util/KeyMapping.kt
-@@ -4,5 +4,5 @@ import miragefairy2024.ModContext
+@@ -4,13 +4,12 @@ import miragefairy2024.ModContext
  import miragefairy2024.mixin.client.api.inputEventsHandlers
  import miragefairy2024.util.TextScope
 -import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 +import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper
  import net.minecraft.client.KeyMapping
  import net.minecraft.network.chat.Component
-@@ -25,5 +25,5 @@ class KeyMappingCard(
+
+-/** @param category この文字列は識別と翻訳キーの両方に使われます。 */
+ class KeyMappingCard(
+     val nameTranslationKey: String,
+     private val defaultKeyCode: Int,
+-    private val category: String,
++    private val category: KeyMapping.Category,
+     private val listener: () -> Unit,
+ ) {
+@@ -25,5 +24,5 @@ class KeyMappingCard(
              }
          }
 -        KeyBindingHelper.registerKeyBinding(keyMapping)
-+        KeyMappingHelper.registerKeyBinding(keyMapping)
++        KeyMappingHelper.registerKeyMapping(keyMapping)
      }
  }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/util/LayeredImageButton.kt b/common/src/client/kotlin/miragefairy2024/client/util/LayeredImageButton.kt
@@ -2504,6 +3040,133 @@ index cd0de8b..59cfe75 100644
 +        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, foregroundSprites.get(value.value, isHoveredOrFocused), x, y, width, height)
      }
  }
+diff --git a/common/src/client/kotlin/miragefairy2024/client/util/LimitedLabelComponent.kt b/common/src/client/kotlin/miragefairy2024/client/util/LimitedLabelComponent.kt
+index d4ec7bf..9d1aeda 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/util/LimitedLabelComponent.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/util/LimitedLabelComponent.kt
+@@ -1,23 +1,25 @@
+ package miragefairy2024.client.util
+
+-import io.wispforest.owo.ui.base.BaseComponent
++import io.wispforest.owo.braid.widgets.label.RawLabel
++import io.wispforest.owo.ui.base.BaseUIComponent
+ import io.wispforest.owo.ui.core.AnimatableProperty
+ import io.wispforest.owo.ui.core.Color
+ import io.wispforest.owo.ui.core.HorizontalAlignment
+-import io.wispforest.owo.ui.core.OwoUIDrawContext
++import io.wispforest.owo.ui.core.OwoUIGraphics
+ import io.wispforest.owo.ui.core.Size
+ import io.wispforest.owo.ui.core.Sizing
+ import io.wispforest.owo.ui.core.VerticalAlignment
+ import io.wispforest.owo.util.Observable
++import miragefairy2024.client.mixins.mixin.GuiGraphicsExtractorAccessor
+ import net.minecraft.client.Minecraft
++import net.minecraft.client.input.MouseButtonEvent
+ import net.minecraft.network.chat.Component
+ import net.minecraft.network.chat.Style
+ import net.minecraft.util.FormattedCharSequence
+ import java.util.function.Function
+-import kotlin.math.min
+
+ // ■■ from io.wispforest.owo.ui.component.LabelComponent
+ // ■■ https://github.com/wisp-forest/owo-lib/blob/1.20.2/src/main/java/io/wispforest/owo/ui/component/LabelComponent.java
+-open class LimitedLabelComponent(protected var text: Component) : BaseComponent() {
++open class LimitedLabelComponent(protected var text: Component) : BaseUIComponent() {
+     protected val textRenderer = Minecraft.getInstance().font
+     protected var wrappedText: List<FormattedCharSequence>
+@@ -28,5 +30,5 @@ open class LimitedLabelComponent(protected var text: Component) : BaseComponent(
+     protected var shadow = false
+     protected var maxWidth: Int
+-    protected var textClickHandler = Function { style: Style? -> OwoUIDrawContext.utilityScreen().handleComponentClicked(style) }
++    protected var textClickHandler = Function { style: Style? -> style != null && OwoUIGraphics.utilityScreen().handleTextClick(style, Minecraft.getInstance().screen) }
+
+     init {
+@@ -161,53 +163,49 @@ open class LimitedLabelComponent(protected var text: Component) : BaseComponent(
+     }
+
+-    override fun draw(context: OwoUIDrawContext, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) {
++    override fun draw(context: OwoUIGraphics, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) {
+         val matrices = context.pose()
+         matrices.stack {
+-            matrices.translate(0.0, 1 / Minecraft.getInstance().window.guiScale, 0.0)
+-            var x = x
+-            var y = y
+-            if (horizontalSizing.get().isContent) {
+-                x += horizontalSizing.get().value
+-            }
+-            if (verticalSizing.get().isContent) {
+-                y += verticalSizing.get().value
+-            }
+-            when (verticalTextAlignment) {
+-                VerticalAlignment.CENTER -> y += (height - (wrappedText.size * (this.lineHeight() + 2) - 2)) / 2
+-                VerticalAlignment.BOTTOM -> y += height - (wrappedText.size * (this.lineHeight() + 2) - 2)
+-                else -> Unit
+-            }
+-            val lambdaX = x
+-            val lambdaY = y
+-            @Suppress("DEPRECATION")
+-            context.drawManaged {
+-                wrappedText.indices.forEach { i ->
+-                    val renderText = wrappedText[i]
+-                    var renderX = lambdaX
+-                    when (horizontalTextAlignment) {
+-                        HorizontalAlignment.CENTER -> renderX += (width - textRenderer.width(renderText)) / 2
+-                        HorizontalAlignment.RIGHT -> renderX += width - textRenderer.width(renderText)
+-                        else -> Unit
+-                    }
+-                    var renderY = lambdaY + i * (this.lineHeight() + 2)
+-                    renderY += this.lineHeight() - textRenderer.lineHeight
+-                    context.drawString(textRenderer, renderText, renderX, renderY, color.get().argb(), shadow)
+-                }
++            matrices.translate(0F, 1F / Minecraft.getInstance().window.guiScale.toFloat())
++            forEachTextLine { text, x, y ->
++                context.text(textRenderer, text, x, y, color.get().argb(), shadow)
+             }
+         }
+     }
+
+-    override fun drawTooltip(context: OwoUIDrawContext, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) {
++    override fun drawTooltip(context: OwoUIGraphics, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) {
+         super.drawTooltip(context, mouseX, mouseY, partialTicks, delta)
+         if (!isInBoundingBox(mouseX.toDouble(), mouseY.toDouble())) return
+-        context.renderComponentHoverEffect(textRenderer, styleAt(mouseX - x, mouseY - y), mouseX, mouseY)
++        val style = styleAt(mouseX - x, mouseY - y) ?: return
++        (context as GuiGraphicsExtractorAccessor).`mirageFairy2024$componentHoverEffect`(textRenderer, style, mouseX, mouseY)
+     }
+
+-    override fun onMouseDown(mouseX: Double, mouseY: Double, button: Int): Boolean {
+-        return textClickHandler.apply(styleAt(mouseX.toInt(), mouseY.toInt())) or super.onMouseDown(mouseX, mouseY, button)
++    override fun onMouseDown(event: MouseButtonEvent, doubleClick: Boolean): Boolean {
++        return textClickHandler.apply(styleAt(event.x().toInt(), event.y().toInt())) or super.onMouseDown(event, doubleClick)
+     }
+
+     protected fun styleAt(mouseX: Int, mouseY: Int): Style? {
+-        return textRenderer.splitter.componentStyleAtWidth(wrappedText[min((mouseY / (this.lineHeight() + 2)).toDouble(), (wrappedText.size - 1).toDouble()).toInt()], mouseX)
++        val styles = RawLabel.Instance.StyleCollector(textRenderer, x + mouseX, y + mouseY)
++        forEachTextLine { text, lineX, lineY -> styles.accept(lineX, lineY, text) }
++        return styles.result()
++    }
++
++    private fun forEachTextLine(draw: (FormattedCharSequence, Int, Int) -> Unit) {
++        val contentX = x + if (horizontalSizing.get().isContent) horizontalSizing.get().value else 0
++        val contentHeight = wrappedText.size * (lineHeight() + 2) - 2
++        val paddingY = if (verticalSizing.get().isContent) verticalSizing.get().value else 0
++        val alignmentY = when (verticalTextAlignment) {
++            VerticalAlignment.CENTER -> (height - contentHeight) / 2
++            VerticalAlignment.BOTTOM -> height - contentHeight
++            else -> 0
++        }
++        wrappedText.forEachIndexed { i, text ->
++            val alignmentX = when (horizontalTextAlignment) {
++                HorizontalAlignment.CENTER -> (width - textRenderer.width(text)) / 2
++                HorizontalAlignment.RIGHT -> width - textRenderer.width(text)
++                else -> 0
++            }
++            val lineY = y + paddingY + alignmentY + i * (lineHeight() + 2) + lineHeight() - textRenderer.lineHeight
++            draw(text, contentX + alignmentX, lineY)
++        }
+     }
+
 diff --git a/common/src/client/kotlin/miragefairy2024/client/util/Particle.kt b/common/src/client/kotlin/miragefairy2024/client/util/Particle.kt
 index f94d656..13605d5 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/util/Particle.kt
@@ -2709,13 +3372,16 @@ index 7d67d23..17eb8aa 100644
      }
 
 diff --git a/common/src/client/resources/miragefairy2024.client.mixins.json b/common/src/client/resources/miragefairy2024.client.mixins.json
-index f4ed60d..489f47a 100644
+index f4ed60d..f205082 100644
 --- a/common/src/client/resources/miragefairy2024.client.mixins.json
 +++ b/common/src/client/resources/miragefairy2024.client.mixins.json
-@@ -6,4 +6,5 @@
+@@ -5,5 +5,8 @@
+   "client": [
      "AbstractContainerScreenMixin",
++    "AbstractRecipeBookScreenAccessor",
      "ClientLevelMixin",
 +    "GameRendererAccessor",
++    "GuiGraphicsExtractorAccessor",
      "GuiGraphicsMixin",
      "ItemRendererMixin",
 diff --git a/common/src/clientTest/kotlin/miragefairy2024/client/mod/recipeviewer/common/GhostRecipeItemViewRendererTest.kt b/common/src/clientTest/kotlin/miragefairy2024/client/mod/recipeviewer/common/GhostRecipeItemViewRendererTest.kt
@@ -4509,11 +5175,28 @@ index bafdac4..07ec260 100644
      override fun getSerializer() = SERIALIZER
  }
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/enchantment/contents/Smelting.kt b/common/src/main/kotlin/miragefairy2024/mod/enchantment/contents/Smelting.kt
-index 42e319f..fe64e62 100644
+index 42e319f..aea9f70 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/enchantment/contents/Smelting.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/enchantment/contents/Smelting.kt
-@@ -18,6 +18,7 @@ fun initSmelting() {
-         if (!tool.isCorrectToolForDrops(state)) return@register drops
+@@ -6,5 +6,8 @@ import miragefairy2024.mod.enchantment.EnchantmentCard
+ import miragefairy2024.util.get
+ import mirrg.kotlin.java.hydrogen.orNull
++import net.minecraft.core.component.DataComponents
+ import net.minecraft.core.registries.Registries
++import net.minecraft.world.item.ItemStack
++import net.minecraft.world.item.ItemStackTemplate
+ import net.minecraft.world.item.crafting.RecipeType
+ import net.minecraft.world.item.crafting.SingleRecipeInput
+@@ -16,8 +19,14 @@ fun initSmelting() {
+         val smeltingLevel = EnchantmentHelper.getItemEnchantmentLevel(level.registryAccess()[Registries.ENCHANTMENT, EnchantmentCard.SMELTING.key], tool)
+         if (smeltingLevel == 0) return@register drops
+-        if (!tool.isCorrectToolForDrops(state)) return@register drops
++        val correctTool = when (tool) {
++            is ItemStack -> tool.isCorrectToolForDrops(state)
++            is ItemStackTemplate -> tool.create().isCorrectToolForDrops(state)
++            else -> tool[DataComponents.TOOL]?.isCorrectForDrops(state) == true
++        }
++        if (!correctTool) return@register drops
          drops.map {
 -            val recipe = level.recipeManager.getRecipeFor(RecipeType.SMELTING, SingleRecipeInput(it), level).orNull ?: return@map it
 -            val result = recipe.value.getResultItem(level.registryAccess())
