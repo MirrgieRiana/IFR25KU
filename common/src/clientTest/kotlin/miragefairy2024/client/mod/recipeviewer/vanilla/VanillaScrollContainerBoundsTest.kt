@@ -57,6 +57,7 @@ class VanillaScrollContainerBoundsTest {
                 override val screenEventSource = ScreenEventSource()
                 override val onBeforeRender = EventRegistry<() -> Unit>()
                 override val onTick = EventRegistry<() -> Unit>()
+                override val onBeforeRenderForPlacements = EventRegistry<() -> Unit>()
                 override fun addRenderable(registration: WidgetRegistration) = throw AssertionError("No widget should be registered")
                 override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover {
                     placements[slotId] = clipBounds
@@ -77,6 +78,7 @@ class VanillaScrollContainerBoundsTest {
                 var childClipBounds: IntRectangle? = null
                 Assertions.assertTrue(childContext.canPlaceMenuSlots)
                 Assertions.assertSame(context.screenEventSource, childContext.screenEventSource)
+                Assertions.assertSame(context.onBeforeRenderForPlacements, childContext.onBeforeRenderForPlacements)
                 Assertions.assertSame(remover, childContext.registerMenuSlotPlacement(slotId) { childClipBounds })
                 val clipBounds = placements.getValue(slotId)
                 Assertions.assertEquals(IntRectangle(40, 20, 50, 60), clipBounds())

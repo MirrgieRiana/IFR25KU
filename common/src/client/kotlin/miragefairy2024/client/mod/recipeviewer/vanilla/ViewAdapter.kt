@@ -13,6 +13,7 @@ import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import miragefairy2024.util.fire
+import miragefairy2024.util.observe
 import mirrg.kotlin.helium.CachingEvaluator
 import mirrg.kotlin.java.hydrogen.orNull
 import net.minecraft.client.gui.components.AbstractWidget
@@ -64,6 +65,10 @@ class ViewAdapter(val host: ViewAdapterHost) {
     private var viewController: ViewController? = null
     private val onBeforeRender = EventRegistry<() -> Unit>()
     private val onTick = EventRegistry<() -> Unit>()
+    private val onBeforeRenderForPlacements = EventRegistry<() -> Unit>()
+    private val forwardBeforeRenderToPlacements: () -> Unit = {
+        onBeforeRenderForPlacements.fire()
+    }
 
     private class MouseClickSentinel : GuiEventListener, NarratableEntry {
 
@@ -103,11 +108,15 @@ class ViewAdapter(val host: ViewAdapterHost) {
             override val screenEventSource = this@ViewAdapter.screenEventSource
             override val onBeforeRender = this@ViewAdapter.onBeforeRender
             override val onTick = this@ViewAdapter.onTick
+            override val onBeforeRenderForPlacements = this@ViewAdapter.onBeforeRenderForPlacements
             override fun addRenderable(registration: WidgetRegistration) = if (registration.interactive) host.addRenderableWidget(registration.widget) else host.addRenderableOnly(registration.widget)
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = host.registerMenuSlotPlacement(slotId, clipBounds)
         }
         viewController = rootView.attachTo(host.getUiOffset()) { view, bounds ->
             host.getViewPlacerRegistry().place(context, view, bounds)
+        }
+        if (forwardBeforeRenderToPlacements !in screenEventSource.onBeforeRender) {
+            screenEventSource.onBeforeRender.observe(screenEventSource.onDisposing, forwardBeforeRenderToPlacements)
         }
         isInitialized = true
     }
