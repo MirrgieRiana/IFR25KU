@@ -14,10 +14,12 @@ import miragefairy2024.mod.TooltipViewerScreenContent
 import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
+import miragefairy2024.mod.recipeviewer.view.ViewPlacer
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.AbsoluteView
 import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
@@ -94,6 +96,37 @@ private val PLACER_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
     override fun calculateTextWidth(text: FormattedCharSequence) = throw UnsupportedOperationException()
     override fun getTextHeight() = throw UnsupportedOperationException()
     override fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence> = throw UnsupportedOperationException()
+}
+
+private fun createScrollPlacement(context: VanillaViewPlacerContext): Triple<ViewAdapter, ScreenEventSource, ViewPlacer<PlaceableView>> {
+    lateinit var eventSource: ScreenEventSource
+    lateinit var placer: ViewPlacer<PlaceableView>
+    val adapter = ViewAdapter(object : ViewAdapterHost {
+        override fun getRenderingProxy() = PLACER_RENDERING_PROXY
+        override fun getViewPlacerRegistry() = VANILLA_VIEW_PLACER_REGISTRY
+        override fun getScreen() = null
+        override fun canPlaceMenuSlots() = context.canPlaceMenuSlots
+        override fun getRegionSizeX() = 100
+        override fun getRegionSizeY() = 100
+        override fun getUiOffset() = context.origin
+        override fun setUiSize(uiSize: IntPoint) = Unit
+        override fun init() = Unit
+        override fun addRenderableWidget(widget: AbstractWidget) = context.addRenderable(WidgetRegistration(widget, true) { RenderOverflow.NONE })
+        override fun addRenderableOnly(widget: AbstractWidget) = context.addRenderable(WidgetRegistration(widget, false) { RenderOverflow.NONE })
+        override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = context.registerMenuSlotPlacement(slotId, clipBounds)
+        override fun createRootView(screenEventSource: ScreenEventSource): View {
+            eventSource = screenEventSource
+            return object : View by EmptyView() {
+                override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
+                    placer = viewPlacer
+                    return ViewController.NONE
+                }
+            }
+        }
+    })
+    adapter.init()
+    adapter.opened()
+    return Triple(adapter, eventSource, placer)
 }
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -247,13 +280,13 @@ class VanillaViewPlacersTest {
         view += YScrollContainerView().also { it += scrollContent }
         view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
         Assertions.assertEquals(100, scrollContent.evaluateContentSizeY())
-        val placer = createVanillaViewPlacer(context.screenEventSource)
-        val controller = view.attachTo(context.origin) { child, bounds -> placer.place(context, child, bounds) }
+        val (adapter, _, placer) = createScrollPlacement(context)
+        val controller = view.attachTo(context.origin, placer)
 
-        context.onBeforeRender.fire()
+        adapter.beforeRender()
         controller.dispose()
         controller.detach()
-        context.onBeforeRender.fire()
+        adapter.beforeRender()
 
         Assertions.assertEquals(listOf("root", "child"), calls)
     }
@@ -284,17 +317,17 @@ class VanillaViewPlacersTest {
         }
         view += YScrollContainerView().also { it += scrollContent }
         view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
-        val placer = createVanillaViewPlacer(context.screenEventSource)
-        val controller = view.attachTo(context.origin) { child, bounds -> placer.place(context, child, bounds) }
+        val (adapter, _, placer) = createScrollPlacement(context)
+        val controller = view.attachTo(context.origin, placer)
 
-        context.onTick.fire()
+        adapter.tick()
         Assertions.assertEquals(listOf("root"), calls)
 
-        context.onTick.fire()
+        adapter.tick()
         Assertions.assertEquals(listOf("root", "root", "new"), calls)
 
         controller.dispose()
-        context.onTick.fire()
+        adapter.tick()
         Assertions.assertEquals(listOf("root", "root", "new"), calls)
         controller.detach()
     }
@@ -394,9 +427,9 @@ class VanillaViewPlacersTest {
                 }
                 view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
 
-                val placer = createVanillaViewPlacer(context.screenEventSource)
+                val (_, _, placer) = createScrollPlacement(context)
                 val exception = Assertions.assertThrows(UnsupportedOperationException::class.java) {
-                    view.attachTo(IntPoint.ZERO) { child, bounds -> placer.place(context, child, bounds) }
+                    view.attachTo(IntPoint.ZERO, placer)
                 }
 
                 Assertions.assertEquals("MenuSlotView cannot be placed in this context", exception.message)
@@ -515,8 +548,8 @@ class VanillaViewPlacersTest {
             val view = if (horizontal) XScrollContainerView() else YScrollContainerView()
             view += leaf
             view.initSizeCalculation(PLACER_RENDERING_PROXY, { 50 }, { 50 })
-            val placer = createVanillaViewPlacer(context.screenEventSource)
-            val controller = view.attachTo(context.origin) { child, bounds -> placer.place(context, child, bounds) }
+            val (_, _, placer) = createScrollPlacement(context)
+            val controller = view.attachTo(context.origin, placer)
             val widget = screenWidgets.single() as VanillaScrollContainerViewWidget
             Assertions.assertEquals(if (horizontal) VanillaXScrollContainerViewWidget::class.java else VanillaYScrollContainerViewWidget::class.java, widget.javaClass)
             val child = widget.children().single() as AbstractWidget
@@ -667,11 +700,11 @@ class VanillaViewPlacersTest {
                         list += bar
                         list
                     }
-                    val placer = createVanillaViewPlacer(context.screenEventSource)
+                    val (adapter, screenEventSource, placer) = createScrollPlacement(context)
                     try {
                         listOf(50, 40).forEach { viewportLength ->
                             root.initSizeCalculation(PLACER_RENDERING_PROXY, { if (horizontal || overlay) 50 else 55 }, { if (horizontal && !overlay) viewportLength + 5 else viewportLength })
-                            val controller = root.attachTo(context.origin) { view, bounds -> placer.place(context, view, bounds) }
+                            val controller = root.attachTo(context.origin, placer)
                             val viewport = widgets.filterIsInstance<VanillaScrollContainerViewWidget>().single()
                             val scrollbar = widgets.filterIsInstance<VanillaFlatScrollbarViewWidget>().single()
                             val child = viewport.children().single() as AbstractWidget
@@ -700,11 +733,11 @@ class VanillaViewPlacersTest {
                                 controller.detach()
                             }
                             Assertions.assertTrue(widgets.isEmpty())
-                            Assertions.assertEquals(1, context.screenEventSource.onBeforeRender.toList().size)
+                            Assertions.assertEquals(1, screenEventSource.onBeforeRender.toList().size)
                             Assertions.assertEquals(1, scrollOffset.toList().size)
                         }
                     } finally {
-                        context.screenEventSource.onDisposing.fire()
+                        adapter.removed()
                         connection.remove()
                     }
                     Assertions.assertTrue(scrollOffset.toList().isEmpty())
@@ -746,32 +779,32 @@ class VanillaViewPlacersTest {
                 scrollOffset.value = 75.25
                 val connection = if (horizontal) connectScrollbar(scroll as XScrollContainerView, bar as XFlatScrollbarView) else connectScrollbar(scroll as YScrollContainerView, bar as YFlatScrollbarView)
                 scroll.initSizeCalculation(PLACER_RENDERING_PROXY, { 50 }, { 50 })
-                val placer = createVanillaViewPlacer(context.screenEventSource)
-                val controller = scroll.attachTo(context.origin) { view, bounds -> placer.place(context, view, bounds) }
+                val (adapter, screenEventSource, placer) = createScrollPlacement(context)
+                val controller = scroll.attachTo(context.origin, placer)
                 val widget = widgets.single() as VanillaScrollContainerViewWidget
                 try {
                     Assertions.assertEquals(100, bar.contentLength)
                     content.content.value = SpaceView(IntPoint(25, 25))
                     widget.render(environment.graphics, 20, 30, 0.0F)
                     Assertions.assertEquals(100, bar.contentLength)
-                    context.screenEventSource.onBeforeRender.fire()
+                    screenEventSource.onBeforeRender.fire()
                     Assertions.assertEquals(25, bar.contentLength)
                     Assertions.assertEquals(50, bar.viewportLength)
                     Assertions.assertEquals(75.25, scrollOffset.value)
                     Assertions.assertEquals(75.25, barOffset.value)
                     content.content.value = leaf
-                    context.screenEventSource.onBeforeRender.fire()
+                    screenEventSource.onBeforeRender.fire()
                     Assertions.assertEquals(100, bar.contentLength)
                     val child = widget.children().single() as AbstractWidget
                     Assertions.assertEquals(if (horizontal) IntPoint(-65, 20) else IntPoint(10, -55), IntPoint(child.x, child.y))
                 } finally {
-                    context.screenEventSource.onDisposing.fire()
+                    adapter.removed()
                     controller.dispose()
                     controller.detach()
                     connection.remove()
                 }
-                Assertions.assertTrue(context.screenEventSource.onBeforeRender.toList().isEmpty())
-                Assertions.assertTrue(context.screenEventSource.onDisposing.toList().isEmpty())
+                Assertions.assertTrue(screenEventSource.onBeforeRender.toList().isEmpty())
+                Assertions.assertTrue(screenEventSource.onDisposing.toList().isEmpty())
             }
         }
     }
@@ -779,20 +812,18 @@ class VanillaViewPlacersTest {
     @Test
     fun `描画前通知の中継はスクロール領域の再配置をまたいで画面終了まで存続するのだ`() {
         val context = createScrollbarPlacerContext(mutableListOf())
-        val screenEventSource = context.screenEventSource
-        val placer = createVanillaViewPlacer(screenEventSource)
+        val (adapter, screenEventSource, placer) = createScrollPlacement(context)
 
         fun attachScroll(): ViewController {
             val scroll = YScrollContainerView().also { it += PlacerTestView() }
             scroll.initSizeCalculation(PLACER_RENDERING_PROXY, { 50 }, { 50 })
-            return scroll.attachTo(context.origin) { view, bounds -> placer.place(context, view, bounds) }
+            return scroll.attachTo(context.origin, placer)
         }
 
         val first = attachScroll()
         val second = attachScroll()
         val relay = try {
             Assertions.assertEquals(1, screenEventSource.onDisposing.toList().size)
-            Assertions.assertTrue(context.onBeforeRender.toList().isEmpty())
             screenEventSource.onBeforeRender.toList().single()
         } finally {
             first.dispose()
@@ -809,7 +840,7 @@ class VanillaViewPlacersTest {
             Assertions.assertSame(relay, screenEventSource.onBeforeRender.toList().single())
             Assertions.assertEquals(1, screenEventSource.onDisposing.toList().size)
         } finally {
-            screenEventSource.onDisposing.fire()
+            adapter.removed()
             replacement.dispose()
             replacement.detach()
         }
@@ -844,8 +875,8 @@ class VanillaViewPlacersTest {
                 val scrollbarView = YFlatScrollbarView()
                 scrollbarView.scrollbarColor = 0xA0FFFFFF.toInt()
                 val connection = connectScrollbar(scrollView, scrollbarView)
-                val placer = createVanillaViewPlacer(context.screenEventSource)
-                val scrollController = scrollView.attachTo(context.origin) { view, bounds -> placer.place(context, view, bounds) }
+                val (_, _, placer) = createScrollPlacement(context)
+                val scrollController = scrollView.attachTo(context.origin, placer)
                 val scrollbarController = VANILLA_VIEW_PLACER_REGISTRY.place(context, scrollbarView, IntRectangle(200, 20, 5, 100))
                 val scrollWidget = widgets.filterIsInstance<VanillaYScrollContainerViewWidget>().single()
                 val scrollbarWidget = widgets.filterIsInstance<VanillaYFlatScrollbarViewWidget>().single()
