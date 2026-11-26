@@ -4,6 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.clientProxy
 import miragefairy2024.mod.NinePatchTextureCard
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
@@ -84,7 +85,7 @@ fun initMotifTableScreenHandler() {
 
 class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifChance>) : AbstractContainerMenu(motifTableScreenHandlerType(), syncId), ViewProviderMenu {
 
-    override fun createRootView(title: Component, playerInventoryTitle: Component) = MotifTableScreenContent(chanceTable).view
+    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource) = MotifTableScreenContent(chanceTable).view
 
     override fun stillValid(player: Player) = true
     override fun quickMoveStack(player: Player, slot: Int) = EMPTY_ITEM_STACK
