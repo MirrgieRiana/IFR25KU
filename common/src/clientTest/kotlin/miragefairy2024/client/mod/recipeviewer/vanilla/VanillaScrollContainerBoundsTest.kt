@@ -1,5 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
@@ -53,6 +54,7 @@ class VanillaScrollContainerBoundsTest {
             val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
                 override val origin = IntPoint(5, 10)
                 override val canPlaceMenuSlots = true
+                override val screenEventSource = ScreenEventSource()
                 override val onBeforeRender = EventRegistry<() -> Unit>()
                 override val onTick = EventRegistry<() -> Unit>()
                 override fun addRenderable(registration: WidgetRegistration) = throw AssertionError("No widget should be registered")
@@ -74,6 +76,7 @@ class VanillaScrollContainerBoundsTest {
                 val slotId = 3
                 var childClipBounds: IntRectangle? = null
                 Assertions.assertTrue(childContext.canPlaceMenuSlots)
+                Assertions.assertSame(context.screenEventSource, childContext.screenEventSource)
                 Assertions.assertSame(remover, childContext.registerMenuSlotPlacement(slotId) { childClipBounds })
                 val clipBounds = placements.getValue(slotId)
                 Assertions.assertEquals(IntRectangle(40, 20, 50, 60), clipBounds())

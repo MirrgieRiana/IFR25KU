@@ -1,6 +1,7 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.client.mod.recipeviewer.RenderOverflow
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
@@ -15,6 +16,7 @@ interface VanillaViewPlacerContext {
     val origin: IntPoint
 
     val canPlaceMenuSlots: Boolean
+    val screenEventSource: ScreenEventSource
     val onBeforeRender: EventRegistry<() -> Unit>
     val onTick: EventRegistry<() -> Unit>
 

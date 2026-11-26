@@ -100,6 +100,7 @@ class ViewAdapter(val host: ViewAdapterHost) {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = host.getUiOffset()
             override val canPlaceMenuSlots = host.canPlaceMenuSlots()
+            override val screenEventSource = this@ViewAdapter.screenEventSource
             override val onBeforeRender = this@ViewAdapter.onBeforeRender
             override val onTick = this@ViewAdapter.onTick
             override fun addRenderable(registration: WidgetRegistration) = if (registration.interactive) host.addRenderableWidget(registration.widget) else host.addRenderableOnly(registration.widget)
