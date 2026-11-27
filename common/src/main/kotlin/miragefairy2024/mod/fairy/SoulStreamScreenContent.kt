@@ -54,6 +54,8 @@ import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.player.Player
 
+private val SELECTED_FILTER_TEXT_COLOR = ColorPair(0xFFFFAA00.toInt(), 0xFFFFAA00.toInt())
+
 private val BUTTON_14_BACKGROUND = LayeredImageButtonView.Sprites(
     MirageFairy2024.identifier("button_14/background_on"),
     MirageFairy2024.identifier("button_14/background"),
@@ -169,11 +171,7 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                                                         view.shadow = false
                                                         screenEventSource.onOpened.observe(screenEventSource.onDisposing) {
                                                             enabledPassiveSkillEffectFilters.observeAndInitialize(screenEventSource.onDisposing) { _, filters ->
-                                                                if (filter.identifier in filters) {
-                                                                    view.text.value = filter.text.gold.visualOrderText
-                                                                } else {
-                                                                    view.text.value = filter.text.visualOrderText
-                                                                }
+                                                                view.color = if (filter.identifier in filters) SELECTED_FILTER_TEXT_COLOR else ColorPair.DEFAULT
                                                             }
                                                         }
                                                     }.tooltip { _, _ ->
