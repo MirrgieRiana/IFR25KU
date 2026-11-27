@@ -29,10 +29,15 @@ import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.mod.recipeviewer.views.createView
+import miragefairy2024.util.register
 import mirrg.kotlin.helium.Slot
 import net.minecraft.SharedConstants
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.client.gui.navigation.ScreenDirection
+import net.minecraft.client.resources.sounds.SoundInstance
+import net.minecraft.client.sounds.SoundManager
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.Bootstrap
 import net.minecraft.world.item.ItemStack
@@ -40,6 +45,8 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.lwjgl.glfw.GLFW
+import org.mockito.Mockito
 
 private class RendererTestView : FixedWidgetView(IntPoint(100, 100))
 
@@ -91,6 +98,59 @@ class VanillaViewRendererWidgetTest {
         Assertions.assertNull(buttonWidget.nextFocusPath(event))
         view.enabled.value = true
         Assertions.assertNotNull(buttonWidget.nextFocusPath(event))
+    }
+
+    @Test
+    fun `フォーカス中のクリック可能な View はボタンと同じキーで操作できるのだ`() {
+        val view = ClickableView()
+        val widget = VanillaViewRendererWidget(ClickableViewRenderer, view, IntRectangle(10, 20, 100, 100))
+        var activations = 0
+        var consumed = false
+        view.onClick.register {
+            activations++
+            consumed
+        }
+
+        val minecraft = Mockito.mock(Minecraft::class.java)
+        val soundManager = Mockito.mock(SoundManager::class.java)
+        Mockito.`when`(minecraft.soundManager).thenReturn(soundManager)
+        Mockito.mockStatic(Minecraft::class.java).use { minecraftMock ->
+            minecraftMock.`when`<Minecraft> { Minecraft.getInstance() }.thenReturn(minecraft)
+            Assertions.assertFalse(widget.keyPressed(GLFW.GLFW_KEY_ENTER, 0, 0))
+            widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true))!!.applyFocus(true)
+            widget.active = false
+            Assertions.assertFalse(widget.keyPressed(GLFW.GLFW_KEY_ENTER, 0, 0))
+            widget.active = true
+            Assertions.assertFalse(widget.keyPressed(GLFW.GLFW_KEY_TAB, 0, 0))
+            Assertions.assertEquals(0, activations)
+
+            Assertions.assertFalse(widget.keyPressed(GLFW.GLFW_KEY_ENTER, 0, 0))
+            Assertions.assertEquals(1, activations)
+            Mockito.verifyNoInteractions(soundManager)
+
+            consumed = true
+            listOf(GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER, GLFW.GLFW_KEY_SPACE).forEach { keyCode ->
+                Assertions.assertTrue(widget.keyPressed(keyCode, 0, 0))
+            }
+            Assertions.assertEquals(4, activations)
+            Mockito.verify(soundManager, Mockito.times(3)).play(Mockito.any(SoundInstance::class.java))
+        }
+    }
+
+    @Test
+    fun `ホバー表示が透明でもフォーカス枠を描画するのだ`() {
+        val view = ClickableView().also {
+            it.hoverOverlayColor = 0
+        }
+        val widget = VanillaViewRendererWidget(ClickableViewRenderer, view, IntRectangle(10, 20, 100, 100))
+        val graphics = Mockito.mock(GuiGraphics::class.java)
+
+        widget.render(graphics, 0, 0, 0F)
+        Mockito.verifyNoInteractions(graphics)
+
+        widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true))!!.applyFocus(true)
+        widget.render(graphics, 0, 0, 0F)
+        Mockito.verify(graphics).renderOutline(10, 20, 100, 100, 0xFFFFFFFF.toInt())
     }
 
     @Test

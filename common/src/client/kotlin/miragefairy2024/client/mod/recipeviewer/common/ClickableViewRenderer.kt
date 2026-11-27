@@ -23,6 +23,10 @@ object ClickableViewRenderer : ViewRenderer<ClickableView, Unit> {
 
     override fun mouseClicked(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int): Boolean {
         if (button != 0) return false
+        return activate(view)
+    }
+
+    fun activate(view: ClickableView): Boolean {
         view.onClick.fire {
             if (it()) {
                 Minecraft.getInstance().soundManager.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F))
