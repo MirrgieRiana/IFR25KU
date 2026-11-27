@@ -55,12 +55,12 @@ versionRange = "[1.1.22,)"
 ordering = "NONE"
 side = "CLIENT"
 
-#[[dependencies.miragefairy2024]]
-#modId = "kotlinforforge"
-#type = "required"
-#versionRange = "[${kotlin_for_forge_version},)"
-#ordering = "NONE"
-#side = "BOTH"
+# distribution-only [[dependencies.miragefairy2024]]
+# distribution-only modId = "kotlinforforge"
+# distribution-only type = "required"
+# distribution-only versionRange = "[${kotlin_for_forge_version},)"
+# distribution-only ordering = "NONE"
+# distribution-only side = "BOTH"
 
 [[mixins]]
 config = "miragefairy2024.mixins.json"
