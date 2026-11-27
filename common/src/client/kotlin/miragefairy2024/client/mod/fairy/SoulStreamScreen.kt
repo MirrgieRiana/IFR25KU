@@ -135,15 +135,11 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
 
     override fun createRootView(screenEventSource: ScreenEventSource): View {
         // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
         val content: SoulStreamScreenContent = object : SoulStreamScreenContent(menu, title, screenEventSource) {
-            // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
             // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
             override val passiveSkillEffectFilters = enabledPassiveSkillEffectFilters
             // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-            // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
             override val globalFairyHighlight = enableGlobalFairyHighlight
-            // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
             // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
             override val collectionToggleKeyText = text { toggleCollectionEnabledKeyMappingCard() }
 
@@ -153,7 +149,6 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                 SetCollectionEnabledChannel.sendToServer(enabled)
             }
         }
-        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
         // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
         return content.view
     }
