@@ -173,7 +173,7 @@ index fb9ea2d..74c1a9d 100644
      }
  }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/ClientProxyImpl.kt b/common/src/client/kotlin/miragefairy2024/client/ClientProxyImpl.kt
-index 142b859..4824751 100644
+index 142b859..63a3c8c 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/ClientProxyImpl.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/ClientProxyImpl.kt
 @@ -3,5 +3,4 @@ package miragefairy2024.client
@@ -229,13 +229,14 @@ index 142b859..4824751 100644
 +import net.minecraft.util.RandomSource
  import net.minecraft.world.entity.player.Player
  import net.minecraft.world.inventory.AbstractContainerMenu
-@@ -40,5 +62,4 @@ import net.minecraft.world.item.Item
+@@ -40,12 +62,37 @@ import net.minecraft.world.item.Item
  import net.minecraft.world.item.ItemDisplayContext
  import net.minecraft.world.item.ItemStack
 -import net.minecraft.world.level.BlockAndTintGetter
  import net.minecraft.world.level.FoliageColor
  import net.minecraft.world.level.GrassColor
-@@ -46,6 +67,29 @@ import net.minecraft.world.level.block.Block
+ import net.minecraft.world.level.block.Block
++import net.minecraft.world.level.block.LeavesBlock
  import net.minecraft.world.level.block.entity.BlockEntity
  import net.minecraft.world.level.block.entity.BlockEntityType
 +import net.minecraft.world.level.block.state.BlockState
@@ -250,8 +251,10 @@ index 142b859..4824751 100644
 +    init {
 +        ModelLoadingPlugin.register { context ->
 +            context.modifyBlockModelAfterBake().register { model, bakeContext ->
-+                val layer = blockRenderLayers[bakeContext.state().block]
-+                if (layer == null) model else BlockRenderLayerModel(model, layer)
++                val block = bakeContext.state().block
++                val layer = blockRenderLayers[block]
++                // 葉はバニラの葉の描画設定に従うのだ～🌱
++                if (layer == null || block is LeavesBlock) model else BlockRenderLayerModel(model, layer)
 +            }
 +            cutoutModels.forEach { (identifier, key) ->
 +                val variant = Variant(identifier)
@@ -265,7 +268,7 @@ index 142b859..4824751 100644
 +
      override fun registerItemTooltipCallback(block: (stack: ItemStack, context: Item.TooltipContext, lines: MutableList<Component>) -> Unit) {
          ItemTooltipCallback.EVENT.register { stack, context, _, lines ->
-@@ -56,10 +100,12 @@ class ClientProxyImpl : ClientProxy<Screen> {
+@@ -56,10 +103,12 @@ class ClientProxyImpl : ClientProxy<Screen> {
      override fun getItemTooltip(itemStack: ItemStack): List<Component> = Screen.getTooltipFromItem(Minecraft.getInstance(), itemStack)
 
 +    override fun getFuelValues() = Minecraft.getInstance().level?.fuelValues()
@@ -280,7 +283,7 @@ index 142b859..4824751 100644
 +        blockRenderLayers[block()] = ChunkSectionLayer.TRANSLUCENT
      }
 
-@@ -68,12 +114,14 @@ class ClientProxyImpl : ClientProxy<Screen> {
+@@ -68,12 +117,14 @@ class ClientProxyImpl : ClientProxy<Screen> {
      override fun getBlockColorProvider(block: Block): BlockColorProvider {
          return BlockColorProvider { blockState, level, blockPos, tintIndex ->
 -            Minecraft.getInstance().blockColors.getColor(blockState, level as BlockAndTintGetter?, blockPos, tintIndex)
@@ -299,14 +302,14 @@ index 142b859..4824751 100644
 +        }), block())
      }
 
-@@ -83,5 +131,5 @@ class ClientProxyImpl : ClientProxy<Screen> {
+@@ -83,5 +134,5 @@ class ClientProxyImpl : ClientProxy<Screen> {
 
      override fun getFoliageBlockColorProvider() = BlockColorProvider { _, level, blockPos, _ ->
 -        if (level == null || blockPos == null) FoliageColor.getDefaultColor() else BiomeColors.getAverageFoliageColor(level as BlockAndTintGetter, blockPos)
 +        if (level == null || blockPos == null) FoliageColor.FOLIAGE_DEFAULT else BiomeColors.getAverageFoliageColor(level as BlockAndTintGetter, blockPos)
      }
 
-@@ -99,6 +147,14 @@ class ClientProxyImpl : ClientProxy<Screen> {
+@@ -99,6 +150,14 @@ class ClientProxyImpl : ClientProxy<Screen> {
      }
 
 +    override fun registerCutoutModel(identifier: Identifier) {
@@ -322,14 +325,14 @@ index 142b859..4824751 100644
 +        }
      }
 
-@@ -122,5 +178,5 @@ class ClientProxyImpl : ClientProxy<Screen> {
+@@ -122,5 +181,5 @@ class ClientProxyImpl : ClientProxy<Screen> {
 
      override fun addToast(rootView: View) {
 -        Minecraft.getInstance().toasts.addToast(ViewToast(rootView))
 +        Minecraft.getInstance().toastManager.addToast(ViewToast(rootView))
      }
 
-@@ -128,14 +184,48 @@ class ClientProxyImpl : ClientProxy<Screen> {
+@@ -128,14 +187,48 @@ class ClientProxyImpl : ClientProxy<Screen> {
  }
 
 -class RenderingProxyBlockEntityRenderer<T>(
@@ -387,7 +390,7 @@ index 142b859..4824751 100644
 +            override fun stack(block: () -> Unit) = matrices.stack { block() }
 
              override fun translate(x: Double, y: Double, z: Double) = matrices.translate(x, y, z)
-@@ -145,23 +235,34 @@ class RenderingProxyBlockEntityRenderer<T>(
+@@ -145,23 +238,34 @@ class RenderingProxyBlockEntityRenderer<T>(
              override fun rotateZ(rad: Float) = matrices.mulPose(Axis.ZP.rotation(rad))
 
 -            override fun renderItemStack(itemStack: ItemStack) {
