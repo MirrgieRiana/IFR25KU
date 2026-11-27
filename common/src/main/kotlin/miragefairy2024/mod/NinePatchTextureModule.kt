@@ -1,8 +1,6 @@
 package miragefairy2024.mod
 
-import miragefairy2024.DataGenerationEvents
 import miragefairy2024.MirageFairy2024
-import miragefairy2024.ModContext
 import miragefairy2024.util.times
 
 /**
@@ -33,9 +31,6 @@ class NinePatchTextureCard(
         val INVENTORY_SCROLLBAR_BACKGROUND = NinePatchTextureCard("inventory_scrollbar_background", 16, 16, 1, 13, 1, 1, 13, 1, false, false)
         val INVENTORY_SCROLLBAR_SCROLLER = NinePatchTextureCard("inventory_scrollbar_scroller", 16, 16, 2, 11, 2, 2, 11, 2, false, true)
         val INVENTORY_SCROLLBAR_SCROLLER_DISABLED = NinePatchTextureCard("inventory_scrollbar_scroller_disabled", 16, 16, 2, 11, 2, 2, 11, 2, false, true)
-
-        /** owo 向けに単一のパッチ寸法と反復設定を出力する Card なのだ～🌱 */
-        val owoEntries = listOf(FAIRY_QUEST_CARD_MESSAGE, TRAIT_BACKGROUND, IFR_ENCYCLOPEDIA_BACKGROUND)
     }
 
     constructor(path: String, textureWidth: Int, textureHeight: Int, patchWidth: Int, patchHeight: Int, repeat: Boolean) : this(
@@ -47,13 +42,4 @@ class NinePatchTextureCard(
 
     val identifier = MirageFairy2024.identifier(path)
     val texture = "textures/gui/" * identifier * ".png"
-}
-
-context(_: ModContext)
-fun initNinePatchTextureModule() {
-    NinePatchTextureCard.owoEntries.forEach { card ->
-        DataGenerationEvents.onGenerateNinePatchTexture {
-            it(card.identifier, card)
-        }
-    }
 }

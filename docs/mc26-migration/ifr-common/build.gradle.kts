@@ -16,7 +16,6 @@ val utilitiesOnly = providers.gradleProperty("utilitiesOnly").isPresent
 repositories {
     mavenCentral()
     maven("https://maven.architectury.dev/") { content { includeGroup("dev.architectury") } }
-    maven("https://maven.wispforest.io/releases") { content { includeGroupAndSubgroups("io.wispforest") } }
     maven("https://api.modrinth.com/maven") { content { includeModule("maven.modrinth", "pf-emi") } }
     maven("https://maven.shedaniel.me/") {
         content {
@@ -120,11 +119,6 @@ dependencies {
     compileOnly("me.shedaniel.cloth:basic-math:0.6.1")
     if (providers.gradleProperty("migrationEmiFork").isPresent) {
         compileOnly("maven.modrinth:pf-emi:2.0.0+26.1.2+fabric")
-    }
-    if (providers.gradleProperty("migrationOwo").isPresent) {
-        add("clientCompileOnly", "io.wispforest:owo-lib:0.13.1+26.1") {
-            isTransitive = false
-        }
     }
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     implementation("mirrg.kotlin:mirrg.kotlin.helium-kotlin-2-0:4.6.0")

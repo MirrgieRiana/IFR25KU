@@ -1,7 +1,6 @@
 package miragefairy2024
 
 import com.google.gson.JsonElement
-import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.util.ResourceLocation
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider
@@ -38,7 +37,6 @@ object DataGenerationEvents {
     val onGenerateRecipe = InitializationEventRegistry<(RecipeOutput) -> Unit>()
     val onGenerateEnglishTranslation = InitializationEventRegistry<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
     val onGenerateJapaneseTranslation = InitializationEventRegistry<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
-    val onGenerateNinePatchTexture = InitializationEventRegistry<((ResourceLocation, NinePatchTextureCard) -> Unit) -> Unit>()
     val onGenerateSound = InitializationEventRegistry<((path: String, subtitle: String?, sounds: List<ResourceLocation>) -> Unit) -> Unit>()
     val onGenerateParticles = InitializationEventRegistry<((identifier: ResourceLocation, jsonElement: JsonElement) -> Unit) -> Unit>()
     val onGenerateAdvancement = InitializationEventRegistry<suspend (HolderLookup.Provider, Consumer<AdvancementHolder>) -> Unit>()

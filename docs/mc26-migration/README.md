@@ -209,7 +209,7 @@ REI の Widget の選択コンパイルが通ったのだ～🌱 共通・Fabric
 
 ### ソウルストリーム、キーバインド、ブロックの着色なのだ～🌱
 
-Fabric の実験では `-PmigrationOwo` で owo-lib `0.13.1+26.1` をクライアントのコンパイルクラスパスに追加できるのだ～🌱 ソウルストリームは `BaseOwoContainerScreen` と名前の変わった旧 UI のクラスを使い、既存のバニラ Widget を `wrapVanillaWidget` で配置するのだ～🌱 ラベルとキーバインドの Kotlin、対応するクライアント Mixin の Java、Mixin 設定のリソース処理が選択ビルドで通ったのだ～🌱 owo-lib の 26.1.2 対応版は Fabric・Quilt 向けがあり、NeoForge 向けは確認できていないのだぁ…🌧️ [owo-lib のリリース](https://github.com/wisp-forest/owo-lib/releases/tag/0.13.1%2B26.1)
+main の View 版を取り込む前の Fabric の実験では、owo-lib `0.13.1+26.1` をクライアントのコンパイルクラスパスに追加したのだ～🌱 この実験では `BaseOwoContainerScreen` と名前の変わった旧 UI のクラスを使い、既存のバニラ Widget を `wrapVanillaWidget` で配置したのだ～🌱 ラベルとキーバインドの Kotlin、対応するクライアント Mixin の Java、Mixin 設定のリソース処理が選択ビルドで通ったのだ～🌱 owo-lib の 26.1.2 対応版は Fabric・Quilt 向けがあり、NeoForge 向けは確認できていないのだぁ…🌧️ [owo-lib のリリース](https://github.com/wisp-forest/owo-lib/releases/tag/0.13.1%2B26.1)
 
 ブロックの着色は `BlockTintSource` に移し、登録先の葉のモデルが参照するインデックス 0 の色を保持したのだ～🌱 アイテム側の色と描画レイヤーにはモデルの移行が必要なのだぁ…🌧️ 精錬エンチャントはルートコンテキストの `ItemInstance` を受け取り、ツールが採掘対象に適合する条件を引き継いだのだ～🌱 [Fabric のブロック着色資料](https://docs.fabricmc.net/26.1.2/develop/blocks/block-tinting)
 
@@ -233,7 +233,7 @@ Fabric 用の [PF-EMI 2.0.0+26.1.2+fabric](https://modrinth.com/mod/pf-emi/versi
 
 Fabric 向け Kotlin 473 ファイルの一括解析で、EMI 統合の診断はフォーク追加前の **158 件**から、追加直後に **20 件**、Widget とレシピ取得の更新後に **0 件**になったのだ～🌱 全体では **70 件**が残っていて、フォークを使ったゲーム起動と接続先ごとのレシピ表示は未検証なのだぁ…🌧️
 
-NeoForge 版の [PF-EMI 2.0.0+26.1.2+neoforge](https://modrinth.com/mod/pf-emi/version/N2tHzL14) を NeoForge 向け Kotlin 469 ファイルの一括解析に追加した結果、EMI 統合の診断は 0 件だったのだ～🌱 NeoForge 向けの owo-lib はこの計測のクラスパスに含まれず、ソウルストリームと旧 UI の診断は残るのだぁ…🌧️
+NeoForge 版の [PF-EMI 2.0.0+26.1.2+neoforge](https://modrinth.com/mod/pf-emi/version/N2tHzL14) を NeoForge 向け Kotlin 469 ファイルの一括解析に追加した結果、EMI 統合の診断は 0 件だったのだ～🌱 この計測時点ではソウルストリームが owo-lib に依存していたため、NeoForge では旧 UI の診断が出たのだぁ…🌧️
 
 ### ブロック、カオスキューブ、View のスロット描画なのだ～🌱
 
@@ -242,6 +242,16 @@ NeoForge 版の [PF-EMI 2.0.0+26.1.2+neoforge](https://modrinth.com/mod/pf-emi/v
 View のメニュー画面では、計測した幅と高さを View 側に保持して、バニラの位置計算、クリック境界とスロット描画に渡すのだ～🌱 前後のスロットハイライトとスロット本体には、同じ画面座標のクリップ範囲を使うのだ～🌱
 
 Fabric 向け Kotlin 473 ファイルの一括解析では、診断が **70 件から 41 件**になったのだ～🌱 残りはアイテムの着色 6 件、妖精像とフェアリークエストカードの特殊描画 21 件、REI のレシピ取得 9 件、`DimensionType.natural` 5 件なのだぁ…🌧️ パッチ適用と、変更した Java Mixin のコンパイルおよび両ローダーの対象メソッドを確認したのだ～🌱 26.1.2 でのゲーム内描画は未検証なのだぁ…🌧️
+
+### main のソウルストリームとアイテム描画なのだ～🌱
+
+main の View 版ソウルストリームを取り込み、インベントリのボタン登録、キー入力、スキルフィルターのレジストリキーを 26.1.2 の API に合わせたのだ～🌱 owo-lib のリポジトリと実験用の依存設定を外し、従来の owo 版 UI に対する移植差分も取り除いたのだ～🌱
+
+アイテムモデルのベイク時に、四角形が参照する着色インデックスに対応する `ItemTintSource` を補うのだ～🌱 既存の色計算はそのまま使い、モデル定義に含まれる着色は優先するのだ～🌱 データ生成では、独自モデルを使うアイテムのクライアント定義も登録するのだ～🌱 [Fabric のアイテム着色資料](https://docs.fabricmc.net/develop/items/item-appearance)
+
+妖精像の中身とクエストカードのポータル、表裏のアイコンは、ベイク済みモデルにレイヤーを追加して `SubmitNodeCollector` へ渡すのだ～🌱 旧 `ItemRenderer` の Mixin は取り除いたのだ～🌱 26.1.2 でのゲーム内表示は未検証なのだぁ…🌧️
+
+PF-EMI を含み、owo-lib を含まないクラスパスで、Fabric の Kotlin 467 ファイルと NeoForge の Kotlin 463 ファイルを解析したのだ～🌱 NeoForge の計測からはゲーム用 Gson を隠していたインストール・変換ツールの fat JAR も外したのだ～🌱 両ローダーに残るコンパイラ診断は **REI のレシピ取得 9 件**と **`DimensionType.natural` 5 件**なのだぁ…🌧️ REI の新 API では、生のレシピをサーバー側で処理する経路と、同期された `RecipeDisplay` をクライアント側で扱う経路があり、接続先ごとの対応が残るのだぁ…🌧️
 
 ### 移行資料なのだ～🌱
 

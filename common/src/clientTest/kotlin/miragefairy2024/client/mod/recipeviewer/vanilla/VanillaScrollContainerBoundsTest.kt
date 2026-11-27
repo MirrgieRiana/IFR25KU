@@ -12,7 +12,6 @@ import miragefairy2024.mod.recipeviewer.views.ScrollBounds
 import miragefairy2024.mod.recipeviewer.views.XScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
-import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import miragefairy2024.util.register
 import org.junit.jupiter.api.Assertions
@@ -55,8 +54,6 @@ class VanillaScrollContainerBoundsTest {
                 override val origin = IntPoint(5, 10)
                 override val canPlaceMenuSlots = true
                 override val screenEventSource = ScreenEventSource()
-                override val onBeforeRender = EventRegistry<() -> Unit>()
-                override val onTick = EventRegistry<() -> Unit>()
                 override fun addRenderable(registration: WidgetRegistration) = throw AssertionError("No widget should be registered")
                 override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover {
                     placements[slotId] = clipBounds

@@ -172,35 +172,76 @@ index fb9ea2d..74c1a9d 100644
 +        RenderingEvent.RENDER_ITEM_DECORATIONS.invoker().renderItemDecorations((GuiGraphicsExtractor) (Object) this, font, stack, x, y, text);
      }
  }
+diff --git a/common/src/client/java/miragefairy2024/client/mixins/mixin/ItemRendererMixin.java b/common/src/client/java/miragefairy2024/client/mixins/mixin/ItemRendererMixin.java
+deleted file mode 100644
+index a9084eb37061c839406fd341657b3c16cfa89e06..0000000000000000000000000000000000000000
+--- a/common/src/client/java/miragefairy2024/client/mixins/mixin/ItemRendererMixin.java
++++ /dev/null
+@@ -1,21 +0,0 @@
+-package miragefairy2024.client.mixins.mixin;
+-
+-import com.mojang.blaze3d.vertex.PoseStack;
+-import miragefairy2024.mixin.client.api.RenderItemHandler;
+-import net.minecraft.client.renderer.MultiBufferSource;
+-import net.minecraft.client.renderer.entity.ItemRenderer;
+-import net.minecraft.client.resources.model.BakedModel;
+-import net.minecraft.world.item.ItemDisplayContext;
+-import net.minecraft.world.item.ItemStack;
+-import org.spongepowered.asm.mixin.Mixin;
+-import org.spongepowered.asm.mixin.injection.At;
+-import org.spongepowered.asm.mixin.injection.Inject;
+-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+-
+-@Mixin(ItemRenderer.class)
+-public abstract class ItemRendererMixin {
+-    @Inject(method = "render", at = @At(value = "HEAD"))
+-    private void renderItem(ItemStack stack, ItemDisplayContext renderMode, boolean leftHanded, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay, BakedModel model, CallbackInfo ci) {
+-        RenderItemHandler.Companion.getINSTANCE().renderItem(stack, renderMode, leftHanded, matrices, vertexConsumers, light, overlay, model);
+-    }
+-}
 diff --git a/common/src/client/kotlin/miragefairy2024/client/ClientProxyImpl.kt b/common/src/client/kotlin/miragefairy2024/client/ClientProxyImpl.kt
-index 142b859..63a3c8c 100644
+index 142b8591fc86f3b7b601dfd3a9e62ccb52fb9c39..a3399577d8103ac3741b72fc8e367b313874f1d2 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/ClientProxyImpl.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/ClientProxyImpl.kt
-@@ -3,5 +3,4 @@ package miragefairy2024.client
+@@ -3,8 +3,9 @@ package miragefairy2024.client
  import com.mojang.blaze3d.vertex.PoseStack
  import com.mojang.math.Axis
 -import dev.architectury.registry.client.rendering.RenderTypeRegistry
++import com.mojang.serialization.Codec
  import miragefairy2024.BlockColorProvider
  import miragefairy2024.ClientProxy
-@@ -19,19 +18,42 @@ import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
+ import miragefairy2024.ItemColorProvider
++import miragefairy2024.MirageFairy2024
+ import miragefairy2024.MessageViewScreenDefinition
+ import miragefairy2024.RenderingProxy
+@@ -15,23 +16,53 @@ import miragefairy2024.client.util.ViewToast
+ import miragefairy2024.client.util.ellipsize
+ import miragefairy2024.client.util.stack
++import miragefairy2024.clientProxy
+ import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
+ import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
  import miragefairy2024.mod.recipeviewer.view.View
  import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
+-import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 +import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey
 +import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin
 +import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedExtraModel
 +import net.fabricmc.fabric.api.client.model.loading.v1.wrapper.WrapperBlockStateModel
 +import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter
 +import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry
- import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
  import net.minecraft.client.Minecraft
 +import net.minecraft.client.color.block.BlockTintSource
++import net.minecraft.client.color.item.ItemTintSource
++import net.minecraft.client.color.item.ItemTintSources
  import net.minecraft.client.gui.screens.MenuScreens
  import net.minecraft.client.gui.screens.Screen
++import net.minecraft.client.multiplayer.ClientLevel
  import net.minecraft.client.renderer.BiomeColors
 -import net.minecraft.client.renderer.MultiBufferSource
 -import net.minecraft.client.renderer.RenderType
 +import net.minecraft.client.renderer.SubmitNodeCollector
 +import net.minecraft.client.renderer.block.BlockAndTintGetter
++import net.minecraft.client.renderer.block.dispatch.BlockModelRotation
 +import net.minecraft.client.renderer.block.dispatch.BlockStateModel
 +import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart
 +import net.minecraft.client.renderer.block.dispatch.Variant
@@ -211,6 +252,7 @@ index 142b859..63a3c8c 100644
 +import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState
 +import net.minecraft.client.renderer.chunk.ChunkSectionLayer
 +import net.minecraft.client.renderer.feature.ModelFeatureRenderer
++import net.minecraft.client.renderer.item.CuboidItemModelWrapper
 +import net.minecraft.client.renderer.item.ItemStackRenderState
 +import net.minecraft.client.renderer.rendertype.RenderTypes
 +import net.minecraft.client.renderer.state.level.CameraRenderState
@@ -220,6 +262,7 @@ index 142b859..63a3c8c 100644
 +import net.minecraft.client.resources.model.geometry.BakedQuad
 +import net.minecraft.core.BlockPos
 +import net.minecraft.core.Direction
++import net.minecraft.core.registries.BuiltInRegistries
  import net.minecraft.network.chat.Component
  import net.minecraft.network.chat.FormattedText
 -import net.minecraft.resources.ResourceLocation
@@ -227,9 +270,10 @@ index 142b859..63a3c8c 100644
 +import net.minecraft.util.ARGB
  import net.minecraft.util.FormattedCharSequence
 +import net.minecraft.util.RandomSource
++import net.minecraft.world.entity.LivingEntity
  import net.minecraft.world.entity.player.Player
  import net.minecraft.world.inventory.AbstractContainerMenu
-@@ -40,12 +62,37 @@ import net.minecraft.world.item.Item
+@@ -40,12 +71,52 @@ import net.minecraft.world.item.Item
  import net.minecraft.world.item.ItemDisplayContext
  import net.minecraft.world.item.ItemStack
 -import net.minecraft.world.level.BlockAndTintGetter
@@ -246,15 +290,30 @@ index 142b859..63a3c8c 100644
 
  class ClientProxyImpl : ClientProxy<Screen> {
 +    private val blockRenderLayers = mutableMapOf<Block, ChunkSectionLayer>()
++    private val itemColorProviders = mutableMapOf<Identifier, ItemColorProvider>()
 +    private val cutoutModels = mutableMapOf<Identifier, ExtraModelKey<BlockStateModelPart>>()
 +
 +    init {
++        ItemTintSources.ID_MAPPER.put(MirageFairy2024.identifier("registered_item_tint"), RegisteredItemTint.MAP_CODEC)
 +        ModelLoadingPlugin.register { context ->
 +            context.modifyBlockModelAfterBake().register { model, bakeContext ->
 +                val block = bakeContext.state().block
 +                val layer = blockRenderLayers[block]
 +                // 葉はバニラの葉の描画設定に従うのだ～🌱
 +                if (layer == null || block is LeavesBlock) model else BlockRenderLayerModel(model, layer)
++            }
++            context.modifyItemModelBeforeBake().register { model, bakeContext ->
++                if (bakeContext.itemId() !in itemColorProviders || model !is CuboidItemModelWrapper.Unbaked) return@register model
++
++                val baker = bakeContext.bakingContext().blockModelBaker()
++                val resolved = baker.getModel(model.model())
++                val quads = resolved.bakeTopGeometry(resolved.topTextureSlots, baker, BlockModelRotation.IDENTITY)
++                val tintCount = (quads.getAll().maxOfOrNull { it.materialInfo().tintIndex() } ?: -1) + 1
++                val existingTints = model.tints()
++                if (tintCount <= existingTints.size) return@register model
++
++                val tints = existingTints + (existingTints.size until tintCount).map(::RegisteredItemTint)
++                CuboidItemModelWrapper.Unbaked(model.model(), model.transformation(), tints)
 +            }
 +            cutoutModels.forEach { (identifier, key) ->
 +                val variant = Variant(identifier)
@@ -268,7 +327,7 @@ index 142b859..63a3c8c 100644
 +
      override fun registerItemTooltipCallback(block: (stack: ItemStack, context: Item.TooltipContext, lines: MutableList<Component>) -> Unit) {
          ItemTooltipCallback.EVENT.register { stack, context, _, lines ->
-@@ -56,10 +103,12 @@ class ClientProxyImpl : ClientProxy<Screen> {
+@@ -56,10 +127,12 @@ class ClientProxyImpl : ClientProxy<Screen> {
      override fun getItemTooltip(itemStack: ItemStack): List<Component> = Screen.getTooltipFromItem(Minecraft.getInstance(), itemStack)
 
 +    override fun getFuelValues() = Minecraft.getInstance().level?.fuelValues()
@@ -283,7 +342,7 @@ index 142b859..63a3c8c 100644
 +        blockRenderLayers[block()] = ChunkSectionLayer.TRANSLUCENT
      }
 
-@@ -68,12 +117,14 @@ class ClientProxyImpl : ClientProxy<Screen> {
+@@ -68,12 +141,14 @@ class ClientProxyImpl : ClientProxy<Screen> {
      override fun getBlockColorProvider(block: Block): BlockColorProvider {
          return BlockColorProvider { blockState, level, blockPos, tintIndex ->
 -            Minecraft.getInstance().blockColors.getColor(blockState, level as BlockAndTintGetter?, blockPos, tintIndex)
@@ -302,20 +361,32 @@ index 142b859..63a3c8c 100644
 +        }), block())
      }
 
-@@ -83,5 +134,5 @@ class ClientProxyImpl : ClientProxy<Screen> {
+@@ -83,22 +158,23 @@ class ClientProxyImpl : ClientProxy<Screen> {
 
      override fun getFoliageBlockColorProvider() = BlockColorProvider { _, level, blockPos, _ ->
 -        if (level == null || blockPos == null) FoliageColor.getDefaultColor() else BiomeColors.getAverageFoliageColor(level as BlockAndTintGetter, blockPos)
 +        if (level == null || blockPos == null) FoliageColor.FOLIAGE_DEFAULT else BiomeColors.getAverageFoliageColor(level as BlockAndTintGetter, blockPos)
      }
 
-@@ -99,6 +150,14 @@ class ClientProxyImpl : ClientProxy<Screen> {
-     }
+-    override fun getItemColorProvider(item: Item): ItemColorProvider? {
+-        val provider = ColorProviderRegistry.ITEM.get(item) ?: return null
+-        return ItemColorProvider { itemStack, tintIndex ->
+-            provider.getColor(itemStack, tintIndex)
+-        }
+-    }
++    override fun getItemColorProvider(item: Item) = itemColorProviders[BuiltInRegistries.ITEM.getKey(item)]
 
-+    override fun registerCutoutModel(identifier: Identifier) {
-+        cutoutModels.computeIfAbsent(identifier) { ExtraModelKey.create { identifier.toString() } }
+     override fun registerItemColorProvider(item: Item, provider: ItemColorProvider) {
+-        ColorProviderRegistry.ITEM.register({ itemStack, tintIndex ->
+-            provider(itemStack, tintIndex)
+-        }, item)
++        itemColorProviders[BuiltInRegistries.ITEM.getKey(item)] = provider
 +    }
 +
++    override fun registerCutoutModel(identifier: Identifier) {
++        cutoutModels.computeIfAbsent(identifier) { ExtraModelKey.create { identifier.toString() } }
+     }
+
      override fun <T> registerRenderingProxyBlockEntityRendererFactory(blockEntityType: BlockEntityType<T>) where T : BlockEntity, T : RenderingProxyBlockEntity {
 -        BlockEntityRenderers.register(blockEntityType, ::RenderingProxyBlockEntityRenderer)
 +        BlockEntityRenderers.register(blockEntityType) { context ->
@@ -325,20 +396,31 @@ index 142b859..63a3c8c 100644
 +        }
      }
 
-@@ -122,5 +181,5 @@ class ClientProxyImpl : ClientProxy<Screen> {
+@@ -122,5 +198,5 @@ class ClientProxyImpl : ClientProxy<Screen> {
 
      override fun addToast(rootView: View) {
 -        Minecraft.getInstance().toasts.addToast(ViewToast(rootView))
 +        Minecraft.getInstance().toastManager.addToast(ViewToast(rootView))
      }
 
-@@ -128,14 +187,48 @@ class ClientProxyImpl : ClientProxy<Screen> {
+@@ -128,14 +204,59 @@ class ClientProxyImpl : ClientProxy<Screen> {
  }
 
 -class RenderingProxyBlockEntityRenderer<T>(
 -    @Suppress("UNUSED_PARAMETER") ctx: BlockEntityRendererProvider.Context,
 -) : BlockEntityRenderer<T> where T : BlockEntity, T : RenderingProxyBlockEntity {
 -    override fun render(blockEntity: T, tickDelta: Float, matrices: PoseStack, vertexConsumers: MultiBufferSource, light: Int, overlay: Int) {
++private class RegisteredItemTint(private val index: Int) : ItemTintSource {
++    companion object {
++        val MAP_CODEC = Codec.INT.fieldOf("index").xmap(::RegisteredItemTint, RegisteredItemTint::index)
++    }
++
++    override fun calculate(stack: ItemStack, level: ClientLevel?, entity: LivingEntity?) =
++        clientProxy?.getItemColorProvider(stack.item)?.invoke(stack, index) ?: -1
++
++    override fun type() = MAP_CODEC
++}
++
 +private class BlockRenderLayerModel(model: BlockStateModel, private val layer: ChunkSectionLayer) : WrapperBlockStateModel(model) {
 +    override fun emitQuads(emitter: QuadEmitter, level: BlockAndTintGetter, pos: BlockPos, state: BlockState, random: RandomSource, cullTest: Predicate<Direction?>) {
 +        emitter.pushTransform { quad ->
@@ -390,7 +472,7 @@ index 142b859..63a3c8c 100644
 +            override fun stack(block: () -> Unit) = matrices.stack { block() }
 
              override fun translate(x: Double, y: Double, z: Double) = matrices.translate(x, y, z)
-@@ -145,23 +238,34 @@ class RenderingProxyBlockEntityRenderer<T>(
+@@ -145,23 +266,34 @@ class RenderingProxyBlockEntityRenderer<T>(
              override fun rotateZ(rad: Float) = matrices.mulPose(Axis.ZP.rotation(rad))
 
 -            override fun renderItemStack(itemStack: ItemStack) {
@@ -758,6 +840,77 @@ index 016ee36..29baee8 100644
 +        context.text(font, text { "${getLogisticsPower()}/min"() }, 102, 23, 0x373737, false) // TODO 表示を改善
      }
  }
+diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/FairyStatueClientModule.kt b/common/src/client/kotlin/miragefairy2024/client/mod/FairyStatueClientModule.kt
+index b14fe3fa82d147b13abbe2e4b9307257f3d81150..bcf0b4ea2bef33675c9a542fbe82f8bcca20dfbb 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/mod/FairyStatueClientModule.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/mod/FairyStatueClientModule.kt
+@@ -1,27 +1,53 @@
+ package miragefairy2024.client.mod
+
++import com.mojang.blaze3d.vertex.PoseStack
+ import miragefairy2024.ModContext
++import miragefairy2024.client.util.CuboidItemModelOverlay
+ import miragefairy2024.client.util.stack
+-import miragefairy2024.mixin.client.api.RenderItemHandler
+ import miragefairy2024.mod.fairy.FairyStatueBlockItem
++import miragefairy2024.mod.fairy.FairyStatueCard
+ import miragefairy2024.mod.fairy.createFairyItemStack
+ import miragefairy2024.mod.fairy.getFairyMotif
+-import net.minecraft.client.Minecraft
++import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin
++import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier
++import net.minecraft.client.renderer.SubmitNodeCollector
++import net.minecraft.client.renderer.item.CuboidItemModelWrapper
++import net.minecraft.client.renderer.item.ItemModel
++import net.minecraft.client.renderer.item.ItemModelResolver
++import net.minecraft.client.renderer.item.ItemStackRenderState
++import net.minecraft.client.renderer.item.TrackingItemStackRenderState
+ import net.minecraft.world.item.ItemDisplayContext
++import net.minecraft.world.item.ItemStack
+
+ context(_: ModContext)
+ fun initFairyStatueClientModule() {
+-    RenderItemHandler.listeners += RenderItemHandler { stack, renderMode, leftHanded, matrices, vertexConsumers, light, overlay, model ->
+-        if (stack.item !is FairyStatueBlockItem) return@RenderItemHandler
+-        val motif = stack.getFairyMotif()
+-        val itemStack = motif?.createFairyItemStack() ?: return@RenderItemHandler
+-        matrices.stack {
+-            model.transforms.getTransform(renderMode).apply(leftHanded, matrices)
++    val statueIds = FairyStatueCard.entries.map { it.identifier }.toSet()
++    ModelLoadingPlugin.register { context ->
++        context.modifyItemModelAfterBake().register { model, bakeContext ->
++            if (bakeContext.itemId() !in statueIds) return@register model
++            val source = bakeContext.sourceModel() as? CuboidItemModelWrapper.Unbaked ?: return@register model
++            FairyStatueItemModel(model, source, bakeContext)
++        }
++    }
++}
+
+-            matrices.stack {
+-                matrices.scale(0.5F, 0.5F, 0.5F)
+-                val resultModel = Minecraft.getInstance().itemRenderer.getModel(itemStack, null, null, 0)
+-                Minecraft.getInstance().itemRenderer.render(itemStack, ItemDisplayContext.GUI, false, matrices, vertexConsumers, light, overlay, resultModel)
+-            }
++private class FairyStatueItemModel(model: ItemModel, source: CuboidItemModelWrapper.Unbaked, context: ModelModifier.AfterBakeItem.Context) :
++    CuboidItemModelOverlay<ItemStackRenderState>(model, source, context) {
++
++    override fun extractOverlay(output: ItemStackRenderState, stack: ItemStack, resolver: ItemModelResolver): ItemStackRenderState? {
++        if (stack.item !is FairyStatueBlockItem) return null
++        val fairy = stack.getFairyMotif()?.createFairyItemStack() ?: return null
++        val fairyState = TrackingItemStackRenderState()
++        resolver.updateForTopItem(fairyState, fairy, ItemDisplayContext.GUI, null, null, 0)
++        if (fairyState.isAnimated) output.setAnimated()
++        output.appendModelIdentityElement(fairyState.modelIdentity)
++        return fairyState
++    }
++
++    override fun submit(argument: ItemStackRenderState?, matrices: PoseStack, collector: SubmitNodeCollector, light: Int, overlay: Int, hasFoil: Boolean, outlineColor: Int) {
++        if (argument == null) return
++        matrices.stack {
++            matrices.scale(0.5F, 0.5F, 0.5F)
++            argument.submit(matrices, collector, light, overlay, outlineColor)
+         }
+     }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/MachineClientModule.kt b/common/src/client/kotlin/miragefairy2024/client/mod/MachineClientModule.kt
 index bf4d527..b26b528 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/MachineClientModule.kt
@@ -1235,33 +1388,20 @@ index fe8cd8b..84b7368 100644
  ) {
      val player = Minecraft.getInstance().player ?: return@KeyMappingCard
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/fairy/SoulStreamScreen.kt b/common/src/client/kotlin/miragefairy2024/client/mod/fairy/SoulStreamScreen.kt
-index d15cb11..e118180 100644
+index 608ae8a5b94c5a32e1c2ca74eb4000393b162b61..e45398069845c304ab85dff300889cac6b9d42a1 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/fairy/SoulStreamScreen.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/mod/fairy/SoulStreamScreen.kt
-@@ -2,8 +2,7 @@ package miragefairy2024.client.mod.fairy
+@@ -2,8 +2,8 @@ package miragefairy2024.client.mod.fairy
 
  import com.mojang.blaze3d.platform.InputConstants
 -import com.mojang.blaze3d.systems.RenderSystem
--import io.wispforest.owo.ui.base.BaseOwoHandledScreen
--import io.wispforest.owo.ui.component.Components
--import io.wispforest.owo.ui.container.Containers
-+import io.wispforest.owo.ui.base.BaseOwoContainerScreen
-+import io.wispforest.owo.ui.component.UIComponents
-+import io.wispforest.owo.ui.container.UIContainers
- import io.wispforest.owo.ui.container.FlowLayout
- import io.wispforest.owo.ui.container.ScrollContainer
-@@ -17,9 +16,9 @@ import miragefairy2024.MirageFairy2024
+ import miragefairy2024.MirageFairy2024
  import miragefairy2024.ModContext
  import miragefairy2024.client.mixins.api.RenderingEvent
 +import miragefairy2024.client.mixins.mixin.AbstractRecipeBookScreenAccessor
- import miragefairy2024.client.util.ClickableContainer
+ import miragefairy2024.client.mod.recipeviewer.vanilla.ViewContainerScreen
  import miragefairy2024.client.util.KeyMappingCard
- import miragefairy2024.client.util.LayeredImageButton
- import miragefairy2024.client.util.LayeredImageToggleButton
--import miragefairy2024.client.util.WidgetSprites
- import miragefairy2024.client.util.inventoryNameLabel
- import miragefairy2024.client.util.invoke
-@@ -75,11 +74,14 @@ import net.fabricmc.fabric.api.client.screen.v1.Screens
+@@ -31,11 +31,14 @@ import net.fabricmc.fabric.api.client.screen.v1.Screens
  import net.minecraft.client.KeyMapping
  import net.minecraft.client.Minecraft
 -import net.minecraft.client.gui.GuiGraphics
@@ -1278,21 +1418,21 @@ index d15cb11..e118180 100644
 +import net.minecraft.util.ARGB
  import net.minecraft.world.entity.player.Inventory
  import org.lwjgl.glfw.GLFW
-@@ -89,5 +91,5 @@ val soulStreamKeyMappingCard = KeyMappingCard(
+@@ -45,5 +48,5 @@ val soulStreamKeyMappingCard = KeyMappingCard(
      OPEN_SOUL_STREAM_KEY_TRANSLATION.keyGetter(),
      GLFW.GLFW_KEY_K,
 -    KeyMapping.CATEGORY_INVENTORY,
 +    KeyMapping.Category.INVENTORY,
  ) {
      lastMousePositionInInventory = null
-@@ -97,5 +99,5 @@ val soulStreamKeyMappingCard = KeyMappingCard(
+@@ -53,5 +56,5 @@ val soulStreamKeyMappingCard = KeyMappingCard(
  var lastMousePositionInInventory: Pair<Double, Double>? = null
 
 -var enabledPassiveSkillEffectFilters = ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>(mapOf())
 +var enabledPassiveSkillEffectFilters = ObservableValue<Map<Identifier, PassiveSkillEffectFilter<*>>>(mapOf())
  var enableGlobalFairyHighlight = ObservableValue(false)
 
-@@ -129,16 +131,17 @@ fun initSoulStreamClientModule() {
+@@ -78,16 +81,17 @@ fun initSoulStreamClientModule() {
                  OpenSoulStreamChannel.sendToServer(Unit)
              }.also {
 -                it.tooltip = Tooltip.create(text { OPEN_SOUL_STREAM_KEY_TRANSLATION() + "("() + soulStreamKeyMappingCard() + ")"() })
@@ -1314,198 +1454,36 @@ index d15cb11..e118180 100644
 +                consumed
              }
 
-@@ -171,31 +174,24 @@ fun initSoulStreamClientModule() {
+@@ -120,12 +124,5 @@ fun initSoulStreamClientModule() {
          graphics.fill(x, y, x + 16, y + 16, 0x88FFFF00.toInt())
 
--        graphics.push()
--        graphics.translate(0.0, 0.0, 200.0)
+-        graphics.pose().pushPose()
+-        graphics.pose().translate(0.0, 0.0, 200.0)
 -        RenderSystem.enableBlend()
 -        graphics.setColor(1f, 1f, 1f, alpha)
 -        graphics.blit(FILTER_OVERLAY_TEXTURE, x, y, 0F, 0F, 16, 16, 16, 16)
 -        graphics.setColor(1f, 1f, 1f, 1f)
 -        RenderSystem.disableBlend()
--        graphics.pop()
+-        graphics.pose().popPose()
 +        graphics.blit(RenderPipelines.GUI_TEXTURED, FILTER_OVERLAY_TEXTURE, x, y, 0F, 0F, 16, 16, 16, 16, ARGB.white(alpha))
      }
 
- }
-
--class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : BaseOwoHandledScreen<FlowLayout, SoulStreamScreenHandler>(handler, playerInventory, title) {
-+class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : BaseOwoContainerScreen<FlowLayout, SoulStreamScreenHandler>(handler, playerInventory, title) {
-
+@@ -151,22 +148,22 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
      // カーソルをインベントリ画面での位置に戻す
      private var isFirst = true
--    override fun render(vanillaContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
-+    override fun extractRenderState(vanillaContext: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, delta: Float) {
+-    override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
++    override fun extractRenderState(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
          if (isFirst) {
              isFirst = false
-             if (lastMousePositionInInventory != null) {
--                InputConstants.grabOrReleaseMouse(this.minecraft!!.window.window, InputConstants.CURSOR_NORMAL, lastMousePositionInInventory!!.first, lastMousePositionInInventory!!.second)
-+                InputConstants.grabOrReleaseMouse(this.minecraft!!.window, InputConstants.CURSOR_NORMAL, lastMousePositionInInventory!!.first, lastMousePositionInInventory!!.second)
+             val mousePosition = lastMousePositionInInventory
+             if (mousePosition != null) {
+-                InputConstants.grabOrReleaseMouse(minecraft!!.window.window, InputConstants.CURSOR_NORMAL, mousePosition.first, mousePosition.second)
++                InputConstants.grabOrReleaseMouse(minecraft!!.window, InputConstants.CURSOR_NORMAL, mousePosition.first, mousePosition.second)
              }
          }
--        super.render(vanillaContext, mouseX, mouseY, delta)
-+        super.extractRenderState(vanillaContext, mouseX, mouseY, delta)
+-        super.render(guiGraphics, mouseX, mouseY, partialTick)
++        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick)
      }
-
--    override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, Containers::horizontalFlow)
-+    override fun createAdapter(): OwoUIAdapter<FlowLayout> = OwoUIAdapter.create(this, UIContainers::horizontalFlow)
-     override fun build(rootComponent: FlowLayout) {
-         rootComponent.apply {
-@@ -206,28 +202,28 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
-
-             // 左ペイン
--            child(Containers.verticalFlow(Sizing.expand(50), Sizing.fill()).apply {
-+            child(UIContainers.verticalFlow(Sizing.expand(50), Sizing.fill()).apply {
-                 padding(Insets.of(0, 20, 0, 0)) // レシピMOD用に下部を保護
-                 gap(2)
-
-                 // 左ペインボタン
--                child(Containers.horizontalFlow(Sizing.fill(), Sizing.content()).apply {
-+                child(UIContainers.horizontalFlow(Sizing.fill(), Sizing.content()).apply {
-                     gap(2)
-
-                     // ハイライトリセットボタン
--                    child(LayeredImageButton(14, 14, BUTTON_14_BACKGROUND, run {
-+                    child(UIComponents.wrapVanillaWidget(LayeredImageButton(14, 14, BUTTON_14_BACKGROUND, run {
-                         WidgetSprites(MirageFairy2024.identifier("button_14/clear_foreground"))
-                     }).apply {
--                        tooltip(text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() })
-+                        setTooltip(Tooltip.create(text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() }))
-
-                         onClick.register {
-                             enabledPassiveSkillEffectFilters.value = mapOf()
-                         }
--                    })
-+                    }))
-
-                     // グローバル検索トグルボタン
--                    child(LayeredImageToggleButton(14, 14, BUTTON_14_BACKGROUND, run {
-+                    child(UIComponents.wrapVanillaWidget(LayeredImageToggleButton(14, 14, BUTTON_14_BACKGROUND, run {
-                         WidgetSprites(MirageFairy2024.identifier("button_14/global_search_foreground"))
-                     }).apply {
--                        tooltip(text { SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION() })
-+                        setTooltip(Tooltip.create(text { SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION() }))
-
-                         enableGlobalFairyHighlight.observeAndInitialize(onClose) { _, _ ->
-@@ -237,5 +233,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
-                             enableGlobalFairyHighlight.value = value.value
-                         }
--                    })
-+                    }))
-
-                 })
-@@ -254,7 +250,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
-                             // 実装しても微妙なのが多すぎて折り畳み可能にしないといけないかも
-
--                            child().child(Components.label(text { SOUL_STREAM_PASSIVE_SKILL_EFFECT_TRANSLATION().blue.bold }).horizontalTextAlignment(HorizontalAlignment.CENTER).horizontalSizing(Sizing.fill()))
--                            child().child(Containers.verticalFlow(Sizing.fill(), Sizing.content()).apply {
--                                passiveSkillEffectRegistry.entrySet().sortedBy { it.key.location() }.forEach { (_, effect) ->
-+                            child().child(UIComponents.label(text { SOUL_STREAM_PASSIVE_SKILL_EFFECT_TRANSLATION().blue.bold }).horizontalTextAlignment(HorizontalAlignment.CENTER).horizontalSizing(Sizing.fill()))
-+                            child().child(UIContainers.verticalFlow(Sizing.fill(), Sizing.content()).apply {
-+                                passiveSkillEffectRegistry.entrySet().sortedBy { it.key.identifier() }.forEach { (_, effect) ->
-                                     fun <T : Any> f(effect: PassiveSkillEffect<T>) {
-                                         val samples = motifRegistry.entrySet()
-@@ -272,5 +268,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
-                                                     true
-                                                 }
--                                                child(Components.label(Component.empty()).apply {
-+                                                child(UIComponents.label(Component.empty()).apply {
-                                                     updateLabel = {
-                                                         if (filter.identifier in enabledPassiveSkillEffectFilters.value) {
-@@ -300,5 +296,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
-
-             // メインコンテナ
--            child(Containers.verticalFlow(Sizing.fixed(18 * 9 + 18), Sizing.fill()).apply {
-+            child(UIContainers.verticalFlow(Sizing.fixed(18 * 9 + 18), Sizing.fill()).apply {
-
-                 //child(inventoryNameLabel(title))
-@@ -306,5 +302,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
-                 //child(verticalSpace(3))
-
--                child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-+                child(UIContainers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-                     surface(Surface.tiled(SlotType.FAIRY.viewTexture.id, 18, 18))
-                     repeat(9) { index ->
-@@ -320,5 +316,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
-                     scrollStep(18)
-                     (9 until menu.soulStream.size).chunked(9).forEach { indices ->
--                        child().child(Containers.horizontalFlow(Sizing.fill(100), Sizing.content()).apply {
-+                        child().child(UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content()).apply {
-                             indices.forEach { index ->
-                                 child(slotContainer(slotAsComponent(9 * 3 + 9 + index), type = null))
-@@ -335,8 +331,8 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
-
-                 // プレイヤーインベントリ
--                child(Containers.verticalFlow(Sizing.content(), Sizing.content()).apply {
-+                child(UIContainers.verticalFlow(Sizing.content(), Sizing.content()).apply {
-                     surface(Surface.tiled(SlotType.NORMAL.viewTexture.id, 18, 18))
-                     repeat(3) { r ->
--                        child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-+                        child(UIContainers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-                             repeat(9) { c ->
-                                 child(slotContainer(slotAsComponent(9 * r + c), type = null))
-@@ -346,5 +342,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
-                 })
-                 child(verticalSpace(4))
--                child(Containers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-+                child(UIContainers.horizontalFlow(Sizing.content(), Sizing.content()).apply {
-                     surface(Surface.tiled(SlotType.NORMAL.viewTexture.id, 18, 18))
-                     repeat(9) { c ->
-@@ -361,14 +357,14 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
-
-             // 右ペイン
--            child(Containers.verticalFlow(Sizing.expand(50), Sizing.fill()).apply {
-+            child(UIContainers.verticalFlow(Sizing.expand(50), Sizing.fill()).apply {
-                 padding(Insets.of(0, 20, 0, 0)) // レシピMOD用に下部を保護
-                 gap(2)
-
-                 // 右ペインボタン
--                child(Containers.horizontalFlow(Sizing.fill(), Sizing.content()).apply {
-+                child(UIContainers.horizontalFlow(Sizing.fill(), Sizing.content()).apply {
-                     gap(2)
-
-                     // 収集効果の有効化切り替えボタン
--                    child(LayeredImageToggleButton(14, 14, BUTTON_14_BACKGROUND, run {
-+                    child(UIComponents.wrapVanillaWidget(LayeredImageToggleButton(14, 14, BUTTON_14_BACKGROUND, run {
-                         WidgetSprites(
-                             MirageFairy2024.identifier("button_14/collection_enabled_foreground"),
-@@ -381,5 +377,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
-                         fun update() {
-                             value.value = player.collectionEnabled.getOrDefault()
--                            tooltip(text { (if (value.value) COLLECTION_ENABLED_TRANSLATION() else COLLECTION_DISABLED_TRANSLATION()) + " ("() + toggleCollectionEnabledKeyMappingCard() + ")"() })
-+                            setTooltip(Tooltip.create(text { (if (value.value) COLLECTION_ENABLED_TRANSLATION() else COLLECTION_DISABLED_TRANSLATION()) + " ("() + toggleCollectionEnabledKeyMappingCard() + ")"() }))
-                         }
-                         AttachmentChangedEvent.eventRegistry.observe(onClose) { identifier ->
-@@ -394,5 +390,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
-                             }
-                         }
--                    })
-+                    }))
-
-                 })
-@@ -416,5 +412,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
-
-                                 if (result.map.isEmpty()) {
--                                    container.child(Components.label(text { SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION().red }))
-+                                    container.child(UIComponents.label(text { SOUL_STREAM_NO_PASSIVE_SKILL_EFFECTS_TRANSLATION().red }))
-                                 } else {
-                                     result.map.keys.sortedBy { passiveSkillEffectRegistry.getKey(it) }.forEach { effect ->
-@@ -422,5 +418,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
-                                             val value = result[effect]
-                                             effect.getTexts(value).forEach {
--                                                container.child(Components.label(it.gold).tooltip(it.gold))
-+                                                container.child(UIComponents.label(it.gold).tooltip(it.gold))
-                                             }
-                                         }
-@@ -443,5 +439,5 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
-     }
-
--    override fun renderLabels(context: GuiGraphics, mouseX: Int, mouseY: Int) = Unit
-+    override fun extractLabels(context: GuiGraphicsExtractor, mouseX: Int, mouseY: Int) = Unit
-
-     private val onUpdateListeners = mutableListOf<() -> Unit>()
-@@ -460,10 +456,10 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
 
      // キー入力で閉じる
 -    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
@@ -1520,23 +1498,125 @@ index d15cb11..e118180 100644
      }
 
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/fairyquest/FairyQuestClientModule.kt b/common/src/client/kotlin/miragefairy2024/client/mod/fairyquest/FairyQuestClientModule.kt
-index 7d51bba..504471d 100644
+index 7d51bbaf5f4c8d32abbd9218689282a5ff839872..a48aefe189539b7ff920991bb1d74dd08380f688 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/fairyquest/FairyQuestClientModule.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/mod/fairyquest/FairyQuestClientModule.kt
-@@ -7,5 +7,5 @@ import miragefairy2024.mixin.client.api.RenderItemHandler
+@@ -1,51 +1,83 @@
+ package miragefairy2024.client.mod.fairyquest
+
++import com.mojang.blaze3d.vertex.PoseStack
+ import com.mojang.math.Axis
+ import miragefairy2024.ModContext
++import miragefairy2024.client.util.CuboidItemModelOverlay
+ import miragefairy2024.client.util.stack
+-import miragefairy2024.mixin.client.api.RenderItemHandler
  import miragefairy2024.mod.fairyquest.FairyQuestCardCard
  import miragefairy2024.mod.fairyquest.getFairyQuestRecipe
 -import miragefairy2024.util.ResourceLocation
-+import miragefairy2024.util.Identifier
- import miragefairy2024.util.createItemStack
+-import miragefairy2024.util.createItemStack
  import miragefairy2024.util.isNotIn
-@@ -27,5 +27,5 @@ fun initFairyQuestClientModule() {
-                 matrices.translate(0F, 1F / 16F, 0F)
-                 matrices.scale(0.5F, 0.5F, 0.01F)
++import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin
++import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier
+ import net.minecraft.client.Minecraft
+-import net.minecraft.client.resources.model.ModelResourceLocation
++import net.minecraft.client.renderer.SubmitNodeCollector
++import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart
++import net.minecraft.client.renderer.item.CuboidItemModelWrapper
++import net.minecraft.client.renderer.item.ItemModel
++import net.minecraft.client.renderer.item.ItemModelResolver
++import net.minecraft.client.renderer.item.ItemStackRenderState
++import net.minecraft.client.renderer.item.TrackingItemStackRenderState
++import net.minecraft.client.renderer.rendertype.RenderTypes
++import net.minecraft.core.Direction
+ import net.minecraft.util.Mth
++import net.minecraft.util.RandomSource
+ import net.minecraft.world.item.ItemDisplayContext
+-import net.minecraft.world.item.Items
++import net.minecraft.world.item.ItemStack
++import net.minecraft.world.level.block.Blocks
++import net.minecraft.world.level.block.NetherPortalBlock
+
+ context(_: ModContext)
+ fun initFairyQuestClientModule() {
+-    RenderItemHandler.listeners += RenderItemHandler { stack, renderMode, leftHanded, matrices, vertexConsumers, light, overlay, model ->
+-        if (stack isNotIn FairyQuestCardCard.item()) return@RenderItemHandler
+-        matrices.stack {
+-            model.transforms.getTransform(renderMode).apply(leftHanded, matrices)
+-
+-            // TODO モデルに
+-            matrices.stack {
+-                matrices.translate(0F, 1F / 16F, 0F)
+-                matrices.scale(0.5F, 0.5F, 0.01F)
 -                val resultModel = Minecraft.getInstance().modelManager.getModel(ModelResourceLocation(ResourceLocation("minecraft", "nether_portal"), "axis=x"))
-+                val resultModel = Minecraft.getInstance().modelManager.getModel(ModelResourceLocation(Identifier("minecraft", "nether_portal"), "axis=x"))
-                 Minecraft.getInstance().itemRenderer.render(Items.DIRT.createItemStack(), ItemDisplayContext.GUI, false, matrices, vertexConsumers, light, overlay, resultModel)
+-                Minecraft.getInstance().itemRenderer.render(Items.DIRT.createItemStack(), ItemDisplayContext.GUI, false, matrices, vertexConsumers, light, overlay, resultModel)
+-            }
++    ModelLoadingPlugin.register { context ->
++        context.modifyItemModelAfterBake().register { model, bakeContext ->
++            if (bakeContext.itemId() != FairyQuestCardCard.identifier) return@register model
++            val source = bakeContext.sourceModel() as? CuboidItemModelWrapper.Unbaked ?: return@register model
++            FairyQuestItemModel(model, source, bakeContext)
++        }
++    }
++}
++
++private class FairyQuestOverlay(val portal: List<BlockStateModelPart>, val icon: ItemStackRenderState?)
++
++private class FairyQuestItemModel(model: ItemModel, source: CuboidItemModelWrapper.Unbaked, context: ModelModifier.AfterBakeItem.Context) :
++    CuboidItemModelOverlay<FairyQuestOverlay>(model, source, context) {
++
++    private val portalBlockState = Blocks.NETHER_PORTAL.defaultBlockState().setValue(NetherPortalBlock.AXIS, Direction.Axis.X)
+
+-            val recipe = stack.getFairyQuestRecipe()
+-            if (recipe != null) {
+-                matrices.stack {
+-                    matrices.translate(0F, 1F / 16F, 0.02F)
+-                    matrices.scale(0.45F, 0.45F, 0.01F)
+-                    val resultModel = Minecraft.getInstance().itemRenderer.getModel(recipe.icon(), null, null, 0)
+-                    Minecraft.getInstance().itemRenderer.render(recipe.icon(), ItemDisplayContext.GUI, false, matrices, vertexConsumers, light, overlay, resultModel)
+-                }
+-                matrices.stack {
+-                    matrices.translate(0F, 1F / 16F, -0.02F)
+-                    matrices.scale(0.45F, 0.45F, 0.01F)
+-                    matrices.mulPose(Axis.YP.rotation(Mth.TWO_PI * 0.5F))
+-                    val resultModel = Minecraft.getInstance().itemRenderer.getModel(recipe.icon(), null, null, 0)
+-                    Minecraft.getInstance().itemRenderer.render(recipe.icon(), ItemDisplayContext.GUI, false, matrices, vertexConsumers, light, overlay, resultModel)
+-                }
++    override fun extractOverlay(output: ItemStackRenderState, stack: ItemStack, resolver: ItemModelResolver): FairyQuestOverlay? {
++        if (stack isNotIn FairyQuestCardCard.item()) return null
++        val portalModel = Minecraft.getInstance().modelManager.blockStateModelSet.get(portalBlockState)
++        val portalParts = buildList { portalModel.collectParts(RandomSource.create(0), this) }
++        val icon = stack.getFairyQuestRecipe()?.icon()?.let { stack ->
++            TrackingItemStackRenderState().also { state ->
++                resolver.updateForTopItem(state, stack, ItemDisplayContext.GUI, null, null, 0)
++                output.appendModelIdentityElement(state.modelIdentity)
              }
++        }
++        output.setAnimated() // ポータルのテクスチャはアニメーションするのだ～🌱
++        return FairyQuestOverlay(portalParts, icon)
++    }
++
++    override fun submit(argument: FairyQuestOverlay?, matrices: PoseStack, collector: SubmitNodeCollector, light: Int, overlay: Int, hasFoil: Boolean, outlineColor: Int) {
++        if (argument == null) return
++        matrices.stack {
++            matrices.translate(0F, 1F / 16F, 0F)
++            matrices.scale(0.5F, 0.5F, 0.01F)
++            matrices.translate(-0.5F, -0.5F, -0.5F)
++            collector.submitBlockModel(matrices, RenderTypes.cutoutMovingBlock(), argument.portal, intArrayOf(), light, overlay, outlineColor)
++        }
+
++        val icon = argument.icon ?: return
++        matrices.stack {
++            matrices.translate(0F, 1F / 16F, 0.02F)
++            matrices.scale(0.45F, 0.45F, 0.01F)
++            icon.submit(matrices, collector, light, overlay, outlineColor)
++        }
++        matrices.stack {
++            matrices.translate(0F, 1F / 16F, -0.02F)
++            matrices.scale(0.45F, 0.45F, 0.01F)
++            matrices.mulPose(Axis.YP.rotation(Mth.TWO_PI * 0.5F))
++            icon.submit(matrices, collector, light, overlay, outlineColor)
+         }
+     }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/magicplant/MagicPlantClientModule.kt b/common/src/client/kotlin/miragefairy2024/client/mod/magicplant/MagicPlantClientModule.kt
 index 1c2788e..79ccbb5 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/magicplant/MagicPlantClientModule.kt
@@ -2773,7 +2853,7 @@ index ec08a82..27873b8 100644
          if (scrollbarThickness < 2 || scrollbarLength < 2) return
          renderVerticalScrollbar(guiGraphics, x, y)
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/VanillaScrollContainerViewWidget.kt b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/VanillaScrollContainerViewWidget.kt
-index 3bb7784..2b70be7 100644
+index cfe03de0ba78f2b5b3df05897805fa2d4f7ce028..92462fcb4f4c24c997b92b093b849ad2edc68e10 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/VanillaScrollContainerViewWidget.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/VanillaScrollContainerViewWidget.kt
 @@ -26,5 +26,5 @@ import mirrg.kotlin.helium.max
@@ -2963,17 +3043,17 @@ index 32cdb99..1d6222c 100644
          if (!isActive) return false
          if (!isFocused) return false
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/VanillaViewPlacers.kt b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/VanillaViewPlacers.kt
-index 0fecf71..d746f17 100644
+index 2c9d0554b497761c94f42b350400e76929c3f59a..1c6dc30d38e2c6fdf41bd05d1de7d25bfe1d839e 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/VanillaViewPlacers.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/VanillaViewPlacers.kt
-@@ -151,5 +151,5 @@ fun initVanillaViewPlacers() {
+@@ -134,5 +134,5 @@ fun initVanillaViewPlacers() {
      VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TextButtonView, bounds ->
          // TODO onClick の戻り値によるイベントの消費判定と、未消費をバニラの Button の入力処理へ反映する方法は検討が必要なのだ～🌱
 -        class TextButtonWidget : Button(
 +        class TextButtonWidget : Button.Plain(
              bounds.x,
              bounds.y,
-@@ -174,5 +174,5 @@ fun initVanillaViewPlacers() {
+@@ -157,5 +157,5 @@ fun initVanillaViewPlacers() {
          }
          view.tooltip.observeAndInitialize(onClosed) { _, tooltip ->
 -            widget.tooltip = if (tooltip != null) Tooltip.create(tooltip) else null
@@ -3024,24 +3104,24 @@ index 30bcebc..247abb8 100644
 
      override fun nextFocusPath(event: FocusNavigationEvent): ComponentPath? {
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/ViewAdapter.kt b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/ViewAdapter.kt
-index 5c5757a..3a5a970 100644
+index 87430e6b71ea46c260640122211020fa1c1ac8bc..b44615c7d8f54826b45e03c70d077744d25fc12a 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/ViewAdapter.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/ViewAdapter.kt
-@@ -24,4 +24,6 @@ import net.minecraft.client.gui.narration.NarrationElementOutput
+@@ -23,4 +23,6 @@ import net.minecraft.client.gui.narration.NarrationElementOutput
  import net.minecraft.client.gui.screens.Screen
  import org.lwjgl.glfw.GLFW
 +import net.minecraft.client.input.KeyEvent
 +import net.minecraft.client.input.MouseButtonEvent
 
  /** [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter] から画面の機能を呼び出すためのインターフェースなのだ～🌱 */
-@@ -70,5 +72,5 @@ class ViewAdapter(val host: ViewAdapterHost) {
+@@ -67,5 +69,5 @@ class ViewAdapter(val host: ViewAdapterHost) {
          var clicked = false
 
 -        override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
 +        override fun mouseClicked(event: MouseButtonEvent, doubleClick: Boolean): Boolean {
              clicked = true
              // true にすると、番兵がフォーカスを受け取っちゃう上に、スロット処理も飛ばされちゃうのだ～🌱
-@@ -242,14 +244,15 @@ class ViewAdapter(val host: ViewAdapterHost) {
+@@ -229,14 +231,15 @@ class ViewAdapter(val host: ViewAdapterHost) {
       * それ以外の Fabric のドラッグ中継は、ホスト側の既存の入力経路に任せるのだ～🌱
       */
 -    fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
@@ -3060,7 +3140,7 @@ index 5c5757a..3a5a970 100644
 +            return focused.mouseDragged(event, dragX, dragY)
          }
          return false
-@@ -257,5 +260,8 @@ class ViewAdapter(val host: ViewAdapterHost) {
+@@ -244,5 +247,8 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
      // 押下先を保持する子を優先し、それ以外の解放は Fabric API または画面の既存経路へ渡すのだ～🌱
 -    fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
@@ -3070,14 +3150,14 @@ index 5c5757a..3a5a970 100644
 +        val button = event.button()
          if (!isInitialized) return false
          val screen = host.getScreen() ?: return false
-@@ -263,5 +269,5 @@ class ViewAdapter(val host: ViewAdapterHost) {
+@@ -250,5 +256,5 @@ class ViewAdapter(val host: ViewAdapterHost) {
          if (capture != null) {
              if (button == 0) screen.isDragging = false
 -            return capture.mouseReleased(mouseX, mouseY, button)
 +            return capture.mouseReleased(event)
          }
          if (Platform.isFabric()) return false
-@@ -270,11 +276,12 @@ class ViewAdapter(val host: ViewAdapterHost) {
+@@ -257,11 +263,12 @@ class ViewAdapter(val host: ViewAdapterHost) {
              screen.isDragging = false
              val focused = screen.focused
 -            if (focused != null) return focused.mouseReleased(mouseX, mouseY, button)
@@ -3093,7 +3173,7 @@ index 5c5757a..3a5a970 100644
 +        val keyCode = event.key()
          if (!isInitialized) return false
          val screen = host.getScreen() ?: return false
-@@ -282,5 +289,5 @@ class ViewAdapter(val host: ViewAdapterHost) {
+@@ -269,5 +276,5 @@ class ViewAdapter(val host: ViewAdapterHost) {
          val actualFocused = focused.getActualFocused { it !is AbstractWidget || it.isActive } ?: return false
          if (actualFocused is EditBox || actualFocused is MultiLineEditBox) {
 -            if (focused.keyPressed(keyCode, scanCode, modifiers)) return true
@@ -3339,165 +3419,68 @@ index 96ebac4..bd601bb 100644
 +        return super.keyPressed(event)
      }
 
-diff --git a/common/src/client/kotlin/miragefairy2024/client/util/BorderLayout.kt b/common/src/client/kotlin/miragefairy2024/client/util/BorderLayout.kt
-index 226abd5..f85c6a5 100644
---- a/common/src/client/kotlin/miragefairy2024/client/util/BorderLayout.kt
-+++ b/common/src/client/kotlin/miragefairy2024/client/util/BorderLayout.kt
-@@ -1,9 +1,9 @@
- package miragefairy2024.client.util
-
--import io.wispforest.owo.ui.container.Containers
-+import io.wispforest.owo.ui.container.UIContainers
- import io.wispforest.owo.ui.container.StackLayout
--import io.wispforest.owo.ui.container.WrappingParentComponent
-+import io.wispforest.owo.ui.container.WrappingParentUIComponent
- import io.wispforest.owo.ui.core.Insets
--import io.wispforest.owo.ui.core.OwoUIDrawContext
-+import io.wispforest.owo.ui.core.OwoUIGraphics
- import io.wispforest.owo.ui.core.Size
- import io.wispforest.owo.ui.core.Sizing
-@@ -14,5 +14,5 @@ fun leftBorderLayout(horizontalSizing: Sizing, verticalSizing: Sizing) = BorderL
- fun rightBorderLayout(horizontalSizing: Sizing, verticalSizing: Sizing) = BorderLayout(BorderLayout.Direction.RIGHT, horizontalSizing, verticalSizing)
-
--class BorderLayout(val direction: Direction, horizontalSizing: Sizing, verticalSizing: Sizing) : WrappingParentComponent<StackLayout>(horizontalSizing, verticalSizing, Containers.stack(horizontalSizing, verticalSizing)) {
-+class BorderLayout(val direction: Direction, horizontalSizing: Sizing, verticalSizing: Sizing) : WrappingParentUIComponent<StackLayout>(horizontalSizing, verticalSizing, UIContainers.stack(horizontalSizing, verticalSizing)) {
-
-     enum class Direction {
-@@ -24,14 +24,14 @@ class BorderLayout(val direction: Direction, horizontalSizing: Sizing, verticalS
-
-     private val child1 = when (direction) {
--        Direction.TOP -> Containers.verticalFlow(horizontalSizing, Sizing.content())
--        Direction.BOTTOM -> Containers.verticalFlow(horizontalSizing, Sizing.fill(100))
--        Direction.LEFT -> Containers.horizontalFlow(Sizing.content(), verticalSizing)
--        Direction.RIGHT -> Containers.horizontalFlow(Sizing.fill(100), verticalSizing)
-+        Direction.TOP -> UIContainers.verticalFlow(horizontalSizing, Sizing.content())
-+        Direction.BOTTOM -> UIContainers.verticalFlow(horizontalSizing, Sizing.fill(100))
-+        Direction.LEFT -> UIContainers.horizontalFlow(Sizing.content(), verticalSizing)
-+        Direction.RIGHT -> UIContainers.horizontalFlow(Sizing.fill(100), verticalSizing)
-     }
-     private val child2 = when (direction) {
--        Direction.TOP -> Containers.verticalFlow(horizontalSizing, Sizing.fill(100))
--        Direction.BOTTOM -> Containers.verticalFlow(horizontalSizing, Sizing.content())
--        Direction.LEFT -> Containers.horizontalFlow(Sizing.fill(100), verticalSizing)
--        Direction.RIGHT -> Containers.horizontalFlow(Sizing.content(), verticalSizing)
-+        Direction.TOP -> UIContainers.verticalFlow(horizontalSizing, Sizing.fill(100))
-+        Direction.BOTTOM -> UIContainers.verticalFlow(horizontalSizing, Sizing.content())
-+        Direction.LEFT -> UIContainers.horizontalFlow(Sizing.fill(100), verticalSizing)
-+        Direction.RIGHT -> UIContainers.horizontalFlow(Sizing.content(), verticalSizing)
-     }
-
-@@ -78,5 +78,5 @@ class BorderLayout(val direction: Direction, horizontalSizing: Sizing, verticalS
-     }
-
--    override fun draw(context: OwoUIDrawContext, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) {
-+    override fun draw(context: OwoUIGraphics, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) {
-         super.draw(context, mouseX, mouseY, partialTicks, delta)
-         drawChildren(context, mouseX, mouseY, partialTicks, delta, childView)
-diff --git a/common/src/client/kotlin/miragefairy2024/client/util/ClickableContainer.kt b/common/src/client/kotlin/miragefairy2024/client/util/ClickableContainer.kt
-index 7341ed0..dc82b08 100644
---- a/common/src/client/kotlin/miragefairy2024/client/util/ClickableContainer.kt
-+++ b/common/src/client/kotlin/miragefairy2024/client/util/ClickableContainer.kt
-@@ -1,11 +1,12 @@
- package miragefairy2024.client.util
-
--import io.wispforest.owo.ui.component.Components
--import io.wispforest.owo.ui.container.WrappingParentComponent
--import io.wispforest.owo.ui.core.OwoUIDrawContext
-+import io.wispforest.owo.ui.component.UIComponents
-+import io.wispforest.owo.ui.container.WrappingParentUIComponent
-+import io.wispforest.owo.ui.core.OwoUIGraphics
- import io.wispforest.owo.ui.core.Sizing
- import miragefairy2024.util.EventRegistry
-+import net.minecraft.client.input.MouseButtonEvent
-
--class ClickableContainer(horizontalSizing: Sizing, verticalSizing: Sizing) : WrappingParentComponent<OwoComponent>(horizontalSizing, verticalSizing, Components.spacer(0)) {
-+class ClickableContainer(horizontalSizing: Sizing, verticalSizing: Sizing) : WrappingParentUIComponent<OwoComponent>(horizontalSizing, verticalSizing, UIComponents.spacer(0)) {
-     // これを設定してもchildが受け取ってしまうのでカーソルを設定することができない
-     // see: io.wispforest.owo.ui.core.OwoUIAdapter.render
-@@ -16,5 +17,5 @@ class ClickableContainer(horizontalSizing: Sizing, verticalSizing: Sizing) : Wra
-     override fun canFocus(source: FocusSource) = source == FocusSource.KEYBOARD_CYCLE
-
--    override fun draw(context: OwoUIDrawContext, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) {
-+    override fun draw(context: OwoUIGraphics, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) {
-         super.draw(context, mouseX, mouseY, partialTicks, delta)
-         drawChildren(context, mouseX, mouseY, partialTicks, delta, childView)
-@@ -25,6 +26,6 @@ class ClickableContainer(horizontalSizing: Sizing, verticalSizing: Sizing) : Wra
-
-     val onClick = EventRegistry<() -> Boolean>()
--    override fun onMouseDown(mouseX: Double, mouseY: Double, button: Int): Boolean {
--        if (super.onMouseDown(mouseX, mouseY, button)) return true
-+    override fun onMouseDown(event: MouseButtonEvent, doubleClick: Boolean): Boolean {
-+        if (super.onMouseDown(event, doubleClick)) return true
-         return onClick.toList().any { it() }
-     }
+diff --git a/common/src/client/kotlin/miragefairy2024/client/util/CuboidItemModelOverlay.kt b/common/src/client/kotlin/miragefairy2024/client/util/CuboidItemModelOverlay.kt
+new file mode 100644
+index 0000000000000000000000000000000000000000..f2622ec1d511517a3f8e96c3b590b35a7a68bb2e
+--- /dev/null
++++ b/common/src/client/kotlin/miragefairy2024/client/util/CuboidItemModelOverlay.kt
+@@ -0,0 +1,47 @@
++package miragefairy2024.client.util
++
++import com.mojang.math.Transformation
++import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier
++import net.minecraft.client.multiplayer.ClientLevel
++import net.minecraft.client.renderer.item.CuboidItemModelWrapper
++import net.minecraft.client.renderer.item.ItemModel
++import net.minecraft.client.renderer.item.ItemModelResolver
++import net.minecraft.client.renderer.item.ItemStackRenderState
++import net.minecraft.client.renderer.item.ModelRenderProperties
++import net.minecraft.client.renderer.special.SpecialModelRenderer
++import net.minecraft.world.entity.ItemOwner
++import net.minecraft.world.item.ItemDisplayContext
++import net.minecraft.world.item.ItemStack
++import org.joml.Matrix4f
++import org.joml.Vector3fc
++import java.util.function.Consumer
++
++internal abstract class CuboidItemModelOverlay<T : Any>(
++    private val baseModel: ItemModel,
++    source: CuboidItemModelWrapper.Unbaked,
++    context: ModelModifier.AfterBakeItem.Context,
++) : ItemModel, SpecialModelRenderer<T> {
++    private val properties = context.bakingContext().blockModelBaker().let { baker ->
++        val resolved = baker.getModel(source.model())
++        ModelRenderProperties.fromResolvedModel(baker, resolved, resolved.topTextureSlots)
++    }
++
++    // ItemTransform が原点を立方体の隅に移すので、追加描画の原点を中心へ戻すのだ～🌱
++    private val transform = Matrix4f(Transformation.compose(context.transformation(), source.transformation())).translate(0.5F, 0.5F, 0.5F)
++
++    final override fun update(output: ItemStackRenderState, stack: ItemStack, resolver: ItemModelResolver, displayContext: ItemDisplayContext, level: ClientLevel?, owner: ItemOwner?, seed: Int) {
++        baseModel.update(output, stack, resolver, displayContext, level, owner, seed)
++        val overlay = extractOverlay(output, stack, resolver) ?: return
++        output.newLayer().apply {
++            properties.applyToLayer(this, displayContext)
++            setLocalTransform(transform)
++            setupSpecialModel(this@CuboidItemModelOverlay, overlay)
++        }
++    }
++
++    // 描画用データは、ItemModelResolver を使える update からレイヤーへ直接渡すのだ～🌱
++    final override fun extractArgument(stack: ItemStack): T? = null
++    final override fun getExtents(output: Consumer<Vector3fc>) = Unit
++
++    protected abstract fun extractOverlay(output: ItemStackRenderState, stack: ItemStack, resolver: ItemModelResolver): T?
++}
 diff --git a/common/src/client/kotlin/miragefairy2024/client/util/Gui.kt b/common/src/client/kotlin/miragefairy2024/client/util/Gui.kt
-index 34553d9..cd0d442 100644
+index 154981c2512d079b9d1233b443e832da874a501d..dd308cb0a4e9a950a02c1c44ce77ad26f37b1771 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/util/Gui.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/util/Gui.kt
-@@ -1,7 +1,7 @@
- package miragefairy2024.client.util
-
--import io.wispforest.owo.ui.component.Components
-+import io.wispforest.owo.ui.component.UIComponents
- import io.wispforest.owo.ui.component.LabelComponent
--import io.wispforest.owo.ui.container.Containers
-+import io.wispforest.owo.ui.container.UIContainers
- import io.wispforest.owo.ui.container.FlowLayout
- import io.wispforest.owo.ui.container.ScrollContainer
-@@ -17,12 +17,12 @@ import net.minecraft.client.gui.components.events.ContainerEventHandler
+@@ -4,7 +4,7 @@ import net.minecraft.client.gui.components.WidgetSprites
+ import net.minecraft.client.gui.components.events.ContainerEventHandler
  import net.minecraft.client.gui.components.events.GuiEventListener
- import net.minecraft.network.chat.Component
 -import net.minecraft.resources.ResourceLocation
 +import net.minecraft.resources.Identifier
-
--typealias OwoComponent = io.wispforest.owo.ui.core.Component
--typealias FocusSource = io.wispforest.owo.ui.core.Component.FocusSource
--typealias DismountReason = io.wispforest.owo.ui.core.Component.DismountReason
-+typealias OwoComponent = io.wispforest.owo.ui.core.UIComponent
-+typealias FocusSource = io.wispforest.owo.ui.core.UIComponent.FocusSource
-+typealias DismountReason = io.wispforest.owo.ui.core.UIComponent.DismountReason
-
- fun slotContainer(slotComponent: OwoComponent, type: SlotType? = SlotType.NORMAL): FlowLayout {
--    return Containers.verticalFlow(Sizing.content(), Sizing.content()).apply {
-+    return UIContainers.verticalFlow(Sizing.content(), Sizing.content()).apply {
-         padding(Insets.of(1))
-         if (type != null) surface(Surface.tiled(type.viewTexture.id, 18, 18))
-@@ -32,9 +32,9 @@ fun slotContainer(slotComponent: OwoComponent, type: SlotType? = SlotType.NORMAL
- }
-
--fun horizontalSpace(width: Int): FlowLayout = Containers.verticalFlow(Sizing.fixed(width), Sizing.content())
-+fun horizontalSpace(width: Int): FlowLayout = UIContainers.verticalFlow(Sizing.fixed(width), Sizing.content())
-
--fun verticalSpace(height: Int): FlowLayout = Containers.verticalFlow(Sizing.content(), Sizing.fixed(height))
-+fun verticalSpace(height: Int): FlowLayout = UIContainers.verticalFlow(Sizing.content(), Sizing.fixed(height))
-
--fun inventoryNameLabel(name: Component, horizontalTextAlignment: HorizontalAlignment? = HorizontalAlignment.LEFT): LabelComponent = Components.label(name).apply {
-+fun inventoryNameLabel(name: Component, horizontalTextAlignment: HorizontalAlignment? = HorizontalAlignment.LEFT): LabelComponent = UIComponents.label(name).apply {
-     margins(Insets.of(0, 0, 1, 1))
-     sizing(Sizing.fill(100), Sizing.content())
-@@ -44,5 +44,5 @@ fun inventoryNameLabel(name: Component, horizontalTextAlignment: HorizontalAlign
-
- fun verticalScroll(horizontalSizing: Sizing, verticalSizing: Sizing, scrollbarThiccness: Int, overlapped: Boolean = false): ScrollContainer<FlowLayout> {
--    return Containers.verticalScroll(horizontalSizing, verticalSizing, Containers.verticalFlow(horizontalSizing, Sizing.content()).apply {
-+    return UIContainers.verticalScroll(horizontalSizing, verticalSizing, UIContainers.verticalFlow(horizontalSizing, Sizing.content()).apply {
-         if (!overlapped) padding(Insets.of(0, 0, 0, scrollbarThiccness))
-     }).apply {
-@@ -52,5 +52,5 @@ fun verticalScroll(horizontalSizing: Sizing, verticalSizing: Sizing, scrollbarTh
-
- fun horizontalScroll(horizontalSizing: Sizing, verticalSizing: Sizing, scrollbarThiccness: Int, overlapped: Boolean = false): ScrollContainer<FlowLayout> {
--    return Containers.horizontalScroll(horizontalSizing, verticalSizing, Containers.horizontalFlow(Sizing.content(), verticalSizing).apply {
-+    return UIContainers.horizontalScroll(horizontalSizing, verticalSizing, UIContainers.horizontalFlow(Sizing.content(), verticalSizing).apply {
-         if (!overlapped) padding(Insets.of(0, scrollbarThiccness, 0, 0))
-     }).apply {
-@@ -60,5 +60,5 @@ fun horizontalScroll(horizontalSizing: Sizing, verticalSizing: Sizing, scrollbar
-
- fun tooltipContainer(horizontalSizing: Sizing, verticalSizing: Sizing): FlowLayout {
--    return Containers.verticalFlow(horizontalSizing, verticalSizing).apply {
-+    return UIContainers.verticalFlow(horizontalSizing, verticalSizing).apply {
-         surface(Surface.TOOLTIP)
-         padding(Insets.of(4))
-@@ -99,5 +99,5 @@ class CompressionVerticalFlow(verticalSizing: Sizing) : FlowLayout(Sizing.conten
- }
 
 -fun WidgetSprites(identifier: ResourceLocation): WidgetSprites = WidgetSprites(identifier, identifier)
 +fun WidgetSprites(identifier: Identifier): WidgetSprites = WidgetSprites(identifier, identifier)
@@ -3531,12 +3514,12 @@ index be8fc66..f05e5ee 100644
      }
  }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/util/LayeredImageButton.kt b/common/src/client/kotlin/miragefairy2024/client/util/LayeredImageButton.kt
-index cd0de8b..59cfe75 100644
+index e12ed2b7a6d6600ff88c1344ef35811ba56fe811..ce72722cc2394d6984ac82a8b688138ee4b14e9a 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/util/LayeredImageButton.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/util/LayeredImageButton.kt
-@@ -5,7 +5,8 @@ import miragefairy2024.util.ObservableValue
+@@ -3,7 +3,8 @@ package miragefairy2024.client.util
+ import miragefairy2024.util.EventRegistry
  import miragefairy2024.util.fire
- import miragefairy2024.util.register
 -import net.minecraft.client.gui.GuiGraphics
 +import net.minecraft.client.gui.GuiGraphicsExtractor
  import net.minecraft.client.gui.components.Button
@@ -3544,14 +3527,14 @@ index cd0de8b..59cfe75 100644
 +import net.minecraft.client.renderer.RenderPipelines
  import net.minecraft.network.chat.Component
 
-@@ -15,5 +16,5 @@ class LayeredImageButton(
+@@ -13,5 +14,5 @@ class LayeredImageButton(
      private val backgroundSprites: WidgetSprites?,
      private val foregroundSprites: WidgetSprites?,
 -) : Button(0, 0, width, height, Component.empty(), {
 +) : Button.Plain(0, 0, width, height, Component.empty(), {
      (it as LayeredImageButton).onClick.fire()
  }, DEFAULT_NARRATION) {
-@@ -21,8 +22,8 @@ class LayeredImageButton(
+@@ -19,8 +20,8 @@ class LayeredImageButton(
      var selected = false
 
 -    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
@@ -3564,153 +3547,6 @@ index cd0de8b..59cfe75 100644
 +        if (foregroundSprites != null) guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, foregroundSprites.get(selected, isHoveredOrFocused), x, y, width, height)
      }
  }
-@@ -33,5 +34,5 @@ class LayeredImageToggleButton(
-     private val backgroundSprites: WidgetSprites,
-     private val foregroundSprites: WidgetSprites,
--) : Button(0, 0, width, height, Component.empty(), {
-+) : Button.Plain(0, 0, width, height, Component.empty(), {
-     (it as LayeredImageToggleButton).onClick.fire()
- }, DEFAULT_NARRATION) {
-@@ -49,8 +50,8 @@ class LayeredImageToggleButton(
-     }
-
--    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
--        super.renderWidget(guiGraphics, mouseX, mouseY, partialTick)
--        guiGraphics.blitSprite(backgroundSprites.get(value.value, isHoveredOrFocused), x, y, width, height)
--        guiGraphics.blitSprite(foregroundSprites.get(value.value, isHoveredOrFocused), x, y, width, height)
-+    override fun extractContents(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
-+        super.extractContents(guiGraphics, mouseX, mouseY, partialTick)
-+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, backgroundSprites.get(value.value, isHoveredOrFocused), x, y, width, height)
-+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, foregroundSprites.get(value.value, isHoveredOrFocused), x, y, width, height)
-     }
- }
-diff --git a/common/src/client/kotlin/miragefairy2024/client/util/LimitedLabelComponent.kt b/common/src/client/kotlin/miragefairy2024/client/util/LimitedLabelComponent.kt
-index d4ec7bf..9d1aeda 100644
---- a/common/src/client/kotlin/miragefairy2024/client/util/LimitedLabelComponent.kt
-+++ b/common/src/client/kotlin/miragefairy2024/client/util/LimitedLabelComponent.kt
-@@ -1,23 +1,25 @@
- package miragefairy2024.client.util
-
--import io.wispforest.owo.ui.base.BaseComponent
-+import io.wispforest.owo.braid.widgets.label.RawLabel
-+import io.wispforest.owo.ui.base.BaseUIComponent
- import io.wispforest.owo.ui.core.AnimatableProperty
- import io.wispforest.owo.ui.core.Color
- import io.wispforest.owo.ui.core.HorizontalAlignment
--import io.wispforest.owo.ui.core.OwoUIDrawContext
-+import io.wispforest.owo.ui.core.OwoUIGraphics
- import io.wispforest.owo.ui.core.Size
- import io.wispforest.owo.ui.core.Sizing
- import io.wispforest.owo.ui.core.VerticalAlignment
- import io.wispforest.owo.util.Observable
-+import miragefairy2024.client.mixins.mixin.GuiGraphicsExtractorAccessor
- import net.minecraft.client.Minecraft
-+import net.minecraft.client.input.MouseButtonEvent
- import net.minecraft.network.chat.Component
- import net.minecraft.network.chat.Style
- import net.minecraft.util.FormattedCharSequence
- import java.util.function.Function
--import kotlin.math.min
-
- // ■■ from io.wispforest.owo.ui.component.LabelComponent
- // ■■ https://github.com/wisp-forest/owo-lib/blob/1.20.2/src/main/java/io/wispforest/owo/ui/component/LabelComponent.java
--open class LimitedLabelComponent(protected var text: Component) : BaseComponent() {
-+open class LimitedLabelComponent(protected var text: Component) : BaseUIComponent() {
-     protected val textRenderer = Minecraft.getInstance().font
-     protected var wrappedText: List<FormattedCharSequence>
-@@ -28,5 +30,5 @@ open class LimitedLabelComponent(protected var text: Component) : BaseComponent(
-     protected var shadow = false
-     protected var maxWidth: Int
--    protected var textClickHandler = Function { style: Style? -> OwoUIDrawContext.utilityScreen().handleComponentClicked(style) }
-+    protected var textClickHandler = Function { style: Style? -> style != null && OwoUIGraphics.utilityScreen().handleTextClick(style, Minecraft.getInstance().screen) }
-
-     init {
-@@ -161,53 +163,49 @@ open class LimitedLabelComponent(protected var text: Component) : BaseComponent(
-     }
-
--    override fun draw(context: OwoUIDrawContext, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) {
-+    override fun draw(context: OwoUIGraphics, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) {
-         val matrices = context.pose()
-         matrices.stack {
--            matrices.translate(0.0, 1 / Minecraft.getInstance().window.guiScale, 0.0)
--            var x = x
--            var y = y
--            if (horizontalSizing.get().isContent) {
--                x += horizontalSizing.get().value
--            }
--            if (verticalSizing.get().isContent) {
--                y += verticalSizing.get().value
--            }
--            when (verticalTextAlignment) {
--                VerticalAlignment.CENTER -> y += (height - (wrappedText.size * (this.lineHeight() + 2) - 2)) / 2
--                VerticalAlignment.BOTTOM -> y += height - (wrappedText.size * (this.lineHeight() + 2) - 2)
--                else -> Unit
--            }
--            val lambdaX = x
--            val lambdaY = y
--            @Suppress("DEPRECATION")
--            context.drawManaged {
--                wrappedText.indices.forEach { i ->
--                    val renderText = wrappedText[i]
--                    var renderX = lambdaX
--                    when (horizontalTextAlignment) {
--                        HorizontalAlignment.CENTER -> renderX += (width - textRenderer.width(renderText)) / 2
--                        HorizontalAlignment.RIGHT -> renderX += width - textRenderer.width(renderText)
--                        else -> Unit
--                    }
--                    var renderY = lambdaY + i * (this.lineHeight() + 2)
--                    renderY += this.lineHeight() - textRenderer.lineHeight
--                    context.drawString(textRenderer, renderText, renderX, renderY, color.get().argb(), shadow)
--                }
-+            matrices.translate(0F, 1F / Minecraft.getInstance().window.guiScale.toFloat())
-+            forEachTextLine { text, x, y ->
-+                context.text(textRenderer, text, x, y, color.get().argb(), shadow)
-             }
-         }
-     }
-
--    override fun drawTooltip(context: OwoUIDrawContext, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) {
-+    override fun drawTooltip(context: OwoUIGraphics, mouseX: Int, mouseY: Int, partialTicks: Float, delta: Float) {
-         super.drawTooltip(context, mouseX, mouseY, partialTicks, delta)
-         if (!isInBoundingBox(mouseX.toDouble(), mouseY.toDouble())) return
--        context.renderComponentHoverEffect(textRenderer, styleAt(mouseX - x, mouseY - y), mouseX, mouseY)
-+        val style = styleAt(mouseX - x, mouseY - y) ?: return
-+        (context as GuiGraphicsExtractorAccessor).`mirageFairy2024$componentHoverEffect`(textRenderer, style, mouseX, mouseY)
-     }
-
--    override fun onMouseDown(mouseX: Double, mouseY: Double, button: Int): Boolean {
--        return textClickHandler.apply(styleAt(mouseX.toInt(), mouseY.toInt())) or super.onMouseDown(mouseX, mouseY, button)
-+    override fun onMouseDown(event: MouseButtonEvent, doubleClick: Boolean): Boolean {
-+        return textClickHandler.apply(styleAt(event.x().toInt(), event.y().toInt())) or super.onMouseDown(event, doubleClick)
-     }
-
-     protected fun styleAt(mouseX: Int, mouseY: Int): Style? {
--        return textRenderer.splitter.componentStyleAtWidth(wrappedText[min((mouseY / (this.lineHeight() + 2)).toDouble(), (wrappedText.size - 1).toDouble()).toInt()], mouseX)
-+        val styles = RawLabel.Instance.StyleCollector(textRenderer, x + mouseX, y + mouseY)
-+        forEachTextLine { text, lineX, lineY -> styles.accept(lineX, lineY, text) }
-+        return styles.result()
-+    }
-+
-+    private fun forEachTextLine(draw: (FormattedCharSequence, Int, Int) -> Unit) {
-+        val contentX = x + if (horizontalSizing.get().isContent) horizontalSizing.get().value else 0
-+        val contentHeight = wrappedText.size * (lineHeight() + 2) - 2
-+        val paddingY = if (verticalSizing.get().isContent) verticalSizing.get().value else 0
-+        val alignmentY = when (verticalTextAlignment) {
-+            VerticalAlignment.CENTER -> (height - contentHeight) / 2
-+            VerticalAlignment.BOTTOM -> height - contentHeight
-+            else -> 0
-+        }
-+        wrappedText.forEachIndexed { i, text ->
-+            val alignmentX = when (horizontalTextAlignment) {
-+                HorizontalAlignment.CENTER -> (width - textRenderer.width(text)) / 2
-+                HorizontalAlignment.RIGHT -> width - textRenderer.width(text)
-+                else -> 0
-+            }
-+            val lineY = y + paddingY + alignmentY + i * (lineHeight() + 2) + lineHeight() - textRenderer.lineHeight
-+            draw(text, contentX + alignmentX, lineY)
-+        }
-     }
-
 diff --git a/common/src/client/kotlin/miragefairy2024/client/util/Particle.kt b/common/src/client/kotlin/miragefairy2024/client/util/Particle.kt
 index f94d656..13605d5 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/util/Particle.kt
@@ -3726,7 +3562,7 @@ index f94d656..13605d5 100644
      this.setColor(
          rgb.redOfRgb.toFloat() / 255F,
 diff --git a/common/src/client/kotlin/miragefairy2024/client/util/Rendering.kt b/common/src/client/kotlin/miragefairy2024/client/util/Rendering.kt
-index c2111e1..68b2378 100644
+index 1fd895a28b103855df607be6dd501a3efd7672cd..68b2378f7105fc3488b91dfb8bb4a58328de5225 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/util/Rendering.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/util/Rendering.kt
 @@ -1,11 +1,5 @@
@@ -3827,10 +3663,10 @@ index c2111e1..68b2378 100644
      }
 -    val input0 = Vector3f(minX.toFloat(), y.toFloat(), 0F)
 -    val output0 = Vector3f()
--    this.matrixStack.last().pose().transformPosition(input0, output0)
+-    this.pose().last().pose().transformPosition(input0, output0)
 -    val input1 = Vector3f(maxX.toFloat(), (y + font.lineHeight).toFloat(), 0F)
 -    val output1 = Vector3f()
--    this.matrixStack.last().pose().transformPosition(input1, output1)
+-    this.pose().last().pose().transformPosition(input1, output1)
 -    this.enableScissor(output0.x.roundToInt(), output0.y.roundToInt(), output1.x.roundToInt(), output1.y.roundToInt())
 +    this.enableScissor(minX, y, maxX, y + font.lineHeight)
      try {
@@ -3915,11 +3751,37 @@ index 7d67d23..17eb8aa 100644
 -        return if (timeSinceLastVisible >= 5000.0 * toastComponent.notificationDisplayTimeMultiplier) Toast.Visibility.HIDE else Toast.Visibility.SHOW
      }
 
+diff --git a/common/src/client/kotlin/miragefairy2024/mixin/client/api/RenderItemHandler.kt b/common/src/client/kotlin/miragefairy2024/mixin/client/api/RenderItemHandler.kt
+deleted file mode 100644
+index 29ad641d096c8501dfd0947f58edc520329e5c8c..0000000000000000000000000000000000000000
+--- a/common/src/client/kotlin/miragefairy2024/mixin/client/api/RenderItemHandler.kt
++++ /dev/null
+@@ -1,20 +0,0 @@
+-package miragefairy2024.mixin.client.api
+-
+-import com.mojang.blaze3d.vertex.PoseStack
+-import net.minecraft.client.renderer.MultiBufferSource
+-import net.minecraft.client.resources.model.BakedModel
+-import net.minecraft.world.item.ItemDisplayContext
+-import net.minecraft.world.item.ItemStack
+-
+-fun interface RenderItemHandler {
+-    companion object {
+-        val INSTANCE = RenderItemHandler { stack, renderMode, leftHanded, matrices, vertexConsumers, light, overlay, model ->
+-            listeners.forEach {
+-                it.renderItem(stack, renderMode, leftHanded, matrices, vertexConsumers, light, overlay, model)
+-            }
+-        }
+-        val listeners = mutableListOf<RenderItemHandler>()
+-    }
+-
+-    fun renderItem(stack: ItemStack, renderMode: ItemDisplayContext, leftHanded: Boolean, matrices: PoseStack, vertexConsumers: MultiBufferSource, light: Int, overlay: Int, model: BakedModel)
+-}
 diff --git a/common/src/client/resources/miragefairy2024.client.mixins.json b/common/src/client/resources/miragefairy2024.client.mixins.json
-index f4ed60d..f205082 100644
+index f4ed60dd52c08eef4fd92663ab8133578abaca69..4771576aba802aa28e3c3d8566f01b64c5bff0c1 100644
 --- a/common/src/client/resources/miragefairy2024.client.mixins.json
 +++ b/common/src/client/resources/miragefairy2024.client.mixins.json
-@@ -5,5 +5,8 @@
+@@ -5,7 +5,9 @@
    "client": [
      "AbstractContainerScreenMixin",
 +    "AbstractRecipeBookScreenAccessor",
@@ -3927,7 +3789,9 @@ index f4ed60d..f205082 100644
 +    "GameRendererAccessor",
 +    "GuiGraphicsExtractorAccessor",
      "GuiGraphicsMixin",
-     "ItemRendererMixin",
+-    "ItemRendererMixin",
+     "MinecraftClientMixin",
+     "MultiPlayerGameModeMixin",
 diff --git a/common/src/clientTest/kotlin/miragefairy2024/client/mod/recipeviewer/common/GhostRecipeItemViewRendererTest.kt b/common/src/clientTest/kotlin/miragefairy2024/client/mod/recipeviewer/common/GhostRecipeItemViewRendererTest.kt
 index 2c32024..42ea2a2 100644
 --- a/common/src/clientTest/kotlin/miragefairy2024/client/mod/recipeviewer/common/GhostRecipeItemViewRendererTest.kt
@@ -3996,10 +3860,10 @@ index 44a3dcc..9d0276e 100644
          Assertions.assertEquals(listOf(BACKGROUND_TEXTURE, thumbTexture), draws.map { it.texture })
          assertPaintedBounds(background, draws[0])
 diff --git a/common/src/clientTest/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/VanillaViewPlacersTest.kt b/common/src/clientTest/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/VanillaViewPlacersTest.kt
-index 7d17443..7b85074 100644
+index e33b7279b2145c51427d17ffd236c5616b2be0f8..c7a583a047c75729afdc4a868a87f064798b5212 100644
 --- a/common/src/clientTest/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/VanillaViewPlacersTest.kt
 +++ b/common/src/clientTest/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/VanillaViewPlacersTest.kt
-@@ -55,5 +55,5 @@ import miragefairy2024.util.register
+@@ -51,5 +51,5 @@ import miragefairy2024.util.register
  import miragefairy2024.util.text
  import net.minecraft.SharedConstants
 -import net.minecraft.Util
@@ -4158,14 +4022,13 @@ index 87e5823..054e319 100644
 
 diff --git a/common/src/main/kotlin/miragefairy2024/DataGenerationEvents.kt b/common/src/main/kotlin/miragefairy2024/DataGenerationEvents.kt
 new file mode 100644
-index 0000000..5d94052
+index 0000000000000000000000000000000000000000..186fe30a55dc52195f3b69e8cea2c40e34f090a9
 --- /dev/null
 +++ b/common/src/main/kotlin/miragefairy2024/DataGenerationEvents.kt
-@@ -0,0 +1,63 @@
+@@ -0,0 +1,61 @@
 +package miragefairy2024
 +
 +import com.google.gson.JsonElement
-+import miragefairy2024.mod.NinePatchTextureCard
 +import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider
 +import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider
 +import net.minecraft.advancements.AdvancementHolder
@@ -4200,7 +4063,6 @@ index 0000000..5d94052
 +    val onGenerateRecipe = InitializationEventRegistry<(ModRecipeProvider) -> Unit>()
 +    val onGenerateEnglishTranslation = InitializationEventRegistry<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
 +    val onGenerateJapaneseTranslation = InitializationEventRegistry<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
-+    val onGenerateNinePatchTexture = InitializationEventRegistry<((Identifier, NinePatchTextureCard) -> Unit) -> Unit>()
 +    val onGenerateSound = InitializationEventRegistry<((path: String, subtitle: String?, sounds: List<Identifier>) -> Unit) -> Unit>()
 +    val onGenerateParticles = InitializationEventRegistry<((identifier: Identifier, jsonElement: JsonElement) -> Unit) -> Unit>()
 +    val onGenerateAdvancement = InitializationEventRegistry<suspend (HolderLookup.Provider, Consumer<AdvancementHolder>) -> Unit>()
@@ -4247,14 +4109,13 @@ index 629e352..814b238 100644
 -    }
 -}
 diff --git a/common/src/main/kotlin/miragefairy2024/MirageFairy2024.kt b/common/src/main/kotlin/miragefairy2024/MirageFairy2024.kt
-index 77b7d12..1167c44 100644
+index a7ac86f2c220c1f15586b1a3e98e2cdbfc8c61dd..1167c44d411ec17b0eaa870c8f86f59ccfddcfc9 100644
 --- a/common/src/main/kotlin/miragefairy2024/MirageFairy2024.kt
 +++ b/common/src/main/kotlin/miragefairy2024/MirageFairy2024.kt
-@@ -1,21 +1,5 @@
+@@ -1,20 +1,5 @@
  package miragefairy2024
 
 -import com.google.gson.JsonElement
--import miragefairy2024.mod.NinePatchTextureCard
 -import miragefairy2024.util.ResourceLocation
 -import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider
 -import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider
@@ -4273,7 +4134,7 @@ index 77b7d12..1167c44 100644
 +import miragefairy2024.util.Identifier
 
  object ModEvents {
-@@ -26,34 +10,6 @@ object ModEvents {
+@@ -25,33 +10,6 @@ object ModEvents {
  }
 
 -object DataGenerationEvents {
@@ -4289,7 +4150,6 @@ index 77b7d12..1167c44 100644
 -    val onGenerateRecipe = InitializationEventRegistry<(RecipeOutput) -> Unit>()
 -    val onGenerateEnglishTranslation = InitializationEventRegistry<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
 -    val onGenerateJapaneseTranslation = InitializationEventRegistry<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
--    val onGenerateNinePatchTexture = InitializationEventRegistry<((ResourceLocation, NinePatchTextureCard) -> Unit) -> Unit>()
 -    val onGenerateSound = InitializationEventRegistry<((path: String, subtitle: String?, sounds: List<ResourceLocation>) -> Unit) -> Unit>()
 -    val onGenerateParticles = InitializationEventRegistry<((identifier: ResourceLocation, jsonElement: JsonElement) -> Unit) -> Unit>()
 -    val onGenerateAdvancement = InitializationEventRegistry<suspend (HolderLookup.Provider, Consumer<AdvancementHolder>) -> Unit>()
@@ -4310,10 +4170,10 @@ index 77b7d12..1167c44 100644
 +    fun identifier(path: String) = Identifier(MOD_ID, path)
  }
 diff --git a/common/src/main/kotlin/miragefairy2024/Modules.kt b/common/src/main/kotlin/miragefairy2024/Modules.kt
-index b5ecddb..1e4548e 100644
+index a34f4be8d039e43ecb65207a76a427668a215088..c1ec3eb86e32c5e8943cee3c75fb408cf24efd74 100644
 --- a/common/src/main/kotlin/miragefairy2024/Modules.kt
 +++ b/common/src/main/kotlin/miragefairy2024/Modules.kt
-@@ -79,2 +79,16 @@ fun initModules() {
+@@ -77,2 +77,16 @@ fun initModules() {
      initRecipeViewerModule()
  }
 +
@@ -6997,6 +6857,31 @@ index 7664324..1a73153 100644
 +    ExtendedMenuType({ syncId, playerInventory, _ ->
          SoulStreamScreenHandler(syncId, playerInventory, clientProxy!!.getClientPlayer()!!.soulStream.getOrCreate())
      }, dummyUnitStreamCodec())
+diff --git a/common/src/main/kotlin/miragefairy2024/mod/fairy/SoulStreamScreenContent.kt b/common/src/main/kotlin/miragefairy2024/mod/fairy/SoulStreamScreenContent.kt
+index a9baa681fdd82fbf2f43bb479d5004747c23378d..e8cd0efc40536d324482ae238bcc418e0aa5f157 100644
+--- a/common/src/main/kotlin/miragefairy2024/mod/fairy/SoulStreamScreenContent.kt
++++ b/common/src/main/kotlin/miragefairy2024/mod/fairy/SoulStreamScreenContent.kt
+@@ -52,5 +52,5 @@ import miragefairy2024.util.register
+ import miragefairy2024.util.text
+ import net.minecraft.network.chat.Component
+-import net.minecraft.resources.ResourceLocation
++import net.minecraft.resources.Identifier
+ import net.minecraft.world.entity.player.Player
+
+@@ -66,5 +66,5 @@ private val BUTTON_14_BACKGROUND = LayeredImageButtonView.Sprites(
+ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Component, screenEventSource: ScreenEventSource) {
+
+-    protected abstract val enabledPassiveSkillEffectFilters: ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>
++    protected abstract val enabledPassiveSkillEffectFilters: ObservableValue<Map<Identifier, PassiveSkillEffectFilter<*>>>
+     protected abstract val enableGlobalFairyHighlight: ObservableValue<Boolean>
+
+@@ -158,5 +158,5 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
+                                         view.shadow = false
+                                     }
+-                                    passiveSkillEffectRegistry.entrySet().sortedBy { it.key.location() }.forEach { (_, effect) ->
++                                    passiveSkillEffectRegistry.entrySet().sortedBy { it.key.identifier() }.forEach { (_, effect) ->
+                                         fun <T : Any> f(effect: PassiveSkillEffect<T>) {
+                                             val samples = motifRegistry.entrySet()
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/fairybuilding/FairyBuilding.kt b/common/src/main/kotlin/miragefairy2024/mod/fairybuilding/FairyBuilding.kt
 index 745fa16..cc733d3 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/fairybuilding/FairyBuilding.kt
@@ -7299,10 +7184,10 @@ index 20daac6..e2b5930 100644
      }
 
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/fairyquest/FairyQuestCardScreenHandler.kt b/common/src/main/kotlin/miragefairy2024/mod/fairyquest/FairyQuestCardScreenHandler.kt
-index 451171c..4691c61 100644
+index 7e36aae1ffc5506723ef6ffd35dba579868a1827..e929a317974f61a70e3bc12dab54b96a35a9fd5c 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/fairyquest/FairyQuestCardScreenHandler.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/fairyquest/FairyQuestCardScreenHandler.kt
-@@ -48,8 +48,8 @@ import miragefairy2024.util.size
+@@ -46,8 +46,8 @@ import miragefairy2024.util.size
  import miragefairy2024.util.text
  import miragefairy2024.util.toItemStacks
 -import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
@@ -7313,7 +7198,7 @@ index 451171c..4691c61 100644
 +import net.minecraft.resources.Identifier
  import net.minecraft.sounds.SoundEvents
  import net.minecraft.sounds.SoundSource
-@@ -64,7 +64,7 @@ import net.minecraft.world.item.ItemStack
+@@ -62,7 +62,7 @@ import net.minecraft.world.item.ItemStack
 
  val fairyQuestCardScreenHandlerType = Registration(BuiltInRegistries.MENU, MirageFairy2024.identifier("fairy_quest_card")) {
 -    ExtendedScreenHandlerType({ syncId, playerInventory, buf ->
@@ -8356,7 +8241,7 @@ index 20809a6..3ca8c00 100644
          }
      }
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/magicplant/TraitListScreenHandler.kt b/common/src/main/kotlin/miragefairy2024/mod/magicplant/TraitListScreenHandler.kt
-index 2f4368b..863a236 100644
+index e306dfe5deb12976a26e7ae5eac4192c7f5b4095..467908ffae27727fd059e71ccaeef2fc1cad92df 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/magicplant/TraitListScreenHandler.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/magicplant/TraitListScreenHandler.kt
 @@ -48,5 +48,5 @@ import miragefairy2024.util.style
@@ -13389,7 +13274,7 @@ index 524edbe..97ed62b 100644
  }
 
 diff --git a/common/src/main/kotlin/miragefairy2024/util/Model.kt b/common/src/main/kotlin/miragefairy2024/util/Model.kt
-index 47acf6c..4a6cd12 100644
+index 47acf6ce9b558294c4a47559af0210ed8b3ed866..9da2ba012cdce8d4333ea28e21c71cb7ad69f1e1 100644
 --- a/common/src/main/kotlin/miragefairy2024/util/Model.kt
 +++ b/common/src/main/kotlin/miragefairy2024/util/Model.kt
 @@ -8,10 +8,12 @@ import mirrg.kotlin.gson.hydrogen.jsonElement
@@ -13473,6 +13358,16 @@ index 47acf6c..4a6cd12 100644
 +fun registerModelGeneration(identifierGetter: () -> Identifier, texturedModelCreator: () -> TexturedModel) = DataGenerationEvents.onGenerateBlockModel {
      val texturedModel = texturedModelCreator()
      texturedModel.template.create(identifierGetter(), texturedModel.mapping, it.modelOutput)
+@@ -184,5 +185,8 @@ fun registerModelGeneration(identifierGetter: () -> ResourceLocation, texturedMo
+ context(_: ModContext)
+ @JvmName("registerItemModelGeneration")
+-fun (() -> Item).registerModelGeneration(texturedModelCreator: () -> TexturedModel) = registerModelGeneration({ "item/" * this().getIdentifier() }) { texturedModelCreator() }
++fun (() -> Item).registerModelGeneration(texturedModelCreator: () -> TexturedModel) {
++    registerModelGeneration({ "item/" * this().getIdentifier() }, texturedModelCreator)
++    DataGenerationEvents.onGenerateItemModel { it.declareCustomModelItem(this()) }
++}
+
+ context(_: ModContext)
 diff --git a/common/src/main/kotlin/miragefairy2024/util/NbtWrapper.kt b/common/src/main/kotlin/miragefairy2024/util/NbtWrapper.kt
 index 1392431..1b5e6f1 100644
 --- a/common/src/main/kotlin/miragefairy2024/util/NbtWrapper.kt
@@ -14517,7 +14412,7 @@ index c92e0a0..dd9c233 100644
      }
  }
 diff --git a/fabric/src/main/kotlin/miragefairy2024/fabric/MirageFairy2024FabricDataGenerator.kt b/fabric/src/main/kotlin/miragefairy2024/fabric/MirageFairy2024FabricDataGenerator.kt
-index 9e4bdd3..99385d6 100644
+index dbe5c878e042e3a4f3e18c3cccc4a982be7f2d05..6ef8885e66535dd40223fdb9990e94b98e2fc5c5 100644
 --- a/fabric/src/main/kotlin/miragefairy2024/fabric/MirageFairy2024FabricDataGenerator.kt
 +++ b/fabric/src/main/kotlin/miragefairy2024/fabric/MirageFairy2024FabricDataGenerator.kt
 @@ -2,7 +2,10 @@ package miragefairy2024.fabric
@@ -14685,47 +14580,40 @@ index 9e4bdd3..99385d6 100644
                  override fun generateTranslations(holderLookupProvider: HolderLookup.Provider, translationBuilder: TranslationBuilder) = DataGenerationEvents.onGenerateJapaneseTranslation.fire { it(translationBuilder) }
 @@ -183,5 +188,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
 
-         // owoのNine Patch Texture
--        pack.addProvider { output: FabricDataOutput ->
-+        pack.addProvider { output: FabricPackOutput ->
-             object : DataProvider {
-                 private val pathResolver = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "nine_patch_textures")
-@@ -210,5 +215,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
-
          // SE
 -        pack.addProvider { output: FabricDataOutput ->
 +        pack.addProvider { output: FabricPackOutput ->
              object : DataProvider {
                  private val destination = MirageFairy2024.identifier("sounds")
-@@ -216,5 +221,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -189,5 +194,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                  override fun run(writer: CachedOutput): CompletableFuture<*> {
 
 -                    val map = mutableMapOf<String, Pair<String?, List<ResourceLocation>>>()
 +                    val map = mutableMapOf<String, Pair<String?, List<Identifier>>>()
                      DataGenerationEvents.onGenerateSound.fire {
                          it { path, subtitle, sounds ->
-@@ -239,5 +244,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -212,5 +217,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
 
          // パーティクル
 -        pack.addProvider { output: FabricDataOutput ->
 +        pack.addProvider { output: FabricPackOutput ->
              object : DataProvider {
                  private val pathResolver = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "particles")
-@@ -245,5 +250,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -218,5 +223,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                  override fun run(writer: CachedOutput): CompletableFuture<*> {
 
 -                    val map = mutableMapOf<ResourceLocation, JsonElement>()
 +                    val map = mutableMapOf<Identifier, JsonElement>()
                      DataGenerationEvents.onGenerateParticles.fire {
                          it { identifier, jsonElement ->
-@@ -263,5 +268,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -236,5 +241,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
 
          // 進捗
 -        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
 +        pack.addProvider { output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
              AdvancementProvider(output, registriesFuture, listOf(object : AdvancementSubProvider {
                  override fun generate(registries: HolderLookup.Provider, writer: Consumer<AdvancementHolder>) {
-@@ -279,32 +284,29 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -252,32 +257,29 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
          // レポート
          /** @see [net.minecraft.data.Main.createStandardGenerator] */
 -        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
@@ -14776,28 +14664,28 @@ index 9e4bdd3..99385d6 100644
 +        pack.addProvider { output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
              val blockListReport = BlockListReport(output, registriesFuture)
              object : DataProvider {
-@@ -312,5 +314,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -285,5 +287,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                  override fun run(writer: CachedOutput): CompletableFuture<*> {
                      val futures = mutableListOf<CompletableFuture<*>>()
 -                    return blockListReport.run { filePath, data, _ ->
 +                    return blockListReport.run(CachedOutput { filePath, data, _ ->
                          val root = data.decodeToString().toJsonElement().toJsonWrapper()
 
-@@ -330,5 +332,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -303,5 +305,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
 
                          futures.add(DataProvider.saveStable(writer, root.jsonElement!!, filePath))
 -                    }.thenCompose { CompletableFuture.allOf(*futures.toTypedArray()) }
 +                    }).thenCompose { CompletableFuture.allOf(*futures.toTypedArray()) }
                  }
              }
-@@ -338,5 +340,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -311,5 +313,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
 
      private fun neoForge(pack: FabricDataGenerator.Pack) {
 -        pack.addProvider { output: FabricDataOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
 +        pack.addProvider { output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider> ->
              object : DataProvider {
                  private val pathResolver = output.createPathProvider(PackOutput.Target.DATA_PACK, "data_maps")
-@@ -344,12 +346,12 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -317,12 +319,12 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                  override fun run(writer: CachedOutput): CompletableFuture<*> {
                      val registries = registriesFuture.join()
 -                    val registryMap = mutableMapOf<ResourceKey<out Registry<*>>, MutableMap<ResourceLocation, MutableMap<ResourceLocation, JsonElement>>>()
@@ -14814,7 +14702,7 @@ index 9e4bdd3..99385d6 100644
 +                                targetMap[target.identifier()] = data
                              }
                          }, registries)
-@@ -361,5 +363,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
+@@ -334,5 +336,5 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                                  "values" to targetMap.mapKeys { it.key.string }.jsonObject,
                              )
 -                            val registryPath = (if (registry.location().namespace == "minecraft") "" else "${registry.location().namespace}/") + registry.location().path

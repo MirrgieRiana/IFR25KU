@@ -10,7 +10,6 @@ import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
-import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import miragefairy2024.util.fire
 import mirrg.kotlin.helium.CachingEvaluator
@@ -62,8 +61,6 @@ class ViewAdapter(val host: ViewAdapterHost) {
     private var isInitialized = false
     private var isOpened = false
     private var viewController: ViewController? = null
-    private val onBeforeRender = EventRegistry<() -> Unit>()
-    private val onTick = EventRegistry<() -> Unit>()
 
     private class MouseClickSentinel : GuiEventListener, NarratableEntry {
 
@@ -101,8 +98,6 @@ class ViewAdapter(val host: ViewAdapterHost) {
             override val origin = host.getUiOffset()
             override val canPlaceMenuSlots = host.canPlaceMenuSlots()
             override val screenEventSource = this@ViewAdapter.screenEventSource
-            override val onBeforeRender = this@ViewAdapter.onBeforeRender
-            override val onTick = this@ViewAdapter.onTick
             override fun addRenderable(registration: WidgetRegistration) = if (registration.interactive) host.addRenderableWidget(registration.widget) else host.addRenderableOnly(registration.widget)
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = host.registerMenuSlotPlacement(slotId, clipBounds)
         }
@@ -122,13 +117,11 @@ class ViewAdapter(val host: ViewAdapterHost) {
 
     /** このルートのウィジェットを描き始める前に呼ぶのだ～🌱 */
     fun beforeRender() {
-        onBeforeRender.fire()
         screenEventSource.onBeforeRender.fire()
     }
 
-    /** ホストの tick を配置済みの View へ通知するのだ～🌱 */
+    /** ホストが tick するたびに呼ぶのだ～🌱 */
     fun tick() {
-        onTick.fire()
         screenEventSource.onTick.fire()
     }
 
@@ -153,12 +146,6 @@ class ViewAdapter(val host: ViewAdapterHost) {
         removeMouseClickSentinel()
         val controller = viewController
         viewController = null
-        onBeforeRender.toList().forEach {
-            onBeforeRender.remove(it)
-        }
-        onTick.toList().forEach {
-            onTick.remove(it)
-        }
         if (controller != null) controller.dispose()
     }
 
