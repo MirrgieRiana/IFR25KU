@@ -134,12 +134,13 @@ fun initSoulStreamClientModule() {
 class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : ViewContainerScreen<SoulStreamScreenHandler>(handler, playerInventory, title) {
 
     override fun createRootView(screenEventSource: ScreenEventSource): View {
-        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-        val content: SoulStreamScreenContent = object : SoulStreamScreenContent(menu, title, screenEventSource) {
+        return object : SoulStreamScreenContent(menu, title, screenEventSource) {
             // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-            override val passiveSkillEffectFilters = enabledPassiveSkillEffectFilters
+            override val enabledPassiveSkillEffectFilters = miragefairy2024.client.mod.fairy.enabledPassiveSkillEffectFilters
+
             // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-            override val globalFairyHighlight = enableGlobalFairyHighlight
+            override val enableGlobalFairyHighlight = miragefairy2024.client.mod.fairy.enableGlobalFairyHighlight
+
             // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
             override val collectionToggleKeyText = text { toggleCollectionEnabledKeyMappingCard() }
 
@@ -148,9 +149,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
                 // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
                 SetCollectionEnabledChannel.sendToServer(enabled)
             }
-        }
-        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-        return content.view
+        }.view
     }
 
     // カーソルをインベントリ画面での位置に戻す
