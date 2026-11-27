@@ -65,9 +65,7 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
 
     protected abstract val enabledPassiveSkillEffectFilters: ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>
     protected abstract val enableGlobalFairyHighlight: ObservableValue<Boolean>
-
-    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-    protected abstract val collectionToggleKeyText: Component
+    protected abstract val toggleCollectionEnabledKeyMappingText: Component
 
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     protected abstract fun setCollectionEnabled(enabled: Boolean)
@@ -308,7 +306,7 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                                 view.selected.value = enabled
                                 view.tooltip.value = text {
                                     val message = if (enabled) COLLECTION_ENABLED_TRANSLATION() else COLLECTION_DISABLED_TRANSLATION()
-                                    message + " ("() + collectionToggleKeyText + ")"()
+                                    message + " ("() + toggleCollectionEnabledKeyMappingText + ")"()
                                 }
                             }
                             screenEventSource.onOpened.observe(screenEventSource.onDisposing) {

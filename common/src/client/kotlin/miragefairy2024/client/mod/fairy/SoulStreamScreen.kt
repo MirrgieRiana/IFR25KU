@@ -137,9 +137,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
         return object : SoulStreamScreenContent(menu, title, screenEventSource) {
             override val enabledPassiveSkillEffectFilters = miragefairy2024.client.mod.fairy.enabledPassiveSkillEffectFilters
             override val enableGlobalFairyHighlight = miragefairy2024.client.mod.fairy.enableGlobalFairyHighlight
-
-            // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-            override val collectionToggleKeyText = text { toggleCollectionEnabledKeyMappingCard() }
+            override val toggleCollectionEnabledKeyMappingText = text { toggleCollectionEnabledKeyMappingCard() }
 
             // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
             override fun setCollectionEnabled(enabled: Boolean) {
