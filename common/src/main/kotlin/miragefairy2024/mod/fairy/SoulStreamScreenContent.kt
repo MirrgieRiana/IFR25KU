@@ -67,9 +67,9 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
 
     protected abstract val enabledPassiveSkillEffectFilters: ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>
     protected abstract val enableGlobalFairyHighlight: ObservableValue<Boolean>
+
     protected abstract val toggleCollectionEnabledKeyMappingText: Component
 
-    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     protected abstract fun setCollectionEnabled(enabled: Boolean)
 
     val view = View {
