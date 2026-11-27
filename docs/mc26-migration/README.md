@@ -235,6 +235,14 @@ Fabric 向け Kotlin 473 ファイルの一括解析で、EMI 統合の診断は
 
 NeoForge 版の [PF-EMI 2.0.0+26.1.2+neoforge](https://modrinth.com/mod/pf-emi/version/N2tHzL14) を NeoForge 向け Kotlin 469 ファイルの一括解析に追加した結果、EMI 統合の診断は 0 件だったのだ～🌱 NeoForge 向けの owo-lib はこの計測のクラスパスに含まれず、ソウルストリームと旧 UI の診断は残るのだぁ…🌧️
 
+### ブロック、カオスキューブ、View のスロット描画なのだ～🌱
+
+従来のカットアウトと半透明の指定は、モデルのベイク後にブロックの各四角形へ適用するのだ～🌱 ブロックエンティティが表示するアイテムと妖精の建物のランタンは、抽出時にモデルと変換を確定し、描画時に `SubmitNodeCollector` へ渡すのだ～🌱 カオスキューブは 8 部品の回転を描画状態に保存し、補間による拡縮も各モデル部品に反映するのだ～🌱
+
+View のメニュー画面では、計測した幅と高さを View 側に保持して、バニラの位置計算、クリック境界とスロット描画に渡すのだ～🌱 前後のスロットハイライトとスロット本体には、同じ画面座標のクリップ範囲を使うのだ～🌱
+
+Fabric 向け Kotlin 473 ファイルの一括解析では、診断が **70 件から 41 件**になったのだ～🌱 残りはアイテムの着色 6 件、妖精像とフェアリークエストカードの特殊描画 21 件、REI のレシピ取得 9 件、`DimensionType.natural` 5 件なのだぁ…🌧️ パッチ適用と、変更した Java Mixin のコンパイルおよび両ローダーの対象メソッドを確認したのだ～🌱 26.1.2 でのゲーム内描画は未検証なのだぁ…🌧️
+
 ### 移行資料なのだ～🌱
 
 - 26.1 系では JDK 25 と非リマップ版 Loom を使い、依存の宣言は `implementation` や `compileOnly` に移すのだ～🌱 今回はクリエイティブタブ、ディメンション移動イベント、燃料登録を、新しい Fabric API に置き換えたのだ～🌱 タグのデータ生成は `FabricPackOutput` と `FabricTagsProvider` の `TagAppender` に合わせる必要があるのだ～🌱 [Fabric の 26.1 移行案内](https://fabricmc.net/2026/03/14/261.html) [Fabric API の移行表](https://docs.fabricmc.net/de_de/develop/porting/26.1/fabric-api)

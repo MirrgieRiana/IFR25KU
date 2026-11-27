@@ -1,3 +1,28 @@
+diff --git a/common/src/client/java/miragefairy2024/client/mixins/api/ContainerScreenLayout.java b/common/src/client/java/miragefairy2024/client/mixins/api/ContainerScreenLayout.java
+new file mode 100644
+index 0000000..a5a7f3e
+--- /dev/null
++++ b/common/src/client/java/miragefairy2024/client/mixins/api/ContainerScreenLayout.java
+@@ -0,0 +1,19 @@
++package miragefairy2024.client.mixins.api;
++
++import net.minecraft.client.gui.GuiGraphicsExtractor;
++import net.minecraft.world.inventory.Slot;
++import org.jspecify.annotations.Nullable;
++
++public interface ContainerScreenLayout {
++    default int mirageFairy2024$getImageWidth(int vanillaWidth) {
++        return vanillaWidth;
++    }
++
++    default int mirageFairy2024$getImageHeight(int vanillaHeight) {
++        return vanillaHeight;
++    }
++
++    default void mirageFairy2024$withSlotScissor(GuiGraphicsExtractor graphics, @Nullable Slot slot, Runnable draw) {
++        draw.run();
++    }
++}
 diff --git a/common/src/client/java/miragefairy2024/client/mixins/api/RenderingEvent.java b/common/src/client/java/miragefairy2024/client/mixins/api/RenderingEvent.java
 index 16abbb7..5e22bd8 100644
 --- a/common/src/client/java/miragefairy2024/client/mixins/api/RenderingEvent.java
@@ -15,6 +40,59 @@ index 16abbb7..5e22bd8 100644
 -        void renderItemDecorations(GuiGraphics graphics, Font font, ItemStack stack, int x, int y, String text);
 +        void renderItemDecorations(GuiGraphicsExtractor graphics, Font font, ItemStack stack, int x, int y, String text);
      }
+ }
+diff --git a/common/src/client/java/miragefairy2024/client/mixins/mixin/AbstractContainerScreenMixin.java b/common/src/client/java/miragefairy2024/client/mixins/mixin/AbstractContainerScreenMixin.java
+index 52dfaf4..520dccc 100644
+--- a/common/src/client/java/miragefairy2024/client/mixins/mixin/AbstractContainerScreenMixin.java
++++ b/common/src/client/java/miragefairy2024/client/mixins/mixin/AbstractContainerScreenMixin.java
+@@ -1,16 +1,47 @@
+ package miragefairy2024.client.mixins.mixin;
+
++import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
++import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
++import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
++import miragefairy2024.client.mixins.api.ContainerScreenLayout;
+ import miragefairy2024.client.mixins.api.SlotHovering;
++import net.minecraft.client.gui.GuiGraphicsExtractor;
+ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+ import net.minecraft.world.inventory.Slot;
++import org.jspecify.annotations.Nullable;
+ import org.spongepowered.asm.mixin.Mixin;
++import org.spongepowered.asm.mixin.Shadow;
+ import org.spongepowered.asm.mixin.injection.At;
+
+ @Mixin(AbstractContainerScreen.class)
+-public class AbstractContainerScreenMixin implements SlotHovering {
++public class AbstractContainerScreenMixin implements SlotHovering, ContainerScreenLayout {
++    @Shadow
++    @Nullable
++    protected Slot hoveredSlot;
++
+     @ModifyReturnValue(method = "isHovering(Lnet/minecraft/world/inventory/Slot;DD)Z", at = @At("RETURN"))
+     private boolean isHovering(boolean hovering, Slot slot, double mouseX, double mouseY) {
+         return mirageFairy2024$isHovering(slot, mouseX, mouseY, hovering);
+     }
++
++    @ModifyExpressionValue(method = {"init()V", "hasClickedOutside", "extractSlot", "getImageWidth()I"},
++            at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;imageWidth:I"))
++    private int getLayoutWidth(int vanillaWidth) {
++        return mirageFairy2024$getImageWidth(vanillaWidth);
++    }
++
++    @ModifyExpressionValue(method = {"init()V", "hasClickedOutside", "getImageHeight()I"},
++            at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;imageHeight:I"))
++    private int getLayoutHeight(int vanillaHeight) {
++        return mirageFairy2024$getImageHeight(vanillaHeight);
++    }
++
++    @WrapOperation(method = "extractContents", at = {
++            @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;extractSlotHighlightBack(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V"),
++            @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;extractSlotHighlightFront(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V")
++    })
++    private void extractClippedSlotHighlight(AbstractContainerScreen<?> screen, GuiGraphicsExtractor graphics, Operation<Void> original) {
++        mirageFairy2024$withSlotScissor(graphics, hoveredSlot, () -> original.call(screen, graphics));
++    }
  }
 diff --git a/common/src/client/java/miragefairy2024/client/mixins/mixin/AbstractRecipeBookScreenAccessor.java b/common/src/client/java/miragefairy2024/client/mixins/mixin/AbstractRecipeBookScreenAccessor.java
 new file mode 100644
@@ -95,12 +173,23 @@ index fb9ea2d..74c1a9d 100644
      }
  }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/ClientProxyImpl.kt b/common/src/client/kotlin/miragefairy2024/client/ClientProxyImpl.kt
-index 142b859..1314a07 100644
+index 142b859..4824751 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/ClientProxyImpl.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/ClientProxyImpl.kt
-@@ -19,18 +19,22 @@ import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
+@@ -3,5 +3,4 @@ package miragefairy2024.client
+ import com.mojang.blaze3d.vertex.PoseStack
+ import com.mojang.math.Axis
+-import dev.architectury.registry.client.rendering.RenderTypeRegistry
+ import miragefairy2024.BlockColorProvider
+ import miragefairy2024.ClientProxy
+@@ -19,19 +18,42 @@ import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
  import miragefairy2024.mod.recipeviewer.view.View
  import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
++import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey
++import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin
++import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedExtraModel
++import net.fabricmc.fabric.api.client.model.loading.v1.wrapper.WrapperBlockStateModel
++import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter
 +import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry
  import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
  import net.minecraft.client.Minecraft
@@ -108,42 +197,90 @@ index 142b859..1314a07 100644
  import net.minecraft.client.gui.screens.MenuScreens
  import net.minecraft.client.gui.screens.Screen
  import net.minecraft.client.renderer.BiomeColors
- import net.minecraft.client.renderer.MultiBufferSource
+-import net.minecraft.client.renderer.MultiBufferSource
 -import net.minecraft.client.renderer.RenderType
-+import net.minecraft.client.renderer.rendertype.RenderType
++import net.minecraft.client.renderer.SubmitNodeCollector
++import net.minecraft.client.renderer.block.BlockAndTintGetter
++import net.minecraft.client.renderer.block.dispatch.BlockStateModel
++import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart
++import net.minecraft.client.renderer.block.dispatch.Variant
  import net.minecraft.client.renderer.blockentity.BlockEntityRenderer
  import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
  import net.minecraft.client.renderer.blockentity.BlockEntityRenderers
- import net.minecraft.client.resources.model.ModelResourceLocation
+-import net.minecraft.client.resources.model.ModelResourceLocation
++import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState
++import net.minecraft.client.renderer.chunk.ChunkSectionLayer
++import net.minecraft.client.renderer.feature.ModelFeatureRenderer
++import net.minecraft.client.renderer.item.ItemStackRenderState
++import net.minecraft.client.renderer.rendertype.RenderTypes
++import net.minecraft.client.renderer.state.level.CameraRenderState
++import net.minecraft.client.renderer.texture.OverlayTexture
++import net.minecraft.client.resources.model.ModelBaker
++import net.minecraft.client.resources.model.ResolvableModel
++import net.minecraft.client.resources.model.geometry.BakedQuad
 +import net.minecraft.core.BlockPos
++import net.minecraft.core.Direction
  import net.minecraft.network.chat.Component
  import net.minecraft.network.chat.FormattedText
 -import net.minecraft.resources.ResourceLocation
 +import net.minecraft.resources.Identifier
 +import net.minecraft.util.ARGB
  import net.minecraft.util.FormattedCharSequence
++import net.minecraft.util.RandomSource
  import net.minecraft.world.entity.player.Player
-@@ -40,5 +44,5 @@ import net.minecraft.world.item.Item
+ import net.minecraft.world.inventory.AbstractContainerMenu
+@@ -40,5 +62,4 @@ import net.minecraft.world.item.Item
  import net.minecraft.world.item.ItemDisplayContext
  import net.minecraft.world.item.ItemStack
 -import net.minecraft.world.level.BlockAndTintGetter
-+import net.minecraft.client.renderer.block.BlockAndTintGetter
  import net.minecraft.world.level.FoliageColor
  import net.minecraft.world.level.GrassColor
-@@ -46,4 +50,5 @@ import net.minecraft.world.level.block.Block
+@@ -46,6 +67,29 @@ import net.minecraft.world.level.block.Block
  import net.minecraft.world.level.block.entity.BlockEntity
  import net.minecraft.world.level.block.entity.BlockEntityType
 +import net.minecraft.world.level.block.state.BlockState
++import net.minecraft.world.phys.Vec3
++import org.joml.Matrix4f
++import java.util.function.Predicate
 
  class ClientProxyImpl : ClientProxy<Screen> {
-@@ -56,4 +61,6 @@ class ClientProxyImpl : ClientProxy<Screen> {
++    private val blockRenderLayers = mutableMapOf<Block, ChunkSectionLayer>()
++    private val cutoutModels = mutableMapOf<Identifier, ExtraModelKey<BlockStateModelPart>>()
++
++    init {
++        ModelLoadingPlugin.register { context ->
++            context.modifyBlockModelAfterBake().register { model, bakeContext ->
++                val layer = blockRenderLayers[bakeContext.state().block]
++                if (layer == null) model else BlockRenderLayerModel(model, layer)
++            }
++            cutoutModels.forEach { (identifier, key) ->
++                val variant = Variant(identifier)
++                context.addModel(key, object : UnbakedExtraModel<BlockStateModelPart> {
++                    override fun resolveDependencies(resolver: ResolvableModel.Resolver) = variant.resolveDependencies(resolver)
++                    override fun bake(baker: ModelBaker) = variant.bake(baker)
++                })
++            }
++        }
++    }
++
+     override fun registerItemTooltipCallback(block: (stack: ItemStack, context: Item.TooltipContext, lines: MutableList<Component>) -> Unit) {
+         ItemTooltipCallback.EVENT.register { stack, context, _, lines ->
+@@ -56,10 +100,12 @@ class ClientProxyImpl : ClientProxy<Screen> {
      override fun getItemTooltip(itemStack: ItemStack): List<Component> = Screen.getTooltipFromItem(Minecraft.getInstance(), itemStack)
 
 +    override fun getFuelValues() = Minecraft.getInstance().level?.fuelValues()
 +
      override fun registerCutoutRenderLayer(block: () -> Block) {
-         RenderTypeRegistry.register(RenderType.cutout(), block())
-@@ -68,12 +75,14 @@ class ClientProxyImpl : ClientProxy<Screen> {
+-        RenderTypeRegistry.register(RenderType.cutout(), block())
++        blockRenderLayers[block()] = ChunkSectionLayer.CUTOUT
+     }
+
+     override fun registerTranslucentRenderLayer(block: () -> Block) {
+-        RenderTypeRegistry.register(RenderType.translucent(), block())
++        blockRenderLayers[block()] = ChunkSectionLayer.TRANSLUCENT
+     }
+
+@@ -68,12 +114,14 @@ class ClientProxyImpl : ClientProxy<Screen> {
      override fun getBlockColorProvider(block: Block): BlockColorProvider {
          return BlockColorProvider { blockState, level, blockPos, tintIndex ->
 -            Minecraft.getInstance().blockColors.getColor(blockState, level as BlockAndTintGetter?, blockPos, tintIndex)
@@ -162,27 +299,140 @@ index 142b859..1314a07 100644
 +        }), block())
      }
 
-@@ -83,5 +92,5 @@ class ClientProxyImpl : ClientProxy<Screen> {
+@@ -83,5 +131,5 @@ class ClientProxyImpl : ClientProxy<Screen> {
 
      override fun getFoliageBlockColorProvider() = BlockColorProvider { _, level, blockPos, _ ->
 -        if (level == null || blockPos == null) FoliageColor.getDefaultColor() else BiomeColors.getAverageFoliageColor(level as BlockAndTintGetter, blockPos)
 +        if (level == null || blockPos == null) FoliageColor.FOLIAGE_DEFAULT else BiomeColors.getAverageFoliageColor(level as BlockAndTintGetter, blockPos)
      }
 
-@@ -122,5 +131,5 @@ class ClientProxyImpl : ClientProxy<Screen> {
+@@ -99,6 +147,14 @@ class ClientProxyImpl : ClientProxy<Screen> {
+     }
+
++    override fun registerCutoutModel(identifier: Identifier) {
++        cutoutModels.computeIfAbsent(identifier) { ExtraModelKey.create { identifier.toString() } }
++    }
++
+     override fun <T> registerRenderingProxyBlockEntityRendererFactory(blockEntityType: BlockEntityType<T>) where T : BlockEntity, T : RenderingProxyBlockEntity {
+-        BlockEntityRenderers.register(blockEntityType, ::RenderingProxyBlockEntityRenderer)
++        BlockEntityRenderers.register(blockEntityType) { context ->
++            RenderingProxyBlockEntityRenderer<T>(context) { identifier ->
++                checkNotNull(Minecraft.getInstance().modelManager.getModel(cutoutModels.getValue(identifier))) { identifier }
++            }
++        }
+     }
+
+@@ -122,5 +178,5 @@ class ClientProxyImpl : ClientProxy<Screen> {
 
      override fun addToast(rootView: View) {
 -        Minecraft.getInstance().toasts.addToast(ViewToast(rootView))
 +        Minecraft.getInstance().toastManager.addToast(ViewToast(rootView))
      }
 
-@@ -153,5 +162,5 @@ class RenderingProxyBlockEntityRenderer<T>(
+@@ -128,14 +184,48 @@ class ClientProxyImpl : ClientProxy<Screen> {
+ }
+
+-class RenderingProxyBlockEntityRenderer<T>(
+-    @Suppress("UNUSED_PARAMETER") ctx: BlockEntityRendererProvider.Context,
+-) : BlockEntityRenderer<T> where T : BlockEntity, T : RenderingProxyBlockEntity {
+-    override fun render(blockEntity: T, tickDelta: Float, matrices: PoseStack, vertexConsumers: MultiBufferSource, light: Int, overlay: Int) {
++private class BlockRenderLayerModel(model: BlockStateModel, private val layer: ChunkSectionLayer) : WrapperBlockStateModel(model) {
++    override fun emitQuads(emitter: QuadEmitter, level: BlockAndTintGetter, pos: BlockPos, state: BlockState, random: RandomSource, cullTest: Predicate<Direction?>) {
++        emitter.pushTransform { quad ->
++            quad.chunkLayer(layer)
++            true
++        }
++        try {
++            super.emitQuads(emitter, level, pos, state, random, cullTest)
++        } finally {
++            emitter.popTransform()
++        }
++    }
++
++    override fun materialFlags() = applyLayer(super.materialFlags())
++
++    override fun materialFlags(level: BlockAndTintGetter, pos: BlockPos, state: BlockState, random: RandomSource) =
++        applyLayer(super.materialFlags(level, pos, state, random))
++
++    override fun hasMaterialFlag(level: BlockAndTintGetter, pos: BlockPos, state: BlockState, random: RandomSource, flag: Int) =
++        materialFlags(level, pos, state, random) and flag != 0
++
++    private fun applyLayer(flags: Int): Int =
++        if (layer == ChunkSectionLayer.TRANSLUCENT) flags or BakedQuad.FLAG_TRANSLUCENT else flags and BakedQuad.FLAG_TRANSLUCENT.inv()
++}
++
++private class RenderingProxyBlockEntityRenderState : BlockEntityRenderState() {
++    val submissions = mutableListOf<(PoseStack, SubmitNodeCollector) -> Unit>()
++}
++
++private class RenderingProxyBlockEntityRenderer<T>(
++    private val context: BlockEntityRendererProvider.Context,
++    private val cutoutModel: (Identifier) -> BlockStateModelPart,
++) : BlockEntityRenderer<T, RenderingProxyBlockEntityRenderState> where T : BlockEntity, T : RenderingProxyBlockEntity {
++    override fun createRenderState() = RenderingProxyBlockEntityRenderState()
++
++    override fun extractRenderState(blockEntity: T, state: RenderingProxyBlockEntityRenderState, tickDelta: Float, cameraPosition: Vec3, crumblingOverlay: ModelFeatureRenderer.CrumblingOverlay?) {
++        super.extractRenderState(blockEntity, state, tickDelta, cameraPosition, crumblingOverlay)
++        state.submissions.clear()
++
++        val matrices = PoseStack()
++        val light = state.lightCoords
++        val overlay = OverlayTexture.NO_OVERLAY
+         val renderingProxy = object : RenderingProxy {
+-            override fun stack(block: () -> Unit) {
+-                matrices.stack {
+-                    block()
+-                }
+-            }
++            override fun stack(block: () -> Unit) = matrices.stack { block() }
+
+             override fun translate(x: Double, y: Double, z: Double) = matrices.translate(x, y, z)
+@@ -145,23 +235,34 @@ class RenderingProxyBlockEntityRenderer<T>(
+             override fun rotateZ(rad: Float) = matrices.mulPose(Axis.ZP.rotation(rad))
+
+-            override fun renderItemStack(itemStack: ItemStack) {
+-                Minecraft.getInstance().itemRenderer.renderStatic(itemStack, ItemDisplayContext.GROUND, light, overlay, matrices, vertexConsumers, blockEntity.level, 0)
++            override fun renderItemStack(itemStack: ItemStack) = renderItemStack(itemStack, ItemDisplayContext.GROUND)
++
++            override fun renderFixedItemStack(itemStack: ItemStack) = renderItemStack(itemStack, ItemDisplayContext.FIXED)
++
++            private fun renderItemStack(itemStack: ItemStack, displayContext: ItemDisplayContext) {
++                val item = ItemStackRenderState()
++                context.itemModelResolver().updateForTopItem(item, itemStack, displayContext, blockEntity.level, null, 0)
++                record { pose, collector -> item.submit(pose, collector, light, overlay, 0) }
+             }
+
+-            override fun renderFixedItemStack(itemStack: ItemStack) {
+-                Minecraft.getInstance().itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, light, overlay, matrices, vertexConsumers, blockEntity.level, 0)
++            override fun renderCutoutBlock(identifier: Identifier, light: Int, overlay: Int) {
++                val parts = listOf(cutoutModel(identifier))
++                record { pose, collector -> collector.submitBlockModel(pose, RenderTypes.cutoutMovingBlock(), parts, intArrayOf(), light, overlay, 0) }
              }
 
 -            override fun renderCutoutBlock(identifier: ResourceLocation, variant: String?, red: Float, green: Float, blue: Float, light: Int, overlay: Int) {
-+            override fun renderCutoutBlock(identifier: Identifier, variant: String?, red: Float, green: Float, blue: Float, light: Int, overlay: Int) {
-                 val vertexConsumer = vertexConsumers.getBuffer(RenderType.cutout())
-                 val bakedModel = if (variant != null) {
+-                val vertexConsumer = vertexConsumers.getBuffer(RenderType.cutout())
+-                val bakedModel = if (variant != null) {
+-                    Minecraft.getInstance().modelManager.getModel(ModelResourceLocation(identifier, variant))
+-                } else {
+-                    Minecraft.getInstance().modelManager.getModel(identifier)
++            private fun record(submit: (PoseStack, SubmitNodeCollector) -> Unit) {
++                val transform = Matrix4f(matrices.last().pose())
++                state.submissions += { pose, collector ->
++                    pose.stack {
++                        pose.mulPose(transform)
++                        submit(pose, collector)
++                    }
+                 }
+-                Minecraft.getInstance().blockRenderer.modelRenderer.renderModel(matrices.last(), vertexConsumer, null, bakedModel, red, green, blue, light, overlay)
+             }
+         }
+         blockEntity.render(renderingProxy, tickDelta, light, overlay)
+     }
++
++    override fun submit(state: RenderingProxyBlockEntityRenderState, matrices: PoseStack, collector: SubmitNodeCollector, camera: CameraRenderState) {
++        state.submissions.forEach { it(matrices, collector) }
++    }
+ }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/lib/MachineScreen.kt b/common/src/client/kotlin/miragefairy2024/client/lib/MachineScreen.kt
 index 48d2317..f5a394c 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/lib/MachineScreen.kt
@@ -402,18 +652,36 @@ index 37a5127..296f2a3 100644
      }
  }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/FairyBuildingClientModule.kt b/common/src/client/kotlin/miragefairy2024/client/mod/FairyBuildingClientModule.kt
-index ac1298f..98b0e7f 100644
+index ac1298f..f00cb37 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/FairyBuildingClientModule.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/mod/FairyBuildingClientModule.kt
-@@ -18,5 +18,6 @@ import miragefairy2024.util.invoke
+@@ -3,4 +3,5 @@ package miragefairy2024.client.mod
+ import miragefairy2024.MirageFairy2024
+ import miragefairy2024.ModContext
++import miragefairy2024.clientProxy
+ import miragefairy2024.client.lib.MachineScreen
+ import miragefairy2024.client.util.registerHandledScreen
+@@ -17,6 +18,6 @@ import miragefairy2024.mod.fairybuilding.FairyHouseScreenHandler
+ import miragefairy2024.util.invoke
  import miragefairy2024.util.text
- import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin
+-import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin
 -import net.minecraft.client.gui.GuiGraphics
 +import net.minecraft.client.renderer.RenderPipelines
 +import net.minecraft.client.gui.GuiGraphicsExtractor
  import java.util.Optional
  import kotlin.math.roundToInt
-@@ -41,12 +42,12 @@ open class FairyBuildingScreen<H : FairyBuildingScreenHandler>(card: FairyBuildi
+@@ -24,8 +25,6 @@ import kotlin.math.roundToInt
+ context(_: ModContext)
+ fun initFairyBuildingClientModule() {
+-    ModelLoadingPlugin.register {
+-        FairyBuildingModelCard.entries.forEach { card ->
+-            it.addModels(card.identifier)
+-        }
++    FairyBuildingModelCard.entries.forEach { card ->
++        clientProxy!!.registerCutoutModel(card.identifier)
+     }
+
+@@ -41,12 +40,12 @@ open class FairyBuildingScreen<H : FairyBuildingScreenHandler>(card: FairyBuildi
 
  open class FairyFactoryScreen<H : FairyFactoryScreenHandler>(private val card: FairyFactoryCard<*, *, *>, arguments: Arguments<H>) : FairyBuildingScreen<H>(card, arguments) {
 -    override fun renderBg(context: GuiGraphics, delta: Float, mouseX: Int, mouseY: Int) {
@@ -431,14 +699,14 @@ index ac1298f..98b0e7f 100644
 +        super.extractTooltip(context, x, y)
          run {
              if (x in this.leftPos + 164 until this.leftPos + 164 + 5 && y in this.topPos + imageHeight - 94 until this.topPos + imageHeight - 94 + 9) {
-@@ -55,5 +56,5 @@ open class FairyFactoryScreen<H : FairyFactoryScreenHandler>(private val card: F
+@@ -55,5 +54,5 @@ open class FairyFactoryScreen<H : FairyFactoryScreenHandler>(private val card: F
                      text { "${menu.folia} / ${card.maxFolia}"() },
                  )
 -                context.renderTooltip(font, texts, Optional.empty(), x, y)
 +                context.setTooltipForNextFrame(font, texts, Optional.empty(), x, y)
              }
          }
-@@ -64,18 +65,18 @@ class FairyHouseScreen(card: FairyHouseCard, arguments: Arguments<FairyHouseScre
+@@ -64,18 +63,18 @@ class FairyHouseScreen(card: FairyHouseCard, arguments: Arguments<FairyHouseScre
 
  class FairyCollectorScreen(card: FairyCollectorCard, arguments: Arguments<FairyCollectorScreenHandler>) : FairyFactoryScreen<FairyCollectorScreenHandler>(card, arguments) {
 -    override fun renderBg(context: GuiGraphics, delta: Float, mouseX: Int, mouseY: Int) {
@@ -737,6 +1005,141 @@ index 0000000..cb21caf
 +    var yRotation = 0F
 +    var zRotation = 0F
 +}
+diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/entity/ChaosCube.kt b/common/src/client/kotlin/miragefairy2024/client/mod/entity/ChaosCube.kt
+index f0ff2c5..91e513d 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/mod/entity/ChaosCube.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/mod/entity/ChaosCube.kt
+@@ -1,7 +1,4 @@
+ package miragefairy2024.client.mod.entity
+
+-import com.mojang.blaze3d.vertex.PoseStack
+-import com.mojang.blaze3d.vertex.VertexConsumer
+-import miragefairy2024.client.util.stack
+ import miragefairy2024.mod.entity.ChaosCubeCard
+ import miragefairy2024.mod.entity.ChaosCubeEntity
+@@ -13,19 +10,29 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder
+ import net.minecraft.client.renderer.entity.EntityRendererProvider
+ import net.minecraft.client.renderer.entity.MobRenderer
++import net.minecraft.client.renderer.entity.state.LivingEntityRenderState
+ import net.minecraft.util.Mth
++import org.joml.Matrix3d
++import org.joml.Quaterniond
+ import org.joml.Quaternionf
+ import kotlin.math.atan
++import kotlin.math.atan2
+ import kotlin.math.sqrt
+
+-class ChaosCubeEntityRenderer(context: EntityRendererProvider.Context) : MobRenderer<ChaosCubeEntity, ChaosCubeEntityModel>(context, ChaosCubeEntityModel(context.bakeLayer(ROOT.entityModelLayer)), 0.5F) {
++class ChaosCubeEntityRenderer(context: EntityRendererProvider.Context) : MobRenderer<ChaosCubeEntity, ChaosCubeRenderState, ChaosCubeEntityModel>(context, ChaosCubeEntityModel(context.bakeLayer(ROOT.entityModelLayer)), 0.5F) {
+     companion object {
+-        val ROOT = EntityModelLayerCard(ChaosCubeCard.identifier, "root", 64, 64) {
++        private val ROLL = atan(sqrt(2.0F) / 2.0F)
++        private val PITCH = 45.0F / 180F * Mth.PI
++
++        val ROOT = EntityModelLayerCard(ChaosCubeCard.identifier, "root", 64, 64) { root ->
++            val spin = root.addOrReplaceChild("spin", CubeListBuilder.create(), PartPose.offset(0F, 8F, 0F))
++            val tilt = spin.addOrReplaceChild("tilt", CubeListBuilder.create(), PartPose.rotation(PITCH, 0F, ROLL))
+             (0..1).forEach { x ->
+                 (0..1).forEach { y ->
+                     (0..1).forEach { z ->
+-                        it.addOrReplaceChild(
++                        tilt.addOrReplaceChild(
+                             "part${x * 4 + y * 2 + z}",
+-                            CubeListBuilder.create().texOffs(0 + x * 20, 0 + y * 20 + (1 - z) * 10).addBox(0F, 0F, 0F, 5F, 5F, 5F),
+-                            PartPose.offset(-5.5F + 6F * x, -5.5F + 6F * y, -5.5F + 6F * z),
++                            CubeListBuilder.create().texOffs(x * 20, y * 20 + (1 - z) * 10)
++                                .addBox(-5.5F + 6F * x, -5.5F + 6F * y, -5.5F + 6F * z, 5F, 5F, 5F),
++                            PartPose.ZERO,
+                         )
+                     }
+@@ -37,46 +44,52 @@ class ChaosCubeEntityRenderer(context: EntityRendererProvider.Context) : MobRend
+     private val texture = "textures/entity/" * ChaosCubeCard.identifier * ".png"
+
+-    override fun getTextureLocation(entity: ChaosCubeEntity) = texture
+-}
++    override fun getTextureLocation(state: ChaosCubeRenderState) = texture
+
+-class ChaosCubeEntityModel(private val root: ModelPart) : EntityModel<ChaosCubeEntity>() {
+-    companion object {
+-        private val ROLL = atan(sqrt(2.0F) / 2.0F)
+-        private val PITCH = 45.0F / 180F * Mth.PI
+-    }
++    override fun createRenderState() = ChaosCubeRenderState()
+
+-    private val parts = (0 until 8).map { root.getChild("part$it") }.toTypedArray()
+-    private var segments: Array<ChaosCubeEntity.Segment>? = null
+-    private val rotations = (0 until 8).map { Quaternionf() }.toTypedArray()
+-
+-    override fun setupAnim(entity: ChaosCubeEntity, limbAngle: Float, limbDistance: Float, animationProgress: Float, headYaw: Float, headPitch: Float) {
+-        val delta = animationProgress - entity.tickCount
+-
+-        val f = animationProgress * 2 * Mth.PI / 100
+-        root.yRot = f
+-
+-        segments = entity.segments
+-        repeat(8) { i ->
+-            rotations[i].x = Mth.lerp(delta, entity.segments[i].prevRotation.x, entity.segments[i].rotation.x)
+-            rotations[i].y = Mth.lerp(delta, entity.segments[i].prevRotation.y, entity.segments[i].rotation.y)
+-            rotations[i].z = Mth.lerp(delta, entity.segments[i].prevRotation.z, entity.segments[i].rotation.z)
+-            rotations[i].w = Mth.lerp(delta, entity.segments[i].prevRotation.w, entity.segments[i].rotation.w)
++    override fun extractRenderState(entity: ChaosCubeEntity, state: ChaosCubeRenderState, tickDelta: Float) {
++        super.extractRenderState(entity, state, tickDelta)
++        val delta = state.ageInTicks - entity.tickCount
++        entity.segments.forEach { segment ->
++            state.rotations[segment.partIndex].set(
++                Mth.lerp(delta, segment.prevRotation.x, segment.rotation.x),
++                Mth.lerp(delta, segment.prevRotation.y, segment.rotation.y),
++                Mth.lerp(delta, segment.prevRotation.z, segment.rotation.z),
++                Mth.lerp(delta, segment.prevRotation.w, segment.rotation.w),
++            )
+         }
+     }
++}
+
+-    override fun renderToBuffer(matrices: PoseStack, vertices: VertexConsumer, light: Int, overlay: Int, color: Int) {
+-        if (!root.visible) return
+-        matrices.stack {
+-            matrices.translate(0F, 0.5F, 0F)
+-            root.translateAndRotate(matrices)
+-            matrices.mulPose(Quaternionf().rotateZYX(ROLL, 0F, PITCH))
++class ChaosCubeRenderState : LivingEntityRenderState() {
++    val rotations = Array(8) { Quaternionf() }
++}
+
+-            repeat(8) { i ->
+-                val segment = segments!![i]
+-                matrices.stack {
+-                    matrices.mulPose(rotations[i])
+-                    parts[segment.partIndex].render(matrices, vertices, light, overlay, color)
+-                }
++class ChaosCubeEntityModel(root: ModelPart) : EntityModel<ChaosCubeRenderState>(root) {
++    private val spin = root.getChild("spin")
++    private val tilt = spin.getChild("tilt")
++    private val parts = Array(8) { tilt.getChild("part$it") }
++    private val matrix = Matrix3d()
++    private val quaternion = Quaterniond()
++
++    override fun setupAnim(state: ChaosCubeRenderState) {
++        super.setupAnim(state)
++        spin.yRot = state.ageInTicks * 2 * Mth.PI / 100
++        parts.forEachIndexed { index, part ->
++            val rotation = state.rotations[index]
++            val scale = rotation.lengthSquared()
++            matrix.rotation(quaternion.set(rotation))
++            val cosY = sqrt(matrix.m00() * matrix.m00() + matrix.m01() * matrix.m01())
++            val y = atan2(-matrix.m02(), cosY).toFloat()
++            // Y が ±90 度のときは X と Z の回転が重なるので、Z にまとめるのだ～🌱
++            if (cosY <= 1e-12 * scale) {
++                part.setRotation(0F, y, atan2(-matrix.m10(), matrix.m11()).toFloat())
++            } else {
++                part.setRotation(atan2(matrix.m12(), matrix.m22()).toFloat(), y, atan2(matrix.m01(), matrix.m00()).toFloat())
+             }
++            // 正規化せずに補間したクォータニオンが作っていた拡縮も保持するのだ～🌱
++            part.xScale = scale
++            part.yScale = scale
++            part.zScale = scale
+         }
+     }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/entity/EntityClientModule.kt b/common/src/client/kotlin/miragefairy2024/client/mod/entity/EntityClientModule.kt
 index 4b8da14..e9e2172 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/entity/EntityClientModule.kt
@@ -2695,10 +3098,16 @@ index 5c5757a..3a5a970 100644
              // 通常の文字入力は charTyped で処理されるため、keyPressed で未処理でもコンテナーのショートカットへ渡さないのだ～🌱
              if (keyCode != GLFW.GLFW_KEY_ESCAPE && keyCode != GLFW.GLFW_KEY_TAB) {
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/ViewContainerScreen.kt b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/ViewContainerScreen.kt
-index a4c484f..76eaa25 100644
+index a4c484f..3789f83 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/ViewContainerScreen.kt
 +++ b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/ViewContainerScreen.kt
-@@ -11,9 +11,11 @@ import miragefairy2024.mod.recipeviewer.view.contains
+@@ -2,4 +2,5 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
+
+ import com.mojang.blaze3d.platform.Window
++import miragefairy2024.client.mixins.api.ContainerScreenLayout
+ import miragefairy2024.client.mixins.api.SlotHovering
+ import miragefairy2024.client.mod.recipeviewer.renderingProxy
+@@ -11,9 +12,11 @@ import miragefairy2024.mod.recipeviewer.view.contains
  import miragefairy2024.util.Remover
  import net.minecraft.client.Minecraft
 -import net.minecraft.client.gui.GuiGraphics
@@ -2711,37 +3120,89 @@ index a4c484f..76eaa25 100644
 +import net.minecraft.client.input.MouseButtonEvent
  import net.minecraft.network.chat.Component
  import net.minecraft.world.entity.player.Inventory
-@@ -101,13 +103,12 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
-     private var slotScissorEnabled = false
+@@ -22,5 +25,5 @@ import net.minecraft.world.inventory.Slot
 
+ /** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
+-abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title), SlotHovering {
++abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title), SlotHovering, ContainerScreenLayout {
+
+     protected abstract fun createRootView(screenEventSource: ScreenEventSource): View
+@@ -33,4 +36,5 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
+      */
+     private val slotPlacementMap = mutableMapOf<Int, SlotPlacement?>()
++    private var viewSize = IntPoint.ZERO
+
+     private val viewAdapter = ViewAdapter(object : ViewAdapterHost {
+@@ -48,6 +52,5 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
+         override fun getUiOffset() = IntPoint(this@ViewContainerScreen.leftPos, this@ViewContainerScreen.topPos)
+         override fun setUiSize(uiSize: IntPoint) {
+-            this@ViewContainerScreen.imageWidth = uiSize.x
+-            this@ViewContainerScreen.imageHeight = uiSize.y
++            viewSize = uiSize
+         }
+
+@@ -99,15 +102,7 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
+     }
+
+-    private var slotScissorEnabled = false
+-
 -    override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
 +    override fun extractRenderState(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
          viewAdapter.beforeRender()
-         try {
+-        try {
 -            super.render(guiGraphics, mouseX, mouseY, partialTick)
-+            super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick)
-         } finally {
-             // 通常は通らないのだ～🌱
-             disableSlotScissor(guiGraphics)
-         }
+-        } finally {
+-            // 通常は通らないのだ～🌱
+-            disableSlotScissor(guiGraphics)
+-        }
 -        renderTooltip(guiGraphics, mouseX, mouseY)
++        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick)
      }
 
-@@ -118,5 +119,5 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
+@@ -118,21 +113,28 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
      }
 
 -    override fun renderSlot(guiGraphics: GuiGraphics, slot: Slot) {
-+    override fun renderSlot(guiGraphics: GuiGraphicsExtractor, slot: Slot) {
-         // 前のスロットの描画の終了処理なのだ～🌱
-         disableSlotScissor(guiGraphics)
-@@ -131,5 +132,5 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
+-        // 前のスロットの描画の終了処理なのだ～🌱
+-        disableSlotScissor(guiGraphics)
+-        val clipBounds = getSlotClipBounds(slot)
+-        if (clipBounds != null) {
+-            val (x, y, sizeX, sizeY) = clipBounds
+-            guiGraphics.enableScissor(x, y, x + sizeX, y + sizeY)
+-            slotScissorEnabled = true
++    override fun extractSlot(guiGraphics: GuiGraphicsExtractor, slot: Slot, mouseX: Int, mouseY: Int) {
++        `mirageFairy2024$withSlotScissor`(guiGraphics, slot) {
++            super.extractSlot(guiGraphics, slot, mouseX, mouseY)
+         }
+-        // 親クラスが直後に描くハイライトにもこのスロットのクリップを適用するために、クリップの着脱を変なタイミングにしているのだ～🌱
+-        super.renderSlot(guiGraphics, slot)
      }
 
 -    private fun disableSlotScissor(guiGraphics: GuiGraphics) {
-+    private fun disableSlotScissor(guiGraphics: GuiGraphicsExtractor) {
-         if (!slotScissorEnabled) return
-         slotScissorEnabled = false
-@@ -142,20 +143,22 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
+-        if (!slotScissorEnabled) return
+-        slotScissorEnabled = false
+-        guiGraphics.disableScissor()
++    override fun `mirageFairy2024$getImageWidth`(vanillaWidth: Int) = viewSize.x
++    override fun `mirageFairy2024$getImageHeight`(vanillaHeight: Int) = viewSize.y
++
++    override fun `mirageFairy2024$withSlotScissor`(guiGraphics: GuiGraphicsExtractor, slot: Slot?, draw: Runnable) {
++        val clipBounds = slot?.let { getSlotClipBounds(it) }
++        if (clipBounds == null) {
++            draw.run()
++            return
++        }
++        // 描画原点は画面の左上からメニューの左上に移っているのだ～🌱
++        val x = clipBounds.x - leftPos
++        val y = clipBounds.y - topPos
++        guiGraphics.enableScissor(x, y, x + clipBounds.sizeX, y + clipBounds.sizeY)
++        try {
++            draw.run()
++        } finally {
++            guiGraphics.disableScissor()
++        }
+     }
+
+@@ -142,20 +144,22 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
      }
 
 -    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
@@ -2772,7 +3233,7 @@ index a4c484f..76eaa25 100644
 +        return super.mouseReleased(event)
      }
 
-@@ -164,6 +167,6 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
+@@ -164,6 +168,6 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
      }
 
 -    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
@@ -2781,14 +3242,14 @@ index a4c484f..76eaa25 100644
 +        if (viewAdapter.keyPressed(event)) return true
          val minecraft: Minecraft = Minecraft.getInstance()
          val window: Window = minecraft.window
-@@ -171,5 +174,5 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
+@@ -171,5 +175,5 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
          val mouseY = minecraft.mouseHandler.ypos() * window.guiScaledHeight / window.screenHeight
          clearInvalidHoveredSlot(mouseX, mouseY)
 -        return super.keyPressed(keyCode, scanCode, modifiers)
 +        return super.keyPressed(event)
      }
 
-@@ -188,8 +191,8 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
+@@ -188,11 +192,8 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
 
      /** 枠の絵はViewのツリーが描くのだ～🌱 */
 -    override fun renderBg(guiGraphics: GuiGraphics, partialTick: Float, mouseX: Int, mouseY: Int) = Unit
@@ -2796,9 +3257,12 @@ index a4c484f..76eaa25 100644
 
      /** 題名とインベントリの名前もViewのツリーが描くのだ～🌱 */
 -    override fun renderLabels(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int) {
-+    override fun extractLabels(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int) {
-         // 最後のスロットのレンダリングの終了処理はここで受けるのだ～🌱
-         disableSlotScissor(guiGraphics)
+-        // 最後のスロットのレンダリングの終了処理はここで受けるのだ～🌱
+-        disableSlotScissor(guiGraphics)
+-    }
++    override fun extractLabels(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int) = Unit
+
+ }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/ViewScreen.kt b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/ViewScreen.kt
 index 96ebac4..bd601bb 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/vanilla/ViewScreen.kt
@@ -3654,7 +4118,7 @@ index 79c9bf6..3f5b8fe 100644
          float newAmount2 = DamageCallback.EVENT.invoker().modifyDamageAmount((LivingEntity) (Object) this, source, amount2.get());
          if (newAmount2 <= 0F) {
 diff --git a/common/src/main/kotlin/miragefairy2024/ClientProxy.kt b/common/src/main/kotlin/miragefairy2024/ClientProxy.kt
-index 87e5823..fa8d1be 100644
+index 87e5823..054e319 100644
 --- a/common/src/main/kotlin/miragefairy2024/ClientProxy.kt
 +++ b/common/src/main/kotlin/miragefairy2024/ClientProxy.kt
 @@ -8,5 +8,5 @@ import net.minecraft.core.BlockPos
@@ -3676,11 +4140,17 @@ index 87e5823..fa8d1be 100644
 +    fun getFuelValues(): FuelValues?
      fun registerCutoutRenderLayer(block: () -> Block)
      fun registerTranslucentRenderLayer(block: () -> Block)
-@@ -71,5 +73,5 @@ interface RenderingProxy {
+@@ -36,4 +38,5 @@ interface ClientProxy<S : Any> {
+     fun getItemColorProvider(item: Item): ItemColorProvider?
+     fun registerItemColorProvider(item: Item, provider: ItemColorProvider)
++    fun registerCutoutModel(identifier: Identifier)
+     fun <T> registerRenderingProxyBlockEntityRendererFactory(blockEntityType: BlockEntityType<T>) where T : BlockEntity, T : RenderingProxyBlockEntity
+     fun <T> registerViewScreen(menuType: MenuType<T>) where T : AbstractContainerMenu, T : ViewProviderMenu
+@@ -71,5 +74,5 @@ interface RenderingProxy {
      fun renderItemStack(itemStack: ItemStack)
      fun renderFixedItemStack(itemStack: ItemStack)
 -    fun renderCutoutBlock(identifier: ResourceLocation, variant: String?, red: Float, green: Float, blue: Float, light: Int, overlay: Int)
-+    fun renderCutoutBlock(identifier: Identifier, variant: String?, red: Float, green: Float, blue: Float, light: Int, overlay: Int)
++    fun renderCutoutBlock(identifier: Identifier, light: Int, overlay: Int)
  }
 
 diff --git a/common/src/main/kotlin/miragefairy2024/DataGenerationEvents.kt b/common/src/main/kotlin/miragefairy2024/DataGenerationEvents.kt
@@ -6611,7 +7081,7 @@ index e5db3b5..bd215e1 100644
      }
 
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/fairybuilding/FairyFactory.kt b/common/src/main/kotlin/miragefairy2024/mod/fairybuilding/FairyFactory.kt
-index 7cc684f..011efbb 100644
+index 7cc684f..90fe9e4 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/fairybuilding/FairyFactory.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/fairybuilding/FairyFactory.kt
 @@ -20,4 +20,6 @@ import net.minecraft.core.BlockPos
@@ -6644,6 +7114,16 @@ index 7cc684f..011efbb 100644
 +        output.putInt("FoliaCollectionCooldown", foliaCollectionCooldown)
      }
 
+@@ -153,7 +155,7 @@ abstract class FairyFactoryBlockEntity<E : FairyFactoryBlockEntity<E>>(private v
+         super.renderRotated(renderingProxy, tickDelta, light, overlay)
+         if (blockState[FairyFactoryBlock.STATUS].isLit) {
+-            renderingProxy.renderCutoutBlock(FairyBuildingModelCard.LANTERN.identifier, null, 1.0F, 1.0F, 1.0F, (light and 0x0000FF) or 0xF00000, overlay)
++            renderingProxy.renderCutoutBlock(FairyBuildingModelCard.LANTERN.identifier, (light and 0x0000FF) or 0xF00000, overlay)
+         } else {
+-            renderingProxy.renderCutoutBlock(FairyBuildingModelCard.LANTERN_OFF.identifier, null, 1.0F, 1.0F, 1.0F, light, overlay)
++            renderingProxy.renderCutoutBlock(FairyBuildingModelCard.LANTERN_OFF.identifier, light, overlay)
+         }
+     }
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/fairylogistics/FairyActiveConsumer.kt b/common/src/main/kotlin/miragefairy2024/mod/fairylogistics/FairyActiveConsumer.kt
 index 61f0893..74dd2c3 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/fairylogistics/FairyActiveConsumer.kt
