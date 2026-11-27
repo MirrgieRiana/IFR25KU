@@ -142,7 +142,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
             // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
             enableGlobalFairyHighlight,
             // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-            text { toggleCollectionEnabledKeyMappingCard() }
+            text { toggleCollectionEnabledKeyMappingCard() },
         ) {
             // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
             SetCollectionEnabledChannel.sendToServer(it)
