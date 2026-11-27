@@ -194,6 +194,7 @@ rootProject.tasks.named("upload").configure { dependsOn(tasks.named("publishNeof
 
 tasks.named<ProcessResources>("processResources") {
     inputs.property("version", project.version)
+    inputs.property("kotlin_for_forge_version", libs.versions.kotlinForForge.get())
 
     filesMatching("META-INF/neoforge.mods.toml") {
         expand(
@@ -210,6 +211,9 @@ tasks.named<ShadowJar>("shadowJar") {
     relocate("mirrg.kotlin", "miragefairy2024.shadow.mirrg.kotlin")
     relocate("mirrg.kotlin.helium", "miragefairy2024.shadow.mirrg.kotlin.helium")
     exclude("**/*refmap.json")
+    filesMatching("META-INF/neoforge.mods.toml") {
+        filter { line: String -> line.removePrefix("# distribution-only ") }
+    }
 }
 
 tasks.named<RemapJarTask>("remapJar") {
