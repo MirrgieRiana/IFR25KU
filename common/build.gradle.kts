@@ -118,8 +118,6 @@ dependencies {
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${libs.versions.rei.get()}")
     modCompileOnly("me.shedaniel.cloth:basic-math:${libs.versions.clothBasicMath.get()}")
 
-    modApi("me.shedaniel.cloth:cloth-config:${libs.versions.clothConfig.get()}")
-
     modImplementation("com.github.glitchfiend:TerraBlender-fabric:${libs.versions.terraBlenderFabric.get()}")
 
     modCompileOnly("dev.emi:emi-fabric:${libs.versions.emi.get()}:api")

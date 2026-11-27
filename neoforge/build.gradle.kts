@@ -148,7 +148,6 @@ modrinth {
     dependencies {
         required.project("forgified-fabric-api")
         required.project("kotlin-for-forge")
-        required.project("cloth-config")
         required.project("terrablender")
         required.project("architectury-api")
         optional.project("rei")
@@ -177,7 +176,6 @@ curseforge {
             relations {
                 requiredDependency("forgified-fabric-api")
                 requiredDependency("kotlin-for-forge")
-                requiredDependency("cloth-config")
                 requiredDependency("terrablender-neoforge")
                 requiredDependency("architectury-api")
                 optionalDependency("roughly-enough-items")
