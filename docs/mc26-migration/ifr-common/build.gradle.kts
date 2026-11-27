@@ -17,6 +17,7 @@ repositories {
     mavenCentral()
     maven("https://maven.architectury.dev/") { content { includeGroup("dev.architectury") } }
     maven("https://maven.wispforest.io/releases") { content { includeGroupAndSubgroups("io.wispforest") } }
+    maven("https://api.modrinth.com/maven") { content { includeModule("maven.modrinth", "pf-emi") } }
     maven("https://maven.shedaniel.me/") {
         content {
             includeGroup("me.shedaniel")
@@ -117,6 +118,9 @@ dependencies {
     compileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:26.1.819")
     compileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:26.1.819")
     compileOnly("me.shedaniel.cloth:basic-math:0.6.1")
+    if (providers.gradleProperty("migrationEmiFork").isPresent) {
+        compileOnly("maven.modrinth:pf-emi:2.0.0+26.1.2+fabric")
+    }
     if (providers.gradleProperty("migrationOwo").isPresent) {
         add("clientCompileOnly", "io.wispforest:owo-lib:0.13.1+26.1") {
             isTransitive = false

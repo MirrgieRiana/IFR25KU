@@ -227,6 +227,14 @@ owo-lib を加えた Fabric の一括解析は Kotlin 473 ファイルを対象�
 
 配置モディファイアは、18 定義について各 32 シードで旧式と同じ候補位置と乱数の状態になることを確認したのだ～🌱 `preparePortedSources` の出力は一括解析に使った Kotlin 473 ファイルと一致し、通常の 1.21.1 向け `datagen` も成功したのだ～🌱
 
+### EMI フォークを使った View とレシピの移植なのだ～🌱
+
+Fabric 用の [PF-EMI 2.0.0+26.1.2+fabric](https://modrinth.com/mod/pf-emi/version/qKtl0HE4) は、実験ビルドの `-PmigrationEmiFork` でコンパイルクラスパスに追加できるのだ～🌱 Widget の描画を `extractRenderState` に移し、加工機械のレシピは `EmiRegistry.recipeMap.byType` から取得するのだ～🌱 レシピ ID は `RecipeHolder` のキーから取り出し、既存のレシピ型と表示内容を引き継ぐのだ～🌱
+
+Fabric 向け Kotlin 473 ファイルの一括解析で、EMI 統合の診断はフォーク追加前の **158 件**から、追加直後に **20 件**、Widget とレシピ取得の更新後に **0 件**になったのだ～🌱 全体では **70 件**が残っていて、フォークを使ったゲーム起動と接続先ごとのレシピ表示は未検証なのだぁ…🌧️
+
+NeoForge 版の [PF-EMI 2.0.0+26.1.2+neoforge](https://modrinth.com/mod/pf-emi/version/N2tHzL14) を NeoForge 向け Kotlin 469 ファイルの一括解析に追加した結果、EMI 統合の診断は 0 件だったのだ～🌱 NeoForge 向けの owo-lib はこの計測のクラスパスに含まれず、ソウルストリームと旧 UI の診断は残るのだぁ…🌧️
+
 ### 移行資料なのだ～🌱
 
 - 26.1 系では JDK 25 と非リマップ版 Loom を使い、依存の宣言は `implementation` や `compileOnly` に移すのだ～🌱 今回はクリエイティブタブ、ディメンション移動イベント、燃料登録を、新しい Fabric API に置き換えたのだ～🌱 タグのデータ生成は `FabricPackOutput` と `FabricTagsProvider` の `TagAppender` に合わせる必要があるのだ～🌱 [Fabric の 26.1 移行案内](https://fabricmc.net/2026/03/14/261.html) [Fabric API の移行表](https://docs.fabricmc.net/de_de/develop/porting/26.1/fabric-api)

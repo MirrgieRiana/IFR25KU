@@ -1978,6 +1978,66 @@ index f2ee699..5bff0e2 100644
 +                graphics.setTooltipForNextFrame(tooltip.map { it.visualOrderText }, mouseX, mouseY)
              }
          }
+diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiClientSupport.kt b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiClientSupport.kt
+index 662f22e..85d84cc 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiClientSupport.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiClientSupport.kt
+@@ -82,7 +82,7 @@ fun initEmiClientSupport() {
+             fun <I : RecipeInput, R : Recipe<I>> f(bridge: RecipeViewerCategoryCardRecipeManagerBridge<I, R>) {
+                 val support = EmiClientSupport.get(bridge.card)
+-                registry.recipeManager.getAllRecipesFor(bridge.recipeType).forEach { holder ->
++                registry.recipeMap.byType(bridge.recipeType).forEach { holder ->
+                     if (bridge.recipeClass.isInstance(holder.value())) {
+-                        val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(Minecraft.getInstance().level!!.registryAccess(), holder.id(), holder.value(), false)
++                        val recipeEntry = RecipeViewerCategoryCard.RecipeEntry(Minecraft.getInstance().level!!.registryAccess(), holder.id().identifier(), holder.value(), false)
+                         registry.addRecipe(SupportedEmiRecipe(support, recipeEntry))
+                     }
+diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiContainerWidget.kt b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiContainerWidget.kt
+index dc8c783..9d49788 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiContainerWidget.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiContainerWidget.kt
+@@ -9,5 +9,5 @@ import miragefairy2024.util.Remover
+ import miragefairy2024.util.fire
+ import miragefairy2024.util.removeOn
+-import net.minecraft.client.gui.GuiGraphics
++import net.minecraft.client.gui.GuiGraphicsExtractor
+ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
+
+@@ -39,7 +39,7 @@ class EmiContainerWidget : Widget() {
+     }
+
+-    override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
++    override fun extractRenderState(draw: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, delta: Float) {
+         widgets.forEach {
+-            it.render(draw, mouseX, mouseY, delta)
++            it.extractRenderState(draw, mouseX, mouseY, delta)
+         }
+     }
+diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiTextWidget.kt b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiTextWidget.kt
+index 9ceadfd..6beba55 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiTextWidget.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiTextWidget.kt
+@@ -10,5 +10,5 @@ import miragefairy2024.mod.recipeviewer.views.TextView
+ import miragefairy2024.util.toEmiBounds
+ import net.minecraft.client.Minecraft
+-import net.minecraft.client.gui.GuiGraphics
++import net.minecraft.client.gui.GuiGraphicsExtractor
+
+ class EmiTextWidget(private val offset: IntPoint, private val view: TextView) : Widget() {
+@@ -19,5 +19,5 @@ class EmiTextWidget(private val offset: IntPoint, private val view: TextView) :
+     private val startNanoTime by lazy { System.nanoTime() }
+
+-    override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
++    override fun extractRenderState(draw: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, delta: Float) {
+         val font = Minecraft.getInstance().font
+         val color = view.color.lightModeArgb
+@@ -41,5 +41,5 @@ class EmiTextWidget(private val offset: IntPoint, private val view: TextView) :
+                 Alignment.END -> offset.x + view.evaluateActualSizeX() - font.width(view.text.value)
+             }
+-            draw.drawString(
++            draw.text(
+                 font,
+                 view.text.value,
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiViewPlacers.kt b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiViewPlacers.kt
 index d8b4b02..d4bbbff 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiViewPlacers.kt
@@ -1995,6 +2055,23 @@ index d8b4b02..d4bbbff 100644
 +        context.containerWidget place SlotWidget(view.ingredientStack?.toEmiIngredient() ?: EmiStack.EMPTY, bounds.x - 1 + view.margin, bounds.y - 1 + view.margin)
              .drawBack(view.drawBackground)
              .also { widget ->
+diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiViewRendererWidget.kt b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiViewRendererWidget.kt
+index 066146f..4083d09 100644
+--- a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiViewRendererWidget.kt
++++ b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/emi/EmiViewRendererWidget.kt
+@@ -7,5 +7,5 @@ import miragefairy2024.mod.recipeviewer.view.PlaceableView
+ import miragefairy2024.util.toEmiBounds
+ import mirrg.kotlin.helium.Slot
+-import net.minecraft.client.gui.GuiGraphics
++import net.minecraft.client.gui.GuiGraphicsExtractor
+
+ class EmiViewRendererWidget<V : PlaceableView, S>(private val renderer: ViewRenderer<V, S>, private val view: V, private val bounds2: IntRectangle) : Widget() {
+@@ -15,4 +15,4 @@ class EmiViewRendererWidget<V : PlaceableView, S>(private val renderer: ViewRend
+     override fun mouseClicked(mouseX: Int, mouseY: Int, button: Int) = renderer.mouseClicked(view, state, bounds2, mouseX, mouseY, button)
+     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = renderer.keyPressed(view, state, bounds2, keyCode, scanCode, modifiers)
+-    override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) = renderer.render(view, state, bounds2, draw, mouseX, mouseY, bounds.contains(mouseX, mouseY), delta)
++    override fun extractRenderState(draw: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, delta: Float) = renderer.render(view, state, bounds2, draw, mouseX, mouseY, bounds.contains(mouseX, mouseY), delta)
+ }
 diff --git a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiContainerWidget.kt b/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiContainerWidget.kt
 index 300297f..d4a7ab6 100644
 --- a/common/src/client/kotlin/miragefairy2024/client/mod/recipeviewer/rei/ReiContainerWidget.kt
