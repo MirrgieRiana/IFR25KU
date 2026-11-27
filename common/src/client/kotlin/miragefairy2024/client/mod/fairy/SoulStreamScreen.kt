@@ -119,14 +119,14 @@ fun initSoulStreamClientModule() {
 
         graphics.fill(x, y, x + 16, y + 16, 0x88FFFF00.toInt())
 
-        graphics.push()
-        graphics.translate(0.0, 0.0, 200.0)
+        graphics.pose().pushPose()
+        graphics.pose().translate(0.0, 0.0, 200.0)
         RenderSystem.enableBlend()
         graphics.setColor(1f, 1f, 1f, alpha)
         graphics.blit(FILTER_OVERLAY_TEXTURE, x, y, 0F, 0F, 16, 16, 16, 16)
         graphics.setColor(1f, 1f, 1f, 1f)
         RenderSystem.disableBlend()
-        graphics.pop()
+        graphics.pose().popPose()
     }
 
 }
