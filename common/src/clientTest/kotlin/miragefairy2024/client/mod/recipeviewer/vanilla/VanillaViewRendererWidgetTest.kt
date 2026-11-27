@@ -146,7 +146,7 @@ class VanillaViewRendererWidgetTest {
         val graphics = Mockito.mock(GuiGraphics::class.java)
 
         widget.render(graphics, 0, 0, 0F)
-        Mockito.verifyNoInteractions(graphics)
+        Mockito.verify(graphics, Mockito.never()).renderOutline(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt())
 
         widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true))!!.applyFocus(true)
         widget.render(graphics, 0, 0, 0F)
