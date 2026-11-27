@@ -61,8 +61,7 @@ private val BUTTON_14_BACKGROUND = LayeredImageButtonView.Sprites(
     MirageFairy2024.identifier("button_14/background_focused"),
 )
 
-// TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Component, private val screenEventSource: ScreenEventSource) {
+abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Component, screenEventSource: ScreenEventSource) {
 
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     protected abstract val enabledPassiveSkillEffectFilters: ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>
@@ -76,6 +75,7 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     protected abstract fun setCollectionEnabled(enabled: Boolean)
 
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     val view: View by lazy {
         val player: Player = menu.playerInventory.player
         View {
