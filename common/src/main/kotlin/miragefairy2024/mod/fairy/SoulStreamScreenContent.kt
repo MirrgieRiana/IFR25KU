@@ -64,16 +64,19 @@ private val BUTTON_14_BACKGROUND = LayeredImageButtonView.Sprites(
 abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Component, private val screenEventSource: ScreenEventSource) {
 
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     protected abstract val passiveSkillEffectFilters: ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     protected abstract val globalFairyHighlight: ObservableValue<Boolean>
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     protected abstract val collectionToggleKeyText: Component
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     protected abstract fun setCollectionEnabled(enabled: Boolean)
 
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     val view: View by lazy {
         val player: Player = menu.playerInventory.player
@@ -117,6 +120,8 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                                 view.backgroundSprites = BUTTON_14_BACKGROUND
                                 view.foregroundSprites = LayeredImageButtonView.Sprites.of(MirageFairy2024.identifier("button_14/global_search_foreground"))
                                 view.tooltip.value = text { SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION() }
+                                // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
+                                // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
                                 globalFairyHighlight.observeAndInitialize(screenEventSource.onDisposing) { _, enabled ->
                                     view.selected.value = enabled
                                 }
@@ -171,6 +176,8 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
 
                                                         view += TextView().configure {
                                                             view.shadow = false
+                                                            // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
+                                                            // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
                                                             passiveSkillEffectFilters.observeAndInitialize(screenEventSource.onDisposing) { _, filters ->
                                                                 if (filter.identifier in filters) {
                                                                     view.text.value = filter.text.gold.visualOrderText
@@ -311,6 +318,7 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                                         message + " ("() + collectionToggleKeyText + ")"()
                                     }
                                 }
+                                // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
                                 AttachmentChangedEvent.eventRegistry.observe(screenEventSource.onDisposing) { identifier ->
                                     if (identifier == COLLECTION_ENABLED_ATTACHMENT_TYPE.identifier()) {
                                         update()
@@ -410,7 +418,5 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
             }
         }
     }
-
-    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
 
 }
