@@ -42,6 +42,13 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.miragefairy2024]]
+modId = "terrablender"
+type = "required"
+versionRange = "*"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.miragefairy2024]]
 modId = "emi"
 type = "optional"
 versionRange = "[1.1.22,)"
