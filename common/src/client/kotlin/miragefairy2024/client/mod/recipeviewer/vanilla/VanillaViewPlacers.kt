@@ -6,6 +6,7 @@ import miragefairy2024.client.mod.recipeviewer.RenderOverflow
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
 import miragefairy2024.client.mod.recipeviewer.common.ImageViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.KeyboardClickableViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TextViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.TooltipViewRenderer
 import miragefairy2024.client.util.LayeredImageButton
@@ -15,6 +16,7 @@ import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.register
+import miragefairy2024.mod.recipeviewer.views.ClickableView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.LayeredImageButtonView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
@@ -218,6 +220,9 @@ fun initVanillaViewPlacers() {
     }
     VANILLA_VIEW_PLACER_REGISTRY.register { context, view: TooltipView, bounds ->
         placeRendererView(context, TooltipViewRenderer, view, bounds, false)
+    }
+    VANILLA_VIEW_PLACER_REGISTRY.register { context, view: ClickableView, bounds ->
+        placeRendererView(context, KeyboardClickableViewRenderer, view, bounds, true)
     }
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView, S> f(entry: ViewRendererRegistry.Entry<V, S>) {

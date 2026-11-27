@@ -6,6 +6,7 @@ import miragefairy2024.client.mod.recipeviewer.common.FilledRectangleViewRendere
 import miragefairy2024.client.mod.recipeviewer.common.ImageButtonViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.ImageViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.ItemViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.KeyboardClickableViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.MultiLineTextViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.NinePatchImageViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.ProgressViewRenderer
@@ -103,12 +104,12 @@ class VanillaViewRendererWidgetTest {
     @Test
     fun `フォーカス中のクリック可能な View はボタンと同じキーで操作できるのだ`() {
         val view = ClickableView()
-        val widget = VanillaViewRendererWidget(ClickableViewRenderer, view, IntRectangle(10, 20, 100, 100))
-        var activations = 0
-        var consumed = false
+        val widget = VanillaViewRendererWidget(KeyboardClickableViewRenderer, view, IntRectangle(10, 20, 100, 100))
+        var listenerCalls = 0
+        var consumeClick = false
         view.onClick.register {
-            activations++
-            consumed
+            listenerCalls++
+            consumeClick
         }
 
         val minecraft = Mockito.mock(Minecraft::class.java)
@@ -122,17 +123,17 @@ class VanillaViewRendererWidgetTest {
             Assertions.assertFalse(widget.keyPressed(GLFW.GLFW_KEY_ENTER, 0, 0))
             widget.active = true
             Assertions.assertFalse(widget.keyPressed(GLFW.GLFW_KEY_TAB, 0, 0))
-            Assertions.assertEquals(0, activations)
+            Assertions.assertEquals(0, listenerCalls)
 
             Assertions.assertFalse(widget.keyPressed(GLFW.GLFW_KEY_ENTER, 0, 0))
-            Assertions.assertEquals(1, activations)
+            Assertions.assertEquals(1, listenerCalls)
             Mockito.verifyNoInteractions(soundManager)
 
-            consumed = true
+            consumeClick = true
             listOf(GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER, GLFW.GLFW_KEY_SPACE).forEach { keyCode ->
                 Assertions.assertTrue(widget.keyPressed(keyCode, 0, 0))
             }
-            Assertions.assertEquals(4, activations)
+            Assertions.assertEquals(4, listenerCalls)
             Mockito.verify(soundManager, Mockito.times(3)).play(Mockito.any(SoundInstance::class.java))
         }
     }
@@ -142,15 +143,27 @@ class VanillaViewRendererWidgetTest {
         val view = ClickableView().also {
             it.hoverOverlayColor = 0
         }
-        val widget = VanillaViewRendererWidget(ClickableViewRenderer, view, IntRectangle(10, 20, 100, 100))
+        val widget = VanillaViewRendererWidget(KeyboardClickableViewRenderer, view, IntRectangle(10, 20, 100, 100))
         val graphics = Mockito.mock(GuiGraphics::class.java)
+        Mockito.`when`(graphics.containsPointInScissor(30, 40)).thenReturn(true)
 
-        widget.render(graphics, 0, 0, 0F)
+        widget.render(graphics, 30, 40, 0F)
+        Assertions.assertTrue(widget.isHovered)
         Mockito.verify(graphics, Mockito.never()).renderOutline(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt())
 
         widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true))!!.applyFocus(true)
-        widget.render(graphics, 0, 0, 0F)
+        widget.render(graphics, 30, 40, 0F)
         Mockito.verify(graphics).renderOutline(10, 20, 100, 100, 0xFFFFFFFF.toInt())
+    }
+
+    @Test
+    fun `選択キーは渡されたレンダラーに委譲するのだ`() {
+        val renderer: ViewRenderer<ClickableView, Unit> = object : ViewRenderer<ClickableView, Unit> by ClickableViewRenderer {
+            override fun keyPressed(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int, isFocused: Boolean) = isFocused && keyCode == GLFW.GLFW_KEY_ENTER
+        }
+        val widget = VanillaViewRendererWidget(renderer, ClickableView(), IntRectangle(10, 20, 100, 100))
+        widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true))!!.applyFocus(true)
+        Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_ENTER, 0, 0))
     }
 
     @Test

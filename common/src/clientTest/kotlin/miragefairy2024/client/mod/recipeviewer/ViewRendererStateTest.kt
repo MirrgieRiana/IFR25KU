@@ -56,7 +56,7 @@ class ViewRendererStateTest {
                     return true
                 }
 
-                override fun keyPressed(view: StateTestView, state: Slot<Int>, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+                override fun keyPressed(view: StateTestView, state: Slot<Int>, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int, isFocused: Boolean): Boolean {
                     record(state)
                     state.value += 100
                     return true

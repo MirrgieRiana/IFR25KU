@@ -1,16 +1,13 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
-import miragefairy2024.client.mod.recipeviewer.common.ClickableViewRenderer
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
-import miragefairy2024.mod.recipeviewer.views.ClickableView
 import mirrg.kotlin.helium.Slot
 import net.minecraft.client.gui.ComponentPath
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.narration.NarrationElementOutput
-import net.minecraft.client.gui.navigation.CommonInputs
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.network.chat.Component
 
@@ -30,8 +27,8 @@ class VanillaViewRendererWidget<V : PlaceableView, S>(private val renderer: View
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         renderer.render(view, state, bounds2, guiGraphics, mouseX, mouseY, isHovered, partialTick)
-        if (view is ClickableView && isActive && isFocused && width > 0 && height > 0) {
-            guiGraphics.renderOutline(x, y, width, height, 0xFFFFFFFF.toInt())
+        if (isActive && isFocused) {
+            renderer.renderFocus(view, state, bounds2, guiGraphics)
         }
     }
 
@@ -53,12 +50,7 @@ class VanillaViewRendererWidget<V : PlaceableView, S>(private val renderer: View
     // クリックを消費しているときは、離すイベントも消費するのだ～🌱
     override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int) = pressedButtons.remove(button)
 
-    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-        if (view is ClickableView && isActive && isFocused && CommonInputs.selected(keyCode)) {
-            return ClickableViewRenderer.activate(view)
-        }
-        return renderer.keyPressed(view, state, bounds2, keyCode, scanCode, modifiers)
-    }
+    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = renderer.keyPressed(view, state, bounds2, keyCode, scanCode, modifiers, isActive && isFocused)
 
     override fun nextFocusPath(event: FocusNavigationEvent): ComponentPath? {
         if (!renderer.isFocusable(view, state)) return null

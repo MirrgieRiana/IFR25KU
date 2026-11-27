@@ -12,6 +12,7 @@ import mirrg.kotlin.helium.Slot
 import mirrg.kotlin.hydrogen.alphaOfArgb
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.navigation.CommonInputs
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.resources.sounds.SimpleSoundInstance
 import net.minecraft.sounds.SoundEvents
@@ -24,16 +25,6 @@ object ClickableViewRenderer : ViewRenderer<ClickableView, Unit> {
     override fun mouseClicked(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int): Boolean {
         if (button != 0) return false
         return activate(view)
-    }
-
-    fun activate(view: ClickableView): Boolean {
-        view.onClick.fire {
-            if (it()) {
-                Minecraft.getInstance().soundManager.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F))
-                return true
-            }
-        }
-        return false
     }
 
     override fun render(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
@@ -50,4 +41,26 @@ object ClickableViewRenderer : ViewRenderer<ClickableView, Unit> {
         }
     }
 
+}
+
+object KeyboardClickableViewRenderer : ViewRenderer<ClickableView, Unit> by ClickableViewRenderer {
+    override fun keyPressed(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int, isFocused: Boolean): Boolean {
+        if (!isFocused || !CommonInputs.selected(keyCode)) return false
+        return activate(view)
+    }
+
+    override fun renderFocus(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics) {
+        if (bounds.sizeX <= 0 || bounds.sizeY <= 0) return
+        graphics.renderOutline(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, 0xFFFFFFFF.toInt())
+    }
+}
+
+private fun activate(view: ClickableView): Boolean {
+    view.onClick.fire {
+        if (it()) {
+            Minecraft.getInstance().soundManager.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F))
+            return true
+        }
+    }
+    return false
 }
