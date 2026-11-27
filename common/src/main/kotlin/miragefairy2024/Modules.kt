@@ -17,7 +17,6 @@ import miragefairy2024.mod.initFoodIngredientsModule
 import miragefairy2024.mod.initHarvestNotationModule
 import miragefairy2024.mod.initIfrEncyclopedia
 import miragefairy2024.mod.initLastFoodModule
-import miragefairy2024.mod.initNinePatchTextureModule
 import miragefairy2024.mod.initOresModule
 import miragefairy2024.mod.initPoemModule
 import miragefairy2024.mod.initRecipeGroupModule
@@ -51,7 +50,6 @@ fun initModules() {
     initMagicPlantModule()
     initTreeModule()
     initFairyQuestModule()
-    initNinePatchTextureModule()
     initPlacedItemModule()
     initFairyModule()
     initPassiveSkillModule()

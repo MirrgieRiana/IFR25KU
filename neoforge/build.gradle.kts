@@ -61,12 +61,6 @@ repositories {
             includeGroup("me.shedaniel")
         }
     }
-    maven("https://maven.wispforest.io/releases/") { // owo-lib
-        content {
-            includeGroup("io.wispforest")
-            includeGroup("io.wispforest.endec")
-        }
-    }
     maven("https://maven.minecraftforge.net/") { // com.github.glitchfiend:TerraBlender-neoforge
         content {
             includeModule("com.github.glitchfiend", "TerraBlender-neoforge")
@@ -127,8 +121,6 @@ dependencies {
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:${libs.versions.rei.get()}")
     modCompileOnly("me.shedaniel.cloth:basic-math:${libs.versions.clothBasicMath.get()}")
 
-    modCompileOnly("mezz.jei:jei-1.21.1-common-api:${libs.versions.jei.get()}")
-    modCompileOnly("mezz.jei:jei-1.21.1-neoforge-api:${libs.versions.jei.get()}")
     modRuntimeOnly("mezz.jei:jei-1.21.1-neoforge:${libs.versions.jei.get()}")
 
     modCompileOnly("dev.emi:emi-neoforge:${libs.versions.emi.get()}:api")
@@ -138,13 +130,6 @@ dependencies {
     modRuntimeOnly("curse.maven:jade-324717:${libs.versions.jadeCurseForgeNeoForge.get()}")
 
     //modRuntimeOnly("curse.maven:journeymap-32274:${libs.versions.journeyMapCurseForgeNeoForge.get()}") // なぜか入れるとエラーになる
-
-    modImplementation("io.wispforest:owo-lib-neoforge:${libs.versions.owoLibNeoForge.get()}")// { isTransitive = true }
-    forgeRuntimeLibrary(include(api("io.wispforest:endec:${libs.versions.endec.get()}")!!)!!)
-    forgeRuntimeLibrary(include(api("io.wispforest.endec:netty:${libs.versions.endecNetty.get()}")!!)!!)
-    forgeRuntimeLibrary(include(api("io.wispforest.endec:gson:${libs.versions.endecGson.get()}")!!)!!)
-    forgeRuntimeLibrary(include(api("io.wispforest.endec:jankson:${libs.versions.endecJankson.get()}")!!)!!)
-    forgeRuntimeLibrary(include(api("blue.endless:jankson:${libs.versions.jankson.get()}")!!)!!)
 
     modImplementation("com.github.glitchfiend:TerraBlender-neoforge:${libs.versions.terraBlenderNeoForge.get()}")
 }
@@ -163,8 +148,6 @@ modrinth {
     dependencies {
         required.project("forgified-fabric-api")
         required.project("kotlin-for-forge")
-        required.project("owo-lib")
-        required.project("cloth-config")
         required.project("terrablender")
         required.project("architectury-api")
         optional.project("rei")
@@ -193,8 +176,6 @@ curseforge {
             relations {
                 requiredDependency("forgified-fabric-api")
                 requiredDependency("kotlin-for-forge")
-                requiredDependency("owo-lib")
-                requiredDependency("cloth-config")
                 requiredDependency("terrablender-neoforge")
                 requiredDependency("architectury-api")
                 optionalDependency("roughly-enough-items")
@@ -211,6 +192,7 @@ rootProject.tasks.named("upload").configure { dependsOn(tasks.named("publishNeof
 
 tasks.named<ProcessResources>("processResources") {
     inputs.property("version", project.version)
+    inputs.property("kotlin_for_forge_version", libs.versions.kotlinForForge.get())
 
     filesMatching("META-INF/neoforge.mods.toml") {
         expand(
@@ -227,6 +209,9 @@ tasks.named<ShadowJar>("shadowJar") {
     relocate("mirrg.kotlin", "miragefairy2024.shadow.mirrg.kotlin")
     relocate("mirrg.kotlin.helium", "miragefairy2024.shadow.mirrg.kotlin.helium")
     exclude("**/*refmap.json")
+    filesMatching("META-INF/neoforge.mods.toml") {
+        filter { line: String -> line.removePrefix("# distribution-only ") }
+    }
 }
 
 tasks.named<RemapJarTask>("remapJar") {

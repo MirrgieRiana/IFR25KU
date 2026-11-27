@@ -12,7 +12,6 @@ import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.ViewTexture
-import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.GhostRecipeItemView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
 import miragefairy2024.mod.recipeviewer.views.ProgressView
@@ -32,14 +31,13 @@ import miragefairy2024.mod.recipeviewer.views.minContentSizeY
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.mod.recipeviewer.views.tooltip
 import miragefairy2024.mod.recipeviewer.views.wrapClickable
-import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.OutputSlot
 import miragefairy2024.util.Registration
-import miragefairy2024.util.fire
 import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.mergeTo
+import miragefairy2024.util.observe
 import miragefairy2024.util.quickMove
 import miragefairy2024.util.register
 import miragefairy2024.util.registerViewScreen
@@ -118,7 +116,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
         addDataSlots(propertyDelegate)
     }
 
-    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource) = FairyQuestCardScreenContent(this, title, playerInventoryTitle).view
+    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource) = FairyQuestCardScreenContent(this, title, playerInventoryTitle, screenEventSource).view
 
     override fun stillValid(player: Player) = true
 
@@ -214,7 +212,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
     }
 }
 
-private class FairyQuestCardScreenContent(menu: FairyQuestCardScreenHandler, title: Component, playerInventoryTitle: Component) {
+private class FairyQuestCardScreenContent(menu: FairyQuestCardScreenHandler, title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource) {
 
     val view = run {
         val playerInventoryWidth = 9
@@ -229,8 +227,6 @@ private class FairyQuestCardScreenContent(menu: FairyQuestCardScreenHandler, tit
         val playerInventoryNameSpace = 1
         val hotbarSpace = 4
         val inventoryNameMarginX = 1
-
-        val onBeforeRender = EventRegistry<() -> Unit>()
 
         View {
             view += StackView().configure { // 外枠なのだ～🌱
@@ -305,7 +301,7 @@ private class FairyQuestCardScreenContent(menu: FairyQuestCardScreenHandler, tit
                                 view += menuSlotView(slot, SlotType.NORMAL)
                                 view += GhostRecipeItemView(input?.toItemStacks().orEmpty()).configure {
                                     view.overlayArgb = 0x20FF0000
-                                    onBeforeRender.register {
+                                    screenEventSource.onBeforeRender.observe(screenEventSource.onDisposing) {
                                         val itemStack: ItemStack = slot.item
                                         view.showItemStack = itemStack.isEmpty
                                         view.showOverlay = input != null && (!input.ingredient.test(itemStack) || itemStack.count < input.count)
@@ -318,7 +314,7 @@ private class FairyQuestCardScreenContent(menu: FairyQuestCardScreenHandler, tit
                             ViewTexture(MirageFairy2024.identifier("textures/gui/fairy_quest_progress_background.png"), IntPoint(16, 16)),
                             ViewTexture(MirageFairy2024.identifier("textures/gui/fairy_quest_progress_overlay.png"), IntPoint(16, 16)),
                         ).configure {
-                            onBeforeRender.register {
+                            screenEventSource.onBeforeRender.observe(screenEventSource.onDisposing) {
                                 view.progress = menu.progress / menu.recipe.duration.toDouble()
                             }
                         }.margin(1)
@@ -331,7 +327,7 @@ private class FairyQuestCardScreenContent(menu: FairyQuestCardScreenHandler, tit
                                 view += menuSlotView(slot, SlotType.NORMAL)
                                 view += GhostRecipeItemView(listOfNotNull(output)).configure {
                                     view.overlayArgb = 0x2000FF00
-                                    onBeforeRender.register {
+                                    screenEventSource.onBeforeRender.observe(screenEventSource.onDisposing) {
                                         val itemStack: ItemStack = slot.item
                                         view.showItemStack = itemStack.isEmpty
                                         view.showOverlay = itemStack.isEmpty && output != null && output.isNotEmpty
@@ -368,10 +364,6 @@ private class FairyQuestCardScreenContent(menu: FairyQuestCardScreenHandler, tit
                     }
 
                 }.margin(panelMargin)
-
-                view += BeforeRenderView {
-                    onBeforeRender.fire()
-                }
             }
         }
     }

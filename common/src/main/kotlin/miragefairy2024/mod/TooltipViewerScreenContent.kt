@@ -116,7 +116,7 @@ class TooltipViewerScreenContent(itemStacks: List<ItemStack>, tooltipProvider: (
         }
 
         // YListView は配置時に各行の位置を確定するため、行の高さの変化を後続行の位置に反映するには一覧全体の再配置が必要なのだ～🌱
-        val contentView = DynamicView(createContentView(""))
+        val contentDynamicView = DynamicView(createContentView(""))
 
         view += AlignView().configure {
             view.alignmentX = Alignment.CENTER
@@ -146,7 +146,7 @@ class TooltipViewerScreenContent(itemStacks: List<ItemStack>, tooltipProvider: (
                         view.sizingY = Sizing.FILL
                         val scrollView = YScrollContainerView().configure {
                             position.weight = 1.0
-                            view += contentView
+                            view += contentDynamicView
                         }
                         view += scrollView
                         val scrollbarView = YFlatScrollbarView().configure {
@@ -156,7 +156,7 @@ class TooltipViewerScreenContent(itemStacks: List<ItemStack>, tooltipProvider: (
                         connectScrollbar(scrollView.view, scrollbarView.view)
 
                         textField.view.text.register { _, newValue ->
-                            contentView.content.value = createContentView(newValue)
+                            contentDynamicView.content.value = createContentView(newValue)
                             scrollView.view.updateScrollBounds()
                             scrollView.view.clampScrollOffset()
                         }

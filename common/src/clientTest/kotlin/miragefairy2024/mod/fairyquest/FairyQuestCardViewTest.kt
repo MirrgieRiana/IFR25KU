@@ -8,7 +8,6 @@ import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
-import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.ClickableView
 import miragefairy2024.mod.recipeviewer.views.GhostRecipeItemView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
@@ -65,7 +64,8 @@ class FairyQuestCardViewTest {
         val inventory = Inventory(Mockito.mock(Player::class.java))
         val menu = FairyQuestCardScreenHandler(0, inventory, recipe, ContainerLevelAccess.NULL)
         val slots = menu.slots
-        val rootView = menu.createRootView(cardTitle, text { "inventory"() }, ScreenEventSource())
+        val screenEventSource = ScreenEventSource()
+        val rootView = menu.createRootView(cardTitle, text { "inventory"() }, screenEventSource)
         val proxy: RenderingProxy = object : RenderingProxy {
             override fun calculateTextWidth(text: FormattedText) = text.string.length * 6
             override fun calculateTextWidth(text: FormattedCharSequence) = throw UnsupportedOperationException()
@@ -117,11 +117,7 @@ class FairyQuestCardViewTest {
         val input = ghosts[0].first
         val output = ghosts[4].first
         val progress = placements.single { it.first is ProgressView }.first as ProgressView
-        val beforeRenderView = placements.single { it.first is BeforeRenderView }.first as BeforeRenderView
-
-        fun beforeRender() = beforeRenderView.onBeforeRender.fire()
-
-        beforeRender()
+        screenEventSource.onBeforeRender.fire()
         Assertions.assertTrue(input.showItemStack && input.showOverlay)
         Assertions.assertTrue(output.showItemStack && output.showOverlay)
         Assertions.assertEquals(8, input.itemStacks.single().count)
@@ -129,23 +125,26 @@ class FairyQuestCardViewTest {
         slots[36].set(ItemStack(Items.DIRT))
         slots[40].set(ItemStack(Items.WHITE_BED))
         menu.progress = 5
-        beforeRender()
+        screenEventSource.onBeforeRender.fire()
         Assertions.assertFalse(input.showItemStack)
         Assertions.assertTrue(input.showOverlay)
         Assertions.assertFalse(output.showItemStack || output.showOverlay)
         Assertions.assertEquals(0.5, progress.progress)
 
         slots[36].set(ItemStack(Items.DIRT, 8))
-        beforeRender()
+        screenEventSource.onBeforeRender.fire()
         Assertions.assertFalse(input.showItemStack || input.showOverlay)
 
         slots[36].set(ItemStack.EMPTY)
         slots[40].set(ItemStack.EMPTY)
         menu.progress = 0
-        beforeRender()
+        screenEventSource.onBeforeRender.fire()
         Assertions.assertTrue(input.showItemStack && input.showOverlay)
         Assertions.assertTrue(output.showItemStack && output.showOverlay)
         Assertions.assertEquals(0.0, progress.progress)
+
+        screenEventSource.onDisposing.fire()
+        Assertions.assertTrue(screenEventSource.onBeforeRender.toList().isEmpty())
     }
 
 }
