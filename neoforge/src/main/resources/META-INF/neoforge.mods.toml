@@ -42,13 +42,6 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.miragefairy2024]]
-modId = "jei"
-type = "optional"
-versionRange = "[19.21.0,)"
-ordering = "NONE"
-side = "CLIENT"
-
-[[dependencies.miragefairy2024]]
 modId = "emi"
 type = "optional"
 versionRange = "[1.1.22,)"
