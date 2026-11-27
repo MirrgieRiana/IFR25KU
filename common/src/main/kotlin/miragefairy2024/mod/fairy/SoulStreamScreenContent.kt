@@ -52,9 +52,7 @@ import miragefairy2024.util.register
 import miragefairy2024.util.text
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.inventory.Slot
 
 private val BUTTON_14_BACKGROUND = LayeredImageButtonView.Sprites(
     MirageFairy2024.identifier("button_14/background_on"),
@@ -63,11 +61,8 @@ private val BUTTON_14_BACKGROUND = LayeredImageButtonView.Sprites(
     MirageFairy2024.identifier("button_14/background_focused"),
 )
 
-abstract class SoulStreamScreenContent(private val screenEventSource: ScreenEventSource) {
+abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Component, private val screenEventSource: ScreenEventSource) {
 
-    protected abstract val title: Component
-    protected abstract val playerInventory: Inventory
-    protected abstract val slots: List<Slot>
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     protected abstract val passiveSkillEffectFilters: ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
@@ -81,7 +76,7 @@ abstract class SoulStreamScreenContent(private val screenEventSource: ScreenEven
 
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     val view: View by lazy {
-        val player: Player = playerInventory.player
+        val player: Player = menu.playerInventory.player
         View {
             // 灰色背景
             view += StackView().configure {
@@ -224,7 +219,7 @@ abstract class SoulStreamScreenContent(private val screenEventSource: ScreenEven
                             return View {
                                 view += XListView().configure {
                                     repeat(9) { c ->
-                                        view += menuSlotView(slots[startSlotIndex + c], slotType)
+                                        view += menuSlotView(menu.slots[startSlotIndex + c], slotType)
                                     }
                                 }
                             }
@@ -247,7 +242,7 @@ abstract class SoulStreamScreenContent(private val screenEventSource: ScreenEven
                             }
                             view += scrollView.configure {
                                 view += YListView().configure {
-                                    (9 * 3 + 9 + 9 until slots.size).chunked(9).forEach { indices ->
+                                    (9 * 3 + 9 + 9 until menu.slots.size).chunked(9).forEach { indices ->
                                         view += createSlotRow(indices.first(), SlotType.NORMAL)
                                     }
                                 }
@@ -261,7 +256,7 @@ abstract class SoulStreamScreenContent(private val screenEventSource: ScreenEven
 
                         view += YSpaceView(4)
 
-                        //view += inventoryNameLabel(playerInventory.name)
+                        //view += inventoryNameLabel(menu.playerInventory.name)
 
                         //view += YSpaceView(1)
 

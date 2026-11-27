@@ -38,7 +38,6 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.player.Inventory
-import net.minecraft.world.inventory.Slot
 import org.lwjgl.glfw.GLFW
 import kotlin.math.sin
 
@@ -136,10 +135,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
 
     override fun createRootView(screenEventSource: ScreenEventSource): View {
         // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-        val content: SoulStreamScreenContent = object : SoulStreamScreenContent(screenEventSource) {
-            override val title: Component = this@SoulStreamScreen.title
-            override val playerInventory = menu.playerInventory
-            override val slots: List<Slot> = menu.slots
+        val content: SoulStreamScreenContent = object : SoulStreamScreenContent(menu, title, screenEventSource) {
             // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
             override val passiveSkillEffectFilters = enabledPassiveSkillEffectFilters
             // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
