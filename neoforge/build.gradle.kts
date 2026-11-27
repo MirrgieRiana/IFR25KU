@@ -121,8 +121,6 @@ dependencies {
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:${libs.versions.rei.get()}")
     modCompileOnly("me.shedaniel.cloth:basic-math:${libs.versions.clothBasicMath.get()}")
 
-    modCompileOnly("mezz.jei:jei-1.21.1-common-api:${libs.versions.jei.get()}")
-    modCompileOnly("mezz.jei:jei-1.21.1-neoforge-api:${libs.versions.jei.get()}")
     modRuntimeOnly("mezz.jei:jei-1.21.1-neoforge:${libs.versions.jei.get()}")
 
     modCompileOnly("dev.emi:emi-neoforge:${libs.versions.emi.get()}:api")
