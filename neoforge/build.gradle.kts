@@ -195,15 +195,14 @@ tasks.named("publishNeoforgePublicationToCurseForge").configure { dependsOn(task
 rootProject.tasks.named("upload").configure { dependsOn(tasks.named("publishNeoforgePublicationToCurseForge")) }
 
 tasks.named<ProcessResources>("processResources") {
-    val kotlinForForgeVersion = libs.versions.kotlinForForge.get()
     inputs.property("version", project.version)
-    inputs.property("kotlin_for_forge_version", kotlinForForgeVersion)
+    inputs.property("kotlin_for_forge_version", libs.versions.kotlinForForge.get())
 
     filesMatching("META-INF/neoforge.mods.toml") {
         expand(
             "version" to project.version,
             "forgified_fabric_api_version" to libs.versions.forgifiedFabricApi.get(),
-            "kotlin_for_forge_version" to kotlinForForgeVersion,
+            "kotlin_for_forge_version" to libs.versions.kotlinForForge.get(),
         )
     }
 }
