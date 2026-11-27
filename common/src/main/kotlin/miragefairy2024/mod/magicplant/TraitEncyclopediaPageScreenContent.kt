@@ -1,19 +1,18 @@
-package miragefairy2024.mod
+package miragefairy2024.mod.magicplant
 
 import miragefairy2024.ClientProxy
 import miragefairy2024.MessageViewScreenDefinition
 import miragefairy2024.ModContext
 import miragefairy2024.clientProxy
-import miragefairy2024.mod.common.SlotType
+import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.guiBackToGameTranslation
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.views.AlignView
 import miragefairy2024.mod.recipeviewer.views.ImageView
-import miragefairy2024.mod.recipeviewer.views.ItemView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
-import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
 import miragefairy2024.mod.recipeviewer.views.View
@@ -25,6 +24,7 @@ import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
+import miragefairy2024.mod.recipeviewer.views.createView
 import miragefairy2024.mod.recipeviewer.views.fixedContentSizeX
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.plusAssign
@@ -32,23 +32,23 @@ import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
 import miragefairy2024.util.register
+import miragefairy2024.util.style
 import miragefairy2024.util.text
 import net.minecraft.network.chat.CommonComponents
 
 context(_: ModContext)
-fun initIfrEncyclopediaPageScreen() {
-    onOpenIfrEncyclopediaPageScreen.register { card ->
-        card.openIfrEncyclopediaPageScreen()
+fun initTraitEncyclopediaPageScreen() {
+    onOpenTraitEncyclopediaPageScreen.register { trait ->
+        trait.openTraitEncyclopediaPageScreen()
         true
     }
 }
 
-private fun IfrEncyclopediaEntryCard.openIfrEncyclopediaPageScreen() {
+private fun Trait.openTraitEncyclopediaPageScreen() {
     fun <S : Any> openScreen(proxy: ClientProxy<S>) {
         val parent = proxy.getCurrentScreen()
-        val title = text { this@openIfrEncyclopediaPageScreen.titleTranslation() }
-        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(title) {
-            IfrEncyclopediaPageViewWrapper(this).also { view ->
+        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(this.getName()) {
+            TraitEncyclopediaPageScreenContent(this).also { view ->
                 view.onBackToGame.register {
                     proxy.setCurrentScreen(null)
                     true
@@ -63,7 +63,7 @@ private fun IfrEncyclopediaEntryCard.openIfrEncyclopediaPageScreen() {
     openScreen(clientProxy!!)
 }
 
-private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard) {
+class TraitEncyclopediaPageScreenContent(trait: Trait) {
 
     val onBackToGame = EventRegistry<() -> Boolean>()
     val onBack = EventRegistry<() -> Boolean>()
@@ -84,48 +84,41 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard) {
                     view.sizingX = Sizing.FILL
                     view.sizingY = Sizing.FILL
 
-                    view += NinePatchImageView(NinePatchTextureCard.IFR_ENCYCLOPEDIA_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22, true, true)
+                    view += NinePatchTextureCard.TRAIT_BACKGROUND.createView()
                     view += YListView().configure {
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL
 
-                        // タイトル
+                        // 特性名
                         view += MultiLineTextView().configure {
-                            view.text.value = text { card.titleTranslation() }
+                            view.text.value = trait.getName().style(trait.style)
                             view.alignmentX = Alignment.CENTER
-                            view.color = IFR_ENCYCLOPEDIA_TEXT_COLOR
                             view.shadow = false
                         }
 
                         view += YSpaceView(5)
 
-                        // 掲げられたアイテム
-                        view += StackView().configure {
+                        // 特性アイコン
+                        view += ImageView(ViewTexture(trait.texture, IntPoint(32, 32))).configure {
                             position.alignmentX = Alignment.CENTER
-
-                            val itemStack = card.itemStacksGetter().firstOrNull()
-                            if (itemStack != null) {
-                                view += ImageView(SlotType.NORMAL.viewTexture)
-                                view += ItemView(itemStack).configure().margin(SlotType.NORMAL.margin.x, SlotType.NORMAL.margin.y)
-                            }
-                        }.margin(0, 5)
+                        }
 
                         view += YSpaceView(5)
 
-                        // 本文
+                        // 特性ポエム
                         view += StackView().configure {
                             position.weight = 1.0
                             view.sizingX = Sizing.FILL
                             view.sizingY = Sizing.FILL
                             val scrollView = YScrollContainerView().configure {
                                 view += MultiLineTextView().configure {
-                                    view.text.value = text { card.textTranslation() }
-                                    view.color = IFR_ENCYCLOPEDIA_TEXT_COLOR
+                                    view.text.value = trait.text
                                     view.shadow = false
                                 }
                             }
                             view += scrollView
                             val scrollbarView = YFlatScrollbarView().configure {
+                                view.scrollbarColor = 0xA0FFFFFF.toInt()
                                 view.keyboardFocusable = false
                             }
                             view += AlignView().configure {
@@ -134,9 +127,8 @@ private class IfrEncyclopediaPageViewWrapper(card: IfrEncyclopediaEntryCard) {
                             }
                             connectScrollbar(scrollView.view, scrollbarView.view)
                         }
-
-                    }.margin(5, 5, 10, 5)
-                }.fixedContentSizeX(200)
+                    }.margin(5)
+                }.fixedContentSizeX(160)
             }
 
             view += YSpaceView(10)

@@ -4,6 +4,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.magicplant.contents.getTraitPower
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
@@ -16,7 +17,6 @@ import miragefairy2024.mod.recipeviewer.views.DynamicView
 import miragefairy2024.mod.recipeviewer.views.EmptyView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
-import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
@@ -28,6 +28,7 @@ import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
+import miragefairy2024.mod.recipeviewer.views.createView
 import miragefairy2024.mod.recipeviewer.views.fixedContentSizeX
 import miragefairy2024.mod.recipeviewer.views.fixedContentSizeY
 import miragefairy2024.mod.recipeviewer.views.margin
@@ -45,7 +46,6 @@ import miragefairy2024.util.register
 import miragefairy2024.util.registerViewScreen
 import miragefairy2024.util.style
 import miragefairy2024.util.text
-import miragefairy2024.util.times
 import mirrg.kotlin.hydrogen.formatAs
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
 import net.minecraft.core.BlockPos
@@ -89,8 +89,14 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
     override fun stillValid(player: Player) = true
     override fun quickMoveStack(player: Player, slot: Int): ItemStack = slots[slot].item
 
-    override fun createView(title: Component, playerInventoryTitle: Component): View {
-        val level: Level = playerInventory.player.level()
+    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource) = TraitListScreenContent(this, title).view
+
+}
+
+private class TraitListScreenContent(menu: TraitListScreenHandler, title: Component) {
+
+    val view = run {
+        val level: Level = menu.playerInventory.player.level()
 
         fun createTraitCardView(traitStack: TraitStack): View {
             return View {
@@ -99,7 +105,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                     view.sizingY = Sizing.FILL
 
                     val trait = traitStack.trait
-                    val context = TraitConditionContext(level, blockPos, level.getMagicPlantBlockEntity(blockPos))
+                    val context = TraitConditionContext(level, menu.blockPos, level.getMagicPlantBlockEntity(menu.blockPos))
                     val conditionFactors = trait.conditions.map { it.getFactor(context) }
                     val totalConditionFactor = conditionFactors.fold(1.0) { a, b -> a * b }
 
@@ -187,17 +193,17 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
             }
         }
 
-        return View {
+        View {
             // 外枠
             view += StackView().configure {
-                view += NinePatchImageView("textures/gui/" * MirageFairy2024.identifier("panel") * ".png", 16, 16, 5, 5, 5, 5, 5, 5, false, false)
+                view += NinePatchTextureCard.PANEL.createView()
                 // 内枠
                 view += YListView().configure {
                     view.sizingX = Sizing.FILL
 
-                    val traitStackList = traitStacks.traitStackList
+                    val traitStackList = menu.traitStacks.traitStackList
 
-                    val cardContent = DynamicView(if (traitStackList.isNotEmpty()) createTraitCardView(traitStackList.first()) else EmptyView())
+                    val cardContentDynamicView = DynamicView(if (traitStackList.isNotEmpty()) createTraitCardView(traitStackList.first()) else EmptyView())
 
                     // GUI名
                     view += MultiLineTextView().configure {
@@ -214,8 +220,8 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL
 
-                        view += NinePatchImageView(NinePatchTextureCard.TRAIT_BACKGROUND.texture, 66, 66, 22, 22, 22, 22, 22, 22, true, true)
-                        view += cardContent.configure().margin(5)
+                        view += NinePatchTextureCard.TRAIT_BACKGROUND.createView()
+                        view += cardContentDynamicView.configure().margin(5)
                     }.fixedContentSizeY(18 * 6)
 
                     view += YSpaceView(4)
@@ -236,7 +242,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                                 view += YListView().configure {
                                     view.sizingX = Sizing.FILL
 
-                                    val context = TraitConditionContext(level, blockPos, level.getMagicPlantBlockEntity(blockPos))
+                                    val context = TraitConditionContext(level, menu.blockPos, level.getMagicPlantBlockEntity(menu.blockPos))
 
                                     traitStackList.forEach { traitStack ->
                                         val trait = traitStack.trait
@@ -256,7 +262,7 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
                                             }
                                             view.shadow = false
                                         }.onClick {
-                                            cardContent.content.value = createTraitCardView(traitStack)
+                                            cardContentDynamicView.content.value = createTraitCardView(traitStack)
                                             true
                                         }
 

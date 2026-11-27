@@ -2,7 +2,6 @@ package miragefairy2024.mod
 
 import miragefairy2024.ClientProxy
 import miragefairy2024.MessageViewScreenDefinition
-import miragefairy2024.MirageFairy2024
 import miragefairy2024.clientProxy
 import miragefairy2024.mod.common.KeyMappingType
 import miragefairy2024.mod.common.SlotType
@@ -14,7 +13,6 @@ import miragefairy2024.mod.recipeviewer.views.DynamicView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.ItemView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
-import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextFieldView
 import miragefairy2024.mod.recipeviewer.views.TextView
@@ -28,6 +26,7 @@ import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
+import miragefairy2024.mod.recipeviewer.views.createView
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.minContentSizeX
 import miragefairy2024.mod.recipeviewer.views.plusAssign
@@ -36,7 +35,6 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.register
 import miragefairy2024.util.text
-import miragefairy2024.util.times
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 
@@ -45,7 +43,7 @@ fun openTooltipViewerScreen() {
         val definition = MessageViewScreenDefinition(text { TOOLTIP_VIEWER_KEY_TRANSLATION() }) {
             val player = proxy.getClientPlayer()
             val itemStacks = if (player != null) (0 until 9).map { player.inventory[it] } else emptyList()
-            TooltipViewerViewWrapper(itemStacks, proxy::getItemTooltip).view
+            TooltipViewerScreenContent(itemStacks, proxy::getItemTooltip).view
         }.also {
             it.additionalCloseKey = KeyMappingType.OPEN_TOOLTIP_VIEWER
             it.closeOnOutsideClick = false
@@ -55,7 +53,7 @@ fun openTooltipViewerScreen() {
     openScreen(clientProxy!!)
 }
 
-class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, tooltipProvider: (ItemStack) -> List<Component>) {
+class TooltipViewerScreenContent(itemStacks: List<ItemStack>, tooltipProvider: (ItemStack) -> List<Component>) {
 
     val view = View {
 
@@ -118,7 +116,7 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, tooltipProvider: (It
         }
 
         // YListView は配置時に各行の位置を確定するため、行の高さの変化を後続行の位置に反映するには一覧全体の再配置が必要なのだ～🌱
-        val contentView = DynamicView(createContentView(""))
+        val contentDynamicView = DynamicView(createContentView(""))
 
         view += AlignView().configure {
             view.alignmentX = Alignment.CENTER
@@ -127,7 +125,7 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, tooltipProvider: (It
             view += StackView().configure {
                 view.sizingY = Sizing.FILL
 
-                view += NinePatchImageView("textures/gui/" * MirageFairy2024.identifier("panel") * ".png", 16, 16, 5, 5, 5, 5, 5, 5, false, false)
+                view += NinePatchTextureCard.PANEL.createView()
                 // 内枠
                 view += YListView().configure {
                     view.sizingX = Sizing.FILL
@@ -148,7 +146,7 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, tooltipProvider: (It
                         view.sizingY = Sizing.FILL
                         val scrollView = YScrollContainerView().configure {
                             position.weight = 1.0
-                            view += contentView
+                            view += contentDynamicView
                         }
                         view += scrollView
                         val scrollbarView = YFlatScrollbarView().configure {
@@ -158,7 +156,7 @@ class TooltipViewerViewWrapper(itemStacks: List<ItemStack>, tooltipProvider: (It
                         connectScrollbar(scrollView.view, scrollbarView.view)
 
                         textField.view.text.register { _, newValue ->
-                            contentView.content.value = createContentView(newValue)
+                            contentDynamicView.content.value = createContentView(newValue)
                             scrollView.view.updateScrollBounds()
                             scrollView.view.clampScrollOffset()
                         }

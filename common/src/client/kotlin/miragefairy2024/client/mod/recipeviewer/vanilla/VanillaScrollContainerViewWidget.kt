@@ -218,6 +218,10 @@ abstract class VanillaScrollContainerViewWidget(
             guiGraphics.disableScissor()
         }
 
+        if (isActive && isFocused && focused == null && width > 0 && height > 0) {
+            guiGraphics.renderOutline(x, y, width, height, 0xFFFFFFFF.toInt())
+        }
+
     }
 
     /** ホイール入力から、このコンテナのスクロール軸に適用する入力値を返すのだ～🌱 */
@@ -450,8 +454,7 @@ abstract class VanillaScrollContainerViewWidget(
         val childContext: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = context.origin
             override val canPlaceMenuSlots = context.canPlaceMenuSlots
-            override val onBeforeRender = context.onBeforeRender
-            override val onTick = context.onTick
+            override val screenEventSource = context.screenEventSource
             override fun addRenderable(registration: WidgetRegistration) = register(registration)
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover {
                 return context.registerMenuSlotPlacement(slotId) {

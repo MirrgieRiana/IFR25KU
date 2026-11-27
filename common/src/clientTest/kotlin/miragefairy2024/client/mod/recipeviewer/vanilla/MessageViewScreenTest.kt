@@ -3,13 +3,25 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 import miragefairy2024.MessageViewScreenDefinition
 import miragefairy2024.client.mod.getKeyMapping
 import miragefairy2024.mod.common.KeyMappingType
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
+import miragefairy2024.mod.recipeviewer.view.IntPoint
+import miragefairy2024.mod.recipeviewer.view.PlaceableView
+import miragefairy2024.mod.recipeviewer.view.View
+import miragefairy2024.mod.recipeviewer.view.ViewController
+import miragefairy2024.mod.recipeviewer.view.ViewPlacer
+import miragefairy2024.mod.recipeviewer.views.DynamicView
 import miragefairy2024.mod.recipeviewer.views.EmptyView
+import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.empty
+import miragefairy2024.util.fire
+import miragefairy2024.util.observe
+import miragefairy2024.util.register
 import miragefairy2024.util.text
 import net.minecraft.client.GameNarrator
 import net.minecraft.client.InputType
 import net.minecraft.client.KeyMapping
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.screens.Screen
@@ -28,22 +40,138 @@ class MessageViewScreenTest {
     }
 
     @Test
-    fun `画面を再初期化すると View を再生成し外部クリック終了を無効にした画面は閉じないのだ`() {
+    fun `リサイズではルート View を再利用し画面を開き直すと再生成するのだ`() {
         Mockito.mockStatic(Screen::class.java).use {
             val minecraft = createMinecraft()
-            val parent: Screen = Mockito.mock(Screen::class.java)
             var creations = 0
             val definition = MessageViewScreenDefinition(text { empty() }) {
                 creations++
                 EmptyView()
             }
+            val screen = MessageViewScreen(null, definition)
+            try {
+                screen.init(minecraft, 200, 200)
+                screen.resize(minecraft, 300, 240)
+
+                Assertions.assertEquals(1, creations)
+                Assertions.assertEquals(300, screen.width)
+                Assertions.assertEquals(240, screen.height)
+
+                screen.removed()
+                screen.init(minecraft, 300, 240)
+
+                Assertions.assertEquals(2, creations)
+            } finally {
+                screen.removed()
+            }
+        }
+    }
+
+    @Test
+    fun `子 View の差し替えとリサイズをまたいで画面のイベントを購読できるのだ`() {
+        Mockito.mockStatic(Screen::class.java).use {
+            val minecraft = createMinecraft()
+            val externalEvent = EventRegistry<() -> Unit>()
+            val screenEventSources = mutableListOf<ScreenEventSource>()
+            val calls = mutableListOf<String>()
+            val tab = DynamicView(EmptyView())
+            val guiGraphics = Mockito.mock(GuiGraphics::class.java)
+            val definition = MessageViewScreenDefinition(text { empty() }) { screenEventSource ->
+                screenEventSources += screenEventSource
+                externalEvent.observe(screenEventSource.onDisposing) {
+                    calls += "updated"
+                }
+                screenEventSource.onOpened.observe(screenEventSource.onDisposing) {
+                    calls += "opened"
+                }
+                screenEventSource.onDisposing.observe(screenEventSource.onDisposing) {
+                    calls += "disposing"
+                }
+                screenEventSource.onBeforeRender.observe(screenEventSource.onDisposing) {
+                    calls += "render"
+                }
+                screenEventSource.onTick.observe(screenEventSource.onDisposing) {
+                    calls += "tick"
+                }
+                tab
+            }
+            val screen = MessageViewScreen(null, definition)
+            try {
+                screen.init(minecraft, 200, 200)
+                externalEvent.fire()
+                screen.render(guiGraphics, 0, 0, 0.0F)
+                tab.content.value = EmptyView()
+                screen.resize(minecraft, 300, 240)
+                externalEvent.fire()
+                screen.tick()
+                screen.render(guiGraphics, 0, 0, 0.0F)
+                screen.removed()
+                externalEvent.fire()
+
+                screen.init(minecraft, 300, 240)
+                externalEvent.fire()
+                screen.tick()
+                screen.render(guiGraphics, 0, 0, 0.0F)
+                screen.removed()
+                externalEvent.fire()
+            } finally {
+                screen.removed()
+            }
+
+            Assertions.assertEquals(2, screenEventSources.size)
+            Assertions.assertSame(screenEventSources[0], screenEventSources[1])
+            Assertions.assertEquals(listOf("opened", "updated", "render", "updated", "tick", "render", "disposing", "opened", "updated", "tick", "render", "disposing"), calls)
+        }
+    }
+
+    @Test
+    fun `最初の生成や配置に失敗した画面を外しても開閉を通知しないのだ`() {
+        Mockito.mockStatic(Screen::class.java).use {
+            val minecraft = createMinecraft()
+            val failure = IllegalStateException("View initialization failed")
+            val failingView: View = object : View by EmptyView() {
+                override fun attachTo(offset: IntPoint, viewPlacer: ViewPlacer<PlaceableView>): ViewController {
+                    throw failure
+                }
+            }
+            val createViews = listOf<() -> View>({ throw failure }, { failingView })
+
+            createViews.forEach { createView ->
+                val calls = mutableListOf<String>()
+                val definition = MessageViewScreenDefinition(text { empty() }) { screenEventSource ->
+                    screenEventSource.onOpened.register {
+                        calls += "opened"
+                    }
+                    screenEventSource.onDisposing.register {
+                        calls += "disposing"
+                    }
+                    createView()
+                }
+                val screen = MessageViewScreen(null, definition)
+                try {
+                    val thrown = Assertions.assertThrows(IllegalStateException::class.java) {
+                        screen.init(minecraft, 200, 200)
+                    }
+                    Assertions.assertSame(failure, thrown)
+                } finally {
+                    screen.removed()
+                }
+                Assertions.assertTrue(calls.isEmpty())
+            }
+        }
+    }
+
+    @Test
+    fun `外部クリック終了を無効にした画面は外部をクリックしても閉じないのだ`() {
+        Mockito.mockStatic(Screen::class.java).use {
+            val minecraft = createMinecraft()
+            val parent: Screen = Mockito.mock(Screen::class.java)
+            val definition = MessageViewScreenDefinition(text { empty() }) { EmptyView() }
             definition.closeOnOutsideClick = false
             val screen = MessageViewScreen(parent, definition)
             try {
                 screen.init(minecraft, 200, 200)
-                screen.init(minecraft, 300, 200)
 
-                Assertions.assertEquals(2, creations)
                 Assertions.assertFalse(screen.mouseClicked(10.0, 10.0, 0))
                 Mockito.verify(minecraft, Mockito.never()).setScreen(parent)
                 screen.onClose()

@@ -89,7 +89,9 @@ class DynamicView(initialContent: View) : View {
             }
         }
 
-        content.observeAndInitialize(onClosed) { _, _ -> load() }
+        content.observeAndInitialize(onClosed) { _, _ ->
+            load()
+        }
 
         return object : ViewController {
             override fun setOffset(offset: IntPoint) {

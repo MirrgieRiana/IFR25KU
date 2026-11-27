@@ -1,18 +1,26 @@
 package miragefairy2024.client.util
 
+import com.mojang.blaze3d.systems.RenderSystem
+import com.mojang.blaze3d.vertex.BufferBuilder
+import com.mojang.blaze3d.vertex.BufferUploader
+import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
+import com.mojang.blaze3d.vertex.Tesselator
+import com.mojang.blaze3d.vertex.VertexFormat
+import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.atMost
 import mirrg.kotlin.helium.max
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.renderer.GameRenderer
 import net.minecraft.locale.Language
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.FormattedText
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.FormattedCharSequence
 import net.minecraft.util.Mth
+import org.joml.Matrix4f
 import org.joml.Vector3f
 import kotlin.math.PI
 import kotlin.math.cos
@@ -122,29 +130,19 @@ fun GuiGraphics.drawScrollingString(
     }
 }
 
-fun GuiGraphics.drawNinePatchImage(
-    bounds: IntRectangle,
-    textureId: ResourceLocation,
-    textureWidth: Int,
-    xStartSize: Int,
-    xMiddleSize: Int,
-    xEndSize: Int,
-    textureHeight: Int,
-    yStartSize: Int,
-    yMiddleSize: Int,
-    yEndSize: Int,
-    repeatX: Boolean,
-    repeatY: Boolean,
-) {
+fun GuiGraphics.drawNinePatchImage(bounds: IntRectangle, ninePatchTextureCard: NinePatchTextureCard) {
 
-    val sw0 = textureWidth
-    val sw1 = xStartSize
-    val sw2 = xMiddleSize
-    val sw3 = xEndSize
-    val sh0 = textureHeight
-    val sh1 = yStartSize
-    val sh2 = yMiddleSize
-    val sh3 = yEndSize
+    val textureId = ninePatchTextureCard.texture
+    val repeatX = ninePatchTextureCard.repeatX
+    val repeatY = ninePatchTextureCard.repeatY
+    val sw0 = ninePatchTextureCard.textureWidth.toFloat()
+    val sw1 = ninePatchTextureCard.xStartSize
+    val sw2 = ninePatchTextureCard.xMiddleSize
+    val sw3 = ninePatchTextureCard.xEndSize
+    val sh0 = ninePatchTextureCard.textureHeight.toFloat()
+    val sh1 = ninePatchTextureCard.yStartSize
+    val sh2 = ninePatchTextureCard.yMiddleSize
+    val sh3 = ninePatchTextureCard.yEndSize
     val sx0 = 0
     val sx1 = sw1
     val sx2 = sw1 + sw2
@@ -160,11 +158,28 @@ fun GuiGraphics.drawNinePatchImage(
     val dy2 = bounds.y + bounds.sizeY - sh3
     // val dy3 = bounds.y + bounds.sizeY
 
+    RenderSystem.setShaderTexture(0, textureId)
+    RenderSystem.setShader(GameRenderer::getPositionTexShader)
+    val matrix: Matrix4f = this.pose().last().pose()
+    val bufferBuilder: BufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
+
+    /** 9 分割画像のパッチ 1 枚を描くための 4 頂点をバッファに追加するのだ～🌱 */
+    fun addQuad(x: Int, y: Int, width: Int, height: Int, u: Int, v: Int, uWidth: Int, vHeight: Int) {
+        val minU = u.toFloat() / sw0
+        val maxU = (u.toFloat() + uWidth) / sw0
+        val minV = v.toFloat() / sh0
+        val maxV = (v.toFloat() + vHeight) / sh0
+        bufferBuilder.addVertex(matrix, x.toFloat(), y.toFloat(), 0.0F).setUv(minU, minV)
+        bufferBuilder.addVertex(matrix, x.toFloat(), (y + height).toFloat(), 0.0F).setUv(minU, maxV)
+        bufferBuilder.addVertex(matrix, (x + width).toFloat(), (y + height).toFloat(), 0.0F).setUv(maxU, maxV)
+        bufferBuilder.addVertex(matrix, (x + width).toFloat(), y.toFloat(), 0.0F).setUv(maxU, minV)
+    }
+
     // 角
-    this.blit(textureId, dx0, dy0, sx0.toFloat(), sy0.toFloat(), sw1, sh1, sw0, sh0)
-    this.blit(textureId, dx2, dy0, sx2.toFloat(), sy0.toFloat(), sw3, sh1, sw0, sh0)
-    this.blit(textureId, dx0, dy2, sx0.toFloat(), sy2.toFloat(), sw1, sh3, sw0, sh0)
-    this.blit(textureId, dx2, dy2, sx2.toFloat(), sy2.toFloat(), sw3, sh3, sw0, sh0)
+    addQuad(dx0, dy0, sw1, sh1, sx0, sy0, sw1, sh1)
+    addQuad(dx2, dy0, sw3, sh1, sx2, sy0, sw3, sh1)
+    addQuad(dx0, dy2, sw1, sh3, sx0, sy2, sw1, sh3)
+    addQuad(dx2, dy2, sw3, sh3, sx2, sy2, sw3, sh3)
 
     // 上下
     run {
@@ -174,8 +189,8 @@ fun GuiGraphics.drawNinePatchImage(
             val dw = if (repeatX) sw2 atMost dx2 - dx else dx2 - dx
             val sw = if (repeatX) dw else sw2
 
-            this.blit(textureId, dx, dy0, dw, sh1, sx1.toFloat(), sy0.toFloat(), sw, sh1, sw0, sh0)
-            this.blit(textureId, dx, dy2, dw, sh3, sx1.toFloat(), sy2.toFloat(), sw, sh3, sw0, sh0)
+            addQuad(dx, dy0, dw, sh1, sx1, sy0, sw, sh1)
+            addQuad(dx, dy2, dw, sh3, sx1, sy2, sw, sh3)
 
             dx += dw
         }
@@ -189,8 +204,8 @@ fun GuiGraphics.drawNinePatchImage(
             val dh = if (repeatY) sh2 atMost dy2 - dy else dy2 - dy
             val sh = if (repeatY) dh else sh2
 
-            this.blit(textureId, dx0, dy, sw1, dh, sx0.toFloat(), sy1.toFloat(), sw1, sh, sw0, sh0)
-            this.blit(textureId, dx2, dy, sw3, dh, sx2.toFloat(), sy1.toFloat(), sw3, sh, sw0, sh0)
+            addQuad(dx0, dy, sw1, dh, sx0, sy1, sw1, sh)
+            addQuad(dx2, dy, sw3, dh, sx2, sy1, sw3, sh)
 
             dy += dh
         }
@@ -210,7 +225,7 @@ fun GuiGraphics.drawNinePatchImage(
                 val dh = if (repeatY) sh2 atMost dy2 - dy else dy2 - dy
                 val sh = if (repeatY) dh else sh2
 
-                this.blit(textureId, dx, dy, dw, dh, sx1.toFloat(), sy1.toFloat(), sw, sh, sw0, sh0)
+                addQuad(dx, dy, dw, dh, sx1, sy1, sw, sh)
 
                 dy += dh
             }
@@ -218,5 +233,7 @@ fun GuiGraphics.drawNinePatchImage(
             dx += dw
         }
     }
+
+    BufferUploader.drawWithShader(bufferBuilder.buildOrThrow())
 
 }

@@ -5,17 +5,15 @@ import miragefairy2024.ModContext
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.SlotType
 import miragefairy2024.mod.common.guiFullScreenTranslation
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
 import miragefairy2024.mod.recipeviewer.view.Alignment
 import miragefairy2024.mod.recipeviewer.view.ColorPair
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.Sizing
-import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewTexture
-import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.GhostRecipeItemView
 import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
-import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.ProgressView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.View
@@ -26,27 +24,26 @@ import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.YSpaceView
 import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
+import miragefairy2024.mod.recipeviewer.views.createView
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.menuSlotView
 import miragefairy2024.mod.recipeviewer.views.minContentSizeY
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.mod.recipeviewer.views.tooltip
 import miragefairy2024.mod.recipeviewer.views.wrapClickable
-import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.OutputSlot
 import miragefairy2024.util.Registration
-import miragefairy2024.util.fire
 import miragefairy2024.util.get
 import miragefairy2024.util.invoke
 import miragefairy2024.util.isNotEmpty
 import miragefairy2024.util.mergeTo
+import miragefairy2024.util.observe
 import miragefairy2024.util.quickMove
 import miragefairy2024.util.register
 import miragefairy2024.util.registerViewScreen
 import miragefairy2024.util.set
 import miragefairy2024.util.size
 import miragefairy2024.util.text
-import miragefairy2024.util.times
 import miragefairy2024.util.toItemStacks
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
 import net.minecraft.core.registries.BuiltInRegistries
@@ -119,166 +116,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
         addDataSlots(propertyDelegate)
     }
 
-    override fun createView(title: Component, playerInventoryTitle: Component): View {
-        val playerInventoryWidth = 9
-        val playerInventoryHeight = 3
-        val tradeSlotCount = 4
-        val hotbarSlotIndexOffset = playerInventoryWidth * playerInventoryHeight
-        val inputSlotIndexOffset = hotbarSlotIndexOffset + playerInventoryWidth
-        val outputSlotIndexOffset = inputSlotIndexOffset + tradeSlotCount
-
-        val panelTexture = "textures/gui/" * MirageFairy2024.identifier("panel") * ".png"
-        val panelMargin = 7
-        val sectionSpace = 3
-        val playerInventoryNameSpace = 1
-        val hotbarSpace = 4
-        val inventoryNameMarginX = 1
-
-        val onBeforeRender = EventRegistry<() -> Unit>()
-
-        return View {
-            view += StackView().configure { // 外枠なのだ～🌱
-                view += NinePatchImageView(panelTexture, 16, 16, 5, 5, 5, 5, 5, 5, false, false)
-                view += YListView().configure { // 内枠なのだ～🌱
-
-                    view += MultiLineTextView().configure {
-                        view.text.value = title
-                        view.alignmentX = Alignment.CENTER
-                        view.color = ColorPair.DARK_GRAY
-                        view.shadow = false
-                    }.margin(inventoryNameMarginX, 0)
-
-                    view += YSpaceView(sectionSpace)
-
-                    // 依頼本文なのだ～🌱
-                    view += StackView().configure {
-                        view.sizingX = Sizing.FILL
-                        view.sizingY = Sizing.FILL
-
-                        // 外枠装飾用パネルなのだ～🌱
-                        view += NinePatchImageView(NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.texture, 66, 66, 22, 22, 22, 22, 22, 22, true, true)
-
-                        // スクロールコンテナなのだ～🌱
-                        view += XListView().configure {
-                            view.sizingX = Sizing.FILL
-                            view.sizingY = Sizing.FILL
-                            val scrollView = YScrollContainerView().configure {
-                                position.weight = 1.0
-                                view += StackView().configure {
-                                    view.sizingX = Sizing.FILL
-
-                                    // 罫線装飾用パネルなのだ～🌱
-                                    view += NinePatchImageView(MirageFairy2024.identifier("textures/gui/fairy_quest_card_line.png"), 11, 11, 0, 11, 0, 0, 11, 0, true, true)
-
-                                    // メッセージテキストラベルなのだ～🌱
-                                    view += MultiLineTextView().configure {
-                                        view.text.value = recipe.message
-                                        view.color = ColorPair(0xFF6B472E.toInt(), 0xFF6B472E.toInt())
-                                        view.shadow = false
-                                    }.margin(0, 0, 0, 1)
-
-                                }
-                            }
-                            view += scrollView
-                            val scrollbarView = YFlatScrollbarView().configure {
-                                view.keyboardFocusable = false
-                            }
-                            view += scrollbarView
-                            connectScrollbar(scrollView.view, scrollbarView.view)
-                        }.margin(11, 6, 11, 11)
-
-                    }.minContentSizeY(11 * 7 + 5).wrapClickable {
-                        view.hoverOverlayColor = 0x00000000
-                        // クリックしたらメッセージを全画面で表示するのだ～🌱
-                        view.onClick.register {
-                            recipe.openMessageScreen()
-                            true
-                        }
-                    }.tooltip(text { guiFullScreenTranslation() })
-
-                    view += YSpaceView(sectionSpace)
-
-                    // 取引欄なのだ～🌱
-                    view += XListView().configure {
-
-                        repeat(tradeSlotCount) { i ->
-                            view += StackView().configure {
-                                val slot = slots[inputSlotIndexOffset + i]
-                                val input = recipe.inputs.getOrNull(i)?.invoke()
-
-                                view += menuSlotView(slot, SlotType.NORMAL)
-                                view += GhostRecipeItemView(input?.toItemStacks().orEmpty()).configure {
-                                    view.overlayArgb = 0x20FF0000
-                                    onBeforeRender.register {
-                                        val itemStack: ItemStack = slot.item
-                                        view.showItemStack = itemStack.isEmpty
-                                        view.showOverlay = input != null && (!input.ingredient.test(itemStack) || itemStack.count < input.count)
-                                    }
-                                }.margin(SlotType.NORMAL.margin.x, SlotType.NORMAL.margin.y)
-                            }
-                        }
-
-                        view += ProgressView(
-                            ViewTexture(MirageFairy2024.identifier("textures/gui/fairy_quest_progress_background.png"), IntPoint(16, 16)),
-                            ViewTexture(MirageFairy2024.identifier("textures/gui/fairy_quest_progress_overlay.png"), IntPoint(16, 16)),
-                        ).configure {
-                            onBeforeRender.register {
-                                view.progress = progress / recipe.duration.toDouble()
-                            }
-                        }.margin(1)
-
-                        repeat(tradeSlotCount) { i ->
-                            view += StackView().configure {
-                                val slot = slots[outputSlotIndexOffset + i]
-                                val output = recipe.outputs.getOrNull(i)?.invoke()
-
-                                view += menuSlotView(slot, SlotType.NORMAL)
-                                view += GhostRecipeItemView(listOfNotNull(output)).configure {
-                                    view.overlayArgb = 0x2000FF00
-                                    onBeforeRender.register {
-                                        val itemStack: ItemStack = slot.item
-                                        view.showItemStack = itemStack.isEmpty
-                                        view.showOverlay = itemStack.isEmpty && output != null && output.isNotEmpty
-                                    }
-                                }.margin(SlotType.NORMAL.margin.x, SlotType.NORMAL.margin.y)
-                            }
-                        }
-
-                    }
-
-                    view += YSpaceView(sectionSpace)
-
-                    view += MultiLineTextView().configure {
-                        view.text.value = playerInventoryTitle
-                        view.color = ColorPair.DARK_GRAY
-                        view.shadow = false
-                    }.margin(inventoryNameMarginX, 0)
-
-                    view += YSpaceView(playerInventoryNameSpace)
-
-                    // プレイヤーのインベントリなのだ～🌱
-                    repeat(playerInventoryHeight) { r ->
-                        view += XListView().configure {
-                            repeat(playerInventoryWidth) { c ->
-                                view += menuSlotView(slots[playerInventoryWidth * r + c], SlotType.NORMAL)
-                            }
-                        }
-                    }
-                    view += YSpaceView(hotbarSpace)
-                    view += XListView().configure {
-                        repeat(playerInventoryWidth) { c ->
-                            view += menuSlotView(slots[hotbarSlotIndexOffset + c], SlotType.NORMAL)
-                        }
-                    }
-
-                }.margin(panelMargin)
-
-                view += BeforeRenderView {
-                    onBeforeRender.fire()
-                }
-            }
-        }
-    }
+    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource) = FairyQuestCardScreenContent(this, title, playerInventoryTitle, screenEventSource).view
 
     override fun stillValid(player: Player) = true
 
@@ -372,4 +210,162 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
             clearContainer(player, outputInventory)
         }
     }
+}
+
+private class FairyQuestCardScreenContent(menu: FairyQuestCardScreenHandler, title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource) {
+
+    val view = run {
+        val playerInventoryWidth = 9
+        val playerInventoryHeight = 3
+        val tradeSlotCount = 4
+        val hotbarSlotIndexOffset = playerInventoryWidth * playerInventoryHeight
+        val inputSlotIndexOffset = hotbarSlotIndexOffset + playerInventoryWidth
+        val outputSlotIndexOffset = inputSlotIndexOffset + tradeSlotCount
+
+        val panelMargin = 7
+        val sectionSpace = 3
+        val playerInventoryNameSpace = 1
+        val hotbarSpace = 4
+        val inventoryNameMarginX = 1
+
+        View {
+            view += StackView().configure { // 外枠なのだ～🌱
+                view += NinePatchTextureCard.PANEL.createView()
+                view += YListView().configure { // 内枠なのだ～🌱
+
+                    view += MultiLineTextView().configure {
+                        view.text.value = title
+                        view.alignmentX = Alignment.CENTER
+                        view.color = ColorPair.DARK_GRAY
+                        view.shadow = false
+                    }.margin(inventoryNameMarginX, 0)
+
+                    view += YSpaceView(sectionSpace)
+
+                    // 依頼本文なのだ～🌱
+                    view += StackView().configure {
+                        view.sizingX = Sizing.FILL
+                        view.sizingY = Sizing.FILL
+
+                        // 外枠装飾用パネルなのだ～🌱
+                        view += NinePatchTextureCard.FAIRY_QUEST_CARD_MESSAGE.createView()
+
+                        // スクロールコンテナなのだ～🌱
+                        view += XListView().configure {
+                            view.sizingX = Sizing.FILL
+                            view.sizingY = Sizing.FILL
+                            val scrollView = YScrollContainerView().configure {
+                                position.weight = 1.0
+                                view += StackView().configure {
+                                    view.sizingX = Sizing.FILL
+
+                                    // 罫線装飾用パネルなのだ～🌱
+                                    view += NinePatchTextureCard.FAIRY_QUEST_CARD_LINE.createView()
+
+                                    // メッセージテキストラベルなのだ～🌱
+                                    view += MultiLineTextView().configure {
+                                        view.text.value = menu.recipe.message
+                                        view.color = ColorPair(0xFF6B472E.toInt(), 0xFF6B472E.toInt())
+                                        view.shadow = false
+                                    }.margin(0, 0, 0, 1)
+
+                                }
+                            }
+                            view += scrollView
+                            val scrollbarView = YFlatScrollbarView().configure {
+                                view.keyboardFocusable = false
+                            }
+                            view += scrollbarView
+                            connectScrollbar(scrollView.view, scrollbarView.view)
+                        }.margin(11, 6, 11, 11)
+
+                    }.minContentSizeY(11 * 7 + 5).wrapClickable {
+                        view.hoverOverlayColor = 0x00000000
+                        // クリックしたらメッセージを全画面で表示するのだ～🌱
+                        view.onClick.register {
+                            menu.recipe.openMessageScreen()
+                            true
+                        }
+                    }.tooltip(text { guiFullScreenTranslation() })
+
+                    view += YSpaceView(sectionSpace)
+
+                    // 取引欄なのだ～🌱
+                    view += XListView().configure {
+
+                        repeat(tradeSlotCount) { i ->
+                            view += StackView().configure {
+                                val slot = menu.slots[inputSlotIndexOffset + i]
+                                val input = menu.recipe.inputs.getOrNull(i)?.invoke()
+
+                                view += menuSlotView(slot, SlotType.NORMAL)
+                                view += GhostRecipeItemView(input?.toItemStacks().orEmpty()).configure {
+                                    view.overlayArgb = 0x20FF0000
+                                    screenEventSource.onBeforeRender.observe(screenEventSource.onDisposing) {
+                                        val itemStack: ItemStack = slot.item
+                                        view.showItemStack = itemStack.isEmpty
+                                        view.showOverlay = input != null && (!input.ingredient.test(itemStack) || itemStack.count < input.count)
+                                    }
+                                }.margin(SlotType.NORMAL.margin.x, SlotType.NORMAL.margin.y)
+                            }
+                        }
+
+                        view += ProgressView(
+                            ViewTexture(MirageFairy2024.identifier("textures/gui/fairy_quest_progress_background.png"), IntPoint(16, 16)),
+                            ViewTexture(MirageFairy2024.identifier("textures/gui/fairy_quest_progress_overlay.png"), IntPoint(16, 16)),
+                        ).configure {
+                            screenEventSource.onBeforeRender.observe(screenEventSource.onDisposing) {
+                                view.progress = menu.progress / menu.recipe.duration.toDouble()
+                            }
+                        }.margin(1)
+
+                        repeat(tradeSlotCount) { i ->
+                            view += StackView().configure {
+                                val slot = menu.slots[outputSlotIndexOffset + i]
+                                val output = menu.recipe.outputs.getOrNull(i)?.invoke()
+
+                                view += menuSlotView(slot, SlotType.NORMAL)
+                                view += GhostRecipeItemView(listOfNotNull(output)).configure {
+                                    view.overlayArgb = 0x2000FF00
+                                    screenEventSource.onBeforeRender.observe(screenEventSource.onDisposing) {
+                                        val itemStack: ItemStack = slot.item
+                                        view.showItemStack = itemStack.isEmpty
+                                        view.showOverlay = itemStack.isEmpty && output != null && output.isNotEmpty
+                                    }
+                                }.margin(SlotType.NORMAL.margin.x, SlotType.NORMAL.margin.y)
+                            }
+                        }
+
+                    }
+
+                    view += YSpaceView(sectionSpace)
+
+                    view += MultiLineTextView().configure {
+                        view.text.value = playerInventoryTitle
+                        view.color = ColorPair.DARK_GRAY
+                        view.shadow = false
+                    }.margin(inventoryNameMarginX, 0)
+
+                    view += YSpaceView(playerInventoryNameSpace)
+
+                    // プレイヤーのインベントリなのだ～🌱
+                    repeat(playerInventoryHeight) { r ->
+                        view += XListView().configure {
+                            repeat(playerInventoryWidth) { c ->
+                                view += menuSlotView(menu.slots[playerInventoryWidth * r + c], SlotType.NORMAL)
+                            }
+                        }
+                    }
+                    view += YSpaceView(hotbarSpace)
+                    view += XListView().configure {
+                        repeat(playerInventoryWidth) { c ->
+                            view += menuSlotView(menu.slots[hotbarSlotIndexOffset + c], SlotType.NORMAL)
+                        }
+                    }
+
+                }.margin(panelMargin)
+            }
+        }
+    }
+
 }

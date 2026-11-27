@@ -2,6 +2,7 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import dev.architectury.platform.Platform
 import miragefairy2024.client.util.getActualFocused
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
@@ -9,9 +10,9 @@ import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.ViewPlacerRegistry
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
-import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import miragefairy2024.util.fire
+import mirrg.kotlin.helium.CachingEvaluator
 import mirrg.kotlin.java.hydrogen.orNull
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
@@ -33,7 +34,7 @@ interface ViewAdapterHost {
     fun getRegionSizeX(): Int
     fun getRegionSizeY(): Int
 
-    fun createRootView(): View
+    fun createRootView(screenEventSource: ScreenEventSource): View
 
     fun getUiOffset(): IntPoint
     fun setUiSize(uiSize: IntPoint)
@@ -50,14 +51,16 @@ interface ViewAdapterHost {
 /**
  * View のサイズ計算と配置を登録先へ中継し、ホストの入力処理を補正するのだ～🌱
  * ホストを初期化するときは [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter.init] を呼ぶのだ～🌱
+ * 画面を持つホストでは、その呼び出しが正常に完了した直後に [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter.opened] を呼ぶのだ～🌱
  * ホストが表示終了を通知できる場合は、最後の描画を終えてから [miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter.removed] を呼ぶのだ～🌱
  */
 class ViewAdapter(val host: ViewAdapterHost) {
 
+    private val screenEventSource = ScreenEventSource()
+    private val rootViewCache = CachingEvaluator { host.createRootView(screenEventSource) }
     private var isInitialized = false
+    private var isOpened = false
     private var viewController: ViewController? = null
-    private val onBeforeRender = EventRegistry<() -> Unit>()
-    private val onTick = EventRegistry<() -> Unit>()
 
     private class MouseClickSentinel : GuiEventListener, NarratableEntry {
 
@@ -81,21 +84,20 @@ class ViewAdapter(val host: ViewAdapterHost) {
     private var mouseClickSentinelRemover: Remover? = null
 
     /**
-     * View のツリーを再構築して、各ウィジェットをホストへ直接登録するのだ～🌱
+     * 表示中は同じルート View を使い、現在の寸法で各ウィジェットを配置してホストへ登録するのだ～🌱
      *
      * 再初期化時は、既存のウィジェットをホスト側で登録解除した後に呼び出さなければならないのだ～🌱
      */
     fun init() {
-        removed()
-        val rootView = host.createRootView()
+        disposePlacement()
+        val rootView = rootViewCache.evaluate()
         rootView.initSizeCalculation(host.getRenderingProxy(), { host.getRegionSizeX() }, { host.getRegionSizeY() })
         host.setUiSize(rootView.evaluateActualSize())
         host.init()
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = host.getUiOffset()
             override val canPlaceMenuSlots = host.canPlaceMenuSlots()
-            override val onBeforeRender = this@ViewAdapter.onBeforeRender
-            override val onTick = this@ViewAdapter.onTick
+            override val screenEventSource = this@ViewAdapter.screenEventSource
             override fun addRenderable(registration: WidgetRegistration) = if (registration.interactive) host.addRenderableWidget(registration.widget) else host.addRenderableOnly(registration.widget)
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = host.registerMenuSlotPlacement(slotId, clipBounds)
         }
@@ -105,14 +107,22 @@ class ViewAdapter(val host: ViewAdapterHost) {
         isInitialized = true
     }
 
-    /** このルートのウィジェットを描き始める前に呼ぶのだ～🌱 */
-    fun beforeRender() {
-        onBeforeRender.fire()
+    /** 画面を持つホストでは、[miragefairy2024.client.mod.recipeviewer.vanilla.ViewAdapter.init] が正常に完了した直後に呼び出さなければならないのだ～🌱 */
+    fun opened() {
+        if (!isOpened) {
+            isOpened = true
+            screenEventSource.onOpened.fire()
+        }
     }
 
-    /** ホストの tick を配置済みの View へ通知するのだ～🌱 */
+    /** このルートのウィジェットを描き始める前に呼ぶのだ～🌱 */
+    fun beforeRender() {
+        screenEventSource.onBeforeRender.fire()
+    }
+
+    /** ホストが tick するたびに呼ぶのだ～🌱 */
     fun tick() {
-        onTick.fire()
+        screenEventSource.onTick.fire()
     }
 
     /** 子の相対位置・寸法・登録を維持して移動するのだ～🌱 */
@@ -121,18 +131,21 @@ class ViewAdapter(val host: ViewAdapterHost) {
         controller.setOffset(offset)
     }
 
-    /** 配置状態を無効化してから、イベント登録などの後始末を行うのだ～🌱 */
+    /** ルート View の保持を解除し、配置に伴うイベント登録などの後始末を行うのだ～🌱 */
     fun removed() {
+        if (isOpened) {
+            isOpened = false
+            screenEventSource.onDisposing.fire()
+        }
+        rootViewCache.reset()
+        disposePlacement()
+    }
+
+    private fun disposePlacement() {
         isInitialized = false
         removeMouseClickSentinel()
         val controller = viewController
         viewController = null
-        onBeforeRender.toList().forEach {
-            onBeforeRender.remove(it)
-        }
-        onTick.toList().forEach {
-            onTick.remove(it)
-        }
         if (controller != null) controller.dispose()
     }
 

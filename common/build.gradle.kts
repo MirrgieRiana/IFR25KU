@@ -1,3 +1,7 @@
+plugins {
+    idea
+}
+
 architectury {
     common((rootProject.properties["enabled_platforms"] as String).split(","))
 }
@@ -40,6 +44,12 @@ configurations.named("clientTestImplementation") {
 }
 configurations.named("clientTestRuntimeOnly") {
     extendsFrom(configurations.named("testRuntimeOnly").get())
+}
+
+idea {
+    module {
+        testSources.from(sourceSets["clientTest"].allJava.srcDirs)
+    }
 }
 
 tasks.register<Test>("clientTest") {

@@ -58,7 +58,7 @@ private class TraitEncyclopediaRenderingProxy : RenderingProxy {
     }
 }
 
-private fun TraitEncyclopediaPageViewWrapper.place(): List<Pair<PlaceableView, IntRectangle>> {
+private fun TraitEncyclopediaPageScreenContent.place(): List<Pair<PlaceableView, IntRectangle>> {
     val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
     fun place(view: PlaceableView, bounds: IntRectangle): ViewController {
         placements += Pair(view, bounds)
@@ -70,7 +70,7 @@ private fun TraitEncyclopediaPageViewWrapper.place(): List<Pair<PlaceableView, I
 }
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class TraitEncyclopediaPageViewWrapperTest {
+class TraitEncyclopediaPageScreenContentTest {
 
     private lateinit var trait: Trait
 
@@ -95,14 +95,14 @@ class TraitEncyclopediaPageViewWrapperTest {
     @Test
     fun `名前とアイコンを固定した幅160のカード内で本文だけを折り返してスクロールするのだ`() {
         val proxy = TraitEncyclopediaRenderingProxy()
-        val view = TraitEncyclopediaPageViewWrapper(trait)
+        val view = TraitEncyclopediaPageScreenContent(trait)
         view.view.initSizeCalculation(proxy, { 400 }, { 240 })
 
         Assertions.assertEquals(IntPoint(400, 240), view.view.evaluateActualSize())
         val placements = view.place()
         val background = placements.single { it.first is NinePatchImageView }
         Assertions.assertEquals(IntRectangle(120, 20, 160, 186), background.second)
-        Assertions.assertEquals(NinePatchTextureCard.TRAIT_BACKGROUND.texture, (background.first as NinePatchImageView).textureId)
+        Assertions.assertSame(NinePatchTextureCard.TRAIT_BACKGROUND, (background.first as NinePatchImageView).ninePatchTextureCard)
         val icon = placements.single { it.first is ImageView }
         Assertions.assertEquals(IntRectangle(184, 50, 32, 32), icon.second)
         Assertions.assertEquals(MirageFairy2024.identifier("textures/gui/traits/test_trait.png"), (icon.first as ImageView).texture.id)
@@ -129,7 +129,7 @@ class TraitEncyclopediaPageViewWrapperTest {
 
     @Test
     fun `再初期化するとカードとスクロール領域とボタンを画面の寸法に合わせるのだ`() {
-        val view = TraitEncyclopediaPageViewWrapper(trait)
+        val view = TraitEncyclopediaPageScreenContent(trait)
         listOf(IntPoint(400, 240), IntPoint(320, 180)).forEach { size ->
             view.view.initSizeCalculation(TraitEncyclopediaRenderingProxy(), { size.x }, { size.y })
             val placements = view.place()
@@ -143,7 +143,7 @@ class TraitEncyclopediaPageViewWrapperTest {
 
     @Test
     fun `二つのボタンがゲーム復帰と親画面復帰を別々に通知するのだ`() {
-        val view = TraitEncyclopediaPageViewWrapper(trait)
+        val view = TraitEncyclopediaPageScreenContent(trait)
         val events = mutableListOf<String>()
         view.onBackToGame.register {
             events += "game"

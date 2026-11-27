@@ -7,7 +7,6 @@ import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.RenderingEvent
 import miragefairy2024.client.mod.recipeviewer.vanilla.ViewContainerScreen
 import miragefairy2024.client.util.KeyMappingCard
-import miragefairy2024.client.util.WidgetSprites
 import miragefairy2024.client.util.invoke
 import miragefairy2024.client.util.registerHandledScreen
 import miragefairy2024.client.util.sendToServer
@@ -15,14 +14,16 @@ import miragefairy2024.mod.fairy.FairyItem
 import miragefairy2024.mod.fairy.OPEN_SOUL_STREAM_KEY_TRANSLATION
 import miragefairy2024.mod.fairy.OpenSoulStreamChannel
 import miragefairy2024.mod.fairy.SetCollectionEnabledChannel
+import miragefairy2024.mod.fairy.SoulStreamScreenContent
 import miragefairy2024.mod.fairy.SoulStreamScreenHandler
 import miragefairy2024.mod.fairy.getFairyMotif
 import miragefairy2024.mod.fairy.soulStreamScreenHandlerType
 import miragefairy2024.mod.passiveskill.PassiveSkillEffectFilter
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
+import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.invoke
 import miragefairy2024.util.plus
-import miragefairy2024.util.register
 import miragefairy2024.util.text
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
@@ -132,45 +133,32 @@ fun initSoulStreamClientModule() {
 
 class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : ViewContainerScreen<SoulStreamScreenHandler>(handler, playerInventory, title) {
 
-    private var isFirstRender = true
-    private var lastUpdateEventNanoTime = 0L
+    override fun createRootView(screenEventSource: ScreenEventSource): View {
+        return object : SoulStreamScreenContent(menu, title, screenEventSource) {
 
-    init {
-        handler.initViewWrapper(enabledPassiveSkillEffectFilters, enableGlobalFairyHighlight, text { toggleCollectionEnabledKeyMappingCard() }) {
-            SetCollectionEnabledChannel.sendToServer(it)
-        }
+            override val enabledPassiveSkillEffectFilters = miragefairy2024.client.mod.fairy.enabledPassiveSkillEffectFilters
+            override val enableGlobalFairyHighlight = miragefairy2024.client.mod.fairy.enableGlobalFairyHighlight
+
+            override val toggleCollectionEnabledKeyMappingText = text { toggleCollectionEnabledKeyMappingCard() }
+
+            override fun setCollectionEnabled(enabled: Boolean) {
+                SetCollectionEnabledChannel.sendToServer(enabled)
+            }
+
+        }.view
     }
 
-    override fun init() {
-        super.init()
-        menu.clampScrollOffsets()
-    }
-
-    override fun removed() {
-        menu.disposeView()
-        super.removed()
-    }
-
+    // カーソルをインベントリ画面での位置に戻す
+    private var isFirst = true
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        // カーソルをインベントリ画面での位置に戻す
-        if (isFirstRender) {
-            isFirstRender = false
+        if (isFirst) {
+            isFirst = false
             val mousePosition = lastMousePositionInInventory
             if (mousePosition != null) {
                 InputConstants.grabOrReleaseMouse(minecraft!!.window.window, InputConstants.CURSOR_NORMAL, mousePosition.first, mousePosition.second)
             }
         }
         super.render(guiGraphics, mouseX, mouseY, partialTick)
-    }
-
-    override fun containerTick() {
-        super.containerTick()
-
-        val now = System.nanoTime()
-        if (now - lastUpdateEventNanoTime >= 100_000_000) {
-            lastUpdateEventNanoTime = now
-            menu.updateEffects()
-        }
     }
 
     // キー入力で閉じる

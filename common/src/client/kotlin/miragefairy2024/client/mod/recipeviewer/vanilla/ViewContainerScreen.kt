@@ -3,9 +3,10 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 import com.mojang.blaze3d.platform.Window
 import miragefairy2024.client.mixins.api.SlotHovering
 import miragefairy2024.client.mod.recipeviewer.renderingProxy
-import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
+import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.contains
 import miragefairy2024.util.Remover
 import net.minecraft.client.Minecraft
@@ -20,7 +21,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.Slot
 
 /** 中身をViewのツリーで組むメニューの画面の土台なのだ～🌱 */
-open class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title), SlotHovering where T : AbstractContainerMenu, T : ViewProviderMenu {
+abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInventory: Inventory, title: Component) : AbstractContainerScreen<T>(menu, playerInventory, title), SlotHovering {
+
+    protected abstract fun createRootView(screenEventSource: ScreenEventSource): View
 
     private class SlotPlacement(val clipBounds: () -> IntRectangle?)
 
@@ -40,7 +43,7 @@ open class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Co
         override fun getRegionSizeX() = this@ViewContainerScreen.width
         override fun getRegionSizeY() = this@ViewContainerScreen.height
 
-        override fun createRootView() = menu.createView(title, playerInventoryTitle)
+        override fun createRootView(screenEventSource: ScreenEventSource) = this@ViewContainerScreen.createRootView(screenEventSource)
 
         override fun getUiOffset() = IntPoint(this@ViewContainerScreen.leftPos, this@ViewContainerScreen.topPos)
         override fun setUiSize(uiSize: IntPoint) {
@@ -79,7 +82,10 @@ open class ViewContainerScreen<T>(menu: T, playerInventory: Inventory, title: Co
 
     })
 
-    override fun init() = viewAdapter.init()
+    override fun init() {
+        viewAdapter.init()
+        viewAdapter.opened()
+    }
 
     override fun removed() {
         viewAdapter.removed()

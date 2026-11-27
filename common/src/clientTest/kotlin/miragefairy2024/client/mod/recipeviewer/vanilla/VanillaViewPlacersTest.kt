@@ -1,27 +1,37 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import miragefairy2024.MessageViewScreenDefinition
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.SlotPositionSetter
 import miragefairy2024.client.mod.recipeviewer.RenderOverflow
+import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
+import miragefairy2024.client.mod.recipeviewer.common.ItemViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.MultiLineTextViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.NinePatchImageViewRenderer
+import miragefairy2024.client.mod.recipeviewer.common.TooltipBackgroundViewRenderer
 import miragefairy2024.client.util.ViewToast
+import miragefairy2024.mod.TooltipViewerScreenContent
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
 import miragefairy2024.mod.recipeviewer.view.Sizing
+import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.register
-import miragefairy2024.mod.recipeviewer.views.AbsoluteView
-import miragefairy2024.mod.recipeviewer.views.BeforeRenderView
 import miragefairy2024.mod.recipeviewer.views.Child
 import miragefairy2024.mod.recipeviewer.views.DynamicView
 import miragefairy2024.mod.recipeviewer.views.EmptyView
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
+import miragefairy2024.mod.recipeviewer.views.ItemView
 import miragefairy2024.mod.recipeviewer.views.ListView
 import miragefairy2024.mod.recipeviewer.views.MenuSlotView
+import miragefairy2024.mod.recipeviewer.views.MultiLineTextView
+import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
 import miragefairy2024.mod.recipeviewer.views.SpaceView
 import miragefairy2024.mod.recipeviewer.views.StackView
 import miragefairy2024.mod.recipeviewer.views.TextButtonView
-import miragefairy2024.mod.recipeviewer.views.TickView
+import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
 import miragefairy2024.mod.recipeviewer.views.XFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XInventoryScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XListView
@@ -32,26 +42,35 @@ import miragefairy2024.mod.recipeviewer.views.YListView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.plusAssign
-import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import miragefairy2024.util.empty
 import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
+import miragefairy2024.util.observe
 import miragefairy2024.util.register
 import miragefairy2024.util.text
+import net.minecraft.SharedConstants
 import net.minecraft.Util
 import net.minecraft.client.DeltaTracker
+import net.minecraft.client.GameNarrator
+import net.minecraft.client.InputType
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.Button
+import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.components.toasts.Toast
 import net.minecraft.client.gui.components.toasts.ToastComponent
 import net.minecraft.client.gui.narration.NarrationElementOutput
+import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.FormattedText
+import net.minecraft.network.chat.Style
+import net.minecraft.server.Bootstrap
 import net.minecraft.util.FormattedCharSequence
 import net.minecraft.world.Container
 import net.minecraft.world.inventory.Slot
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -77,9 +96,15 @@ private val PLACER_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
 class VanillaViewPlacersTest {
     @BeforeAll
     fun initRegistry() {
+        SharedConstants.tryDetectVersion()
+        Bootstrap.bootStrap()
         with(ModContext()) {
             initVanillaViewPlacers()
         }
+        ViewRendererRegistry.register(NinePatchImageView::class.java, NinePatchImageViewRenderer)
+        ViewRendererRegistry.register(TooltipBackgroundView::class.java, TooltipBackgroundViewRenderer)
+        ViewRendererRegistry.register(ItemView::class.java, ItemViewRenderer)
+        ViewRendererRegistry.register(MultiLineTextView::class.java, MultiLineTextViewRenderer)
         VANILLA_VIEW_PLACER_REGISTRY.register { context, view: PlacerTestView, bounds ->
             val widget: AbstractWidget = object : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {
                 override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
@@ -102,66 +127,96 @@ class VanillaViewPlacersTest {
     }
 
     @Test
-    fun `スクロール領域内の View もルートの描画前通知を受けて配置解除で登録を外すのだ`() {
-        val calls = mutableListOf<String>()
-        val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
-            override val origin = IntPoint.ZERO
-            override val canPlaceMenuSlots = false
-            override val onBeforeRender = EventRegistry<() -> Unit>()
-            override val onTick = EventRegistry<() -> Unit>()
-            override fun addRenderable(registration: WidgetRegistration) = Remover.NONE
-            override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
+    fun `画面の開始通知はウィジェットの登録後に届き終了通知は配置の破棄前に届くのだ`() {
+        GuiTestEnvironment().use {
+            val minecraft: Minecraft = Minecraft.getInstance()
+            Mockito.`when`(minecraft.lastInputType).thenReturn(InputType.MOUSE)
+            Mockito.`when`(minecraft.narrator).thenReturn(Mockito.mock(GameNarrator::class.java))
+
+            val child = PlacerTestView()
+            val calls = mutableListOf<String>()
+            val definition = MessageViewScreenDefinition(text { empty() }) { screenEventSource ->
+                screenEventSource.onOpened.observe(screenEventSource.onDisposing) {
+                    val screen = checkNotNull(minecraft.screen)
+                    Assertions.assertEquals(1, screen.children().filterIsInstance<AbstractWidget>().size)
+                    calls += "opened"
+                }
+                screenEventSource.onDisposing.observe(screenEventSource.onDisposing) {
+                    Assertions.assertEquals(0, child.disposals)
+                    calls += "disposing"
+                }
+                DynamicView(child)
+            }
+            val screen = MessageViewScreen(null, definition)
+            minecraft.screen = screen
+            try {
+                screen.init(minecraft, 200, 200)
+                Assertions.assertEquals(listOf("opened"), calls)
+            } finally {
+                screen.removed()
+            }
+
+            Assertions.assertEquals(listOf("opened", "disposing"), calls)
+            Assertions.assertEquals(1, child.disposals)
         }
-        val scrollContent = YListView()
-        scrollContent += PlacerTestView()
-        scrollContent += BeforeRenderView { calls += "child" }
-        val view = AbsoluteView(IntPoint(100, 100))
-        view += BeforeRenderView { calls += "root" }
-        view += YScrollContainerView().also { it += scrollContent }
-        view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
-        Assertions.assertEquals(100, scrollContent.evaluateContentSizeY())
-        val controller = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
-
-        context.onBeforeRender.fire()
-        controller.dispose()
-        controller.detach()
-        context.onBeforeRender.fire()
-
-        Assertions.assertEquals(listOf("root", "child"), calls)
     }
 
     @Test
-    fun `tick 中に差し替えた View は次の tick から通知を受けるのだ`() {
-        val calls = mutableListOf<String>()
-        val context = createScrollbarPlacerContext(mutableListOf())
-        val dynamicView = DynamicView(TickView { calls += "old" })
-        val scrollContent = YListView()
-        scrollContent += PlacerTestView()
-        scrollContent += dynamicView
-
-        var replaced = false
-        val view = AbsoluteView(IntPoint(100, 100))
-        view += TickView {
-            calls += "root"
-            if (!replaced) {
-                replaced = true
-                dynamicView.content.value = TickView { calls += "new" }
+    fun `ツールチップビューワーのリサイズで検索と絞り込みとスクロール位置を引き継ぐのだ`() {
+        val measuredLines = mutableSetOf<String>()
+        val testRenderingProxy = object : RenderingProxy {
+            override fun calculateTextWidth(text: FormattedText) = text.string.length * 6
+            override fun calculateTextWidth(text: FormattedCharSequence) = throw UnsupportedOperationException()
+            override fun getTextHeight() = 9
+            override fun wrapText(text: FormattedText, maxWidth: Int): List<FormattedCharSequence> {
+                measuredLines += text.string
+                return listOf(FormattedCharSequence.forward(text.string, Style.EMPTY))
             }
         }
-        view += YScrollContainerView().also { it += scrollContent }
-        view.initSizeCalculation(PLACER_RENDERING_PROXY, { 100 }, { 100 })
-        val controller = view.attachTo(context.origin) { child, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, child, bounds) }
+        val lines = listOf("first", "second", "third")
+        val definition = MessageViewScreenDefinition(Component.empty()) {
+            val root = TooltipViewerScreenContent(List(5) { ItemStack(Items.STONE) }) { lines.map { Component.literal(it) } }.view
+            object : View by root {
+                override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
+                    root.initSizeCalculation(testRenderingProxy, regionSizeXProvider, regionSizeYProvider)
+                }
+            }
+        }
 
-        context.onTick.fire()
-        Assertions.assertEquals(listOf("root"), calls)
+        fun contentOffset(viewport: VanillaYScrollContainerViewWidget): Int {
+            return viewport.y - viewport.children().filterIsInstance<AbstractWidget>().minOf { it.y }
+        }
 
-        context.onTick.fire()
-        Assertions.assertEquals(listOf("root", "root", "new"), calls)
+        GuiTestEnvironment().use {
+            val minecraft = Minecraft.getInstance()
+            Mockito.`when`(minecraft.lastInputType).thenReturn(InputType.MOUSE)
+            Mockito.`when`(minecraft.narrator).thenReturn(Mockito.mock(GameNarrator::class.java))
+            val screen = MessageViewScreen(null, definition)
+            minecraft.screen = screen
+            try {
+                screen.init(minecraft, 320, 100)
+                val search = screen.children().filterIsInstance<EditBox>().single()
+                val viewport = screen.children().filterIsInstance<VanillaYScrollContainerViewWidget>().single()
+                Assertions.assertEquals(lines.toSet(), measuredLines)
 
-        controller.dispose()
-        context.onTick.fire()
-        Assertions.assertEquals(listOf("root", "root", "new"), calls)
-        controller.detach()
+                search.value = "0,2"
+                Assertions.assertTrue(screen.mouseScrolled(viewport.x + 1.0, viewport.y + 1.0, 0.0, -2.0))
+                val offset = contentOffset(viewport)
+                Assertions.assertEquals(30, offset)
+
+                measuredLines.clear()
+                screen.resize(minecraft, 400, 240)
+
+                val resizedSearch = screen.children().filterIsInstance<EditBox>().single()
+                val resizedViewport = screen.children().filterIsInstance<VanillaYScrollContainerViewWidget>().single()
+                Assertions.assertNotSame(search, resizedSearch)
+                Assertions.assertEquals("0,2", resizedSearch.value)
+                Assertions.assertEquals(setOf("first", "third"), measuredLines)
+                Assertions.assertEquals(offset, contentOffset(resizedViewport))
+            } finally {
+                screen.removed()
+            }
+        }
     }
 
     @Test
@@ -169,8 +224,7 @@ class VanillaViewPlacersTest {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint.ZERO
             override val canPlaceMenuSlots = false
-            override val onBeforeRender = EventRegistry<() -> Unit>()
-            override val onTick = EventRegistry<() -> Unit>()
+            override val screenEventSource = ScreenEventSource()
             override fun addRenderable(registration: WidgetRegistration) = throw AssertionError("No widget should be registered")
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
         }
@@ -192,8 +246,7 @@ class VanillaViewPlacersTest {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint(5, 10)
             override val canPlaceMenuSlots = true
-            override val onBeforeRender = EventRegistry<() -> Unit>()
-            override val onTick = EventRegistry<() -> Unit>()
+            override val screenEventSource = ScreenEventSource()
             override fun addRenderable(registration: WidgetRegistration) = throw AssertionError("Slots must not register widgets")
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?): Remover {
                 Assertions.assertNull(clipBounds())
@@ -236,8 +289,7 @@ class VanillaViewPlacersTest {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint.ZERO
             override val canPlaceMenuSlots = false
-            override val onBeforeRender = EventRegistry<() -> Unit>()
-            override val onTick = EventRegistry<() -> Unit>()
+            override val screenEventSource = ScreenEventSource()
             override fun addRenderable(registration: WidgetRegistration) = throw AssertionError("Placement must fail before widget registration")
             override fun registerMenuSlotPlacement(slotId: Int, clipBounds: () -> IntRectangle?) = throw UnsupportedOperationException("Menu slots cannot be registered in this context")
         }
@@ -272,8 +324,7 @@ class VanillaViewPlacersTest {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint.ZERO
             override val canPlaceMenuSlots = false
-            override val onBeforeRender = EventRegistry<() -> Unit>()
-            override val onTick = EventRegistry<() -> Unit>()
+            override val screenEventSource = ScreenEventSource()
             override fun addRenderable(registration: WidgetRegistration): Remover {
                 if (!registration.interactive) throw AssertionError("Buttons must accept input")
                 val widget = registration.widget
@@ -311,8 +362,7 @@ class VanillaViewPlacersTest {
         val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
             override val origin = IntPoint(10, 20)
             override val canPlaceMenuSlots = false
-            override val onBeforeRender = EventRegistry<() -> Unit>()
-            override val onTick = EventRegistry<() -> Unit>()
+            override val screenEventSource = ScreenEventSource()
             override fun addRenderable(registration: WidgetRegistration): Remover {
                 if (!registration.interactive) throw AssertionError("Buttons must accept input")
                 val widget = registration.widget
@@ -359,8 +409,7 @@ class VanillaViewPlacersTest {
             val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
                 override val origin = IntPoint(10, 20)
                 override val canPlaceMenuSlots = true
-                override val onBeforeRender = EventRegistry<() -> Unit>()
-                override val onTick = EventRegistry<() -> Unit>()
+                override val screenEventSource = ScreenEventSource()
                 override fun addRenderable(registration: WidgetRegistration): Remover {
                     if (!registration.interactive) throw AssertionError("Scroll containers must accept input")
                     val widget = registration.widget
@@ -398,8 +447,7 @@ class VanillaViewPlacersTest {
         return object : VanillaViewPlacerContext {
             override val origin = IntPoint(10, 20)
             override val canPlaceMenuSlots = false
-            override val onBeforeRender = EventRegistry<() -> Unit>()
-            override val onTick = EventRegistry<() -> Unit>()
+            override val screenEventSource = ScreenEventSource()
             override fun addRenderable(registration: WidgetRegistration): Remover {
                 if (!registration.interactive) throw AssertionError("Scrollbars must accept input")
                 val widget = registration.widget
@@ -489,8 +537,7 @@ class VanillaViewPlacersTest {
                     val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
                         override val origin = IntPoint(10, 20)
                         override val canPlaceMenuSlots = false
-                        override val onBeforeRender = EventRegistry<() -> Unit>()
-                        override val onTick = EventRegistry<() -> Unit>()
+                        override val screenEventSource = ScreenEventSource()
                         override fun addRenderable(registration: WidgetRegistration): Remover {
                             if (!registration.interactive) throw AssertionError("Unexpected render-only widget")
                             val widget = registration.widget
@@ -523,7 +570,7 @@ class VanillaViewPlacersTest {
                         list
                     }
                     try {
-                        listOf(50, 40).forEach { viewportLength ->
+                        listOf(50, 40).forEachIndexed { index, viewportLength ->
                             root.initSizeCalculation(PLACER_RENDERING_PROXY, { if (horizontal || overlay) 50 else 55 }, { if (horizontal && !overlay) viewportLength + 5 else viewportLength })
                             val controller = root.attachTo(context.origin) { view, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds) }
                             val viewport = widgets.filterIsInstance<VanillaScrollContainerViewWidget>().single()
@@ -554,10 +601,11 @@ class VanillaViewPlacersTest {
                                 controller.detach()
                             }
                             Assertions.assertTrue(widgets.isEmpty())
-                            Assertions.assertTrue(context.onBeforeRender.toList().isEmpty())
+                            Assertions.assertEquals(index + 1, context.screenEventSource.onBeforeRender.toList().size)
                             Assertions.assertEquals(1, scrollOffset.toList().size)
                         }
                     } finally {
+                        context.screenEventSource.onDisposing.fire()
                         connection.remove()
                     }
                     Assertions.assertTrue(scrollOffset.toList().isEmpty())
@@ -578,8 +626,7 @@ class VanillaViewPlacersTest {
                 val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
                     override val origin = IntPoint(10, 20)
                     override val canPlaceMenuSlots = false
-                    override val onBeforeRender = EventRegistry<() -> Unit>()
-                    override val onTick = EventRegistry<() -> Unit>()
+                    override val screenEventSource = ScreenEventSource()
                     override fun addRenderable(registration: WidgetRegistration): Remover {
                         if (!registration.interactive) throw AssertionError("Unexpected render-only widget")
                         val widget = registration.widget
@@ -605,24 +652,69 @@ class VanillaViewPlacersTest {
                     content.content.value = SpaceView(IntPoint(25, 25))
                     widget.render(environment.graphics, 20, 30, 0.0F)
                     Assertions.assertEquals(100, bar.contentLength)
-                    context.onBeforeRender.fire()
+                    context.screenEventSource.onBeforeRender.fire()
                     Assertions.assertEquals(25, bar.contentLength)
                     Assertions.assertEquals(50, bar.viewportLength)
                     Assertions.assertEquals(75.25, scrollOffset.value)
                     Assertions.assertEquals(75.25, barOffset.value)
                     content.content.value = leaf
-                    context.onBeforeRender.fire()
+                    context.screenEventSource.onBeforeRender.fire()
                     Assertions.assertEquals(100, bar.contentLength)
                     val child = widget.children().single() as AbstractWidget
                     Assertions.assertEquals(if (horizontal) IntPoint(-65, 20) else IntPoint(10, -55), IntPoint(child.x, child.y))
                 } finally {
+                    context.screenEventSource.onDisposing.fire()
                     controller.dispose()
                     controller.detach()
                     connection.remove()
                 }
-                Assertions.assertTrue(context.onBeforeRender.toList().isEmpty())
+                Assertions.assertTrue(context.screenEventSource.onBeforeRender.toList().isEmpty())
+                Assertions.assertTrue(context.screenEventSource.onDisposing.toList().isEmpty())
             }
         }
+    }
+
+    @Test
+    fun `配置ごとの描画前通知の中継は配置が外れても画面終了まで存続するのだ`() {
+        val context = createScrollbarPlacerContext(mutableListOf())
+        val screenEventSource = context.screenEventSource
+
+        fun attachScroll(): ViewController {
+            val scroll = YScrollContainerView().also { it += PlacerTestView() }
+            scroll.initSizeCalculation(PLACER_RENDERING_PROXY, { 50 }, { 50 })
+            return scroll.attachTo(context.origin) { view, bounds -> VANILLA_VIEW_PLACER_REGISTRY.place(context, view, bounds) }
+        }
+
+        val first = attachScroll()
+        val second = attachScroll()
+        val relays = try {
+            Assertions.assertEquals(2, screenEventSource.onDisposing.toList().size)
+            screenEventSource.onBeforeRender.toList().also {
+                Assertions.assertEquals(2, it.size)
+            }
+        } finally {
+            first.dispose()
+            first.detach()
+            second.dispose()
+            second.detach()
+        }
+
+        Assertions.assertEquals(relays, screenEventSource.onBeforeRender.toList())
+        Assertions.assertEquals(2, screenEventSource.onDisposing.toList().size)
+
+        val replacement = attachScroll()
+        try {
+            val currentRelays = screenEventSource.onBeforeRender.toList()
+            Assertions.assertEquals(3, currentRelays.size)
+            Assertions.assertEquals(relays, currentRelays.take(2))
+            Assertions.assertEquals(3, screenEventSource.onDisposing.toList().size)
+        } finally {
+            screenEventSource.onDisposing.fire()
+            replacement.dispose()
+            replacement.detach()
+        }
+        Assertions.assertTrue(screenEventSource.onBeforeRender.toList().isEmpty())
+        Assertions.assertTrue(screenEventSource.onDisposing.toList().isEmpty())
     }
 
     @Test
@@ -635,8 +727,7 @@ class VanillaViewPlacersTest {
                 val context: VanillaViewPlacerContext = object : VanillaViewPlacerContext {
                     override val origin = IntPoint.ZERO
                     override val canPlaceMenuSlots = false
-                    override val onBeforeRender = EventRegistry<() -> Unit>()
-                    override val onTick = EventRegistry<() -> Unit>()
+                    override val screenEventSource = ScreenEventSource()
                     override fun addRenderable(registration: WidgetRegistration): Remover {
                         if (!registration.interactive) throw AssertionError("Unexpected render-only widget")
                         val widget = registration.widget

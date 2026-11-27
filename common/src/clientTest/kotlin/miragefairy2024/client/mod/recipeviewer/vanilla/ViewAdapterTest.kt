@@ -1,6 +1,7 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
 import miragefairy2024.client.mod.recipeviewer.RenderOverflow
+import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
@@ -99,11 +100,16 @@ private class AdapterFixture(vararg views: TestView) {
                 widgets += widget
                 val remover = context.addRenderable(WidgetRegistration(widget, view.interactive) { RenderOverflow.UNBOUNDED })
                 removers += remover
-                view.beforeRender?.let { listener -> context.onBeforeRender.register { listener() } }
+                val beforeRenderRemover = view.beforeRender?.let { listener ->
+                    context.screenEventSource.onBeforeRender.register {
+                        listener()
+                    }
+                }
                 object : ViewController {
                     override fun setOffset(offset: IntPoint) = widget.setPosition(offset.x, offset.y)
                     override fun detach() = throw UnsupportedOperationException()
                     override fun dispose() {
+                        beforeRenderRemover?.remove()
                         disposals += 1
                         onDispose()
                     }
@@ -112,7 +118,7 @@ private class AdapterFixture(vararg views: TestView) {
         }
         override fun getViewPlacerRegistry() = viewPlacerRegistry
 
-        override fun createRootView(): View {
+        override fun createRootView(screenEventSource: ScreenEventSource): View {
             disposalsBeforeCreate += disposals
             return XListView().also { root ->
                 views.forEach {
@@ -281,7 +287,7 @@ class ViewAdapterTest {
             override fun canPlaceMenuSlots() = false
             override fun getRegionSizeX() = 300
             override fun getRegionSizeY() = 80
-            override fun createRootView() = rootView
+            override fun createRootView(screenEventSource: ScreenEventSource) = rootView
             override fun getUiOffset() = IntPoint.ZERO
             override fun setUiSize(uiSize: IntPoint) = run { size = uiSize }
             override fun init() {
@@ -327,7 +333,7 @@ class ViewAdapterTest {
         val host: ViewAdapterHost = Mockito.mock(ViewAdapterHost::class.java)
         Mockito.`when`(host.getRenderingProxy()).thenReturn(ADAPTER_RENDERING_PROXY)
         Mockito.`when`(host.getViewPlacerRegistry()).thenReturn(registry)
-        Mockito.`when`(host.createRootView()).thenReturn(TestView(false))
+        Mockito.`when`(host.createRootView(Mockito.any(ScreenEventSource::class.java) ?: ScreenEventSource())).thenReturn(TestView(false))
         Mockito.`when`(host.getUiOffset()).thenReturn(IntPoint.ZERO)
         Mockito.`when`(host.canPlaceMenuSlots()).thenReturn(true)
         val slotId = 3
@@ -346,13 +352,14 @@ class ViewAdapterTest {
     }
 
     @Test
-    fun `再初期化では旧配置を破棄してから新しい View を生成するのだ`() {
+    fun `再初期化では旧配置を破棄して同じルート View を配置するのだ`() {
         val fixture = AdapterFixture(TestView(true))
         assertEquals(listOf(0), fixture.disposalsBeforeCreate)
 
         fixture.init()
 
-        assertEquals(listOf(0, 1), fixture.disposalsBeforeCreate)
+        assertEquals(1, fixture.disposals)
+        assertEquals(listOf(0), fixture.disposalsBeforeCreate)
         assertEquals(listOf(IntPoint(10, 20), IntPoint(10, 20)), fixture.initializedSizes)
         assertEquals(listOf(fixture.widgets[1]), fixture.interactiveWidgets)
         assertEquals(IntPoint(30, 40), IntPoint(fixture.widgets[1].x, fixture.widgets[1].y))

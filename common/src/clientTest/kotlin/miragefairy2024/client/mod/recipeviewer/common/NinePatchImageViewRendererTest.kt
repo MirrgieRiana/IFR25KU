@@ -1,15 +1,15 @@
 package miragefairy2024.client.mod.recipeviewer.common
 
+import miragefairy2024.client.mod.recipeviewer.vanilla.GuiTestEnvironment
+import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
-import miragefairy2024.mod.recipeviewer.views.NinePatchImageView
+import miragefairy2024.mod.recipeviewer.views.createView
 import mirrg.kotlin.helium.Slot
-import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.resources.ResourceLocation
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
 import kotlin.math.floor
+import kotlin.math.roundToInt
 
 class NinePatchImageViewRendererTest {
 
@@ -19,29 +19,31 @@ class NinePatchImageViewRendererTest {
     private val stretchedY = intArrayOf(0, 1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 5, 6)
 
     private fun check(repeatX: Boolean, repeatY: Boolean, expectedX: IntArray, expectedY: IntArray) {
-        val textureId: ResourceLocation = ResourceLocation.fromNamespaceAndPath("test", "nine_patch")
-        val view = NinePatchImageView(textureId, 9, 7, 2, 3, 4, 1, 4, 2, repeatX, repeatY)
+        val ninePatchTextureCard = NinePatchTextureCard("test/nine_patch", 9, 7, 2, 3, 4, 1, 4, 2, repeatX, repeatY)
+        val view = ninePatchTextureCard.createView()
         val bounds = IntRectangle(10, 20, expectedX.size, expectedY.size)
-        val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
 
-        NinePatchImageViewRenderer.render(view, Slot(Unit), bounds, graphics, 0, 0, false, 0.0F)
+        val draw = GuiTestEnvironment().use { environment ->
+            environment.withTexturedDraws { draws ->
+                NinePatchImageViewRenderer.render(view, Slot(Unit), bounds, environment.graphics, 0, 0, false, 0.0F)
+                Assertions.assertEquals(1, draws.size)
+                draws.single()
+            }
+        }
+        Assertions.assertEquals(ninePatchTextureCard.texture, draw.texture)
 
         val pixels = Array(bounds.sizeY) { arrayOfNulls<IntPoint>(bounds.sizeX) }
-        Mockito.mockingDetails(graphics).invocations.forEach { invocation ->
-            Assertions.assertEquals("blit", invocation.method.name)
-            val arguments: Array<Any> = invocation.arguments
-            Assertions.assertEquals(textureId, arguments[0])
-            val x = arguments[1] as Int
-            val y = arguments[2] as Int
-            val stretched = arguments.size == 11
-            val width = arguments[if (stretched) 3 else 5] as Int
-            val height = arguments[if (stretched) 4 else 6] as Int
-            val u = arguments[if (stretched) 5 else 3] as Float
-            val v = arguments[if (stretched) 6 else 4] as Float
-            val sourceWidth = if (stretched) arguments[7] as Int else width
-            val sourceHeight = if (stretched) arguments[8] as Int else height
-            Assertions.assertEquals(9, arguments[arguments.size - 2])
-            Assertions.assertEquals(7, arguments[arguments.size - 1])
+        draw.quads.forEach { (topLeft, bottomLeft, bottomRight, topRight) ->
+            Assertions.assertEquals(GuiTestEnvironment.TexturedVertex(topLeft.x, bottomRight.y, topLeft.u, bottomRight.v), bottomLeft)
+            Assertions.assertEquals(GuiTestEnvironment.TexturedVertex(bottomRight.x, topLeft.y, bottomRight.u, topLeft.v), topRight)
+            val x = topLeft.x.roundToInt()
+            val y = topLeft.y.roundToInt()
+            val width = bottomRight.x.roundToInt() - x
+            val height = bottomRight.y.roundToInt() - y
+            val u = (topLeft.u * ninePatchTextureCard.textureWidth).roundToInt()
+            val v = (topLeft.v * ninePatchTextureCard.textureHeight).roundToInt()
+            val sourceWidth = (bottomRight.u * ninePatchTextureCard.textureWidth).roundToInt() - u
+            val sourceHeight = (bottomRight.v * ninePatchTextureCard.textureHeight).roundToInt() - v
 
             (0 until height).forEach { dy ->
                 (0 until width).forEach { dx ->
@@ -49,7 +51,7 @@ class NinePatchImageViewRendererTest {
                     val targetY = y + dy - bounds.y
                     Assertions.assertTrue(targetX in expectedX.indices && targetY in expectedY.indices)
                     Assertions.assertNull(pixels[targetY][targetX], "Overlapping pixel at $targetX, $targetY")
-                    pixels[targetY][targetX] = IntPoint(floor(u + (dx + 0.5) * sourceWidth / width).toInt(), floor(v + (dy + 0.5) * sourceHeight / height).toInt())
+                    pixels[targetY][targetX] = IntPoint(floor(u + (dx + 0.5) * sourceWidth / width.toDouble()).toInt(), floor(v + (dy + 0.5) * sourceHeight / height.toDouble()).toInt())
                 }
             }
         }
