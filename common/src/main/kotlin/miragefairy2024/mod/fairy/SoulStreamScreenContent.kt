@@ -138,8 +138,7 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                             view.sizingX = Sizing.FILL
                             view.sizingY = Sizing.FILL
 
-                            val scrollView = YScrollContainerView()
-                            view += scrollView.configure {
+                            val scrollView = YScrollContainerView().configure {
                                 position.weight = 1.0
                                 // 長すぎるテキストで UI を壊さないためなのだ～🌱
                                 position.ignoreLayoutX = true
@@ -195,11 +194,12 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                                     }
                                 }
                             }
-                            val scrollbarView = YFlatScrollbarView().also {
-                                it.scrollbarColor = 0xA0FFFFFF.toInt()
+                            view += scrollView
+                            val scrollbarView = YFlatScrollbarView().configure {
+                                view.scrollbarColor = 0xA0FFFFFF.toInt()
                             }
                             view += scrollbarView
-                            connectScrollbar(scrollView, scrollbarView)
+                            connectScrollbar(scrollView.view, scrollbarView.view)
                         }.margin(4)
                     }
 
@@ -233,21 +233,20 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                         view.sizingY = Sizing.FILL
                         position.weight = 1.0
 
-                        val scrollView = YScrollContainerView().also {
-                            it.scrollStep = SlotType.NORMAL.viewTexture.size.y
-                        }
-                        view += scrollView.configure {
+                        val scrollView = YScrollContainerView().configure {
+                            view.scrollStep = SlotType.NORMAL.viewTexture.size.y
                             view += YListView().configure {
                                 (9 * 3 + 9 + 9 until menu.slots.size).chunked(9).forEach { indices ->
                                     view += createSlotRow(indices.first(), SlotType.NORMAL)
                                 }
                             }
                         }
-                        val scrollbarView = YInventoryScrollbarView().also {
-                            it.scrollStep = scrollView.scrollStep
+                        view += scrollView
+                        val scrollbarView = YInventoryScrollbarView().configure {
+                            view.scrollStep = scrollView.view.scrollStep
                         }
                         view += scrollbarView
-                        connectScrollbar(scrollView, scrollbarView)
+                        connectScrollbar(scrollView.view, scrollbarView.view)
                     }
 
                     view += YSpaceView(4)
@@ -371,18 +370,18 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
 
                             var effectList = collectEffectList()
                             val effectListDynamicView = DynamicView(createEffectListView(effectList))
-                            val scrollView = YScrollContainerView().also {
-                                it += effectListDynamicView
+                            val scrollView = YScrollContainerView().configure {
+                                view += effectListDynamicView
                             }
                             view += scrollView
-                            val scrollbarView = YFlatScrollbarView().also {
-                                it.scrollbarColor = 0xA0FFFFFF.toInt()
+                            val scrollbarView = YFlatScrollbarView().configure {
+                                view.scrollbarColor = 0xA0FFFFFF.toInt()
                             }
                             view += AlignView().configure {
                                 view.alignmentX = Alignment.END
                                 view += scrollbarView
                             }
-                            connectScrollbar(scrollView, scrollbarView)
+                            connectScrollbar(scrollView.view, scrollbarView.view)
 
                             var lastUpdateEventNanoTime = 0L
                             screenEventSource.onTick.observe(screenEventSource.onDisposing) {
@@ -395,8 +394,8 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                                     effectList = newEffectList
 
                                     effectListDynamicView.content.value = createEffectListView(effectList)
-                                    scrollView.updateScrollBounds()
-                                    scrollView.clampScrollOffset()
+                                    scrollView.view.updateScrollBounds()
+                                    scrollView.view.clampScrollOffset()
                                 }
                             }
                         }.margin(4)
