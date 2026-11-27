@@ -387,11 +387,10 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                                 }
                                 connectScrollbar(scrollView, scrollbarView)
 
-                                // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
                                 var lastUpdateEventNanoTime = 0L
                                 screenEventSource.onTick.observe(screenEventSource.onDisposing) {
                                     val now = System.nanoTime()
-                                    if (now - lastUpdateEventNanoTime < 100_000_000) return@observe
+                                    if (lastUpdateEventNanoTime != 0L && now - lastUpdateEventNanoTime < 100_000_000) return@observe
                                     lastUpdateEventNanoTime = now
 
                                     val newEffectList = collectEffectList()
