@@ -3,6 +3,7 @@ package miragefairy2024.mod.tool.items
 import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.mod.tool.FairyMiningToolConfiguration
 import miragefairy2024.mod.tool.ToolMaterialCard
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.tags.BlockTags
@@ -29,6 +30,9 @@ open class FairySwordConfiguration(
         this.miningDamage = 2
         this.miningSpeedMultiplierOverride = 1.5F
         this.tags += ItemTags.SWORDS
+        this.tags += ConventionalItemTags.TOOLS
+        this.tags += ConventionalItemTags.MELEE_WEAPON_TOOLS
+        this.tags += ConventionalItemTags.ENCHANTABLES
         this.superEffectiveBlocks += Blocks.COBWEB
         this.effectiveBlockTags += BlockTags.SWORD_EFFICIENT
     }
