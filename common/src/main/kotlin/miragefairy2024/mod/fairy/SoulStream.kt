@@ -134,7 +134,6 @@ val soulStreamScreenHandlerType = Registration(BuiltInRegistries.MENU, MirageFai
 }
 
 class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val soulStream: Container) : AbstractContainerMenu(soulStreamScreenHandlerType(), syncId) {
-
     init {
         repeat(3) { r ->
             repeat(9) { c ->
@@ -158,5 +157,4 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
         val destinationIndices = if (slot in playerIndices) utilityIndices else playerIndices
         return quickMove(slot, destinationIndices)
     }
-
 }
