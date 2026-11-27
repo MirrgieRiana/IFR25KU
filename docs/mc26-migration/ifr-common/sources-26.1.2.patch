@@ -4724,16 +4724,39 @@ index f4dbb86..3b5801f 100644
                      "standardDeviation=$standardDeviation",
                      "count=$count",
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/biome/DeepFairyForest.kt b/common/src/main/kotlin/miragefairy2024/mod/biome/DeepFairyForest.kt
-index cabb175..7b7f14b 100644
+index cabb175..a49815f 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/biome/DeepFairyForest.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/biome/DeepFairyForest.kt
-@@ -27,4 +27,5 @@ import net.minecraft.tags.BiomeTags
+@@ -13,6 +13,8 @@ import miragefairy2024.util.flower
+ import miragefairy2024.util.generator
+ import miragefairy2024.util.getSurfaceNoiseThreshold
+-import miragefairy2024.util.registerConfiguredFeature
++import miragefairy2024.util.plantConfiguration
++import miragefairy2024.util.registerFlowerConfiguredFeature
+ import miragefairy2024.util.registerPlacedFeature
++import miragefairy2024.util.scatter
+ import miragefairy2024.util.square
+ import miragefairy2024.util.surface
+@@ -22,9 +24,9 @@ import net.minecraft.core.registries.Registries
+ import net.minecraft.data.worldgen.BiomeDefaultFeatures
+ import net.minecraft.data.worldgen.placement.AquaticPlacements
+-import net.minecraft.data.worldgen.placement.PlacementUtils
+ import net.minecraft.data.worldgen.placement.VegetationPlacements
+ import net.minecraft.tags.BiomeTags
  import net.minecraft.world.entity.EntityType
  import net.minecraft.world.entity.MobCategory
 +import net.minecraft.world.attribute.EnvironmentAttributes
  import net.minecraft.world.level.biome.Biome
  import net.minecraft.world.level.biome.BiomeGenerationSettings
-@@ -65,10 +66,10 @@ object DeepFairyForestBiomeCard : BiomeCard(
+@@ -38,7 +40,4 @@ import net.minecraft.world.level.levelgen.SurfaceRules
+ import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
+ import net.minecraft.world.level.levelgen.feature.Feature
+-import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
+-import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration
+-import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider
+ import net.minecraft.world.level.levelgen.placement.PlacedFeature
+
+@@ -65,10 +64,10 @@ object DeepFairyForestBiomeCard : BiomeCard(
              .temperature(0.4F)
              .downfall(0.6F)
 +            .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, 0xD1FCFF)
@@ -4747,7 +4770,7 @@ index cabb175..7b7f14b 100644
 -                    .skyColor(0x87A9FF)
                      .grassColorOverride(0x31EDCD)
                      .foliageColorOverride(0xB2A8FF)
-@@ -78,12 +79,12 @@ object DeepFairyForestBiomeCard : BiomeCard(
+@@ -78,12 +77,12 @@ object DeepFairyForestBiomeCard : BiomeCard(
 
                  BiomeDefaultFeatures.commonSpawns(spawnSettings)
 -                spawnSettings.addSpawn(MobCategory.MONSTER, MobSpawnSettings.SpawnerData(EntityType.WITCH, 100, 1, 4))
@@ -4764,6 +4787,17 @@ index cabb175..7b7f14b 100644
 +                spawnSettings.addSpawn(MobCategory.WATER_AMBIENT, 5, MobSpawnSettings.SpawnerData(EntityType.SALMON, 1, 5))
 
              }.build())
+@@ -126,7 +125,7 @@ object DeepFairyForestBiomeCard : BiomeCard(
+
+         // ミラメラ
+-        Feature.FLOWER.generator(MirageFairy2024.identifier("miramera_deep_fairy_forest")) {
+-            registerConfiguredFeature { RandomPatchConfiguration(1, 0, 0, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(BlockMaterialCard.MIRAMERA.block())))) }.generator {
+-                registerPlacedFeature(mirameraPlacedFeatureKey) { flower(square, surface) }
++        Feature.SIMPLE_BLOCK.generator(MirageFairy2024.identifier("miramera_deep_fairy_forest")) {
++            registerFlowerConfiguredFeature { plantConfiguration(BlockMaterialCard.MIRAMERA.block().defaultBlockState()) }.generator {
++                registerPlacedFeature(mirameraPlacedFeatureKey) { flower(square, surface) + scatter(1, 0, 0) }
+             }
+         }
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/biome/ElevatedSpawnerFeature.kt b/common/src/main/kotlin/miragefairy2024/mod/biome/ElevatedSpawnerFeature.kt
 index 3ee52d8..1e732e7 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/biome/ElevatedSpawnerFeature.kt
@@ -4780,22 +4814,40 @@ index 3ee52d8..1e732e7 100644
          (0 until pillarHeight).forEach { dy ->
              if (!level.isEmptyBlock(originBlockPos.above(dy))) return false
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/biome/FairyForest.kt b/common/src/main/kotlin/miragefairy2024/mod/biome/FairyForest.kt
-index 0eb1d81..cdea18e 100644
+index 0eb1d81..98a246d 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/biome/FairyForest.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/biome/FairyForest.kt
-@@ -24,4 +24,5 @@ import net.minecraft.core.HolderGetter
+@@ -15,6 +15,8 @@ import miragefairy2024.util.createItemStack
+ import miragefairy2024.util.flower
+ import miragefairy2024.util.generator
+-import miragefairy2024.util.registerConfiguredFeature
++import miragefairy2024.util.plantConfiguration
++import miragefairy2024.util.registerFlowerConfiguredFeature
+ import miragefairy2024.util.registerPlacedFeature
++import miragefairy2024.util.scatter
+ import miragefairy2024.util.square
+ import miragefairy2024.util.surface
+@@ -24,9 +26,10 @@ import net.minecraft.core.HolderGetter
  import net.minecraft.core.registries.Registries
  import net.minecraft.data.worldgen.BiomeDefaultFeatures
 +import net.minecraft.data.worldgen.placement.VegetationPlacements
  import net.minecraft.data.worldgen.placement.AquaticPlacements
- import net.minecraft.data.worldgen.placement.PlacementUtils
-@@ -29,4 +30,5 @@ import net.minecraft.tags.BiomeTags
+-import net.minecraft.data.worldgen.placement.PlacementUtils
+ import net.minecraft.tags.BiomeTags
  import net.minecraft.world.entity.EntityType
  import net.minecraft.world.entity.MobCategory
 +import net.minecraft.world.attribute.EnvironmentAttributes
  import net.minecraft.world.level.biome.Biome
  import net.minecraft.world.level.biome.BiomeGenerationSettings
-@@ -64,10 +66,10 @@ object FairyForestBiomeCard : BiomeCard(
+@@ -37,7 +40,4 @@ import net.minecraft.world.level.levelgen.GenerationStep
+ import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
+ import net.minecraft.world.level.levelgen.feature.Feature
+-import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
+-import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration
+-import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider
+ import net.minecraft.world.level.levelgen.placement.PlacedFeature
+
+@@ -64,10 +64,10 @@ object FairyForestBiomeCard : BiomeCard(
              .temperature(0.4F)
              .downfall(0.6F)
 +            .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, 0xF3D9FF)
@@ -4809,7 +4861,7 @@ index 0eb1d81..cdea18e 100644
 -                    .skyColor(0xA0A9FF)
                      .grassColorOverride(0x82FFBF)
                      .foliageColorOverride(0xCDAFFF)
-@@ -78,12 +80,12 @@ object FairyForestBiomeCard : BiomeCard(
+@@ -78,12 +78,12 @@ object FairyForestBiomeCard : BiomeCard(
                  BiomeDefaultFeatures.caveSpawns(spawnSettings)
 
 -                spawnSettings.addSpawn(MobCategory.CREATURE, MobSpawnSettings.SpawnerData(EntityType.RABBIT, 4, 2, 3))
@@ -4827,7 +4879,7 @@ index 0eb1d81..cdea18e 100644
 +                spawnSettings.addSpawn(MobCategory.WATER_AMBIENT, 5, MobSpawnSettings.SpawnerData(EntityType.SALMON, 1, 5))
 
              }.build())
-@@ -111,5 +113,6 @@ object FairyForestBiomeCard : BiomeCard(
+@@ -111,5 +111,6 @@ object FairyForestBiomeCard : BiomeCard(
                  BiomeDefaultFeatures.addTaigaGrass(lookupBackedBuilder)
                  BiomeDefaultFeatures.addDefaultMushrooms(lookupBackedBuilder)
 -                BiomeDefaultFeatures.addDefaultExtraVegetation(lookupBackedBuilder)
@@ -4835,6 +4887,17 @@ index 0eb1d81..cdea18e 100644
 +                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_PUMPKIN)
                  BiomeDefaultFeatures.addCommonBerryBushes(lookupBackedBuilder)
 
+@@ -126,7 +127,7 @@ object FairyForestBiomeCard : BiomeCard(
+
+         // ミラメラ
+-        Feature.FLOWER.generator(MirageFairy2024.identifier("miramera_fairy_forest")) {
+-            registerConfiguredFeature { RandomPatchConfiguration(4, 7, 3, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(BlockMaterialCard.MIRAMERA.block())))) }.generator {
+-                registerPlacedFeature(mirameraPlacedFeatureKey) { count(3) + flower(square, surface) }
++        Feature.SIMPLE_BLOCK.generator(MirageFairy2024.identifier("miramera_fairy_forest")) {
++            registerFlowerConfiguredFeature { plantConfiguration(BlockMaterialCard.MIRAMERA.block().defaultBlockState()) }.generator {
++                registerPlacedFeature(mirameraPlacedFeatureKey) { count(3) + flower(square, surface) + scatter(4, 7, 3) }
+             }
+         }
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/biome/FallenPlasticTreeLogFeature.kt b/common/src/main/kotlin/miragefairy2024/mod/biome/FallenPlasticTreeLogFeature.kt
 index 515278b..5d58f2c 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/biome/FallenPlasticTreeLogFeature.kt
@@ -4862,36 +4925,54 @@ index e5cc3cb..4612576 100644
 
          repeat(height) { i ->
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/biome/OldGrowthAmberForest.kt b/common/src/main/kotlin/miragefairy2024/mod/biome/OldGrowthAmberForest.kt
-index 653bd8f..f183e22 100644
+index 653bd8f..244fe42 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/biome/OldGrowthAmberForest.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/biome/OldGrowthAmberForest.kt
-@@ -26,4 +26,5 @@ import net.minecraft.core.HolderGetter
+@@ -15,6 +15,8 @@ import miragefairy2024.util.flower
+ import miragefairy2024.util.generator
+ import miragefairy2024.util.getSurfaceNoiseThreshold
++import miragefairy2024.util.plantConfiguration
+ import miragefairy2024.util.registerConfiguredFeature
+ import miragefairy2024.util.registerPlacedFeature
++import miragefairy2024.util.scatter
+ import miragefairy2024.util.square
+ import miragefairy2024.util.surface
+@@ -26,5 +28,5 @@ import net.minecraft.core.HolderGetter
  import net.minecraft.core.registries.Registries
  import net.minecraft.data.worldgen.BiomeDefaultFeatures
+-import net.minecraft.data.worldgen.features.FeatureUtils
 +import net.minecraft.data.worldgen.placement.VegetationPlacements
- import net.minecraft.data.worldgen.features.FeatureUtils
  import net.minecraft.data.worldgen.features.TreeFeatures
-@@ -32,4 +33,5 @@ import net.minecraft.tags.BiomeTags
+ import net.minecraft.data.worldgen.placement.PlacementUtils
+@@ -32,4 +34,5 @@ import net.minecraft.tags.BiomeTags
  import net.minecraft.world.entity.EntityType
  import net.minecraft.world.entity.MobCategory
 +import net.minecraft.world.attribute.EnvironmentAttributes
  import net.minecraft.world.level.biome.Biome
  import net.minecraft.world.level.biome.BiomeGenerationSettings
-@@ -54,5 +56,5 @@ import net.minecraft.world.level.levelgen.placement.InSquarePlacement
+@@ -45,7 +48,4 @@ import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate
+ import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver
+ import net.minecraft.world.level.levelgen.feature.Feature
+-import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
+-import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration
+-import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider
+ import net.minecraft.world.level.levelgen.placement.BiomeFilter
+ import net.minecraft.world.level.levelgen.placement.BlockPredicateFilter
+@@ -54,5 +54,5 @@ import net.minecraft.world.level.levelgen.placement.InSquarePlacement
  import net.minecraft.world.level.levelgen.placement.PlacedFeature
 
 -val onResinCement get() = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.normal, BlockMaterialCard.RESIN_CEMENT.block())))
 +val onResinCement get() = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.unitVec3i, BlockMaterialCard.RESIN_CEMENT.block())))
 
  object OldGrowthAmberForestBiomeCard : BiomeCard(
-@@ -69,5 +71,5 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
+@@ -69,5 +69,5 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
          )
      },
 -    BiomeTags.IS_OVERWORLD, BiomeTags.IS_FOREST, BiomeTags.INCREASED_FIRE_BURNOUT, ConventionalBiomeTags.IS_HOT_OVERWORLD, ConventionalBiomeTags.IS_WET_OVERWORLD,
 +    BiomeTags.IS_OVERWORLD, BiomeTags.IS_FOREST, ConventionalBiomeTags.IS_HOT_OVERWORLD, ConventionalBiomeTags.IS_WET_OVERWORLD,
  ) {
      private val giantPlasticTreePlacedFeatureKey = Registries.PLACED_FEATURE with MirageFairy2024.identifier("giant_plastic_tree_old_growth_amber_forest")
-@@ -87,10 +89,11 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
+@@ -87,10 +87,11 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
              .temperature(0.4F)
              .downfall(0.9F)
 +            .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, 0xFFB16D)
@@ -4906,7 +4987,7 @@ index 653bd8f..f183e22 100644
 -                    .skyColor(0x7098FF)
                      .grassColorOverride(0x53B213)
                      .foliageColorOverride(0x368E25)
-@@ -100,7 +103,7 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
+@@ -100,7 +101,7 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
 
                  BiomeDefaultFeatures.farmAnimals(spawnSettings)
 -                spawnSettings.addSpawn(MobCategory.CREATURE, MobSpawnSettings.SpawnerData(EntityType.WOLF, 8, 4, 4))
@@ -4917,7 +4998,7 @@ index 653bd8f..f183e22 100644
 +                spawnSettings.addSpawn(MobCategory.CREATURE, 8, MobSpawnSettings.SpawnerData(EntityType.FOX, 2, 4))
                  BiomeDefaultFeatures.commonSpawns(spawnSettings)
 
-@@ -136,5 +139,6 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
+@@ -136,5 +137,6 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
                  lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, dayflowerPlacedFeatureKey)
                  lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, nectarflowerPlacedFeatureKey)
 -                BiomeDefaultFeatures.addDefaultExtraVegetation(lookupBackedBuilder)
@@ -4925,18 +5006,58 @@ index 653bd8f..f183e22 100644
 +                lookupBackedBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_PUMPKIN)
 
              }.build()).build()
-@@ -147,8 +151,8 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
+@@ -147,8 +149,6 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
          // 地形生成
          run {
 -            val onGrassBlock = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.normal, Blocks.GRASS_BLOCK)))
 -            val onCoarseDirt = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.normal, Blocks.COARSE_DIRT)))
+-
+-            fun placerOn(groundBlock: Block, block: Block) = PlacementUtils.filtered(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(block)), BlockPredicate.allOf(BlockPredicate.ONLY_IN_AIR_PREDICATE, BlockPredicate.matchesBlocks(Direction.DOWN.normal, groundBlock)))
 +            val onGrassBlock = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.unitVec3i, Blocks.GRASS_BLOCK)))
 +            val onCoarseDirt = listOf(BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Direction.DOWN.unitVec3i, Blocks.COARSE_DIRT)))
 
--            fun placerOn(groundBlock: Block, block: Block) = PlacementUtils.filtered(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(block)), BlockPredicate.allOf(BlockPredicate.ONLY_IN_AIR_PREDICATE, BlockPredicate.matchesBlocks(Direction.DOWN.normal, groundBlock)))
-+            fun placerOn(groundBlock: Block, block: Block) = PlacementUtils.filtered(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(block)), BlockPredicate.allOf(BlockPredicate.ONLY_IN_AIR_PREDICATE, BlockPredicate.matchesBlocks(Direction.DOWN.unitVec3i, groundBlock)))
-
              // プラノキの巨木
+@@ -189,28 +189,28 @@ object OldGrowthAmberForestBiomeCard : BiomeCard(
+
+             // 背の高い草
+-            Feature.RANDOM_PATCH.generator(MirageFairy2024.identifier("tall_grass_old_growth_amber_forest")) {
+-                registerConfiguredFeature { FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.TALL_GRASS)), listOf(Blocks.GRASS_BLOCK)) }.generator {
+-                    registerPlacedFeature(tallGrassPlacedFeatureKey) { count(8) + flower(square, surface) }
++            Feature.SIMPLE_BLOCK.generator(MirageFairy2024.identifier("tall_grass_old_growth_amber_forest")) {
++                registerConfiguredFeature { plantConfiguration(Blocks.TALL_GRASS.defaultBlockState(), Blocks.GRASS_BLOCK) }.generator {
++                    registerPlacedFeature(tallGrassPlacedFeatureKey) { count(8) + flower(square, surface) + scatter(96, 7, 3) }
+                 }
+             }
+
+             // 枯れ木
+-            Feature.RANDOM_PATCH.generator(MirageFairy2024.identifier("dead_bush_old_growth_amber_forest")) {
+-                registerConfiguredFeature { FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.DEAD_BUSH)), listOf(Blocks.COARSE_DIRT), 4) }.generator {
+-                    registerPlacedFeature(deadBushPlacedFeatureKey) { count(8) + listOf(InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()) }
++            Feature.SIMPLE_BLOCK.generator(MirageFairy2024.identifier("dead_bush_old_growth_amber_forest")) {
++                registerConfiguredFeature { plantConfiguration(Blocks.DEAD_BUSH.defaultBlockState(), Blocks.COARSE_DIRT) }.generator {
++                    registerPlacedFeature(deadBushPlacedFeatureKey) { count(8) + listOf(InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()) + scatter(4, 7, 3) }
+                 }
+             }
+
+             // ツユクサ
+-            Feature.RANDOM_PATCH.generator(MirageFairy2024.identifier("dayflower_old_growth_amber_forest")) {
+-                registerConfiguredFeature { RandomPatchConfiguration(6, 6, 2, placerOn(Blocks.GRASS_BLOCK, BlockMaterialCard.DAYFLOWER.block())) }.generator {
+-                    registerPlacedFeature(dayflowerPlacedFeatureKey) { count(4) + flower(square, surface) }
++            Feature.SIMPLE_BLOCK.generator(MirageFairy2024.identifier("dayflower_old_growth_amber_forest")) {
++                registerConfiguredFeature { plantConfiguration(BlockMaterialCard.DAYFLOWER.block().defaultBlockState(), Blocks.GRASS_BLOCK) }.generator {
++                    registerPlacedFeature(dayflowerPlacedFeatureKey) { count(4) + flower(square, surface) + scatter(6, 6, 2) }
+                 }
+             }
+
+             // ミツクサ
+-            Feature.RANDOM_PATCH.generator(MirageFairy2024.identifier("nectarflower_old_growth_amber_forest")) {
+-                registerConfiguredFeature { RandomPatchConfiguration(12, 7, 3, placerOn(BlockMaterialCard.RESIN_CEMENT.block(), BlockMaterialCard.NECTARFLOWER.block())) }.generator {
+-                    registerPlacedFeature(nectarflowerPlacedFeatureKey) { count(8) + flower(square, surface) }
++            Feature.SIMPLE_BLOCK.generator(MirageFairy2024.identifier("nectarflower_old_growth_amber_forest")) {
++                registerConfiguredFeature { plantConfiguration(BlockMaterialCard.NECTARFLOWER.block().defaultBlockState(), BlockMaterialCard.RESIN_CEMENT.block()) }.generator {
++                    registerPlacedFeature(nectarflowerPlacedFeatureKey) { count(8) + flower(square, surface) + scatter(12, 7, 3) }
+                 }
+             }
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/biome/ResinCementSapFeature.kt b/common/src/main/kotlin/miragefairy2024/mod/biome/ResinCementSapFeature.kt
 index 6cf18be..04e8a83 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/biome/ResinCementSapFeature.kt
@@ -5273,7 +5394,7 @@ index d21f0b0..3195759 100644
      }
 
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/entity/ChaosCube.kt b/common/src/main/kotlin/miragefairy2024/mod/entity/ChaosCube.kt
-index 070f3f1..c1f7d4d 100644
+index 070f3f1..6e7e986 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/entity/ChaosCube.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/entity/ChaosCube.kt
 @@ -23,5 +23,5 @@ import miragefairy2024.util.LootTable
@@ -5283,27 +5404,44 @@ index 070f3f1..c1f7d4d 100644
 +import miragefairy2024.util.Identifier
  import miragefairy2024.util.apply2
  import miragefairy2024.util.createItemStack
-@@ -39,4 +39,5 @@ import miragefairy2024.util.registerSpawn
+@@ -31,4 +31,5 @@ import miragefairy2024.util.get
+ import miragefairy2024.util.isIn
+ import miragefairy2024.util.isValid
++import miragefairy2024.util.itemProperties
+ import miragefairy2024.util.register
+ import miragefairy2024.util.registerChild
+@@ -39,4 +40,5 @@ import miragefairy2024.util.registerSpawn
  import miragefairy2024.util.sendToAround
  import miragefairy2024.util.times
 +import miragefairy2024.util.with
  import miragefairy2024.util.unaryPlus
  import net.minecraft.core.registries.BuiltInRegistries
-@@ -86,5 +87,5 @@ object ChaosCubeCard {
+@@ -61,5 +63,4 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal
+ import net.minecraft.world.entity.monster.Monster
+ import net.minecraft.world.entity.player.Player
+-import net.minecraft.world.item.Item
+ import net.minecraft.world.item.SpawnEggItem
+ import net.minecraft.world.level.Level
+@@ -86,7 +87,9 @@ object ChaosCubeCard {
          EntityType.Builder.of({ entityType, level -> createEntity(entityType, level) }, spawnGroup)
              .sized(width, height)
 -            .build()
 +            .build(Registries.ENTITY_TYPE with identifier)
++    }
++    val spawnEggItem = (identifier * "_egg").let { id ->
++        Registration(BuiltInRegistries.ITEM, id) { SpawnEggItem(id.itemProperties().spawnEgg(entityType.await())) }
      }
-     val spawnEggItem = Registration(BuiltInRegistries.ITEM, identifier * "_egg") { SpawnEggItem(entityType.await(), 0xB36235, 0xFFC21D, Item.Properties()) }
-@@ -140,5 +141,5 @@ object ChaosCubeCard {
+-    val spawnEggItem = Registration(BuiltInRegistries.ITEM, identifier * "_egg") { SpawnEggItem(entityType.await(), 0xB36235, 0xFFC21D, Item.Properties()) }
+
+     val advancement = AdvancementCard(
+@@ -140,5 +143,5 @@ object ChaosCubeCard {
          spawnEggItem.register()
          spawnEggItem.registerItemGroup(mirageFairy2024ItemGroupCard.itemGroupKey)
 -        spawnEggItem.registerModelGeneration(Model(ResourceLocation("minecraft", "item/template_spawn_egg")))
 +        spawnEggItem.registerModelGeneration(Model(Identifier("minecraft", "item/template_spawn_egg")))
          spawnEggItem.enJa(EnJa("${name.en} Spawn Egg", "${name.ja}のスポーンエッグ"))
 
-@@ -367,5 +368,5 @@ class ChaosCubeEntity(entityType: EntityType<out ChaosCubeEntity>, level: Level)
+@@ -367,5 +370,5 @@ class ChaosCubeEntity(entityType: EntityType<out ChaosCubeEntity>, level: Level)
                          // 発射体の生成
                          val projectileEntity = EtheroballisticBoltEntity(EtheroballisticBoltCard.entityType(), entity.level())
 -                        projectileEntity.owner = entity
@@ -5434,6 +5572,24 @@ index 24ba11f..d87bfbf 100644
 +                        text { translate(it.unwrapKey().get().identifier().toLanguageKey("biome")) }
                      }
                      if (biomes.size > 10) lines += text { "..."() } // TODO 完全なリストGUI
+diff --git a/common/src/main/kotlin/miragefairy2024/mod/fairy/FairyCondensationRecipe.kt b/common/src/main/kotlin/miragefairy2024/mod/fairy/FairyCondensationRecipe.kt
+index 0a5ba19..46799b0 100644
+--- a/common/src/main/kotlin/miragefairy2024/mod/fairy/FairyCondensationRecipe.kt
++++ b/common/src/main/kotlin/miragefairy2024/mod/fairy/FairyCondensationRecipe.kt
+@@ -41,5 +41,5 @@ val FAIRY_DECONDENSATION_RECIPE_DESCRIPTION_TRANSLATION = Translation(
+ context(_: ModContext)
+ fun initFairyCondensationRecipe() {
+-    registerSpecialRecipe("fairy_condensation", minSlots = 2) { inventory ->
++    registerSpecialRecipe("fairy_condensation") { inventory ->
+         val itemStacks = inventory.items()
+
+@@ -76,5 +76,5 @@ fun initFairyCondensationRecipe() {
+         MirageFairy2024.identifier("/fairy_decondensation"),
+     )
+-    registerSpecialRecipe("fairy_decondensation", minSlots = 1) { inventory ->
++    registerSpecialRecipe("fairy_decondensation") { inventory ->
+         val itemStacks = inventory.items()
+
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/fairy/FairyDreamContainer.kt b/common/src/main/kotlin/miragefairy2024/mod/fairy/FairyDreamContainer.kt
 index 67eded6..7246c82 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/fairy/FairyDreamContainer.kt
@@ -7701,41 +7857,99 @@ index d9b02d1..89c8dbe 100644
              if (blockState isIn BlockTags.DIRT) return@a 0.5
              if (blockState isIn BlockTags.SAND) return@a 0.25
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/DiamondLuminaria.kt b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/DiamondLuminaria.kt
-index a55f4ca..5c5c427 100644
+index a55f4ca..e23080e 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/DiamondLuminaria.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/DiamondLuminaria.kt
-@@ -26,5 +26,5 @@ import miragefairy2024.util.times
+@@ -18,7 +18,9 @@ import miragefairy2024.util.getOr
+ import miragefairy2024.util.per
+ import miragefairy2024.util.placeWhenVegetalDecoration
++import miragefairy2024.util.plantConfiguration
+ import miragefairy2024.util.plus
+-import miragefairy2024.util.registerConfiguredFeature
++import miragefairy2024.util.registerFlowerConfiguredFeature
+ import miragefairy2024.util.registerPlacedFeature
++import miragefairy2024.util.scatter
+ import miragefairy2024.util.square
+ import miragefairy2024.util.surface
+@@ -26,5 +28,5 @@ import miragefairy2024.util.times
  import miragefairy2024.util.unaryPlus
  import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 -import net.minecraft.resources.ResourceLocation
 +import net.minecraft.resources.Identifier
  import net.minecraft.util.RandomSource
  import net.minecraft.world.item.Items
-@@ -83,5 +83,5 @@ object DiamondLuminariaCard : AbstractLuminariaCard<DiamondLuminariaBlock>() {
+@@ -33,5 +35,4 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
+ import net.minecraft.world.level.block.state.properties.IntegerProperty
+ import net.minecraft.world.level.levelgen.feature.Feature
+-import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
+ import net.minecraft.world.level.material.MapColor
+
+@@ -83,5 +84,5 @@ object DiamondLuminariaCard : AbstractLuminariaCard<DiamondLuminariaBlock>() {
      )
 
 -    override fun createAdvancement(identifier: ResourceLocation) = AdvancementCard(
 +    override fun createAdvancement(identifier: Identifier) = AdvancementCard(
          identifier = identifier,
          context = AdvancementCard.Sub { rootAdvancement.await() },
+@@ -96,7 +97,7 @@ object DiamondLuminariaCard : AbstractLuminariaCard<DiamondLuminariaBlock>() {
+     override fun init() {
+         super.init()
+-        Feature.FLOWER.generator(blockIdentifier) {
+-            registerConfiguredFeature("cluster") { RandomPatchConfiguration(1, 0, 0, placer) }.generator {
+-                registerPlacedFeature("cluster") { per(128) + flower(square, surface) }.placeWhenVegetalDecoration { (+ConventionalBiomeTags.IS_SNOWY + +ConventionalBiomeTags.IS_ICY) * defaultTraits }
++        Feature.SIMPLE_BLOCK.generator(blockIdentifier) {
++            registerFlowerConfiguredFeature("cluster") { plantConfiguration(maxAgedBlockState) }.generator {
++                registerPlacedFeature("cluster") { per(128) + flower(square, surface) + scatter(1, 0, 0) }.placeWhenVegetalDecoration { (+ConventionalBiomeTags.IS_SNOWY + +ConventionalBiomeTags.IS_ICY) * defaultTraits }
+             }
+         }
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/EmeraldLuminaria.kt b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/EmeraldLuminaria.kt
-index 5df4903..69af51c 100644
+index 5df4903..c1e1858 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/EmeraldLuminaria.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/EmeraldLuminaria.kt
-@@ -27,5 +27,5 @@ import miragefairy2024.util.unaryPlus
+@@ -18,7 +18,9 @@ import miragefairy2024.util.getOr
+ import miragefairy2024.util.per
+ import miragefairy2024.util.placeWhenVegetalDecoration
++import miragefairy2024.util.plantConfiguration
+ import miragefairy2024.util.plus
+-import miragefairy2024.util.registerConfiguredFeature
++import miragefairy2024.util.registerFlowerConfiguredFeature
+ import miragefairy2024.util.registerPlacedFeature
++import miragefairy2024.util.scatter
+ import miragefairy2024.util.square
+ import miragefairy2024.util.surface
+@@ -27,5 +29,5 @@ import miragefairy2024.util.unaryPlus
  import miragefairy2024.util.underground
  import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 -import net.minecraft.resources.ResourceLocation
 +import net.minecraft.resources.Identifier
  import net.minecraft.util.RandomSource
  import net.minecraft.world.item.Items
-@@ -83,5 +83,5 @@ object EmeraldLuminariaCard : AbstractLuminariaCard<EmeraldLuminariaBlock>() {
+@@ -35,5 +37,4 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
+ import net.minecraft.world.level.block.state.properties.IntegerProperty
+ import net.minecraft.world.level.levelgen.feature.Feature
+-import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
+ import net.minecraft.world.level.material.MapColor
+
+@@ -83,5 +84,5 @@ object EmeraldLuminariaCard : AbstractLuminariaCard<EmeraldLuminariaBlock>() {
      )
 
 -    override fun createAdvancement(identifier: ResourceLocation) = AdvancementCard(
 +    override fun createAdvancement(identifier: Identifier) = AdvancementCard(
          identifier = identifier,
          context = AdvancementCard.Sub { DiamondLuminariaCard.advancement!!.await() },
+@@ -96,8 +97,8 @@ object EmeraldLuminariaCard : AbstractLuminariaCard<EmeraldLuminariaBlock>() {
+     override fun init() {
+         super.init()
+-        Feature.FLOWER.generator(blockIdentifier) {
+-            registerConfiguredFeature("cluster") { RandomPatchConfiguration(1, 0, 0, placer) }.generator {
+-                registerPlacedFeature("cluster") { per(128) + flower(square, surface) }.placeWhenVegetalDecoration { (+ConventionalBiomeTags.IS_JUNGLE + +ConventionalBiomeTags.IS_SWAMP) * defaultTraits }  // 地上
+-                registerPlacedFeature("underground_cluster") { count(16) + flower(square, underground) }.placeWhenVegetalDecoration { +Biomes.LUSH_CAVES * defaultTraits } // 地下
++        Feature.SIMPLE_BLOCK.generator(blockIdentifier) {
++            registerFlowerConfiguredFeature("cluster") { plantConfiguration(maxAgedBlockState) }.generator {
++                registerPlacedFeature("cluster") { per(128) + flower(square, surface) + scatter(1, 0, 0) }.placeWhenVegetalDecoration { (+ConventionalBiomeTags.IS_JUNGLE + +ConventionalBiomeTags.IS_SWAMP) * defaultTraits }  // 地上
++                registerPlacedFeature("underground_cluster") { count(16) + flower(square, underground) + scatter(1, 0, 0) }.placeWhenVegetalDecoration { +Biomes.LUSH_CAVES * defaultTraits } // 地下
+             }
+         }
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/FairyRing.kt b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/FairyRing.kt
 index 5cf21c2..b55356c 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/FairyRing.kt
@@ -7779,31 +7993,63 @@ index 26db60b..18e6656 100644
          identifier = identifier,
          context = AdvancementCard.Sub { ProminariaCard.advancement!!.await() },
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/Merrrria.kt b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/Merrrria.kt
-index 54f04b1..e5316f2 100644
+index 54f04b1..b80fa43 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/Merrrria.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/Merrrria.kt
-@@ -30,5 +30,5 @@ import miragefairy2024.util.unaryPlus
+@@ -22,6 +22,8 @@ import miragefairy2024.util.get
+ import miragefairy2024.util.per
+ import miragefairy2024.util.placeWhenVegetalDecoration
+-import miragefairy2024.util.registerConfiguredFeature
++import miragefairy2024.util.plantConfiguration
++import miragefairy2024.util.registerFlowerConfiguredFeature
+ import miragefairy2024.util.registerPlacedFeature
++import miragefairy2024.util.scatter
+ import miragefairy2024.util.square
+ import miragefairy2024.util.surface
+@@ -30,5 +32,5 @@ import miragefairy2024.util.unaryPlus
  import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
  import net.minecraft.core.BlockPos
 -import net.minecraft.resources.ResourceLocation
 +import net.minecraft.resources.Identifier
  import net.minecraft.server.level.ServerLevel
  import net.minecraft.sounds.SoundEvents
-@@ -101,5 +101,5 @@ object MerrrriaCard : SimpleMagicPlantCard<MerrrriaBlock>() {
+@@ -41,5 +43,4 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
+ import net.minecraft.world.level.block.state.properties.IntegerProperty
+ import net.minecraft.world.level.levelgen.feature.Feature
+-import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
+ import net.minecraft.world.level.material.MapColor
+ import kotlin.math.pow
+@@ -101,5 +102,5 @@ object MerrrriaCard : SimpleMagicPlantCard<MerrrriaBlock>() {
      )
 
 -    override fun createAdvancement(identifier: ResourceLocation) = AdvancementCard(
 +    override fun createAdvancement(identifier: Identifier) = AdvancementCard(
          identifier = identifier,
          context = AdvancementCard.Sub { rootAdvancement.await() },
-@@ -146,5 +146,5 @@ class MerrrriaBlock(settings: Properties) : SimpleMagicPlantBlock(MerrrriaCard,
+@@ -114,10 +115,10 @@ object MerrrriaCard : SimpleMagicPlantCard<MerrrriaBlock>() {
+     override fun init() {
+         super.init()
+-        Feature.FLOWER.generator(blockIdentifier) {
+-            registerConfiguredFeature("cluster") { RandomPatchConfiguration(1, 0, 0, placer) }.generator {
+-                registerPlacedFeature("cluster") { per(8) + flower(square, surface) }.placeWhenVegetalDecoration { +ConventionalBiomeTags.IS_WINDSWEPT * defaultTraits }
++        Feature.SIMPLE_BLOCK.generator(blockIdentifier) {
++            registerFlowerConfiguredFeature("cluster") { plantConfiguration(maxAgedBlockState) }.generator {
++                registerPlacedFeature("cluster") { per(8) + flower(square, surface) + scatter(1, 0, 0) }.placeWhenVegetalDecoration { +ConventionalBiomeTags.IS_WINDSWEPT * defaultTraits }
+             }
+-            registerConfiguredFeature("large_cluster") { RandomPatchConfiguration(40, 8, 3, placer) }.generator {
+-                registerPlacedFeature("large_cluster") { per(64) + flower(center, surface) }.placeWhenVegetalDecoration { +ConventionalBiomeTags.IS_WINDSWEPT * defaultTraits }
++            registerFlowerConfiguredFeature("large_cluster") { plantConfiguration(maxAgedBlockState) }.generator {
++                registerPlacedFeature("large_cluster") { per(64) + flower(center, surface) + scatter(40, 8, 3) }.placeWhenVegetalDecoration { +ConventionalBiomeTags.IS_WINDSWEPT * defaultTraits }
+             }
+         }
+@@ -146,5 +147,5 @@ class MerrrriaBlock(settings: Properties) : SimpleMagicPlantBlock(MerrrriaCard,
          // 3と4の間は昼と夜で繰り返す
          if (getAge(blockState) >= 3) {
 -            val newBlockState = withAge(if (level.isNight) 4 else 3)
 +            val newBlockState = withAge(if (!level.dimensionType().hasFixedTime() && level.skyDarken >= 4) 4 else 3)
              if (newBlockState != blockState) {
                  level.setBlock(blockPos, newBlockState, UPDATE_CLIENTS)
-@@ -158,5 +158,5 @@ class MerrrriaBlock(settings: Properties) : SimpleMagicPlantBlock(MerrrriaCard,
+@@ -158,5 +159,5 @@ class MerrrriaBlock(settings: Properties) : SimpleMagicPlantBlock(MerrrriaCard,
          if (getAge(state) == 4) {
              if (random.nextInt(50) == 0) {
 -                // クライアント側ではisNightが機能しないので夜だけ演奏はできない
@@ -7811,46 +8057,118 @@ index 54f04b1..e5316f2 100644
                  val pitch = PITCHES[random.nextInt(PITCHES.size)]
                  level.playLocalSound(
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/MirageFlower.kt b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/MirageFlower.kt
-index dfcb4c8..9027a83 100644
+index dfcb4c8..fb9e53c 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/MirageFlower.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/MirageFlower.kt
-@@ -36,5 +36,5 @@ import miragefairy2024.util.times
+@@ -27,8 +27,11 @@ import miragefairy2024.util.overworld
+ import miragefairy2024.util.per
+ import miragefairy2024.util.placeWhenVegetalDecoration
++import miragefairy2024.util.plantConfiguration
+ import miragefairy2024.util.plus
+ import miragefairy2024.util.register
+ import miragefairy2024.util.registerConfiguredFeature
++import miragefairy2024.util.registerFlowerConfiguredFeature
+ import miragefairy2024.util.registerPlacedFeature
++import miragefairy2024.util.scatter
+ import miragefairy2024.util.square
+ import miragefairy2024.util.surface
+@@ -36,5 +39,5 @@ import miragefairy2024.util.times
  import miragefairy2024.util.unaryPlus
  import net.minecraft.core.registries.BuiltInRegistries
 -import net.minecraft.resources.ResourceLocation
 +import net.minecraft.resources.Identifier
  import net.minecraft.util.RandomSource
  import net.minecraft.world.level.biome.Biomes
-@@ -108,5 +108,5 @@ object MirageFlowerCard : AbstractMirageFlowerCard<MirageFlowerBlock>() {
+@@ -43,5 +46,4 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
+ import net.minecraft.world.level.block.state.properties.IntegerProperty
+ import net.minecraft.world.level.levelgen.feature.Feature
+-import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
+ import net.minecraft.world.level.material.MapColor
+
+@@ -108,5 +110,5 @@ object MirageFlowerCard : AbstractMirageFlowerCard<MirageFlowerBlock>() {
      private val FAIRY_RING_FEATURE = FairyRingFeature(FairyRingFeatureConfig.CODEC)
 
 -    override fun createAdvancement(identifier: ResourceLocation) = AdvancementCard(
 +    override fun createAdvancement(identifier: Identifier) = AdvancementCard(
          identifier = identifier,
          context = AdvancementCard.Sub { rootAdvancement.await() },
+@@ -123,9 +125,9 @@ object MirageFlowerCard : AbstractMirageFlowerCard<MirageFlowerBlock>() {
+         super.init()
+         Registration(BuiltInRegistries.FEATURE, MirageFairy2024.identifier("fairy_ring")) { FAIRY_RING_FEATURE }.register() // Fairy Ring
+-        Feature.FLOWER.generator(blockIdentifier) {
+-            registerConfiguredFeature("cluster") { RandomPatchConfiguration(6, 6, 2, placer) }.generator { // 小さな塊
+-                registerPlacedFeature("cluster") { per(16) + flower(square, surface) }.placeWhenVegetalDecoration { (overworld + end * !+Biomes.THE_END) * defaultTraits }  // 地上・エンド外縁の島々に通常クラスタ
+-                registerPlacedFeature("nether_cluster") { per(64) + flower(square, nether) }.placeWhenVegetalDecoration { nether * defaultTraits } // ネザーにネザー用クラスタ
+-                registerPlacedFeature("fairy_forest_cluster") { count(4) + flower(square, surface) }.placeWhenVegetalDecoration { (+FairyForestBiomeCard.key + +DeepFairyForestBiomeCard.key) * defaultTraits } // 妖精の森
++        Feature.SIMPLE_BLOCK.generator(blockIdentifier) {
++            registerFlowerConfiguredFeature("cluster") { plantConfiguration(maxAgedBlockState) }.generator { // 小さな塊
++                registerPlacedFeature("cluster") { per(16) + flower(square, surface) + scatter(6, 6, 2) }.placeWhenVegetalDecoration { (overworld + end * !+Biomes.THE_END) * defaultTraits }  // 地上・エンド外縁の島々に通常クラスタ
++                registerPlacedFeature("nether_cluster") { per(64) + flower(square, nether) + scatter(6, 6, 2) }.placeWhenVegetalDecoration { nether * defaultTraits } // ネザーにネザー用クラスタ
++                registerPlacedFeature("fairy_forest_cluster") { count(4) + flower(square, surface) + scatter(6, 6, 2) }.placeWhenVegetalDecoration { (+FairyForestBiomeCard.key + +DeepFairyForestBiomeCard.key) * defaultTraits } // 妖精の森
+             }
+         }
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/PhantomFlower.kt b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/PhantomFlower.kt
-index bc6056a..c6aecf5 100644
+index bc6056a..d21c065 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/PhantomFlower.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/PhantomFlower.kt
-@@ -25,5 +25,5 @@ import miragefairy2024.util.surface
+@@ -18,12 +18,14 @@ import miragefairy2024.util.generator
+ import miragefairy2024.util.per
+ import miragefairy2024.util.placeWhenVegetalDecoration
++import miragefairy2024.util.plantConfiguration
+ import miragefairy2024.util.registerChild
+-import miragefairy2024.util.registerConfiguredFeature
++import miragefairy2024.util.registerFlowerConfiguredFeature
+ import miragefairy2024.util.registerPlacedFeature
++import miragefairy2024.util.scatter
+ import miragefairy2024.util.square
+ import miragefairy2024.util.surface
  import miragefairy2024.util.times
  import miragefairy2024.util.unaryPlus
 -import net.minecraft.resources.ResourceLocation
 +import net.minecraft.resources.Identifier
  import net.minecraft.util.RandomSource
  import net.minecraft.world.level.block.SoundType
-@@ -97,5 +97,5 @@ object PhantomFlowerCard : AbstractMirageFlowerCard<PhantomFlowerBlock>() {
+@@ -31,5 +33,4 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
+ import net.minecraft.world.level.block.state.properties.IntegerProperty
+ import net.minecraft.world.level.levelgen.feature.Feature
+-import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
+ import net.minecraft.world.level.material.MapColor
+
+@@ -97,5 +98,5 @@ object PhantomFlowerCard : AbstractMirageFlowerCard<PhantomFlowerBlock>() {
      )
 
 -    override fun createAdvancement(identifier: ResourceLocation) = AdvancementCard(
 +    override fun createAdvancement(identifier: Identifier) = AdvancementCard(
          identifier = identifier,
          context = AdvancementCard.Sub { FairyForestBiomeCard.advancement!!.await() },
+@@ -111,7 +112,7 @@ object PhantomFlowerCard : AbstractMirageFlowerCard<PhantomFlowerBlock>() {
+         super.init()
+         LOCAL_VACUUM_DECAY_RESISTANT_BLOCK_TAG.generator.registerChild(block)
+-        Feature.FLOWER.generator(blockIdentifier) {
+-            registerConfiguredFeature("cluster") { RandomPatchConfiguration(6, 6, 2, placer) }.generator {
+-                registerPlacedFeature("cluster") { per(16) + flower(square, surface) }.placeWhenVegetalDecoration { +FairyForestBiomeCard.key * defaultTraits }
++        Feature.SIMPLE_BLOCK.generator(blockIdentifier) {
++            registerFlowerConfiguredFeature("cluster") { plantConfiguration(maxAgedBlockState) }.generator {
++                registerPlacedFeature("cluster") { per(16) + flower(square, surface) + scatter(6, 6, 2) }.placeWhenVegetalDecoration { +FairyForestBiomeCard.key * defaultTraits }
+             }
+         }
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/Prominaria.kt b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/Prominaria.kt
-index 99891f5..6f8a0de 100644
+index 99891f5..b6d8c5c 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/Prominaria.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/Prominaria.kt
-@@ -31,10 +31,10 @@ import miragefairy2024.util.unaryPlus
+@@ -22,8 +22,10 @@ import miragefairy2024.util.isNotIn
+ import miragefairy2024.util.per
+ import miragefairy2024.util.placeWhenVegetalDecoration
++import miragefairy2024.util.plantConfiguration
+ import miragefairy2024.util.plus
+ import miragefairy2024.util.rangedNether
+-import miragefairy2024.util.registerConfiguredFeature
++import miragefairy2024.util.registerFlowerConfiguredFeature
+ import miragefairy2024.util.registerPlacedFeature
++import miragefairy2024.util.scatter
+ import miragefairy2024.util.square
+ import miragefairy2024.util.times
+@@ -31,10 +33,10 @@ import miragefairy2024.util.unaryPlus
  import miragefairy2024.util.with
  import net.minecraft.core.BlockPos
 -import net.minecraft.resources.ResourceLocation
@@ -7863,14 +8181,31 @@ index 99891f5..6f8a0de 100644
 +import net.minecraft.world.InteractionResult
  import net.minecraft.world.entity.player.Player
  import net.minecraft.world.item.ItemStack
-@@ -93,5 +93,5 @@ object ProminariaCard : AbstractProminariaCard<ProminariaBlock>() {
+@@ -47,5 +49,4 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty
+ import net.minecraft.world.level.gameevent.GameEvent
+ import net.minecraft.world.level.levelgen.feature.Feature
+-import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
+ import net.minecraft.world.level.material.MapColor
+ import net.minecraft.world.phys.BlockHitResult
+@@ -93,5 +94,5 @@ object ProminariaCard : AbstractProminariaCard<ProminariaBlock>() {
      )
 
 -    override fun createAdvancement(identifier: ResourceLocation) = AdvancementCard(
 +    override fun createAdvancement(identifier: Identifier) = AdvancementCard(
          identifier = identifier,
          context = AdvancementCard.Sub { DiamondLuminariaCard.advancement!!.await() },
-@@ -123,9 +123,9 @@ class ProminariaBlock(settings: Properties) : SimpleMagicPlantBlock(ProminariaCa
+@@ -106,7 +107,7 @@ object ProminariaCard : AbstractProminariaCard<ProminariaBlock>() {
+     override fun init() {
+         super.init()
+-        Feature.FLOWER.generator(blockIdentifier) {
+-            registerConfiguredFeature("cluster") { RandomPatchConfiguration(6, 6, 2, placer) }.generator {
+-                registerPlacedFeature("cluster") { per(4) + flower(square, rangedNether(32, 45)) }.placeWhenVegetalDecoration { (+Biomes.NETHER_WASTES + +Biomes.CRIMSON_FOREST) * defaultTraits }
++        Feature.SIMPLE_BLOCK.generator(blockIdentifier) {
++            registerFlowerConfiguredFeature("cluster") { plantConfiguration(maxAgedBlockState) }.generator {
++                registerPlacedFeature("cluster") { per(4) + flower(square, rangedNether(32, 45)) + scatter(6, 6, 2) }.placeWhenVegetalDecoration { (+Biomes.NETHER_WASTES + +Biomes.CRIMSON_FOREST) * defaultTraits }
+             }
+         }
+@@ -123,9 +124,9 @@ class ProminariaBlock(settings: Properties) : SimpleMagicPlantBlock(ProminariaCa
      override fun getAgeProperty(): IntegerProperty = BlockStateProperties.AGE_3
 
 -    override fun useItemOn(stack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hitResult: BlockHitResult): ItemInteractionResult {
@@ -7882,7 +8217,7 @@ index 99891f5..6f8a0de 100644
 +        if (level.isClientSide) return InteractionResult.SUCCESS
 
          val age = state.getOr(BlockStateProperties.AGE_3) { 0 }
-@@ -145,5 +145,5 @@ class ProminariaBlock(settings: Properties) : SimpleMagicPlantBlock(ProminariaCa
+@@ -145,5 +146,5 @@ class ProminariaBlock(settings: Properties) : SimpleMagicPlantBlock(ProminariaCa
          level.playSound(null, pos, SoundEvents.PUMPKIN_CARVE, SoundSource.BLOCKS, 1.0F, 1.0F) // TODO 音を変更
 
 -        return ItemInteractionResult.CONSUME
@@ -7890,23 +8225,57 @@ index 99891f5..6f8a0de 100644
      }
  }
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/Sarracenia.kt b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/Sarracenia.kt
-index ac1a817..71c3e6c 100644
+index ac1a817..4742a59 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/Sarracenia.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/Sarracenia.kt
-@@ -25,5 +25,5 @@ import miragefairy2024.util.times
+@@ -18,19 +18,21 @@ import miragefairy2024.util.generator
+ import miragefairy2024.util.per
+ import miragefairy2024.util.placeWhenVegetalDecoration
++import miragefairy2024.util.plantConfiguration
+ import miragefairy2024.util.plus
+-import miragefairy2024.util.registerConfiguredFeature
++import miragefairy2024.util.registerFlowerConfiguredFeature
+ import miragefairy2024.util.registerPlacedFeature
++import miragefairy2024.util.scatter
+ import miragefairy2024.util.surface
+ import miragefairy2024.util.times
  import miragefairy2024.util.unaryPlus
  import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 -import net.minecraft.resources.ResourceLocation
 +import net.minecraft.resources.Identifier
  import net.minecraft.util.RandomSource
  import net.minecraft.world.level.biome.Biomes
-@@ -83,5 +83,5 @@ object SarraceniaCard : AbstractVeropedaCard<SarraceniaBlock>() {
++import net.minecraft.world.level.block.Blocks
+ import net.minecraft.world.level.block.SoundType
+ import net.minecraft.world.level.block.state.properties.BlockStateProperties
+ import net.minecraft.world.level.block.state.properties.IntegerProperty
+ import net.minecraft.world.level.levelgen.feature.Feature
+-import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
+ import net.minecraft.world.level.material.MapColor
+
+@@ -83,5 +85,5 @@ object SarraceniaCard : AbstractVeropedaCard<SarraceniaBlock>() {
      )
 
 -    override fun createAdvancement(identifier: ResourceLocation) = AdvancementCard(
 +    override fun createAdvancement(identifier: Identifier) = AdvancementCard(
          identifier = identifier,
          context = AdvancementCard.Sub { VeropedaCard.advancement!!.await() },
+@@ -97,10 +99,10 @@ object SarraceniaCard : AbstractVeropedaCard<SarraceniaBlock>() {
+         super.init()
+
+-        Feature.FLOWER.generator(blockIdentifier) {
+-            registerConfiguredFeature("cluster") { RandomPatchConfiguration(20, 8, 3, placer) }.generator {
+-                registerPlacedFeature("cluster") { per(8) + flower(center, surface) }.placeWhenVegetalDecoration { (+ConventionalBiomeTags.IS_SWAMP + +ConventionalBiomeTags.IS_JUNGLE + +Biomes.MANGROVE_SWAMP) * defaultTraits }
++        Feature.SIMPLE_BLOCK.generator(blockIdentifier) {
++            registerFlowerConfiguredFeature("cluster") { plantConfiguration(maxAgedBlockState) }.generator {
++                registerPlacedFeature("cluster") { per(8) + flower(center, surface) + scatter(20, 8, 3) }.placeWhenVegetalDecoration { (+ConventionalBiomeTags.IS_SWAMP + +ConventionalBiomeTags.IS_JUNGLE + +Biomes.MANGROVE_SWAMP) * defaultTraits }
+             }
+-            registerConfiguredFeature("cluster_on_grass") { RandomPatchConfiguration(20, 8, 3, placerOnGrass) }.generator {
+-                registerPlacedFeature("cluster_on_grass") { per(8) + flower(center, surface) }.placeWhenVegetalDecoration { +OldGrowthAmberForestBiomeCard.key }
++            registerFlowerConfiguredFeature("cluster_on_grass") { plantConfiguration(maxAgedBlockState, Blocks.GRASS_BLOCK) }.generator {
++                registerPlacedFeature("cluster_on_grass") { per(8) + flower(center, surface) + scatter(20, 8, 3) }.placeWhenVegetalDecoration { +OldGrowthAmberForestBiomeCard.key }
+             }
+         }
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/SimpleMagicPlant.kt b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/SimpleMagicPlant.kt
 index 6003907..32d6f73 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/SimpleMagicPlant.kt
@@ -7948,50 +8317,119 @@ index 6003907..32d6f73 100644
          val drops = mutableListOf<ItemStack>()
 
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/TopazLuminaria.kt b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/TopazLuminaria.kt
-index c84c93c..a1baa14 100644
+index c84c93c..b175a1c 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/TopazLuminaria.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/TopazLuminaria.kt
-@@ -24,5 +24,5 @@ import miragefairy2024.util.times
+@@ -17,6 +17,8 @@ import miragefairy2024.util.getOr
+ import miragefairy2024.util.per
+ import miragefairy2024.util.placeWhenVegetalDecoration
+-import miragefairy2024.util.registerConfiguredFeature
++import miragefairy2024.util.plantConfiguration
++import miragefairy2024.util.registerFlowerConfiguredFeature
+ import miragefairy2024.util.registerPlacedFeature
++import miragefairy2024.util.scatter
+ import miragefairy2024.util.square
+ import miragefairy2024.util.surface
+@@ -24,5 +26,5 @@ import miragefairy2024.util.times
  import miragefairy2024.util.unaryPlus
  import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 -import net.minecraft.resources.ResourceLocation
 +import net.minecraft.resources.Identifier
  import net.minecraft.util.RandomSource
  import net.minecraft.world.level.block.SoundType
-@@ -78,5 +78,5 @@ object TopazLuminariaCard : AbstractLuminariaCard<TopazLuminariaBlock>() {
+@@ -30,5 +32,4 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
+ import net.minecraft.world.level.block.state.properties.IntegerProperty
+ import net.minecraft.world.level.levelgen.feature.Feature
+-import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
+ import net.minecraft.world.level.material.MapColor
+
+@@ -78,5 +79,5 @@ object TopazLuminariaCard : AbstractLuminariaCard<TopazLuminariaBlock>() {
      )
 
 -    override fun createAdvancement(identifier: ResourceLocation) = AdvancementCard(
 +    override fun createAdvancement(identifier: Identifier) = AdvancementCard(
          identifier = identifier,
          context = AdvancementCard.Sub { DiamondLuminariaCard.advancement!!.await() },
+@@ -91,7 +92,7 @@ object TopazLuminariaCard : AbstractLuminariaCard<TopazLuminariaBlock>() {
+     override fun init() {
+         super.init()
+-        Feature.FLOWER.generator(blockIdentifier) {
+-            registerConfiguredFeature("cluster") { RandomPatchConfiguration(1, 0, 0, placer) }.generator {
+-                registerPlacedFeature("cluster") { per(128) + flower(square, surface) }.placeWhenVegetalDecoration { +ConventionalBiomeTags.IS_DESERT * defaultTraits }
++        Feature.SIMPLE_BLOCK.generator(blockIdentifier) {
++            registerFlowerConfiguredFeature("cluster") { plantConfiguration(maxAgedBlockState) }.generator {
++                registerPlacedFeature("cluster") { per(128) + flower(square, surface) + scatter(1, 0, 0) }.placeWhenVegetalDecoration { +ConventionalBiomeTags.IS_DESERT * defaultTraits }
+             }
+         }
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/Util.kt b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/Util.kt
-index c85d5cf..186c59f 100644
+index c85d5cf..71dc8d6 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/Util.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/Util.kt
-@@ -13,3 +13,3 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature
+@@ -1,9 +1,6 @@
+ package miragefairy2024.mod.magicplant.contents.magicplants
+
+-import net.minecraft.core.Direction
+ import net.minecraft.core.Holder
+ import net.minecraft.data.worldgen.placement.PlacementUtils
+-import net.minecraft.world.level.block.Blocks
+-import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate
+ import net.minecraft.world.level.levelgen.feature.Feature
+ import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration
+@@ -13,3 +10,2 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature
  val SimpleMagicPlantCard<*>.maxAgedBlockState get() = this.block().withAge(this.block().maxAge)
  val SimpleMagicPlantCard<*>.placer: Holder<PlacedFeature> get() = PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(this.maxAgedBlockState)))
 -val SimpleMagicPlantCard<*>.placerOnGrass: Holder<PlacedFeature> get() = PlacementUtils.filtered(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(this.maxAgedBlockState)), BlockPredicate.allOf(BlockPredicate.ONLY_IN_AIR_PREDICATE, BlockPredicate.matchesBlocks(Direction.DOWN.normal, Blocks.GRASS_BLOCK)))
-+val SimpleMagicPlantCard<*>.placerOnGrass: Holder<PlacedFeature> get() = PlacementUtils.filtered(Feature.SIMPLE_BLOCK, SimpleBlockConfiguration(BlockStateProvider.simple(this.maxAgedBlockState)), BlockPredicate.allOf(BlockPredicate.ONLY_IN_AIR_PREDICATE, BlockPredicate.matchesBlocks(Direction.DOWN.unitVec3i, Blocks.GRASS_BLOCK)))
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/Veropeda.kt b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/Veropeda.kt
-index 2ffd1f7..bfa8c35 100644
+index 2ffd1f7..94fd39d 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/Veropeda.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/Veropeda.kt
-@@ -27,5 +27,5 @@ import miragefairy2024.util.times
+@@ -19,7 +19,9 @@ import miragefairy2024.util.nether
+ import miragefairy2024.util.per
+ import miragefairy2024.util.placeWhenVegetalDecoration
++import miragefairy2024.util.plantConfiguration
+ import miragefairy2024.util.plus
+-import miragefairy2024.util.registerConfiguredFeature
++import miragefairy2024.util.registerFlowerConfiguredFeature
+ import miragefairy2024.util.registerPlacedFeature
++import miragefairy2024.util.scatter
+ import miragefairy2024.util.square
+ import miragefairy2024.util.surface
+@@ -27,5 +29,5 @@ import miragefairy2024.util.times
  import miragefairy2024.util.unaryPlus
  import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 -import net.minecraft.resources.ResourceLocation
 +import net.minecraft.resources.Identifier
  import net.minecraft.util.RandomSource
  import net.minecraft.world.level.block.SoundType
-@@ -85,5 +85,5 @@ object VeropedaCard : AbstractVeropedaCard<VeropedaBlock>() {
+@@ -33,5 +35,4 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
+ import net.minecraft.world.level.block.state.properties.IntegerProperty
+ import net.minecraft.world.level.levelgen.feature.Feature
+-import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration
+ import net.minecraft.world.level.material.MapColor
+
+@@ -85,5 +86,5 @@ object VeropedaCard : AbstractVeropedaCard<VeropedaBlock>() {
      )
 
 -    override fun createAdvancement(identifier: ResourceLocation) = AdvancementCard(
 +    override fun createAdvancement(identifier: Identifier) = AdvancementCard(
          identifier = identifier,
          context = AdvancementCard.Sub { rootAdvancement.await() },
+@@ -98,10 +99,10 @@ object VeropedaCard : AbstractVeropedaCard<VeropedaBlock>() {
+     override fun init() {
+         super.init()
+-        Feature.FLOWER.generator(blockIdentifier) {
+-            registerConfiguredFeature("cluster") { RandomPatchConfiguration(6, 6, 2, placer) }.generator { // 小さな塊
+-                registerPlacedFeature("cluster") { per(16) + flower(square, surface) }.placeWhenVegetalDecoration { (+ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA + +ConventionalBiomeTags.IS_BADLANDS) * defaultTraits } // 地上用クラスタ
++        Feature.SIMPLE_BLOCK.generator(blockIdentifier) {
++            registerFlowerConfiguredFeature("cluster") { plantConfiguration(maxAgedBlockState) }.generator { // 小さな塊
++                registerPlacedFeature("cluster") { per(16) + flower(square, surface) + scatter(6, 6, 2) }.placeWhenVegetalDecoration { (+ConventionalBiomeTags.IS_DESERT + +ConventionalBiomeTags.IS_SAVANNA + +ConventionalBiomeTags.IS_BADLANDS) * defaultTraits } // 地上用クラスタ
+             }
+-            registerConfiguredFeature("large_cluster") { RandomPatchConfiguration(40, 8, 3, placer) }.generator { // 大きな塊
+-                registerPlacedFeature("nether_cluster") { per(8) + flower(center, nether) }.placeWhenVegetalDecoration { nether * defaultTraits } // ネザー用クラスタ
++            registerFlowerConfiguredFeature("large_cluster") { plantConfiguration(maxAgedBlockState) }.generator { // 大きな塊
++                registerPlacedFeature("nether_cluster") { per(8) + flower(center, nether) + scatter(40, 8, 3) }.placeWhenVegetalDecoration { nether * defaultTraits } // ネザー用クラスタ
+             }
+         }
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/XarpaLuminaria.kt b/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/XarpaLuminaria.kt
 index 3d9a19b..a09ea8c 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/magicplant/contents/magicplants/XarpaLuminaria.kt
@@ -8221,7 +8659,7 @@ index 1ce2f2f..163806b 100644
          outputs = listOf(
              { Items.SANDSTONE_STAIRS.createItemStack(16) },
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/materials/MaterialsModule.kt b/common/src/main/kotlin/miragefairy2024/mod/materials/MaterialsModule.kt
-index 50ee984..b2b6c13 100644
+index 50ee984..a218777 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/materials/MaterialsModule.kt
 +++ b/common/src/main/kotlin/miragefairy2024/mod/materials/MaterialsModule.kt
 @@ -51,4 +51,5 @@ import miragefairy2024.mod.structure.WeatheredAncientRemnantsCard
@@ -8755,6 +9193,20 @@ index 50ee984..b2b6c13 100644
 +    registerCompressionRecipeGeneration(MaterialCard.TINY_BISMUTH_DUST.item, { MaterialCard.TINY_BISMUTH_DUST.ore!!.ingredient(it) }, MaterialCard.BISMUTH_DUST.item, { MaterialCard.BISMUTH_DUST.ore!!.ingredient(it) })
 
      // ミナ両替
+@@ -1639,5 +1719,5 @@ fun initMaterialsModule() {
+
+     // ミーニャ⇔ミナ両替
+-    registerSpecialRecipe("minia_from_mina", minSlots = 1) { inventory ->
++    registerSpecialRecipe("minia_from_mina") { inventory ->
+         val itemStacks = inventory.items().filter { it.isNotEmpty }.toMutableList()
+         if (itemStacks.pull { it isIn MaterialCard.APOSTLE_WAND.item() } == null) return@registerSpecialRecipe null // 使徒のステッキ取得
+@@ -1649,5 +1729,5 @@ fun initMaterialsModule() {
+         }
+     }
+-    registerSpecialRecipe("mina_from_minia", minSlots = 1) { inventory ->
++    registerSpecialRecipe("mina_from_minia") { inventory ->
+         val itemStacks = inventory.items().filter { it.isNotEmpty }.toMutableList()
+         if (itemStacks.pull { it isIn MaterialCard.APOSTLE_WAND.item() } == null) return@registerSpecialRecipe null // 使徒のステッキ取得
 @@ -1696,5 +1776,5 @@ fun initMaterialsModule() {
          AthanorRecipeCard,
          inputs = listOf(
@@ -8781,6 +9233,23 @@ index 50ee984..b2b6c13 100644
 +val Shape.tag get() = Identifier("c", this.path).toItemTag()
 
  enum class Material(val path: String, val prefix: EnJa) {
+diff --git a/common/src/main/kotlin/miragefairy2024/mod/materials/contents/ApostleWandItem.kt b/common/src/main/kotlin/miragefairy2024/mod/materials/contents/ApostleWandItem.kt
+index 88c413f..8fb467d 100644
+--- a/common/src/main/kotlin/miragefairy2024/mod/materials/contents/ApostleWandItem.kt
++++ b/common/src/main/kotlin/miragefairy2024/mod/materials/contents/ApostleWandItem.kt
+@@ -1,10 +1,9 @@
+ package miragefairy2024.mod.materials.contents
+
+-import miragefairy2024.util.createItemStack
+ import net.minecraft.world.item.Item
+ import net.minecraft.world.item.ItemStack
++import net.minecraft.world.item.ItemStackTemplate
+
+ class ApostleWandItem(settings: Properties) : Item(settings) {
+-    override fun hasCraftingRemainingItem() = true
+-    override fun getRecipeRemainder(stack: ItemStack) = stack.item.createItemStack()
++    override fun getCraftingRemainder(stack: ItemStack) = ItemStackTemplate(stack.item)
+ }
 diff --git a/common/src/main/kotlin/miragefairy2024/mod/materials/contents/DayflowerBlock.kt b/common/src/main/kotlin/miragefairy2024/mod/materials/contents/DayflowerBlock.kt
 index b8dec8c..29533cb 100644
 --- a/common/src/main/kotlin/miragefairy2024/mod/materials/contents/DayflowerBlock.kt
@@ -12535,7 +13004,7 @@ index 5a1b7c4..7d2724b 100644
      if (itemEntity != null) {
          itemEntity.setNoPickUpDelay()
 diff --git a/common/src/main/kotlin/miragefairy2024/util/Recipe.kt b/common/src/main/kotlin/miragefairy2024/util/Recipe.kt
-index c8fb523..2da676f 100644
+index c8fb523..6fa7c5a 100644
 --- a/common/src/main/kotlin/miragefairy2024/util/Recipe.kt
 +++ b/common/src/main/kotlin/miragefairy2024/util/Recipe.kt
 @@ -1,4 +1,5 @@
@@ -12699,7 +13168,14 @@ index c8fb523..2da676f 100644
 +        builder.save(it.recipeOutput, ResourceKey.create(Registries.RECIPE, identifier))
      }
      return settings
-@@ -205,10 +219,11 @@ fun registerSpecialRecipe(
+@@ -198,45 +212,29 @@ context(_: ModContext)
+ fun registerSpecialRecipe(
+     path: String,
+-    @Suppress("unused") vararg dummy: Void,
+-    minSlots: Int? = null,
+-    minHeight: Int? = null,
+-    minWidth: Int? = null,
+     matcher: (CraftingInput) -> SpecialRecipeResult?,
  ) {
      val identifier = MirageFairy2024.identifier(path)
 -    lateinit var serializer: SimpleCraftingRecipeSerializer<*>
@@ -12711,11 +13187,17 @@ index c8fb523..2da676f 100644
          override fun matches(input: CraftingInput, level: Level) = matcher(input) != null
 -        override fun assemble(input: CraftingInput, registries: HolderLookup.Provider) = matcher(input)?.craft() ?: EMPTY_ITEM_STACK
 -        override fun getRemainingItems(input: CraftingInput) = matcher(input)?.getRemainder() ?: getDefaultRemainingItems(input) // interfaceのsuperを呼び出そうとするとNoSuchMethodErrorになる
+-
+-        override fun canCraftInDimensions(width: Int, height: Int): Boolean {
+-            if (minSlots != null && width * height < minSlots) return false
+-            if (minWidth != null && width < minWidth) return false
+-            if (minHeight != null && height < minHeight) return false
+-            return true
+-        }
 +        override fun assemble(input: CraftingInput) = matcher(input)?.craft() ?: EMPTY_ITEM_STACK
 +        override fun getRemainingItems(input: CraftingInput) = matcher(input)?.getRemainder() ?: CraftingRecipe.defaultCraftingReminder(input)
 
-         override fun canCraftInDimensions(width: Int, height: Int): Boolean {
-@@ -222,23 +237,17 @@ fun registerSpecialRecipe(
+         override fun getSerializer() = serializer
      }
 
 -    serializer = SimpleCraftingRecipeSerializer(::SpecialCraftingRecipeImpl)
@@ -12729,10 +13211,9 @@ index c8fb523..2da676f 100644
      Registration(BuiltInRegistries.RECIPE_SERIALIZER, identifier) { serializer }.register()
      DataGenerationEvents.onGenerateRecipe {
 -        SpecialRecipeBuilder.special(::SpecialCraftingRecipeImpl).save(it, identifier.string)
-+        SpecialRecipeBuilder.special { SpecialCraftingRecipeImpl(CraftingBookCategory.MISC) }.save(it.recipeOutput, ResourceKey.create(Registries.RECIPE, identifier))
-     }
- }
-
+-    }
+-}
+-
 -private fun <T : RecipeInput> getDefaultRemainingItems(input: T): NonNullList<ItemStack> {
 -    val recipe = object : Recipe<T> {
 -        override fun matches(input: T, level: Level): Boolean = throw AssertionError()
@@ -12741,13 +13222,12 @@ index c8fb523..2da676f 100644
 -        override fun getResultItem(registries: HolderLookup.Provider): ItemStack? = throw AssertionError()
 -        override fun getSerializer(): RecipeSerializer<*> = throw AssertionError()
 -        override fun getType(): RecipeType<*> = throw AssertionError()
--    }
++        SpecialRecipeBuilder.special { SpecialCraftingRecipeImpl(CraftingBookCategory.MISC) }.save(it.recipeOutput, ResourceKey.create(Registries.RECIPE, identifier))
+     }
 -    return recipe.getRemainingItems(input)
--}
--
- interface SpecialRecipeResult {
-     fun craft(): ItemStack
-@@ -258,17 +267,15 @@ context(_: ModContext)
+ }
+
+@@ -258,17 +256,15 @@ context(_: ModContext)
  fun registerCompressionRecipeGeneration(
      lowerItem: () -> Item,
 -    lowerIngredient: () -> Ingredient,
@@ -12771,7 +13251,7 @@ index c8fb523..2da676f 100644
 +        listeners += { recipe, items -> recipe.requires(higherIngredient(items)) }
      }.noGroup(noGroup) on higherItem from higherItem
  }
-@@ -291,9 +298,9 @@ fun (() -> Item).registerGrassDrop(
+@@ -291,9 +287,9 @@ fun (() -> Item).registerGrassDrop(
      fortuneMultiplier: Int = 2,
      biome: (() -> ResourceKey<Biome>)? = null,
 -) = this.registerLootTableModification({ Blocks.SHORT_GRASS.lootTable }) { tableBuilder, registries ->
@@ -12783,7 +13263,7 @@ index c8fb523..2da676f 100644
 +                `when`(MatchTool.toolMatches(ItemPredicate.Builder.item().of(registries.lookupOrThrow(Registries.ITEM), Items.SHEARS)))
              })
              otherwise(ItemLootPoolEntry(this@registerGrassDrop()) {
-@@ -312,9 +319,14 @@ fun (() -> Item).registerExtraOreDrop(
+@@ -312,9 +308,14 @@ fun (() -> Item).registerExtraOreDrop(
      chance: Float = 1.0F,
      fortuneMultiplier: Int = 0,
 -) = this.registerLootTableModification({ oreBlock.lootTable }) { tableBuilder, registries ->
@@ -12800,21 +13280,21 @@ index c8fb523..2da676f 100644
 +                `when`(MatchTool.toolMatches(ItemPredicate.Builder.item().withComponents(components)))
              })
              otherwise(ItemLootPoolEntry(this@registerExtraOreDrop()) {
-@@ -334,5 +346,5 @@ fun (() -> Item).registerMobDrop(
+@@ -334,5 +335,5 @@ fun (() -> Item).registerMobDrop(
      amount: NumberProvider? = null,
      fortuneFactor: NumberProvider? = null,
 -) = this.registerLootTableModification({ entityType.defaultLootTable }) { tableBuilder, registries ->
 +) = this.registerLootTableModification({ entityType.defaultLootTable.orElseThrow() }) { tableBuilder, registries ->
      tableBuilder.apply2 {
          withPool(LootPool(ItemLootPoolEntry(this@registerMobDrop()) {
-@@ -390,5 +402,5 @@ fun (() -> Item).registerComposterInput(chance: Float) {
+@@ -390,5 +391,5 @@ fun (() -> Item).registerComposterInput(chance: Float) {
          it.accept(
              Registries.ITEM,
 -            ResourceLocation("neoforge", "compostables"),
 +            Identifier("neoforge", "compostables"),
              BuiltInRegistries.ITEM.getResourceKey(this()).get(),
              jsonObject(
-@@ -402,9 +414,12 @@ fun (() -> Item).registerComposterInput(chance: Float) {
+@@ -402,9 +403,12 @@ fun (() -> Item).registerComposterInput(chance: Float) {
  context(_: ModContext)
  fun (() -> Item).registerFuel(ticks: Int) = ModEvents.onInitialize {
 -    FuelRegistry.INSTANCE.add(this(), ticks)
@@ -12914,7 +13394,7 @@ index f1c4370..51f949e 100644
  }
 
 diff --git a/common/src/main/kotlin/miragefairy2024/util/Tag.kt b/common/src/main/kotlin/miragefairy2024/util/Tag.kt
-index 711c70d..ca9a1ee 100644
+index 711c70d..d38948a 100644
 --- a/common/src/main/kotlin/miragefairy2024/util/Tag.kt
 +++ b/common/src/main/kotlin/miragefairy2024/util/Tag.kt
 @@ -3,11 +3,12 @@ package miragefairy2024.util
@@ -12933,8 +13413,10 @@ index 711c70d..ca9a1ee 100644
 +import net.minecraft.resources.Identifier
  import net.minecraft.tags.TagKey
  import net.minecraft.world.damagesource.DamageType
-@@ -18,12 +19,13 @@ import net.minecraft.world.level.biome.Biome
+@@ -17,17 +18,20 @@ import net.minecraft.world.item.enchantment.Enchantment
+ import net.minecraft.world.level.biome.Biome
  import net.minecraft.world.level.block.Block
++import net.minecraft.world.level.levelgen.feature.ConfiguredFeature
  import net.minecraft.world.level.levelgen.structure.Structure
 +import java.util.IdentityHashMap
  import java.util.concurrent.CompletableFuture
@@ -12953,7 +13435,12 @@ index 711c70d..ca9a1ee 100644
 +fun Identifier.toStructureTag(): TagKey<Structure> = this.toTag(Registries.STRUCTURE)
 
  val TagKey<Block>.generator @JvmName("getBlockGenerator") get() = Pair(this, TagGenerator.BLOCK)
-@@ -35,44 +37,34 @@ val TagKey<DamageType>.generator @JvmName("getDamageTypeGenerator") get() = Pair
+ val TagKey<Item>.generator @JvmName("getItemGenerator") get() = Pair(this, TagGenerator.ITEM)
+ val TagKey<Biome>.generator @JvmName("getBiomeGenerator") get() = Pair(this, TagGenerator.BIOME)
++val TagKey<ConfiguredFeature<*, *>>.generator @JvmName("getConfiguredFeatureGenerator") get() = Pair(this, TagGenerator.CONFIGURED_FEATURE)
+ val TagKey<Structure>.generator @JvmName("getStructureGenerator") get() = Pair(this, TagGenerator.STRUCTURE)
+ val TagKey<EntityType<*>>.generator @JvmName("getEntityTypeGenerator") get() = Pair(this, TagGenerator.ENTITY_TYPE)
+@@ -35,44 +39,35 @@ val TagKey<DamageType>.generator @JvmName("getDamageTypeGenerator") get() = Pair
  val TagKey<Enchantment>.generator @JvmName("getEnchantmentGenerator") get() = Pair(this, TagGenerator.ENCHANTMENT)
 
 -class TagGenerator<T>(
@@ -12979,6 +13466,7 @@ index 711c70d..ca9a1ee 100644
 +        val BLOCK = !TagGenerator(Registries.BLOCK)
 +        val ITEM = !TagGenerator(Registries.ITEM)
          val BIOME = !TagGenerator(Registries.BIOME)
++        val CONFIGURED_FEATURE = !TagGenerator(Registries.CONFIGURED_FEATURE)
          val STRUCTURE = !TagGenerator(Registries.STRUCTURE)
 -        val ENTITY_TYPE = !TagGenerator(Registries.ENTITY_TYPE) { output, registriesFuture ->
 -            object : FabricTagProvider.EntityTypeTagProvider(output, registriesFuture) {
@@ -13019,7 +13507,7 @@ index 711c70d..ca9a1ee 100644
 +            }
          }
      }
-@@ -81,28 +73,26 @@ class TagGenerator<T>(
+@@ -81,28 +76,26 @@ class TagGenerator<T>(
 
  context(_: ModContext)
 -fun <T> Pair<TagKey<T>, TagGenerator<T>>.registerChild(elementGetter: () -> T) {
@@ -13097,21 +13585,36 @@ index 6c5099e..930626d 100644
 
  context(_: ModContext)
 diff --git a/common/src/main/kotlin/miragefairy2024/util/WorldGen.kt b/common/src/main/kotlin/miragefairy2024/util/WorldGen.kt
-index 23901d1..69501d8 100644
+index 23901d1..d10caf3 100644
 --- a/common/src/main/kotlin/miragefairy2024/util/WorldGen.kt
 +++ b/common/src/main/kotlin/miragefairy2024/util/WorldGen.kt
-@@ -18,8 +18,8 @@ import net.minecraft.data.worldgen.BootstrapContext
+@@ -18,8 +18,9 @@ import net.minecraft.data.worldgen.BootstrapContext
  import net.minecraft.data.worldgen.placement.PlacementUtils
  import net.minecraft.resources.ResourceKey
 -import net.minecraft.resources.ResourceLocation
 +import net.minecraft.resources.Identifier
  import net.minecraft.tags.BiomeTags
++import net.minecraft.tags.FeatureTags
  import net.minecraft.tags.TagKey
 -import net.minecraft.util.random.SimpleWeightedRandomList
 +import net.minecraft.util.random.WeightedList
  import net.minecraft.util.valueproviders.ConstantInt
  import net.minecraft.util.valueproviders.IntProvider
-@@ -62,15 +62,15 @@ infix fun Holder<ConfiguredFeature<*, *>>.with(placementModifiers: List<Placemen
+@@ -30,4 +31,5 @@ import net.minecraft.world.level.biome.Biome
+ import net.minecraft.world.level.block.Block
+ import net.minecraft.world.level.block.Blocks
++import net.minecraft.world.level.block.state.BlockState
+ import net.minecraft.world.level.levelgen.GenerationStep
+ import net.minecraft.world.level.levelgen.VerticalAnchor
+@@ -36,4 +38,7 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature
+ import net.minecraft.world.level.levelgen.feature.Feature
+ import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration
++import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration
++import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider
++import net.minecraft.world.level.levelgen.feature.stateproviders.RuleBasedStateProvider
+ import net.minecraft.world.level.levelgen.placement.BiomeFilter
+ import net.minecraft.world.level.levelgen.placement.CountPlacement
+@@ -62,15 +67,15 @@ infix fun Holder<ConfiguredFeature<*, *>>.with(placementModifiers: List<Placemen
 
  context(context: BootstrapContext<*>)
 -operator fun <T> ResourceKey<Registry<T>>.get(key: ResourceKey<T>): Holder<T> {
@@ -13130,7 +13633,7 @@ index 23901d1..69501d8 100644
 +fun <T : Any> registerDynamicGeneration(registryKey: ResourceKey<out Registry<T>>, identifier: Identifier, creator: BootstrapContext<T>.() -> T): ResourceKey<T> {
      val key = registryKey with identifier
      registerDynamicGeneration(key, creator)
-@@ -91,9 +91,9 @@ fun <T : Any> registerDynamicGeneration(key: ResourceKey<T>, creator: BootstrapC
+@@ -91,9 +96,9 @@ fun <T : Any> registerDynamicGeneration(key: ResourceKey<T>, creator: BootstrapC
  }
 
 -class FeatureGenerationScope<C : FeatureConfiguration>(val feature: Feature<C>, val identifier: ResourceLocation)
@@ -13143,7 +13646,29 @@ index 23901d1..69501d8 100644
 +fun <C : FeatureConfiguration> Feature<C>.generator(identifier: Identifier, block: FeatureGenerationScope<C>.() -> Unit) {
      block(FeatureGenerationScope(this, identifier))
  }
-@@ -162,10 +162,10 @@ context(_: BiomeSelectorScope) val end: Predicate<BiomeSelectionContext> get() =
+@@ -115,4 +120,21 @@ fun <C : FeatureConfiguration> registerConfiguredFeature(configuredFeatureKey: R
+ }
+
++context(_: ModContext, _: FeatureGenerationScope<SimpleBlockConfiguration>)
++fun registerFlowerConfiguredFeature(suffix: String? = null, configurationCreator: () -> SimpleBlockConfiguration): ResourceKey<ConfiguredFeature<*, *>> {
++    val key = registerConfiguredFeature(suffix, configurationCreator)
++    FeatureTags.CAN_SPAWN_FROM_BONE_MEAL.generator.registerChild(key)
++    return key
++}
++
++fun plantConfiguration(state: BlockState, ground: Block? = null): SimpleBlockConfiguration {
++    val predicate = if (ground == null) {
++        BlockPredicate.ONLY_IN_AIR_PREDICATE
++    } else {
++        BlockPredicate.allOf(BlockPredicate.ONLY_IN_AIR_PREDICATE, BlockPredicate.matchesBlocks(Direction.DOWN.unitVec3i, ground))
++    }
++    // 骨粉で生成するときも空気と下地の条件を評価するのだ～🌱
++    return SimpleBlockConfiguration(RuleBasedStateProvider.ifTrueThenProvide(predicate, BlockStateProvider.simple(state)))
++}
++
+ context(_: ModContext, scope: FeatureGenerationScope<C>)
+ fun <C : FeatureConfiguration> ResourceKey<ConfiguredFeature<*, *>>.generator(block: ConfiguredFeatureGenerationScope<C>.() -> Unit) {
+@@ -162,10 +184,10 @@ context(_: BiomeSelectorScope) val end: Predicate<BiomeSelectionContext> get() =
  context(_: BiomeSelectorScope) operator fun ResourceKey<Biome>.unaryPlus(): Predicate<BiomeSelectionContext> = BiomeSelectors.includeByKey(this)
  context(_: BiomeSelectorScope) operator fun TagKey<Biome>.unaryPlus(): Predicate<BiomeSelectionContext> = BiomeSelectors.tag(this)
 -context(_: BiomeSelectorScope) operator fun BiomeCondition.unaryPlus(): Predicate<BiomeSelectionContext> = Predicate { this.test(it.biomeRegistryEntry) }
@@ -13157,21 +13682,29 @@ index 23901d1..69501d8 100644
 +context(_: BiomeSelectorScope) operator fun HumidityCategory.unaryPlus(): Predicate<BiomeSelectionContext> = Predicate { it.biomeHolder.humidityCategory == this }
  context(_: BiomeSelectorScope) val cold get() = +TemperatureCategory.LOW
  context(_: BiomeSelectorScope) val warm get() = +TemperatureCategory.MEDIUM
-@@ -174,5 +174,5 @@ context(_: BiomeSelectorScope) val arid get() = +HumidityCategory.LOW
+@@ -174,5 +196,5 @@ context(_: BiomeSelectorScope) val arid get() = +HumidityCategory.LOW
  context(_: BiomeSelectorScope) val mesic get() = +HumidityCategory.MEDIUM
  context(_: BiomeSelectorScope) val humid get() = +HumidityCategory.HIGH
 -context(magicPlantCard: MagicPlantCard<*>, _: BiomeSelectorScope) val defaultTraits get(): Predicate<BiomeSelectionContext> = Predicate { magicPlantCard.hasEnvironmentAdaptation(false, it.biomeRegistryEntry.temperatureCategory, it.biomeRegistryEntry.humidityCategory) }
 +context(magicPlantCard: MagicPlantCard<*>, _: BiomeSelectorScope) val defaultTraits get(): Predicate<BiomeSelectionContext> = Predicate { magicPlantCard.hasEnvironmentAdaptation(false, it.biomeHolder.temperatureCategory, it.biomeHolder.humidityCategory) }
 
 
-@@ -189,5 +189,5 @@ fun randomIntCount(count: Double): List<PlacementModifier> {
+@@ -189,5 +211,5 @@ fun randomIntCount(count: Double): List<PlacementModifier> {
      if (rate == 0) return count(min)
      if (rate == 100) return count(min + 1)
 -    val dataPool = SimpleWeightedRandomList.builder<IntProvider>()
 +    val dataPool = WeightedList.builder<IntProvider>()
          .add(ConstantInt.of(min), 100 - rate)
          .add(ConstantInt.of(min + 1), rate)
-@@ -309,5 +309,5 @@ fun StructureProcessorList(vararg processors: StructureProcessor): StructureProc
+@@ -200,4 +222,7 @@ context(_: PlacementModifiersScope)
+ fun count(count: Int): List<PlacementModifier> = listOf(CountPlacement.of(count))
+
++context(_: PlacementModifiersScope)
++fun scatter(tries: Int, xzSpread: Int, ySpread: Int): List<PlacementModifier> = count(tries) + RandomOffsetPlacement.ofTriangle(xzSpread, ySpread)
++
+ context(_: PlacementModifiersScope)
+ fun per(chance: Int): List<PlacementModifier> = listOf(RarityFilter.onAverageOnceEvery(chance))
+@@ -309,5 +334,5 @@ fun StructureProcessorList(vararg processors: StructureProcessor): StructureProc
 
  context(_: BootstrapContext<*>)
 -fun SinglePoolElement(location: ResourceLocation, processorsKey: ResourceKey<StructureProcessorList>, projection: StructureTemplatePool.Projection): StructurePoolElement {

@@ -217,6 +217,16 @@ NeoForge 26.1.2.117 のパッチ適用済み Minecraft、Forgified Fabric API `0
 
 owo-lib を加えた Fabric の一括解析は Kotlin 473 ファイルを対象に、280 件のエラー診断を返したのだ～🌱 うちメイン側に 77 件、EMI 統合のファイルに 158 件が出たのだ～🌱 ソウルストリームと owo の UI で移行したクラスには診断が出なかったのだ～🌱 26.1.2 でのゲーム起動、両ローダーの配布用 JAR とデータ生成には、残っている依存と API の対応が必要なのだぁ…🌧️
 
+### 植物の群生、スポーンエッグ、特殊クラフトの移植なのだ～🌱
+
+3 バイオーム・9 種の魔法植物にある 18 個の配置定義では、旧 `FLOWER` と `RANDOM_PATCH` を `SIMPLE_BLOCK` と配置モディファイアに移したのだ～🌱 既存の ID と外側の配置条件を引き継ぎ、各候補位置で従来の試行数と三角分布のオフセットを適用するのだ～🌱 旧 `FLOWER` 14 定義を骨粉用の Configured Feature タグに登録し、通常生成と骨粉の両方で空気と下地の条件を評価するのだ～🌱 [Minecraft 26.1 の配置と骨粉の変更](https://www.minecraft.net/en-us/article/minecraft-java-edition-26-1#flower-features)
+
+カオスキューブのスポーンエッグは、アイテム ID を維持して `Item.Properties.spawnEgg` で召喚対象を設定するのだ～🌱 旧 2 色（`0xB36235`・`0xFFC21D`）の外観は、廃止されたバニラの卵モデルを参照しているので、モデルと素材の移植が残るのだぁ…🌧️ 使徒のステッキは `getCraftingRemainder(ItemStack)` から新品 1 個のテンプレートを返すのだ～🌱 NeoForge では Forgified Fabric API が同じメソッドに委譲するのだ～🌱 特殊クラフト 4 レシピでは、各 matcher が必要な入力数を判定しているので、旧 `canCraftInDimensions` とその引数を外したのだ～🌱
+
+同じ Fabric 向け Kotlin 473 ファイルの一括解析で、**280 件から 228 件**になったのだ～🌱 EMI 統合の **158 件**を除くと **122 件から 70 件**で、メインの残りは `DimensionType.natural` の **5 件**なのだ～🌱 クライアントの **65 件**は、モデルと描画、REI のレシピ同期、View の寸法とスロット描画に残っているのだぁ…🌧️ 26.1.2 の全体ビルドとデータ生成は、これらの移行後に検証するのだ～🌱
+
+配置モディファイアは、18 定義について各 32 シードで旧式と同じ候補位置と乱数の状態になることを確認したのだ～🌱 `preparePortedSources` の出力は一括解析に使った Kotlin 473 ファイルと一致し、通常の 1.21.1 向け `datagen` も成功したのだ～🌱
+
 ### 移行資料なのだ～🌱
 
 - 26.1 系では JDK 25 と非リマップ版 Loom を使い、依存の宣言は `implementation` や `compileOnly` に移すのだ～🌱 今回はクリエイティブタブ、ディメンション移動イベント、燃料登録を、新しい Fabric API に置き換えたのだ～🌱 タグのデータ生成は `FabricPackOutput` と `FabricTagsProvider` の `TagAppender` に合わせる必要があるのだ～🌱 [Fabric の 26.1 移行案内](https://fabricmc.net/2026/03/14/261.html) [Fabric API の移行表](https://docs.fabricmc.net/de_de/develop/porting/26.1/fabric-api)
