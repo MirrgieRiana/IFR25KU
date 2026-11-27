@@ -38,11 +38,9 @@ import miragefairy2024.mod.recipeviewer.views.menuSlotView
 import miragefairy2024.mod.recipeviewer.views.onClick
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.mod.recipeviewer.views.tooltip
-import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.blue
 import miragefairy2024.util.bold
-import miragefairy2024.util.fire
 import miragefairy2024.util.getOrDefault
 import miragefairy2024.util.gold
 import miragefairy2024.util.invoke
@@ -54,7 +52,9 @@ import miragefairy2024.util.register
 import miragefairy2024.util.text
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.inventory.Slot
 
 private val BUTTON_14_BACKGROUND = LayeredImageButtonView.Sprites(
     MirageFairy2024.identifier("button_14/background_on"),
@@ -63,28 +63,26 @@ private val BUTTON_14_BACKGROUND = LayeredImageButtonView.Sprites(
     MirageFairy2024.identifier("button_14/background_focused"),
 )
 
-class SoulStreamScreenContent(
-    private val menu: SoulStreamScreenHandler,
-    private val screenEventSource: ScreenEventSource,
-    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-    private val enabledPassiveSkillEffectFilters: ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>,
-    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-    private val enableGlobalFairyHighlight: ObservableValue<Boolean>,
-    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-    private val collectionToggleKeyText: Component,
-    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-    private val setCollectionEnabled: (Boolean) -> Unit,
-) {
+abstract class SoulStreamScreenContent(private val screenEventSource: ScreenEventSource) {
 
-    private val player: Player = menu.playerInventory.player
-
+    protected abstract val title: Component
+    protected abstract val playerInventory: Inventory
+    protected abstract val slots: List<Slot>
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-    private val onViewClosed = EventRegistry<() -> Unit>()
-    private var lastUpdateEventNanoTime = 0L
+    protected abstract val passiveSkillEffectFilters: ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
+    protected abstract val globalFairyHighlight: ObservableValue<Boolean>
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
+    protected abstract val collectionToggleKeyText: Component
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
+    protected abstract fun setCollectionEnabled(enabled: Boolean)
 
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-    fun createView(title: Component): View {
-        return View {
+
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
+    val view: View by lazy {
+        val player: Player = playerInventory.player
+        View {
             // 灰色背景
             view += StackView().configure {
                 view.sizingX = Sizing.FILL
@@ -113,7 +111,7 @@ class SoulStreamScreenContent(
                                 view.foregroundSprites = LayeredImageButtonView.Sprites.of(MirageFairy2024.identifier("button_14/clear_foreground"))
                                 view.tooltip.value = text { SOUL_STREAM_RESET_HIGHLIGHTS_TRANSLATION() }
                                 view.onClick.register {
-                                    enabledPassiveSkillEffectFilters.value = emptyMap()
+                                    passiveSkillEffectFilters.value = emptyMap()
                                 }
                             }
 
@@ -124,11 +122,11 @@ class SoulStreamScreenContent(
                                 view.backgroundSprites = BUTTON_14_BACKGROUND
                                 view.foregroundSprites = LayeredImageButtonView.Sprites.of(MirageFairy2024.identifier("button_14/global_search_foreground"))
                                 view.tooltip.value = text { SOUL_STREAM_GLOBAL_SEARCH_TRANSLATION() }
-                                enableGlobalFairyHighlight.observeAndInitialize(onViewClosed) { _, enabled ->
+                                globalFairyHighlight.observeAndInitialize(screenEventSource.onDisposing) { _, enabled ->
                                     view.selected.value = enabled
                                 }
                                 view.onClick.register {
-                                    enableGlobalFairyHighlight.value = !enableGlobalFairyHighlight.value
+                                    globalFairyHighlight.value = !globalFairyHighlight.value
                                 }
                             }
 
@@ -178,7 +176,7 @@ class SoulStreamScreenContent(
 
                                                         view += TextView().configure {
                                                             view.shadow = false
-                                                            enabledPassiveSkillEffectFilters.observeAndInitialize(onViewClosed) { _, filters ->
+                                                            passiveSkillEffectFilters.observeAndInitialize(screenEventSource.onDisposing) { _, filters ->
                                                                 if (filter.identifier in filters) {
                                                                     view.text.value = filter.text.gold.visualOrderText
                                                                 } else {
@@ -186,17 +184,17 @@ class SoulStreamScreenContent(
                                                                 }
                                                             }
                                                         }.tooltip { _, _ ->
-                                                            if (filter.identifier in enabledPassiveSkillEffectFilters.value) {
+                                                            if (filter.identifier in passiveSkillEffectFilters.value) {
                                                                 listOf(filter.text.gold)
                                                             } else {
                                                                 listOf(filter.text)
                                                             }
                                                         }
                                                     }.onClick {
-                                                        if (filter.identifier in enabledPassiveSkillEffectFilters.value) {
-                                                            enabledPassiveSkillEffectFilters.value = enabledPassiveSkillEffectFilters.value - filter.identifier
+                                                        if (filter.identifier in passiveSkillEffectFilters.value) {
+                                                            passiveSkillEffectFilters.value = passiveSkillEffectFilters.value - filter.identifier
                                                         } else {
-                                                            enabledPassiveSkillEffectFilters.value = enabledPassiveSkillEffectFilters.value + (filter.identifier to filter)
+                                                            passiveSkillEffectFilters.value = passiveSkillEffectFilters.value + (filter.identifier to filter)
                                                         }
                                                         true
                                                     }
@@ -226,7 +224,7 @@ class SoulStreamScreenContent(
                             return View {
                                 view += XListView().configure {
                                     repeat(9) { c ->
-                                        view += menuSlotView(menu.slots[startSlotIndex + c], slotType)
+                                        view += menuSlotView(slots[startSlotIndex + c], slotType)
                                     }
                                 }
                             }
@@ -249,7 +247,7 @@ class SoulStreamScreenContent(
                             }
                             view += scrollView.configure {
                                 view += YListView().configure {
-                                    (9 * 3 + 9 + 9 until menu.slots.size).chunked(9).forEach { indices ->
+                                    (9 * 3 + 9 + 9 until slots.size).chunked(9).forEach { indices ->
                                         view += createSlotRow(indices.first(), SlotType.NORMAL)
                                     }
                                 }
@@ -263,7 +261,7 @@ class SoulStreamScreenContent(
 
                         view += YSpaceView(4)
 
-                        //view += inventoryNameLabel(menu.playerInventory.name)
+                        //view += inventoryNameLabel(playerInventory.name)
 
                         //view += YSpaceView(1)
 
@@ -318,7 +316,7 @@ class SoulStreamScreenContent(
                                         message + " ("() + collectionToggleKeyText + ")"()
                                     }
                                 }
-                                AttachmentChangedEvent.eventRegistry.observe(onViewClosed) { identifier ->
+                                AttachmentChangedEvent.eventRegistry.observe(screenEventSource.onDisposing) { identifier ->
                                     if (identifier == COLLECTION_ENABLED_ATTACHMENT_TYPE.identifier()) {
                                         update()
                                     }
@@ -393,6 +391,7 @@ class SoulStreamScreenContent(
                                 }
                                 connectScrollbar(scrollView, scrollbarView)
 
+                                var lastUpdateEventNanoTime = 0L
                                 screenEventSource.onTick.observe(screenEventSource.onDisposing) {
                                     val now = System.nanoTime()
                                     if (now - lastUpdateEventNanoTime < 100_000_000) return@observe
@@ -418,8 +417,5 @@ class SoulStreamScreenContent(
     }
 
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-    fun dispose() {
-        onViewClosed.fire()
-    }
 
 }

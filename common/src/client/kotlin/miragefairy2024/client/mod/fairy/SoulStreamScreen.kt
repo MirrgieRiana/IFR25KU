@@ -14,6 +14,7 @@ import miragefairy2024.mod.fairy.FairyItem
 import miragefairy2024.mod.fairy.OPEN_SOUL_STREAM_KEY_TRANSLATION
 import miragefairy2024.mod.fairy.OpenSoulStreamChannel
 import miragefairy2024.mod.fairy.SetCollectionEnabledChannel
+import miragefairy2024.mod.fairy.SoulStreamScreenContent
 import miragefairy2024.mod.fairy.SoulStreamScreenHandler
 import miragefairy2024.mod.fairy.getFairyMotif
 import miragefairy2024.mod.fairy.soulStreamScreenHandlerType
@@ -37,6 +38,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.player.Inventory
+import net.minecraft.world.inventory.Slot
 import org.lwjgl.glfw.GLFW
 import kotlin.math.sin
 
@@ -134,19 +136,23 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
 
     override fun createRootView(screenEventSource: ScreenEventSource): View {
         // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-        return menu.createRootView(
-            title,
-            screenEventSource,
+        val content: SoulStreamScreenContent = object : SoulStreamScreenContent(screenEventSource) {
+            override val title: Component = this@SoulStreamScreen.title
+            override val playerInventory = menu.playerInventory
+            override val slots: List<Slot> = menu.slots
             // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-            enabledPassiveSkillEffectFilters,
+            override val passiveSkillEffectFilters = enabledPassiveSkillEffectFilters
             // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-            enableGlobalFairyHighlight,
+            override val globalFairyHighlight = enableGlobalFairyHighlight
             // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-            text { toggleCollectionEnabledKeyMappingCard() },
-        ) {
-            // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-            SetCollectionEnabledChannel.sendToServer(it)
+            override val collectionToggleKeyText = text { toggleCollectionEnabledKeyMappingCard() }
+
+            override fun setCollectionEnabled(enabled: Boolean) {
+                // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
+                SetCollectionEnabledChannel.sendToServer(enabled)
+            }
         }
+        return content.view
     }
 
     // カーソルをインベントリ画面での位置に戻す
@@ -169,11 +175,6 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
             return true
         }
         return super.keyPressed(keyCode, scanCode, modifiers)
-    }
-
-    override fun removed() {
-        menu.disposeView()
-        super.removed()
     }
 
 }

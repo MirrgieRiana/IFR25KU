@@ -5,13 +5,9 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
 import miragefairy2024.clientProxy
-import miragefairy2024.mod.passiveskill.PassiveSkillEffectFilter
-import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
-import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.util.Channel
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.ItemStacks
-import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.Registration
 import miragefairy2024.util.Translation
 import miragefairy2024.util.dummyUnitStreamCodec
@@ -34,9 +30,7 @@ import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.RegistryFriendlyByteBuf
-import net.minecraft.network.chat.Component
 import net.minecraft.network.codec.StreamCodec
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.Container
 import net.minecraft.world.SimpleContainer
@@ -142,7 +136,6 @@ val soulStreamScreenHandlerType = Registration(BuiltInRegistries.MENU, MirageFai
 class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val soulStream: Container) : AbstractContainerMenu(soulStreamScreenHandlerType(), syncId) {
 
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-    private var screenContent: SoulStreamScreenContent? = null
 
     init {
         repeat(3) { r ->
@@ -168,43 +161,20 @@ class SoulStreamScreenHandler(syncId: Int, val playerInventory: Inventory, val s
         return quickMove(slot, destinationIndices)
     }
 
-    fun createRootView(
-        title: Component,
-        screenEventSource: ScreenEventSource,
-        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-        enabledPassiveSkillEffectFilters: ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>,
-        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-        enableGlobalFairyHighlight: ObservableValue<Boolean>,
-        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-        collectionToggleKeyText: Component,
-        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-        setCollectionEnabled: (Boolean) -> Unit,
-    ): View {
-        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-        val screenContent = SoulStreamScreenContent(
-            this,
-            screenEventSource,
-            // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-            enabledPassiveSkillEffectFilters,
-            // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-            enableGlobalFairyHighlight,
-            // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-            collectionToggleKeyText,
-            // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-            setCollectionEnabled,
-        )
-        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-        this.screenContent = screenContent
-        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-        return screenContent.createView(title)
-    }
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
 
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-    fun disposeView() {
-        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-        screenContent?.dispose()
-        // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-        screenContent = null
-    }
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
+    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
 
 }
