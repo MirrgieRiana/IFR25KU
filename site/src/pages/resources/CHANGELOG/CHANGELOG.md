@@ -48,6 +48,7 @@ For the official translation mappings, see the [Lang Table](lang-table-index.htm
 - 修正: ツールチップビューワーの検索欄に32文字を超える文字列を入力できない問題を修正。
 - 修正: ツールチップビューワーの検索欄でTabキーを押すと、空白が挿入される問題を修正。
 - 修正: REI のレシピタブにおいて、ラベルの表示判定がはみ出ている問題を修正。
+- 修正: Fabric 版と NeoForge 版の必須依存 MOD から Cloth Config API を削除。
 - 表示: トーストの省略単位を文字単位に変更し、省略時の `...` を濃い青固定に変更。
 
 ## 31.32.2

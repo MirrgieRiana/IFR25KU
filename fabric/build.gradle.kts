@@ -188,8 +188,6 @@ dependencies {
     modCompileOnly("curse.maven:jade-324717:${libs.versions.jadeCurseForgeFabric.get()}")
     modRuntimeOnly("curse.maven:jade-324717:${libs.versions.jadeCurseForgeFabric.get()}")
 
-    modApi("me.shedaniel.cloth:cloth-config:${libs.versions.clothConfig.get()}")
-
     modImplementation("com.github.glitchfiend:TerraBlender-fabric:${libs.versions.terraBlenderFabric.get()}")
 
     modCompileOnly("dev.emi:emi-fabric:${libs.versions.emi.get()}:api")
@@ -211,7 +209,6 @@ modrinth {
     dependencies {
         required.project("fabric-api")
         required.project("fabric-language-kotlin")
-        required.project("cloth-config")
         required.project("terrablender")
         required.project("architectury-api")
         optional.project("rei")
@@ -240,7 +237,6 @@ curseforge {
             relations {
                 requiredDependency("fabric-api")
                 requiredDependency("fabric-language-kotlin")
-                requiredDependency("cloth-config")
                 requiredDependency("terrablender-fabric")
                 requiredDependency("architectury-api")
                 optionalDependency("roughly-enough-items")
