@@ -63,10 +63,7 @@ private val BUTTON_14_BACKGROUND = LayeredImageButtonView.Sprites(
 
 abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Component, screenEventSource: ScreenEventSource) {
 
-    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     protected abstract val enabledPassiveSkillEffectFilters: ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>
-
-    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     protected abstract val enableGlobalFairyHighlight: ObservableValue<Boolean>
 
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
@@ -75,10 +72,8 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
     // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
     protected abstract fun setCollectionEnabled(enabled: Boolean)
 
-    private val player: Player = menu.playerInventory.player
-
-    // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
-    val view: View = View {
+    val view = View {
+        val player: Player = menu.playerInventory.player
         // 灰色背景
         view += StackView().configure {
             view.sizingX = Sizing.FILL

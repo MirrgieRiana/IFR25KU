@@ -135,10 +135,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
 
     override fun createRootView(screenEventSource: ScreenEventSource): View {
         return object : SoulStreamScreenContent(menu, title, screenEventSource) {
-            // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
             override val enabledPassiveSkillEffectFilters = miragefairy2024.client.mod.fairy.enabledPassiveSkillEffectFilters
-
-            // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
             override val enableGlobalFairyHighlight = miragefairy2024.client.mod.fairy.enableGlobalFairyHighlight
 
             // TODO なぜここにこれがあるのか（これが残っている限りマージブロッカー）
