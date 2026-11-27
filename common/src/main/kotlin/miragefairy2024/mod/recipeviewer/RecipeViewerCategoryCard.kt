@@ -14,13 +14,13 @@ import miragefairy2024.util.plusAssign
 import miragefairy2024.util.text
 import net.minecraft.core.RegistryAccess
 import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.world.inventory.MenuType
 import net.minecraft.world.item.ItemStack
 
 abstract class RecipeViewerCategoryCard<R> {
 
-    abstract fun getId(): ResourceLocation
+    abstract fun getId(): Identifier
 
     abstract fun getName(): EnJa
     val translation = Translation({ getId().toLanguageKey("category.rei") }, getName().en, getName().ja)
@@ -29,11 +29,11 @@ abstract class RecipeViewerCategoryCard<R> {
     abstract fun getIcon(): ItemStack
     open fun getWorkstations(): List<ItemStack> = listOf()
 
-    class RecipeEntry<R>(val registryAccess: RegistryAccess, val id: ResourceLocation, val recipe: R, val isSynthetic: Boolean) {
+    class RecipeEntry<R>(val registryAccess: RegistryAccess, val id: Identifier, val recipe: R, val isSynthetic: Boolean) {
         companion object {
             fun <R> getCodec(registryAccess: RegistryAccess, recipeCodec: Codec<R>): Codec<RecipeEntry<R>> = RecordCodecBuilder.create { instance ->
                 instance.group(
-                    ResourceLocation.CODEC.fieldOf("Id").forGetter { it.id },
+                    Identifier.CODEC.fieldOf("Id").forGetter { it.id },
                     recipeCodec.fieldOf("Recipe").forGetter { it.recipe },
                     Codec.BOOL.fieldOf("IsSynthetic").forGetter { it.isSynthetic },
                 ).apply(instance) { id, recipe, isSynthetic -> RecipeEntry(registryAccess, id, recipe, isSynthetic) }

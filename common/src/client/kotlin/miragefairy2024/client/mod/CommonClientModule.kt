@@ -10,7 +10,7 @@ import miragefairy2024.mod.common.KeyMappingType
 import miragefairy2024.mod.common.RenderBlockPosesOutlineContext
 import miragefairy2024.util.isValid
 import mirrg.kotlin.helium.max
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents as LevelRenderEvents // MIGRATION2612 ReplaceImport net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
 import net.minecraft.client.KeyMapping
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.LevelRenderer
@@ -44,7 +44,7 @@ private val LINES_NO_DEPTH by lazy {
 context(_: ModContext)
 fun initCommonClientModule() {
     CommonRenderingEvents.onRenderBlockPosesOutline.subscribe { listener ->
-        WorldRenderEvents.LAST.register { context ->
+        LevelRenderEvents.LAST.register { context ->
             val minecraft = Minecraft.getInstance() ?: return@register
             val level = minecraft.level ?: return@register
             val player = minecraft.player ?: return@register

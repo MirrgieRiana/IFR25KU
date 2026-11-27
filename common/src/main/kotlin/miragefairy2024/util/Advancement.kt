@@ -20,7 +20,7 @@ import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.tags.TagKey
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.item.Item
@@ -82,7 +82,7 @@ enum class AdvancementCardType(
 }
 
 class AdvancementCard(
-    private val identifier: ResourceLocation,
+    private val identifier: Identifier,
     private val context: Context,
     private val icon: () -> ItemStack,
     name: EnJa,
@@ -152,7 +152,7 @@ class AdvancementCard(
     }
 
     sealed class Context
-    class Root(val texture: ResourceLocation) : Context()
+    class Root(val texture: Identifier) : Context()
     class Sub(val parent: suspend () -> AdvancementHolder) : Context()
 
     private val nameTranslation = Translation({ identifier.toLanguageKey("advancements", "title").replace('/', '.') }, name)

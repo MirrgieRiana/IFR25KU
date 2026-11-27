@@ -6,7 +6,7 @@ import miragefairy2024.mod.recipeviewer.views.XFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import miragefairy2024.util.register
 import net.minecraft.Util
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -79,7 +79,7 @@ class VanillaFlatScrollbarViewWidgetTest {
                     view.viewportLength = 100
                     val bounds = if (horizontal) IntRectangle(10, 20, 100, 7) else IntRectangle(10, 20, 7, 100)
                     val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
-                    val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+                    val graphics: GuiGraphicsExtractor = Mockito.mock(GuiGraphicsExtractor::class.java)
                     val mouseX = if (horizontal) 20.0 else 12.0
                     val mouseY = if (horizontal) 22.0 else 30.0
                     Mockito.`when`(graphics.containsPointInScissor(mouseX.toInt(), mouseY.toInt())).thenReturn(true)
@@ -127,7 +127,7 @@ class VanillaFlatScrollbarViewWidgetTest {
                     view.viewportLength = 100
                     val bounds = if (horizontal) IntRectangle(10, 20, 100, 7) else IntRectangle(10, 20, 7, 100)
                     val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
-                    val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+                    val graphics: GuiGraphicsExtractor = Mockito.mock(GuiGraphicsExtractor::class.java)
                     val inside = if (horizontal) IntPoint(20, 22) else IntPoint(12, 30)
                     val clipped = if (horizontal) IntPoint(90, 22) else IntPoint(12, 100)
                     val outside = IntPoint.ZERO
@@ -184,7 +184,7 @@ class VanillaFlatScrollbarViewWidgetTest {
                     view.scrollOffset.value = 200.0
                     val bounds = if (horizontal) IntRectangle(10, 20, 100, 7) else IntRectangle(10, 20, 7, 100)
                     val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
-                    val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+                    val graphics: GuiGraphicsExtractor = Mockito.mock(GuiGraphicsExtractor::class.java)
 
                     fun assertColor(at: Long, color: Int) {
                         now = at

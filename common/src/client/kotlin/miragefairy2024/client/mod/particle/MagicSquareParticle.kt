@@ -9,7 +9,7 @@ import mirrg.kotlin.helium.max
 import mirrg.kotlin.hydrogen.blueOfRgb
 import mirrg.kotlin.hydrogen.greenOfRgb
 import mirrg.kotlin.hydrogen.redOfRgb
-import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider
+import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider as FabricSpriteSet // MIGRATION2612 ReplaceImport net.fabricmc.fabric.api.client.particle.v1.FabricSpriteSet
 import net.minecraft.client.Camera
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.ClientLevel
@@ -48,7 +48,7 @@ fun createMagicSquareParticleFactory() = { spriteProvider: SpriteSet ->
 
 class MagicSquareParticle(level: ClientLevel, x: Double, y: Double, z: Double, private val targetPosition: Vec3, spriteProvider: SpriteSet) : TextureSheetParticle(level, x, y, z) {
 
-    private val sprites = (spriteProvider as FabricSpriteProvider).sprites
+    private val sprites = (spriteProvider as FabricSpriteSet).sprites
 
     var color1 = 0xFFF4D3
     var color2 = 0xFFB82C

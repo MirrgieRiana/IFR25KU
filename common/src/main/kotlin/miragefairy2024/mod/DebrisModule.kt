@@ -47,7 +47,7 @@ import net.minecraft.core.RegistryAccess
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.tags.BiomeTags
 import net.minecraft.util.valueproviders.IntProvider
 import net.minecraft.util.valueproviders.UniformInt
@@ -95,7 +95,7 @@ enum class DebrisCard(
     val identifier = MirageFairy2024.identifier("${path}_debris")
 
     companion object {
-        val CODEC: Codec<DebrisCard> = ResourceLocation.CODEC.xmap(
+        val CODEC: Codec<DebrisCard> = Identifier.CODEC.xmap(
             { identifier -> DebrisCard.entries.first { it.identifier == identifier } },
             { card -> card.identifier },
         )

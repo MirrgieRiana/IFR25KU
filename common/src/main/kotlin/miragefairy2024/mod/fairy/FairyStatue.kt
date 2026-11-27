@@ -60,7 +60,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.tags.BlockTags
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.item.BlockItem
@@ -204,7 +204,7 @@ class FairyStatueBlock(private val card: FairyStatueCard, settings: Properties) 
     companion object {
         val CODEC: MapCodec<FairyStatueBlock> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
-                ResourceLocation.CODEC.xmap(
+                Identifier.CODEC.xmap(
                     { identifier -> FairyStatueCard.entries.first { it.identifier == identifier } },
                     { card -> card.identifier },
                 ).fieldOf("type").forGetter { it.card },

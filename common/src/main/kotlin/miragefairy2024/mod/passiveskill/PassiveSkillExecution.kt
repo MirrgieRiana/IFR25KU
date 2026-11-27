@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
@@ -105,7 +105,7 @@ fun Player.findPassiveSkillProviders(): PassiveSkillProviders {
     val passiveSkillCount = this.getPassiveSkillCount()
 
     val providers = mutableListOf<Triple<ItemStack, PassiveSkillStatus, Slot<PassiveSkill>>>()
-    val passiveSkillSlotListTable = mutableMapOf<ResourceLocation, MutableList<Slot<PassiveSkill>>>()
+    val passiveSkillSlotListTable = mutableMapOf<Identifier, MutableList<Slot<PassiveSkill>>>()
 
     fun addItemStack(itemStack: ItemStack, enabled: Boolean) {
         val item = itemStack.item
@@ -221,7 +221,7 @@ class PassiveSkillResult() {
                 val value = PassiveSkillResult()
                 val size = buffer.readVarInt()
                 repeat(size) { _ ->
-                    val passiveSkillEffect = passiveSkillEffectRegistry.get(ResourceLocation.STREAM_CODEC.decode(buffer))!!
+                    val passiveSkillEffect = passiveSkillEffectRegistry.get(Identifier.STREAM_CODEC.decode(buffer))!!
                     fun <T : Any> f(passiveSkillEffect: PassiveSkillEffect<T>) {
                         val it = passiveSkillEffect.streamCodec().decode(buffer)
                         value.map[passiveSkillEffect] = it
@@ -235,7 +235,7 @@ class PassiveSkillResult() {
                 buffer.writeVarInt(value.map.size)
                 value.map.forEach { (passiveSkillEffect, it) ->
                     fun <T : Any> f(passiveSkillEffect: PassiveSkillEffect<T>) {
-                        ResourceLocation.STREAM_CODEC.encode(buffer, passiveSkillEffectRegistry.getKey(passiveSkillEffect)!!)
+                        Identifier.STREAM_CODEC.encode(buffer, passiveSkillEffectRegistry.getKey(passiveSkillEffect)!!)
                         passiveSkillEffect.streamCodec().encode(buffer, passiveSkillEffect.castOrThrow(it))
                     }
                     f(passiveSkillEffect)

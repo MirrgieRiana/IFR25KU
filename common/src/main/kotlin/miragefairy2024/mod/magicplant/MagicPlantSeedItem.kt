@@ -15,7 +15,7 @@ import miragefairy2024.util.toBlockPos
 import miragefairy2024.util.yellow
 import mirrg.kotlin.helium.max
 import mirrg.kotlin.helium.unit
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory as ExtendedMenuProvider // MIGRATION2612 ReplaceImport net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider
 import net.minecraft.core.BlockPos
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
@@ -157,7 +157,7 @@ class MagicPlantSeedItem(block: Block, settings: Properties) : ItemNameBlockItem
             val itemStack = user.getItemInHand(hand)
             if (level.isClientSide) return InteractionResultHolder.success(itemStack)
             val traitStacks = itemStack.getTraitStacks() ?: TraitStacks.EMPTY
-            user.openMenu(object : ExtendedScreenHandlerFactory<Pair<TraitStacks, BlockPos>> {
+            user.openMenu(object : ExtendedMenuProvider<Pair<TraitStacks, BlockPos>> {
                 override fun createMenu(syncId: Int, playerInventory: Inventory, player: Player): AbstractContainerMenu {
                     return TraitListScreenHandler(syncId, playerInventory, ContainerLevelAccess.create(level, player.blockPosition()), traitStacks, player.position().add(0.0, 0.5, 0.0).toBlockPos())
                 }

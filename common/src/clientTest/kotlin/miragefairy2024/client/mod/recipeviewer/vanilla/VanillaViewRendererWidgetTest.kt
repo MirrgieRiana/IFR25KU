@@ -33,7 +33,7 @@ import mirrg.kotlin.helium.Slot
 import net.minecraft.SharedConstants
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.client.gui.navigation.ScreenDirection
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.server.Bootstrap
 import net.minecraft.world.item.ItemStack
 import org.junit.jupiter.api.Assertions
@@ -59,7 +59,7 @@ class VanillaViewRendererWidgetTest {
             Assertions.assertNull(widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true)))
             Assertions.assertNull(widget.nextFocusPath(FocusNavigationEvent.ArrowNavigation(ScreenDirection.DOWN)))
         }
-        val textureId = ResourceLocation.fromNamespaceAndPath("test", "background")
+        val textureId = Identifier.fromNamespaceAndPath("test", "background")
         val texture = ViewTexture(textureId, IntPoint(16, 16))
         check(TooltipBackgroundView(), TooltipBackgroundViewRenderer)
         check(FilledRectangleView(), FilledRectangleViewRenderer)

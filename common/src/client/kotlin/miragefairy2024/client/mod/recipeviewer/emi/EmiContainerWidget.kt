@@ -8,7 +8,7 @@ import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import miragefairy2024.util.fire
 import miragefairy2024.util.removeOn
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 
 class EmiContainerWidget : Widget() {
@@ -38,7 +38,7 @@ class EmiContainerWidget : Widget() {
         return Bounds(xMin, yMin, xMax - xMin, yMax - yMin)
     }
 
-    override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(draw: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, delta: Float) {
         widgets.forEach {
             it.render(draw, mouseX, mouseY, delta)
         }

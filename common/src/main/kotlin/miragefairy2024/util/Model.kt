@@ -12,7 +12,7 @@ import net.minecraft.data.models.model.ModelTemplates
 import net.minecraft.data.models.model.TextureMapping
 import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.models.model.TexturedModel
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemDisplayContext
 import net.minecraft.world.level.block.Block
@@ -25,18 +25,18 @@ import java.util.function.Supplier
 // Model Builder
 
 fun Model(creator: (TextureMapping) -> ModelData): ModelTemplate = object : ModelTemplate(Optional.empty(), Optional.empty()) {
-    override fun create(id: ResourceLocation, textures: TextureMapping, modelCollector: BiConsumer<ResourceLocation, Supplier<JsonElement>>): ResourceLocation {
+    override fun create(id: Identifier, textures: TextureMapping, modelCollector: BiConsumer<Identifier, Supplier<JsonElement>>): Identifier {
         modelCollector.accept(id) { creator(textures).toJsonElement() }
         return id
     }
 }
 
-fun Model(parent: ResourceLocation, vararg textureKeys: TextureSlot) = ModelTemplate(Optional.of(parent), Optional.empty(), *textureKeys)
+fun Model(parent: Identifier, vararg textureKeys: TextureSlot) = ModelTemplate(Optional.of(parent), Optional.empty(), *textureKeys)
 
-fun Model(parent: ResourceLocation, variant: String, vararg textureKeys: TextureSlot) = ModelTemplate(Optional.of(parent), Optional.of(variant), *textureKeys)
+fun Model(parent: Identifier, variant: String, vararg textureKeys: TextureSlot) = ModelTemplate(Optional.of(parent), Optional.of(variant), *textureKeys)
 
 class ModelData(
-    val parent: ResourceLocation? = null,
+    val parent: Identifier? = null,
     val ambientOcclusion: Boolean? = null,
     val textures: ModelTexturesData? = null,
     val elements: ModelElementsData? = null,
@@ -146,7 +146,7 @@ class ModelFaceData(
 
 // Util
 
-fun TextureMapping(vararg entries: Pair<TextureSlot, ResourceLocation>, initializer: TextureMapping.() -> Unit = {}): TextureMapping {
+fun TextureMapping(vararg entries: Pair<TextureSlot, Identifier>, initializer: TextureMapping.() -> Unit = {}): TextureMapping {
     val textureMapping = TextureMapping()
     entries.forEach {
         textureMapping.put(it.first, it.second)
@@ -158,9 +158,9 @@ fun TextureMapping(vararg entries: Pair<TextureSlot, ResourceLocation>, initiali
 val TextureSlot.string get() = this.toString()
 
 infix fun ModelTemplate.with(textureMapping: TextureMapping): TexturedModel = TexturedModel.createDefault({ textureMapping }, this).get(Blocks.AIR)
-fun ModelTemplate.with(vararg textureEntries: Pair<TextureSlot, ResourceLocation>) = this with TextureMapping(*textureEntries)
+fun ModelTemplate.with(vararg textureEntries: Pair<TextureSlot, Identifier>) = this with TextureMapping(*textureEntries)
 
-fun createEmptyModel(particleTexture: ResourceLocation): TexturedModel {
+fun createEmptyModel(particleTexture: Identifier): TexturedModel {
     return Model { textureMapping ->
         ModelData(
             parent = ResourceLocation("block/block"),
@@ -176,7 +176,7 @@ fun createEmptyModel(particleTexture: ResourceLocation): TexturedModel {
 // registerModelGeneration
 
 context(_: ModContext)
-fun registerModelGeneration(identifierGetter: () -> ResourceLocation, texturedModelCreator: () -> TexturedModel) = DataGenerationEvents.onGenerateBlockModel {
+fun registerModelGeneration(identifierGetter: () -> Identifier, texturedModelCreator: () -> TexturedModel) = DataGenerationEvents.onGenerateBlockModel {
     val texturedModel = texturedModelCreator()
     texturedModel.template.create(identifierGetter(), texturedModel.mapping, it.modelOutput)
 }

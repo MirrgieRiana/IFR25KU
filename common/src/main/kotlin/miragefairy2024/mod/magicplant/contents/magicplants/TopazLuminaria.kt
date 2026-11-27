@@ -23,7 +23,7 @@ import miragefairy2024.util.surface
 import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
@@ -77,7 +77,7 @@ object TopazLuminariaCard : AbstractLuminariaCard<TopazLuminariaBlock>() {
         TraitCard.ETERNAL_TREASURE.trait to 0.05, // 悠久の秘宝
     )
 
-    override fun createAdvancement(identifier: ResourceLocation) = AdvancementCard(
+    override fun createAdvancement(identifier: Identifier) = AdvancementCard(
         identifier = identifier,
         context = AdvancementCard.Sub { DiamondLuminariaCard.advancement!!.await() },
         icon = { iconItem().createItemStack() },

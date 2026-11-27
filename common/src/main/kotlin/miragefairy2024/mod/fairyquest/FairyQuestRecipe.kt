@@ -64,7 +64,7 @@ import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.component.ItemLore
@@ -485,7 +485,7 @@ class FairyQuestCardFeature(codec: Codec<NoneFeatureConfiguration>) : PlacedItem
     override fun createItemStack(context: FeaturePlaceContext<NoneFeatureConfiguration>): ItemStack? {
 
         // レシピ抽選
-        val table = mutableListOf<Chance<ResourceLocation>>()
+        val table = mutableListOf<Chance<Identifier>>()
         FairyQuestRecipeCard.entries.forEach { recipe ->
             when (recipe.lootCategory) {
                 FairyQuestRecipeCard.LootCategory.NONE -> Unit
@@ -499,11 +499,11 @@ class FairyQuestCardFeature(codec: Codec<NoneFeatureConfiguration>) : PlacedItem
     }
 }
 
-class SetFairyQuestRecipeLootFunction(conditions: List<LootItemCondition>, private val recipeId: ResourceLocation) : LootItemConditionalFunction(conditions) {
+class SetFairyQuestRecipeLootFunction(conditions: List<LootItemCondition>, private val recipeId: Identifier) : LootItemConditionalFunction(conditions) {
     companion object {
         val SERIALIZER: MapCodec<SetFairyQuestRecipeLootFunction> = RecordCodecBuilder.mapCodec { instance ->
             commonFields(instance)
-                .and(ResourceLocation.CODEC.fieldOf("id").forGetter { it.recipeId })
+                .and(Identifier.CODEC.fieldOf("id").forGetter { it.recipeId })
                 .apply(instance, ::SetFairyQuestRecipeLootFunction)
         }
     }

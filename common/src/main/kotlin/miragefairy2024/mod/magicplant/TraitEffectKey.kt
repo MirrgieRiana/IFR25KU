@@ -7,7 +7,7 @@ import net.minecraft.core.Registry
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.Style
 import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 
 // api
 
@@ -39,5 +39,5 @@ abstract class TraitEffectKey<T : Any> {
 // util
 
 fun TraitEffectKey<*>.getIdentifier() = traitEffectKeyRegistry.getKey(this)!!
-fun ResourceLocation.toTraitEffectKey() = traitEffectKeyRegistry.get(this)
+fun Identifier.toTraitEffectKey() = traitEffectKeyRegistry.get(this)
 val TraitEffectKey<*>.style: Style get() = Style.EMPTY.withColor(this.color)

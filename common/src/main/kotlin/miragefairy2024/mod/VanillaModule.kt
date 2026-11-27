@@ -22,11 +22,11 @@ import miragefairy2024.util.toItemTag
 import miragefairy2024.util.toTextureSource
 import miragefairy2024.util.writeAction
 import net.minecraft.core.registries.Registries
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.Blocks
 
-enum class ItemTagCard(identifier: ResourceLocation, val title: EnJa) {
+enum class ItemTagCard(identifier: Identifier, val title: EnJa) {
     ECHO_SHARDS(ResourceLocation("c", "echo_shards"), EnJa("Echo Shards", "残響の欠片")),
     PRISMARINE_SHARDS(ResourceLocation("c", "prismarine_shards"), EnJa("Prismarine Shards", "プリズマリンの欠片")),
     PLANT_TOOLS(MirageFairy2024.identifier("plant_tools"), EnJa("Plant Tools", "植物ツール")),
@@ -37,7 +37,7 @@ enum class ItemTagCard(identifier: ResourceLocation, val title: EnJa) {
     val tag = identifier.toItemTag()
 }
 
-enum class BlockTagCard(identifier: ResourceLocation, val title: EnJa) {
+enum class BlockTagCard(identifier: Identifier, val title: EnJa) {
     CONCRETE(MirageFairy2024.identifier("concrete"), EnJa("Concrete", "コンクリート")),
     ;
 

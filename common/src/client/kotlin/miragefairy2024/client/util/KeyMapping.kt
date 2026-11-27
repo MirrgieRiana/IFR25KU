@@ -3,7 +3,7 @@ package miragefairy2024.client.util
 import miragefairy2024.ModContext
 import miragefairy2024.mixin.client.api.inputEventsHandlers
 import miragefairy2024.util.TextScope
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper as KeyMappingHelper // MIGRATION2612 ReplaceImport net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper
 import net.minecraft.client.KeyMapping
 import net.minecraft.network.chat.Component
 
@@ -24,7 +24,7 @@ class KeyMappingCard(
                 listener()
             }
         }
-        KeyBindingHelper.registerKeyBinding(keyMapping)
+        KeyMappingHelper.registerKeyBinding(keyMapping)
     }
 }
 

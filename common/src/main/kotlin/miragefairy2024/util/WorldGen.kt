@@ -17,7 +17,7 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.data.worldgen.BootstrapContext
 import net.minecraft.data.worldgen.placement.PlacementUtils
 import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.tags.BiomeTags
 import net.minecraft.tags.TagKey
 import net.minecraft.util.random.SimpleWeightedRandomList
@@ -71,7 +71,7 @@ operator fun <T> ResourceKey<Registry<T>>.get(key: TagKey<T>): HolderSet.Named<T
 }
 
 context(_: ModContext)
-fun <T : Any> registerDynamicGeneration(registryKey: ResourceKey<out Registry<T>>, identifier: ResourceLocation, creator: BootstrapContext<T>.() -> T): ResourceKey<T> {
+fun <T : Any> registerDynamicGeneration(registryKey: ResourceKey<out Registry<T>>, identifier: Identifier, creator: BootstrapContext<T>.() -> T): ResourceKey<T> {
     val key = registryKey with identifier
     registerDynamicGeneration(key, creator)
     return key
@@ -90,11 +90,11 @@ fun <T : Any> registerDynamicGeneration(key: ResourceKey<T>, creator: BootstrapC
     }
 }
 
-class FeatureGenerationScope<C : FeatureConfiguration>(val feature: Feature<C>, val identifier: ResourceLocation)
-class ConfiguredFeatureGenerationScope<C : FeatureConfiguration>(val configuredFeatureKey: ResourceKey<ConfiguredFeature<*, *>>, val identifier: ResourceLocation)
+class FeatureGenerationScope<C : FeatureConfiguration>(val feature: Feature<C>, val identifier: Identifier)
+class ConfiguredFeatureGenerationScope<C : FeatureConfiguration>(val configuredFeatureKey: ResourceKey<ConfiguredFeature<*, *>>, val identifier: Identifier)
 
 context(_: ModContext)
-fun <C : FeatureConfiguration> Feature<C>.generator(identifier: ResourceLocation, block: FeatureGenerationScope<C>.() -> Unit) {
+fun <C : FeatureConfiguration> Feature<C>.generator(identifier: Identifier, block: FeatureGenerationScope<C>.() -> Unit) {
     block(FeatureGenerationScope(this, identifier))
 }
 
@@ -308,7 +308,7 @@ fun StructureProcessorList(vararg processors: StructureProcessor): StructureProc
 }
 
 context(_: BootstrapContext<*>)
-fun SinglePoolElement(location: ResourceLocation, processorsKey: ResourceKey<StructureProcessorList>, projection: StructureTemplatePool.Projection): StructurePoolElement {
+fun SinglePoolElement(location: Identifier, processorsKey: ResourceKey<StructureProcessorList>, projection: StructureTemplatePool.Projection): StructurePoolElement {
     return StructurePoolElement.single(location.string, Registries.PROCESSOR_LIST[processorsKey]).apply(projection)
 }
 

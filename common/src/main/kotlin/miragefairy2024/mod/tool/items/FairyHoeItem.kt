@@ -27,7 +27,7 @@ import net.minecraft.world.item.enchantment.ItemEnchantments
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
-import net.minecraft.world.level.block.FarmBlock
+import net.minecraft.world.level.block.FarmBlock as FarmlandBlock // MIGRATION2612 ReplaceImport net.minecraft.world.level.block.FarmlandBlock
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.gameevent.GameEvent
 import java.util.function.Consumer
@@ -110,7 +110,7 @@ open class AdvancedHoeItem(toolMaterial: Tier, private val tillingRecipe: Tillin
             )
         )
         val CREATIVE_RECIPE = object : TillingRecipe {
-            private val target = Blocks.FARMLAND.defaultBlockState().with(FarmBlock.MOISTURE, FarmBlock.MAX_MOISTURE)
+            private val target = Blocks.FARMLAND.defaultBlockState().with(FarmlandBlock.MOISTURE, FarmlandBlock.MAX_MOISTURE)
             override fun test(context: UseOnContext, blockState: BlockState): Consumer<UseOnContext>? {
                 if (blockState == target) return null
                 return changeIntoState(target)

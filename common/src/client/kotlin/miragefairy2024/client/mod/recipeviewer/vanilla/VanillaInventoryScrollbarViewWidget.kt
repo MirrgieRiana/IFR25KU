@@ -9,13 +9,13 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.InventoryScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XInventoryScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YInventoryScrollbarView
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import org.lwjgl.glfw.GLFW
 import kotlin.math.roundToInt
 
 abstract class VanillaInventoryScrollbarViewWidget(view: InventoryScrollbarView, bounds: IntRectangle) : VanillaScrollbarViewWidget<InventoryScrollbarView>(view, bounds) {
 
-    protected fun renderVerticalScrollbar(guiGraphics: GuiGraphics, x: Int, y: Int) {
+    protected fun renderVerticalScrollbar(guiGraphics: GuiGraphicsExtractor, x: Int, y: Int) {
         val range = evaluateScrollRange()
         val scrollable = range.start < range.endInclusive
         val start = evaluateThumbPosition().roundToInt()
@@ -58,7 +58,7 @@ class VanillaXInventoryScrollbarViewWidget(view: XInventoryScrollbarView, bounds
     // 横方向の入力がない場合は、縦方向のホイール入力で横スクロールするのだ～🌱
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
 
-    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+    override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
         if (scrollbarThickness < 2 || scrollbarLength < 2) return
         val pose: PoseStack = guiGraphics.pose()
         pose.stack {
@@ -87,7 +87,7 @@ class VanillaYInventoryScrollbarViewWidget(view: YInventoryScrollbarView, bounds
     override fun getDragAmount(dragX: Double, dragY: Double) = dragY
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
 
-    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+    override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
         if (scrollbarThickness < 2 || scrollbarLength < 2) return
         renderVerticalScrollbar(guiGraphics, x, y)
     }

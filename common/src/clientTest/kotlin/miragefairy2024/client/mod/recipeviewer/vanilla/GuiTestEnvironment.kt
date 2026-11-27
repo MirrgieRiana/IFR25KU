@@ -15,10 +15,10 @@ import miragefairy2024.util.empty
 import miragefairy2024.util.text
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.util.FormattedCharSequence
 import org.junit.jupiter.api.Assertions
 import org.mockito.MockedStatic
@@ -33,16 +33,16 @@ internal class GuiTestEnvironment : AutoCloseable {
     val events = mutableListOf<String>()
     val fills = mutableListOf<IntRectangle>()
     val tooltips = mutableListOf<List<FormattedCharSequence>>()
-    var render: (GuiGraphics, Int, Int, Float) -> Unit = { _, _, _, _ -> }
+    var render: (GuiGraphicsExtractor, Int, Int, Float) -> Unit = { _, _, _, _ -> }
 
     val screen: Screen = object : Screen(text { empty() }) {
-        override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+        override fun render(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
             this@GuiTestEnvironment.render(guiGraphics, mouseX, mouseY, partialTick)
             events += "screen-end"
         }
     }
 
-    val graphics: GuiGraphics = object : GuiGraphics(minecraft, null) {
+    val graphics: GuiGraphicsExtractor = object : GuiGraphicsExtractor(minecraft, null) {
         override fun fill(minX: Int, minY: Int, maxX: Int, maxY: Int, color: Int) {
             fills += IntRectangle(minX, minY, maxX - minX, maxY - minY)
             events += "fill"
@@ -70,7 +70,7 @@ internal class GuiTestEnvironment : AutoCloseable {
 
     data class TexturedVertex(val x: Float, val y: Float, val u: Float, val v: Float)
 
-    data class TexturedDraw(val texture: ResourceLocation, val quads: List<List<TexturedVertex>>)
+    data class TexturedDraw(val texture: Identifier, val quads: List<List<TexturedVertex>>)
 
     fun <T> withTexturedDraws(block: (MutableList<TexturedDraw>) -> T): T {
         return ByteBufferBuilder(1024).use { buffer ->
@@ -82,8 +82,8 @@ internal class GuiTestEnvironment : AutoCloseable {
                 tesselators.`when`<Tesselator> { Tesselator.getInstance() }.thenReturn(tesselator)
                 Mockito.mockStatic(BufferUploader::class.java).use { uploader ->
                     val draws = mutableListOf<TexturedDraw>()
-                    var texture: ResourceLocation? = null
-                    renderSystem.`when`<Unit> { RenderSystem.setShaderTexture(Mockito.eq(0), Mockito.any(ResourceLocation::class.java)) }.thenAnswer {
+                    var texture: Identifier? = null
+                    renderSystem.`when`<Unit> { RenderSystem.setShaderTexture(Mockito.eq(0), Mockito.any(Identifier::class.java)) }.thenAnswer {
                         texture = it.getArgument(1)
                         null
                     }

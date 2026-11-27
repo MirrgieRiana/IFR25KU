@@ -8,7 +8,7 @@ import miragefairy2024.util.text
 import mirrg.kotlin.helium.Slot
 import net.minecraft.SharedConstants
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.network.chat.Component
@@ -35,7 +35,7 @@ class GhostRecipeItemViewRendererTest {
         GuiTestEnvironment().use {
             Mockito.mockStatic(Screen::class.java).use { screen ->
                 screen.`when`<Boolean> { Screen.hasControlDown() }.thenReturn(true)
-                val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+                val graphics: GuiGraphicsExtractor = Mockito.mock(GuiGraphicsExtractor::class.java)
                 GhostRecipeItemViewRenderer.render(view, Slot(time), IntRectangle(10, 20, 16, 16), graphics, 0, 0, false, 0.0F)
                 Mockito.verify(graphics).renderFakeItem(Mockito.same(expected), Mockito.eq(10), Mockito.eq(20))
             }
@@ -47,7 +47,7 @@ class GhostRecipeItemViewRendererTest {
         GuiTestEnvironment().use {
             Mockito.mockStatic(Screen::class.java).use { screen ->
                 screen.`when`<Boolean> { Screen.hasControlDown() }.thenReturn(true)
-                val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+                val graphics: GuiGraphicsExtractor = Mockito.mock(GuiGraphicsExtractor::class.java)
                 val itemStack: ItemStack = ItemStack(Items.STONE, 64)
                 val view = GhostRecipeItemView(listOf(itemStack)).also {
                     it.showOverlay = true
@@ -81,7 +81,7 @@ class GhostRecipeItemViewRendererTest {
         GuiTestEnvironment().use {
             Mockito.mockStatic(Screen::class.java).use { screen ->
                 screen.`when`<Boolean> { Screen.hasControlDown() }.thenReturn(true)
-                val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+                val graphics: GuiGraphicsExtractor = Mockito.mock(GuiGraphicsExtractor::class.java)
                 val view = GhostRecipeItemView(listOf()).also {
                     it.showItemStack = false
                     it.showOverlay = true
@@ -134,7 +134,7 @@ class GhostRecipeItemViewRendererTest {
         GuiTestEnvironment().use {
             Mockito.mockStatic(Screen::class.java).use { screen ->
                 screen.`when`<Boolean> { Screen.hasControlDown() }.thenReturn(true)
-                val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+                val graphics: GuiGraphicsExtractor = Mockito.mock(GuiGraphicsExtractor::class.java)
                 val first: ItemStack = ItemStack(Items.STONE)
                 val second: ItemStack = ItemStack(Items.DIRT)
                 val view = GhostRecipeItemView(listOf(first, second))
@@ -168,7 +168,7 @@ class GhostRecipeItemViewRendererTest {
                 val second: ItemStack = ItemStack(Items.DIRT)
                 val tooltip = text { "tooltip"() }
                 screen.`when`<List<Component>> { Screen.getTooltipFromItem(Mockito.any(Minecraft::class.java), Mockito.same(second)) }.thenReturn(listOf(tooltip))
-                val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+                val graphics: GuiGraphicsExtractor = Mockito.mock(GuiGraphicsExtractor::class.java)
                 val view = GhostRecipeItemView(listOf(first, second))
                 val state = Slot(30.0)
                 val bounds = IntRectangle(10, 20, 16, 16)
@@ -209,7 +209,7 @@ class GhostRecipeItemViewRendererTest {
             GuiTestEnvironment().use { environment ->
                 Mockito.mockStatic(Screen::class.java).use { screen ->
                     screen.`when`<Boolean> { Screen.hasControlDown() }.thenReturn(true)
-                    val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+                    val graphics: GuiGraphicsExtractor = Mockito.mock(GuiGraphicsExtractor::class.java)
                     val state = Slot(GhostRecipeItemViewRenderer.createState(view))
                     environment.render = { _, mouseX, mouseY, partialTick ->
                         GhostRecipeItemViewRenderer.render(view, state, IntRectangle(10, 20, 16, 16), graphics, mouseX, mouseY, isHovered, partialTick)

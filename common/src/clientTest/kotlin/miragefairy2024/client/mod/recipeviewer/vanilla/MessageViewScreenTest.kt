@@ -21,7 +21,7 @@ import net.minecraft.client.GameNarrator
 import net.minecraft.client.InputType
 import net.minecraft.client.KeyMapping
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.screens.Screen
@@ -75,7 +75,7 @@ class MessageViewScreenTest {
             val screenEventSources = mutableListOf<ScreenEventSource>()
             val calls = mutableListOf<String>()
             val tab = DynamicView(EmptyView())
-            val guiGraphics = Mockito.mock(GuiGraphics::class.java)
+            val guiGraphics = Mockito.mock(GuiGraphicsExtractor::class.java)
             val definition = MessageViewScreenDefinition(text { empty() }) { screenEventSource ->
                 screenEventSources += screenEventSource
                 externalEvent.observe(screenEventSource.onDisposing) {

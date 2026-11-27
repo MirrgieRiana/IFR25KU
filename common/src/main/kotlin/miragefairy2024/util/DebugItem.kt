@@ -7,7 +7,7 @@ import mirrg.kotlin.helium.toUpperCamelCase
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.data.models.model.ModelTemplates
 import net.minecraft.data.models.model.TextureMapping
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionHand
@@ -27,7 +27,7 @@ fun interface TextureSource {
 
 fun Item.toTextureSource() = TextureSource { TextureMapping.layer0(this) }
 fun Block.toTextureSource() = TextureSource { TextureMapping.layer0(this) }
-fun ResourceLocation.toTextureSource() = TextureSource { TextureMapping.layer0(this) }
+fun Identifier.toTextureSource() = TextureSource { TextureMapping.layer0(this) }
 
 context(_: ModContext)
 fun registerDebugItem(path: String, icon: TextureSource = Items.BOOK.toTextureSource(), color: Int = 0xFF888888.toInt(), action: (Level, Player, InteractionHand, ItemStack) -> Unit) {

@@ -2,7 +2,7 @@ package miragefairy2024.client.lib
 
 import miragefairy2024.lib.MachineCard
 import miragefairy2024.lib.MachineScreenHandler
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
@@ -23,17 +23,17 @@ open class MachineScreen<H : MachineScreenHandler>(private val card: MachineCard
         titleLabelX = (imageWidth - font.width(title)) / 2
     }
 
-    override fun render(context: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(context: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, delta: Float) {
         renderBackground(context, mouseX, mouseY, delta)
         super.render(context, mouseX, mouseY, delta)
         renderTooltip(context, mouseX, mouseY)
     }
 
-    override fun renderBg(context: GuiGraphics, delta: Float, mouseX: Int, mouseY: Int) {
+    override fun renderBg(context: GuiGraphicsExtractor, delta: Float, mouseX: Int, mouseY: Int) {
         context.blit(card.backgroundTexture, leftPos, topPos, 0, 0, imageWidth, imageHeight)
     }
 
-    override fun renderTooltip(context: GuiGraphics, x: Int, y: Int) {
+    override fun renderTooltip(context: GuiGraphicsExtractor, x: Int, y: Int) {
         super.renderTooltip(context, x, y)
         run {
             val slot = hoveredSlot ?: return@run

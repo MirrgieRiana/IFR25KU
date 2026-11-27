@@ -7,7 +7,7 @@ import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import miragefairy2024.util.fire
 import miragefairy2024.util.removeOn
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 
 // me.shedaniel.rei.impl.client.gui.widget.MergedWidget
 class ReiContainerWidget : Widget() {
@@ -97,7 +97,7 @@ class ReiContainerWidget : Widget() {
     }
 
 
-    override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+    override fun render(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
         widgets.forEach {
             it.render(guiGraphics, mouseX, mouseY, partialTick)
         }

@@ -26,8 +26,8 @@ import miragefairy2024.util.toItemTag
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory as ExtendedMenuProvider // MIGRATION2612 ReplaceImport net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType as ExtendedMenuType // MIGRATION2612 ReplaceImport net.fabricmc.fabric.api.menu.v1.ExtendedMenuType
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
@@ -59,7 +59,7 @@ fun initSoulStream() {
     // ソウルストリームを開く要求パケット
     ModEvents.onInitialize {
         OpenSoulStreamChannel.registerServerPacketReceiver { player, _ ->
-            player.openMenu(object : ExtendedScreenHandlerFactory<Unit> {
+            player.openMenu(object : ExtendedMenuProvider<Unit> {
                 override fun createMenu(syncId: Int, playerInventory: Inventory, player: Player): AbstractContainerMenu {
                     return SoulStreamScreenHandler(syncId, playerInventory, player.soulStream.getOrCreate())
                 }
@@ -128,7 +128,7 @@ object OpenSoulStreamChannel : Channel<Unit>(MirageFairy2024.identifier("open_so
 // GUI
 
 val soulStreamScreenHandlerType = Registration(BuiltInRegistries.MENU, MirageFairy2024.identifier("soul_stream")) {
-    ExtendedScreenHandlerType({ syncId, playerInventory, _ ->
+    ExtendedMenuType({ syncId, playerInventory, _ ->
         SoulStreamScreenHandler(syncId, playerInventory, clientProxy!!.getClientPlayer()!!.soulStream.getOrCreate())
     }, dummyUnitStreamCodec())
 }

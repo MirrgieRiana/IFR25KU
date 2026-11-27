@@ -11,7 +11,7 @@ import miragefairy2024.util.fire
 import mirrg.kotlin.helium.Slot
 import mirrg.kotlin.hydrogen.alphaOfArgb
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.resources.sounds.SimpleSoundInstance
 import net.minecraft.sounds.SoundEvents
@@ -32,7 +32,7 @@ object ClickableViewRenderer : ViewRenderer<ClickableView, Unit> {
         return false
     }
 
-    override fun render(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val color = view.hoverOverlayColor
         if (isHovered && color.alphaOfArgb != 0) {
             graphics.fill(

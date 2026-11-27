@@ -17,7 +17,7 @@ import miragefairy2024.util.empty
 import miragefairy2024.util.register
 import miragefairy2024.util.text
 import net.minecraft.client.gui.Font
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractContainerWidget
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.EditBox
@@ -50,7 +50,7 @@ private class TestView(val interactive: Boolean, val beforeRender: (() -> Unit)?
 private class RecordingWidget(bounds: IntRectangle) : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, Component.empty()) {
     var onClick: () -> Unit = { }
 
-    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+    override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
@@ -172,7 +172,7 @@ class ViewAdapterTest {
         var consume = true
         fun widget(label: String, x: Int, handles: () -> Boolean): AbstractWidget {
             return object : AbstractWidget(x, 40, 20, 20, text { empty() }) {
-                override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+                override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
                 override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
                 override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollX: Double, scrollY: Double): Boolean {
                     Assertions.assertEquals(listOf(35.0, 45.0, 2.0, -3.0), listOf(mouseX, mouseY, scrollX, scrollY))
@@ -214,7 +214,7 @@ class ViewAdapterTest {
         }
         val container: AbstractContainerWidget = object : AbstractContainerWidget(0, 0, 100, 100, text { empty() }) {
             override fun children() = listOf(editBox)
-            override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+            override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
             override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
         }
         container.focused = editBox
@@ -515,7 +515,7 @@ class ViewAdapterTest {
         fun wrap(child: GuiEventListener): AbstractContainerWidget {
             return object : AbstractContainerWidget(0, 0, 100, 100, text { empty() }) {
                 override fun children() = listOf(child)
-                override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+                override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
                 override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
             }.also {
                 it.focused = child
@@ -603,7 +603,7 @@ class ViewAdapterTest {
         var releases = 0
         val widget: AbstractWidget = object : AbstractWidget(0, 0, 10, 10, text { empty() }), MouseCaptureContainer {
             override fun hasMouseCapture(button: Int) = captured && button == 1
-            override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+            override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
             override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
             override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
                 drags += 1

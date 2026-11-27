@@ -5,7 +5,7 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.ItemView
 import mirrg.kotlin.helium.Slot
 import net.minecraft.SharedConstants
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.server.Bootstrap
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -27,7 +27,7 @@ class ItemViewRendererTest {
     @Test
     fun `既定ではアイテム本体の後に個数などの表示を描画し無効時には本体だけを描画するのだ`() {
         GuiTestEnvironment().use {
-            val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+            val graphics: GuiGraphicsExtractor = Mockito.mock(GuiGraphicsExtractor::class.java)
             val itemStack: ItemStack = ItemStack(Items.STONE, 64)
             val view = ItemView(itemStack)
             val bounds = IntRectangle(10, 20, 16, 16)

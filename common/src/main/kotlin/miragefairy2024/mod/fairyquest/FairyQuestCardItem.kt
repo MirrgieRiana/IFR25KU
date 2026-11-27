@@ -35,14 +35,14 @@ import mirrg.kotlin.helium.unit
 import mirrg.kotlin.hydrogen.argbOf
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory as ExtendedMenuProvider // MIGRATION2612 ReplaceImport net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.chat.Component
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResultHolder
@@ -132,7 +132,7 @@ class FairyQuestCardItem(settings: Properties) : Item(settings) {
         val itemStack = user.getItemInHand(hand)
         val recipe = itemStack.getFairyQuestRecipe() ?: return InteractionResultHolder.fail(itemStack)
         if (level.isClientSide) return InteractionResultHolder.success(itemStack)
-        user.openMenu(object : ExtendedScreenHandlerFactory<ResourceLocation> {
+        user.openMenu(object : ExtendedMenuProvider<Identifier> {
             override fun createMenu(syncId: Int, playerInventory: Inventory, player: Player): AbstractContainerMenu {
                 return FairyQuestCardScreenHandler(syncId, playerInventory, recipe, ContainerLevelAccess.create(level, player.blockPosition()))
             }

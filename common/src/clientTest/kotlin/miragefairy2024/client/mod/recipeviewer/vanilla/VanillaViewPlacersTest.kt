@@ -55,12 +55,12 @@ import net.minecraft.client.DeltaTracker
 import net.minecraft.client.GameNarrator
 import net.minecraft.client.InputType
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.components.toasts.Toast
-import net.minecraft.client.gui.components.toasts.ToastComponent
+import net.minecraft.client.gui.components.toasts.ToastComponent as ToastManager // MIGRATION2612 ReplaceImport net.minecraft.client.gui.components.toasts.ToastManager
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.FormattedText
@@ -107,7 +107,7 @@ class VanillaViewPlacersTest {
         ViewRendererRegistry.register(MultiLineTextView::class.java, MultiLineTextViewRenderer)
         VANILLA_VIEW_PLACER_REGISTRY.register { context, view: PlacerTestView, bounds ->
             val widget: AbstractWidget = object : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {
-                override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+                override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
                     view.renders += 1
                 }
                 override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
@@ -746,7 +746,7 @@ class VanillaViewPlacersTest {
                 val scrollbarController = VANILLA_VIEW_PLACER_REGISTRY.place(context, scrollbarView, IntRectangle(200, 20, 5, 100))
                 val scrollWidget = widgets.filterIsInstance<VanillaYScrollContainerViewWidget>().single()
                 val scrollbarWidget = widgets.filterIsInstance<VanillaYFlatScrollbarViewWidget>().single()
-                val graphics: GuiGraphics = Mockito.mock(GuiGraphics::class.java)
+                val graphics: GuiGraphicsExtractor = Mockito.mock(GuiGraphicsExtractor::class.java)
 
                 fun assertColor(at: Long, color: Int, thumbY: Int) {
                     now = at
@@ -785,9 +785,9 @@ class VanillaViewPlacersTest {
     fun `トーストは非表示アニメーション中も View を描画し破棄しないのだ`() {
         val minecraft = Mockito.mock(Minecraft::class.java)
         Mockito.`when`(minecraft.timer).thenReturn(DeltaTracker.ZERO)
-        val toastComponent = Mockito.mock(ToastComponent::class.java)
+        val toastComponent = Mockito.mock(ToastManager::class.java)
         Mockito.`when`(toastComponent.notificationDisplayTimeMultiplier).thenReturn(1.0)
-        val graphics = Mockito.mock(GuiGraphics::class.java)
+        val graphics = Mockito.mock(GuiGraphicsExtractor::class.java)
         val view = PlacerTestView()
 
         Mockito.mockStatic(Minecraft::class.java).use { mock ->

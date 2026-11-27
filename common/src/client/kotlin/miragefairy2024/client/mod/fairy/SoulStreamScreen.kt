@@ -30,13 +30,13 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
 import net.fabricmc.fabric.api.client.screen.v1.Screens
 import net.minecraft.client.KeyMapping
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.ImageButton
 import net.minecraft.client.gui.components.Tooltip
 import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.client.gui.screens.inventory.InventoryScreen
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.world.entity.player.Inventory
 import org.lwjgl.glfw.GLFW
 import kotlin.math.sin
@@ -52,7 +52,7 @@ val soulStreamKeyMappingCard = KeyMappingCard(
 
 var lastMousePositionInInventory: Pair<Double, Double>? = null
 
-var enabledPassiveSkillEffectFilters = ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>(mapOf())
+var enabledPassiveSkillEffectFilters = ObservableValue<Map<Identifier, PassiveSkillEffectFilter<*>>>(mapOf())
 var enableGlobalFairyHighlight = ObservableValue(false)
 
 private val FILTER_OVERLAY_TEXTURE = MirageFairy2024.identifier("textures/gui/sprites/filter_overlay.png")
@@ -150,7 +150,7 @@ class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Invent
 
     // カーソルをインベントリ画面での位置に戻す
     private var isFirst = true
-    override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+    override fun render(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
         if (isFirst) {
             isFirst = false
             val mousePosition = lastMousePositionInInventory
