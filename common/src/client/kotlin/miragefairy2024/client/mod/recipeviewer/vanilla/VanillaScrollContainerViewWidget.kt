@@ -327,6 +327,18 @@ abstract class VanillaScrollContainerViewWidget(
         // 無効なコンテナなら null を返すのだ～🌱
         if (!isActive) return null
 
+        fun createSelfFocusPath(): ComponentPath {
+            return object : ComponentPath {
+                override fun component() = this@VanillaScrollContainerViewWidget
+
+                override fun applyFocus(focused: Boolean) {
+                    // その経路の適用時に、以前の子の参照を解除するのだ～🌱
+                    if (focused) this@VanillaScrollContainerViewWidget.focused = null
+                    this@VanillaScrollContainerViewWidget.isFocused = focused
+                }
+            }
+        }
+
         // バニラの他コンテナの実装では、InitialFocus 時に最初の要素を選択したりしているから、その代わりなのだ～🌱
         val actualEvent = if (event is FocusNavigationEvent.InitialFocus) FocusNavigationEvent.TabNavigation(true) else event
 
@@ -356,15 +368,7 @@ abstract class VanillaScrollContainerViewWidget(
             // 既にフォーカスされている場合は、次のフォーカス先に選ばないのだ～🌱
             if (isFocused) return null
             // 自身を次のフォーカス先にするのだ～🌱
-            return object : ComponentPath {
-                override fun component() = this@VanillaScrollContainerViewWidget
-
-                override fun applyFocus(focused: Boolean) {
-                    // その経路の適用時に、以前の子の参照を解除するのだ～🌱
-                    if (focused) this@VanillaScrollContainerViewWidget.focused = null
-                    this@VanillaScrollContainerViewWidget.isFocused = focused
-                }
-            }
+            return createSelfFocusPath()
         }
     }
 
