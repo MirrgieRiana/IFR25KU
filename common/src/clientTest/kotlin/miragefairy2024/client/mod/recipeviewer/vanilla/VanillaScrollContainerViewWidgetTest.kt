@@ -368,7 +368,7 @@ class VanillaScrollContainerViewWidgetTest {
     }
 
     @Test
-    fun `範囲外から逆 Tab で子に移ると子が収まる分だけスクロールするのだ`() {
+    fun `Tab の両方向で子と領域本体に止まり子が収まる分だけスクロールするのだ`() {
         GuiTestEnvironment().use {
             val view = YScrollContainerView()
             view += YListView().also {
@@ -401,25 +401,43 @@ class VanillaScrollContainerViewWidgetTest {
                 override fun children() = listOf(widget)
             }
             try {
-                screen.focused = widget
+                val next = FocusNavigationEvent.TabNavigation(true)
+                val previous = FocusNavigationEvent.TabNavigation(false)
+
+                fun moveFocus(event: FocusNavigationEvent.TabNavigation) {
+                    val path = checkNotNull(screen.nextFocusPath(event))
+                    screen.clearFocus()
+                    path.applyFocus(true)
+                    Assertions.assertSame(widget, screen.focused)
+                    Assertions.assertTrue(widget.isFocused)
+                }
+
+                moveFocus(next)
+                Assertions.assertNull(widget.focused)
                 Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
                 widget.setHeight(100)
                 Assertions.assertEquals(listOf(10, 40), children.map { it.y })
 
-                fun focusPrevious() {
-                    val path = screen.nextFocusPath(FocusNavigationEvent.TabNavigation(false))
-                    Assertions.assertNotNull(path)
-                    screen.clearFocus()
-                    path!!.applyFocus(true)
-                }
-
-                focusPrevious()
-                Assertions.assertTrue(children[1].isFocused)
-                Assertions.assertEquals(listOf(10, 40), children.map { it.y })
-
-                focusPrevious()
+                moveFocus(next)
+                Assertions.assertSame(children[0], widget.focused)
                 Assertions.assertTrue(children[0].isFocused)
                 Assertions.assertEquals(listOf(20, 50), children.map { it.y })
+
+                moveFocus(next)
+                Assertions.assertSame(children[1], widget.focused)
+                Assertions.assertTrue(children[1].isFocused)
+                Assertions.assertEquals(listOf(20, 50), children.map { it.y })
+                Assertions.assertNull(screen.nextFocusPath(next))
+                screen.clearFocus()
+
+                moveFocus(previous)
+                Assertions.assertSame(children[1], widget.focused)
+                moveFocus(previous)
+                Assertions.assertSame(children[0], widget.focused)
+                moveFocus(previous)
+                Assertions.assertNull(widget.focused)
+                Assertions.assertTrue(screen.keyPressed(GLFW.GLFW_KEY_UP, 0, 0))
+                Assertions.assertNull(screen.nextFocusPath(previous))
             } finally {
                 widget.dispose()
                 widget.detach()
