@@ -81,6 +81,8 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.lwjgl.glfw.GLFW
+import org.mockito.ArgumentCaptor
+import org.mockito.InOrder
 import org.mockito.Mockito
 import kotlin.math.roundToInt
 
@@ -92,6 +94,21 @@ private class PlacerTestView : FixedWidgetView(IntPoint(100, 100)) {
 
 private class ClippedSlotView(val slot: Slot) : FixedWidgetView(IntPoint(40, 40)) {
     var clipBounds = IntRectangle.ZERO
+}
+
+private class ClippedSlotTestScreen(menu: AbstractContainerMenu, inventory: Inventory, private val view: ClippedSlotView) : ViewContainerScreen<AbstractContainerMenu>(menu, inventory, text { empty() }) {
+    override fun createRootView(screenEventSource: ScreenEventSource) = view
+
+    fun setClip(offsetY: Int) {
+        view.clipBounds = IntRectangle(leftPos + view.slot.x, topPos + view.slot.y + offsetY, 18, 1)
+    }
+
+    fun startQuickCrafting(slots: List<Slot>) {
+        isQuickCrafting = true
+        quickCraftSlots.addAll(slots)
+    }
+
+    fun quickCraftingTargets() = quickCraftSlots.toSet()
 }
 
 private val PLACER_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
@@ -236,35 +253,26 @@ class VanillaViewPlacersTest {
     }
 
     @Test
-    fun `完全にクリップされたスロットのアイテムはドラッグ配布時だけ描画するのだ`() {
+    fun `個数表示だけが見えるスロットを描画し、ドラッグ配布中に無効になったスロットを除外するのだ`() {
         GuiTestEnvironment().use {
             val stack = ItemStack(Items.STONE, 16)
             val slot = Slot(SimpleContainer(stack), 0, 8, 8)
             val view = ClippedSlotView(slot)
-            val menu = object : AbstractContainerMenu(null, 0) {
+            val slots = listOf(slot, Slot(SimpleContainer(1), 0, 24, 8), Slot(SimpleContainer(1), 0, 8, 24))
+            val menu: AbstractContainerMenu = object : AbstractContainerMenu(null, 0) {
                 init {
-                    addSlot(slot)
+                    slots.forEach {
+                        addSlot(it)
+                    }
                 }
 
                 override fun quickMoveStack(player: Player, index: Int) = ItemStack.EMPTY
                 override fun stillValid(player: Player) = true
             }
             val inventory = Inventory(Mockito.mock(Player::class.java))
-            val screen = object : ViewContainerScreen<AbstractContainerMenu>(menu, inventory, text { empty() }) {
-                override fun createRootView(screenEventSource: ScreenEventSource) = view
-                public override fun renderSlot(guiGraphics: GuiGraphicsExtractor, slot: Slot) = super.renderSlot(guiGraphics, slot)
-
-                fun setClip(offsetY: Int, height: Int) {
-                    view.clipBounds = IntRectangle(leftPos + slot.x, topPos + slot.y + offsetY, 18, height)
-                }
-
-                fun startQuickCrafting() {
-                    isQuickCrafting = true
-                }
-            }
-            val graphics = Mockito.mock(GuiGraphicsExtractor::class.java)
+            val screen: ClippedSlotTestScreen = ClippedSlotTestScreen(menu, inventory, view)
+            val graphics: GuiGraphicsExtractor = Mockito.mock(GuiGraphicsExtractor::class.java)
             Mockito.`when`(graphics.pose()).thenReturn(PoseStack())
-            fun countItemDraws() = Mockito.mockingDetails(graphics).invocations.count { it.method.name == "renderItem" }
 
             val minecraft: Minecraft = Minecraft.getInstance()
             Mockito.`when`(minecraft.lastInputType).thenReturn(InputType.MOUSE)
@@ -272,20 +280,35 @@ class VanillaViewPlacersTest {
             minecraft.screen = screen
             try {
                 screen.init(minecraft, 100, 100)
-                screen.setClip(-18, 18)
-                screen.renderSlot(graphics, slot)
-                Assertions.assertEquals(0, countItemDraws())
+                screen.setClip(18)
+                screen.render(graphics, 0, 0, 0.0F)
+                Mockito.verify(graphics, Mockito.never()).renderItem(Mockito.eq(stack), Mockito.eq(slot.x), Mockito.eq(slot.y), Mockito.anyInt())
 
-                screen.setClip(15, 1)
-                screen.renderSlot(graphics, slot)
-                Assertions.assertEquals(1, countItemDraws())
+                screen.setClip(16)
+                screen.render(graphics, 0, 0, 0.0F)
+                Mockito.verify(graphics).renderItem(Mockito.eq(stack), Mockito.eq(slot.x), Mockito.eq(slot.y), Mockito.anyInt())
 
-                screen.setClip(-18, 18)
-                screen.startQuickCrafting()
-                screen.renderSlot(graphics, slot)
-                Assertions.assertEquals(2, countItemDraws())
+                screen.setClip(17)
+                screen.render(graphics, 0, 0, 0.0F)
+                Mockito.verify(graphics, Mockito.times(2)).renderItem(Mockito.eq(stack), Mockito.eq(slot.x), Mockito.eq(slot.y), Mockito.anyInt())
+
+                Mockito.clearInvocations(graphics)
+                menu.carried = ItemStack(Items.STONE, 5)
+                screen.startQuickCrafting(slots)
+                val incompatibleStack = ItemStack(Items.DIRT)
+                slot.set(incompatibleStack)
+                screen.setClip(18)
+                screen.render(graphics, 0, 0, 0.0F)
+
+                Assertions.assertEquals(slots.drop(1).toSet(), screen.quickCraftingTargets())
                 val (x, y, width, height) = view.clipBounds
-                Mockito.verify(graphics, Mockito.times(2)).enableScissor(x, y, x + width, y + height)
+                val remainingStack: ArgumentCaptor<ItemStack> = ArgumentCaptor.forClass(ItemStack::class.java)
+                val drawing: InOrder = Mockito.inOrder(graphics)
+                drawing.verify(graphics).enableScissor(x, y, x + width, y + height)
+                drawing.verify(graphics).renderItem(Mockito.eq(incompatibleStack), Mockito.eq(slot.x), Mockito.eq(slot.y), Mockito.anyInt())
+                drawing.verify(graphics).disableScissor()
+                drawing.verify(graphics).renderItem(remainingStack.capture(), Mockito.anyInt(), Mockito.anyInt())
+                Assertions.assertEquals(1, remainingStack.value.count)
             } finally {
                 screen.removed()
             }
