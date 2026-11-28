@@ -25,6 +25,7 @@ import mirrg.kotlin.helium.atMost
 import mirrg.kotlin.helium.max
 import mirrg.kotlin.helium.min
 import net.minecraft.client.gui.ComponentPath
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractContainerWidget
 import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.narration.NarratableEntry
@@ -36,7 +37,6 @@ import net.minecraft.client.gui.screens.Screen
 import org.lwjgl.glfw.GLFW
 import java.util.Optional
 import kotlin.math.roundToInt
-import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor
 
 /** 子 Widget の描画・入力・フォーカス・読み上げを中継するスクロール領域なのだ～🌱 */
 abstract class VanillaScrollContainerViewWidget(
@@ -375,7 +375,7 @@ abstract class VanillaScrollContainerViewWidget(
                 if (forward) {
                     // 順方向の Tab 移動なのだ～🌱
 
-                    // 領域本体がまだフォーカスされていなければ、まず、領域本体のフォーカスを試みるのだ～🌱
+                    // 領域本体や子要素がまだフォーカスされていないときは、まず、領域本体のフォーカスを試みるのだ～🌱
                     if (!isFocused) {
                         val path = createSelfFocusPath()
                         if (path != null) return path
