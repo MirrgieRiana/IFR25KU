@@ -118,7 +118,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
 
     override fun createScreenState() = FairyQuestCardScreenContent.State()
 
-    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource, state: FairyQuestCardScreenContent.State) = FairyQuestCardScreenContent(this, title, playerInventoryTitle, screenEventSource).view
+    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource, state: FairyQuestCardScreenContent.State) = FairyQuestCardScreenContent(this, title, playerInventoryTitle, screenEventSource, state).view
 
     override fun stillValid(player: Player) = true
 
@@ -214,7 +214,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
     }
 }
 
-class FairyQuestCardScreenContent(menu: FairyQuestCardScreenHandler, title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource) {
+class FairyQuestCardScreenContent(menu: FairyQuestCardScreenHandler, title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource, state: State) {
 
     class State
 

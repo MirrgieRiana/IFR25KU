@@ -87,13 +87,13 @@ class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifC
 
     override fun createScreenState() = MotifTableScreenContent.State()
 
-    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource, state: MotifTableScreenContent.State) = MotifTableScreenContent(chanceTable).view
+    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource, state: MotifTableScreenContent.State) = MotifTableScreenContent(chanceTable, state).view
 
     override fun stillValid(player: Player) = true
     override fun quickMoveStack(player: Player, slot: Int) = EMPTY_ITEM_STACK
 }
 
-class MotifTableScreenContent(chanceTable: List<CondensedMotifChance>) {
+class MotifTableScreenContent(chanceTable: List<CondensedMotifChance>, state: State) {
 
     class State
 
