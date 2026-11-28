@@ -14,6 +14,7 @@ import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.views.AlignView
+import miragefairy2024.mod.recipeviewer.views.ClickableView
 import miragefairy2024.mod.recipeviewer.views.DynamicView
 import miragefairy2024.mod.recipeviewer.views.EmptyView
 import miragefairy2024.mod.recipeviewer.views.ImageView
@@ -33,7 +34,6 @@ import miragefairy2024.mod.recipeviewer.views.createView
 import miragefairy2024.mod.recipeviewer.views.fixedContentSizeX
 import miragefairy2024.mod.recipeviewer.views.fixedContentSizeY
 import miragefairy2024.mod.recipeviewer.views.margin
-import miragefairy2024.mod.recipeviewer.views.onClick
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.mod.recipeviewer.views.tooltip
 import miragefairy2024.mod.recipeviewer.views.wrapClickable
@@ -278,24 +278,26 @@ class TraitListScreenContent(menu: TraitListScreenHandler, title: Component, sta
                                         val totalConditionFactor = conditionFactors.fold(1.0) { a, b -> a * b }
 
                                         // 特性
-                                        view += MultiLineTextView().configure {
-                                            view.text.value = text {
-                                                val texts = mutableListOf<Component>()
-                                                val styleFunction: (Component) -> Component = { if (totalConditionFactor == 0.0) it.darkGray else it.style(trait.style) }
-                                                texts += styleFunction(trait.getName())
-                                                texts += styleFunction(traitStack.level.toString(2)())
-                                                if (trait.conditions.isNotEmpty()) texts += trait.conditions.map { it.emoji }.join() + " →"()
-                                                if (trait.traitEffectKeyEntries.isNotEmpty()) texts += trait.traitEffectKeyEntries.map { it.traitEffectKey.emoji.style(it.traitEffectKey.style) }.join()
-                                                texts.join(" "())
+                                        view += ClickableView().configure {
+                                            view.narrationLabel = trait.getName()
+                                            view += MultiLineTextView().configure {
+                                                view.text.value = text {
+                                                    val texts = mutableListOf<Component>()
+                                                    val styleFunction: (Component) -> Component = { if (totalConditionFactor == 0.0) it.darkGray else it.style(trait.style) }
+                                                    texts += styleFunction(trait.getName())
+                                                    texts += styleFunction(traitStack.level.toString(2)())
+                                                    if (trait.conditions.isNotEmpty()) texts += trait.conditions.map { it.emoji }.join() + " →"()
+                                                    if (trait.traitEffectKeyEntries.isNotEmpty()) texts += trait.traitEffectKeyEntries.map { it.traitEffectKey.emoji.style(it.traitEffectKey.style) }.join()
+                                                    texts.join(" "())
+                                                }
+                                                view.shadow = false
                                             }
-                                            view.shadow = false
-                                        }.onClick {
-                                            state.selectedTrait = trait
-                                            state.poemScrollOffset = 0.0
-                                            cardContentDynamicView.content.value = createTraitCardView(traitStack)
-                                            true
-                                        }.also {
-                                            it.view.narrationLabel = trait.getName()
+                                            view.onClick.register {
+                                                state.selectedTrait = trait
+                                                state.poemScrollOffset = 0.0
+                                                cardContentDynamicView.content.value = createTraitCardView(traitStack)
+                                                true
+                                            }
                                         }
 
                                     }
