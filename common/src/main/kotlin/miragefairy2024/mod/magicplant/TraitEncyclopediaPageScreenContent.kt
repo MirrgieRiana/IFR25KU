@@ -65,6 +65,8 @@ private fun Trait.openTraitEncyclopediaPageScreen() {
 
 class TraitEncyclopediaPageScreenContent(trait: Trait) {
 
+    class State
+
     val onBackToGame = EventRegistry<() -> Boolean>()
     val onBack = EventRegistry<() -> Boolean>()
 

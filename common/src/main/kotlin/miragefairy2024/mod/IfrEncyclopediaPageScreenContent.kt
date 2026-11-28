@@ -65,6 +65,8 @@ private fun IfrEncyclopediaEntryCard.openIfrEncyclopediaPageScreen() {
 
 private class IfrEncyclopediaPageScreenContent(card: IfrEncyclopediaEntryCard) {
 
+    class State
+
     val onBackToGame = EventRegistry<() -> Boolean>()
     val onBack = EventRegistry<() -> Boolean>()
 

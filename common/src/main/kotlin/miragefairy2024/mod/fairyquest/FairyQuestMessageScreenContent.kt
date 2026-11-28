@@ -63,6 +63,8 @@ fun FairyQuestRecipe.openMessageScreen() {
 
 class FairyQuestMessageScreenContent(fairyQuestTitle: Component, fairyQuestMessage: Component, fairyQuestClient: Component) {
 
+    class State
+
     val onBackToGame = EventRegistry<() -> Boolean>()
     val onBack = EventRegistry<() -> Boolean>()
 

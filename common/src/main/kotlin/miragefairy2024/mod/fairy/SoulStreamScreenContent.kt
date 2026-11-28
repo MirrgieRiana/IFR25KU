@@ -65,6 +65,8 @@ private val BUTTON_14_BACKGROUND = LayeredImageButtonView.Sprites(
 
 abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Component, screenEventSource: ScreenEventSource) {
 
+    class State
+
     protected abstract val enabledPassiveSkillEffectFilters: ObservableValue<Map<Identifier, PassiveSkillEffectFilter<*>>>
     protected abstract val enableGlobalFairyHighlight: ObservableValue<Boolean>
 

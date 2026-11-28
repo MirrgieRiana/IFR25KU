@@ -97,6 +97,8 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
 
 private class TraitListScreenContent(menu: TraitListScreenHandler, title: Component) {
 
+    class State
+
     val view = run {
         val level: Level = menu.playerInventory.player.level()
 

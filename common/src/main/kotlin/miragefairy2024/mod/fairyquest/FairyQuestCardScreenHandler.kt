@@ -216,6 +216,8 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
 
 private class FairyQuestCardScreenContent(menu: FairyQuestCardScreenHandler, title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource) {
 
+    class State
+
     val view = run {
         val playerInventoryWidth = 9
         val playerInventoryHeight = 3

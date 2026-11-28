@@ -55,6 +55,8 @@ fun openTooltipViewerScreen() {
 
 class TooltipViewerScreenContent(itemStacks: List<ItemStack>, tooltipProvider: (ItemStack) -> List<Component>) {
 
+    class State
+
     val view = View {
 
         fun createContentView(filter: String): View {

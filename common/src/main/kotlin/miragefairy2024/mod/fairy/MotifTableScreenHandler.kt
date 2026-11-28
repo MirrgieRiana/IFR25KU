@@ -95,6 +95,8 @@ class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifC
 
 private class MotifTableScreenContent(chanceTable: List<CondensedMotifChance>) {
 
+    class State
+
     val view = View {
         // 外枠
         view += StackView().configure {
