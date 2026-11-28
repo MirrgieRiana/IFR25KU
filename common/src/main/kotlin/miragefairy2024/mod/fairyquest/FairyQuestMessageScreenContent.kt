@@ -126,7 +126,7 @@ class FairyQuestMessageScreenContent(fairyQuestTitle: Component, fairyQuestMessa
                 val scrollbarView = YFlatScrollbarView().configure {
                     view.scrollbarThickness = 10
                     view.scrollbarColor = 0xA0FFFFFF.toInt()
-                    view.isAttached = true
+                    view.isAttachment = true
                 }
                 view += scrollbarView
                 connectScrollbar(scrollView.view, scrollbarView.view)

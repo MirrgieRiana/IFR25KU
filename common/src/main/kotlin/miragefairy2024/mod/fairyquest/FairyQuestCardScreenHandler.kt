@@ -283,7 +283,7 @@ class FairyQuestCardScreenContent(menu: FairyQuestCardScreenHandler, title: Comp
                             }
                             view += scrollView
                             val scrollbarView = YFlatScrollbarView().configure {
-                                view.isAttached = true
+                                view.isAttachment = true
                             }
                             view += scrollbarView
                             connectScrollbar(scrollView.view, scrollbarView.view)
