@@ -47,8 +47,7 @@ fun initTraitEncyclopediaPageScreen() {
 private fun Trait.openTraitEncyclopediaPageScreen() {
     fun <S : Any> openScreen(proxy: ClientProxy<S>) {
         val parent = proxy.getCurrentScreen()
-        val state = TraitEncyclopediaPageScreenContent.State()
-        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(this.getName()) {
+        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(this.getName(), { TraitEncyclopediaPageScreenContent.State() }) { _, state ->
             TraitEncyclopediaPageScreenContent(this, state).also { view ->
                 view.onBackToGame.register {
                     proxy.setCurrentScreen(null)

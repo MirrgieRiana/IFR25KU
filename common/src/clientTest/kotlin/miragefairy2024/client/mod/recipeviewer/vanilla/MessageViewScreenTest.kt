@@ -40,12 +40,15 @@ class MessageViewScreenTest {
     }
 
     @Test
-    fun `リサイズではルート View を再利用し画面を開き直すと再生成するのだ`() {
+    fun `ルート View を再生成しても同じ画面では同じステートを渡すのだ`() {
         Mockito.mockStatic(Screen::class.java).use {
             val minecraft = createMinecraft()
-            var creations = 0
-            val definition = MessageViewScreenDefinition(text { empty() }) {
-                creations++
+            val createdStates = mutableListOf<Any>()
+            val receivedStates = mutableListOf<Any>()
+            val definition = MessageViewScreenDefinition(text { empty() }, {
+                Any().also { createdStates += it }
+            }) { _, state ->
+                receivedStates += state
                 EmptyView()
             }
             val screen = MessageViewScreen(null, definition)
@@ -53,16 +56,29 @@ class MessageViewScreenTest {
                 screen.init(minecraft, 200, 200)
                 screen.resize(minecraft, 300, 240)
 
-                Assertions.assertEquals(1, creations)
+                Assertions.assertSame(createdStates.single(), receivedStates.single())
                 Assertions.assertEquals(300, screen.width)
                 Assertions.assertEquals(240, screen.height)
 
                 screen.removed()
                 screen.init(minecraft, 300, 240)
 
-                Assertions.assertEquals(2, creations)
+                Assertions.assertEquals(2, receivedStates.size)
+                Assertions.assertSame(createdStates.single(), receivedStates.last())
             } finally {
                 screen.removed()
+            }
+
+            val otherScreen = MessageViewScreen(null, definition)
+            try {
+                otherScreen.init(minecraft, 300, 240)
+
+                Assertions.assertEquals(2, createdStates.size)
+                Assertions.assertEquals(3, receivedStates.size)
+                Assertions.assertSame(createdStates.last(), receivedStates.last())
+                Assertions.assertNotSame(receivedStates.first(), receivedStates.last())
+            } finally {
+                otherScreen.removed()
             }
         }
     }
@@ -76,7 +92,7 @@ class MessageViewScreenTest {
             val calls = mutableListOf<String>()
             val tab = DynamicView(EmptyView())
             val guiGraphics = Mockito.mock(GuiGraphicsExtractor::class.java)
-            val definition = MessageViewScreenDefinition(text { empty() }) { screenEventSource ->
+            val definition = MessageViewScreenDefinition(text { empty() }, { Unit }) { screenEventSource, _ ->
                 screenEventSources += screenEventSource
                 externalEvent.observe(screenEventSource.onDisposing) {
                     calls += "updated"
@@ -138,7 +154,7 @@ class MessageViewScreenTest {
 
             createViews.forEach { createView ->
                 val calls = mutableListOf<String>()
-                val definition = MessageViewScreenDefinition(text { empty() }) { screenEventSource ->
+                val definition = MessageViewScreenDefinition(text { empty() }, { Unit }) { screenEventSource, _ ->
                     screenEventSource.onOpened.register {
                         calls += "opened"
                     }
@@ -166,7 +182,7 @@ class MessageViewScreenTest {
         Mockito.mockStatic(Screen::class.java).use {
             val minecraft = createMinecraft()
             val parent: Screen = Mockito.mock(Screen::class.java)
-            val definition = MessageViewScreenDefinition(text { empty() }) { EmptyView() }
+            val definition = MessageViewScreenDefinition(text { empty() }, { Unit }) { _, _ -> EmptyView() }
             definition.closeOnOutsideClick = false
             val screen = MessageViewScreen(parent, definition)
             try {
@@ -190,10 +206,10 @@ class MessageViewScreenTest {
                 val parent: Screen = Mockito.mock(Screen::class.java)
                 val additionalCloseKey: KeyMapping = Mockito.mock(KeyMapping::class.java)
                 Mockito.`when`(additionalCloseKey.matches(70, 10)).thenReturn(true)
-                val definition = MessageViewScreenDefinition(text { empty() }) { EmptyView() }
+                val definition = MessageViewScreenDefinition(text { empty() }, { Unit }) { _, _ -> EmptyView() }
                 definition.closeOnInventoryKey = false
                 keyMappings.`when`<KeyMapping> { getKeyMapping(KeyMappingType.OPEN_TOOLTIP_VIEWER) }.thenReturn(additionalCloseKey)
-                val screen: MessageViewScreen = Mockito.spy(MessageViewScreen(parent, definition))
+                val screen: MessageViewScreen<Unit> = Mockito.spy(MessageViewScreen(parent, definition))
                 screen.init(minecraft, 200, 200)
                 try {
                     Assertions.assertFalse(screen.keyPressed(70, 10, 2))
@@ -235,8 +251,8 @@ class MessageViewScreenTest {
         Mockito.mockStatic(Screen::class.java).use {
             val minecraft = createMinecraft()
             val parent: Screen = Mockito.mock(Screen::class.java)
-            val definition = MessageViewScreenDefinition(text { empty() }) { EmptyView() }
-            val screen: MessageViewScreen = Mockito.spy(MessageViewScreen(parent, definition))
+            val definition = MessageViewScreenDefinition(text { empty() }, { Unit }) { _, _ -> EmptyView() }
+            val screen: MessageViewScreen<Unit> = Mockito.spy(MessageViewScreen(parent, definition))
             screen.init(minecraft, 200, 200)
             try {
                 val widget: AbstractWidget = Mockito.mock(AbstractWidget::class.java)

@@ -40,8 +40,7 @@ import net.minecraft.world.item.ItemStack
 
 fun openTooltipViewerScreen() {
     fun <S : Any> openScreen(proxy: ClientProxy<S>) {
-        val state = TooltipViewerScreenContent.State()
-        val definition = MessageViewScreenDefinition(text { TOOLTIP_VIEWER_KEY_TRANSLATION() }) {
+        val definition = MessageViewScreenDefinition(text { TOOLTIP_VIEWER_KEY_TRANSLATION() }, { TooltipViewerScreenContent.State() }) { _, state ->
             val player = proxy.getClientPlayer()
             val itemStacks = if (player != null) (0 until 9).map { player.inventory[it] } else emptyList()
             TooltipViewerScreenContent(itemStacks, state, proxy::getItemTooltip).view
