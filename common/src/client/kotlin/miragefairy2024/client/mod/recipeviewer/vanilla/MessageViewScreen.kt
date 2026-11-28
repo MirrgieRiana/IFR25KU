@@ -9,8 +9,13 @@ import net.minecraft.client.gui.screens.Screen
 class MessageViewScreen<T>(private val parent: Screen?, private val definition: MessageViewScreenDefinition<T>) : ViewScreen(definition.title) {
 
     private val state = definition.createScreenState()
+    private var openingKeyCode: Int? = null
 
     override fun createRootView(screenEventSource: ScreenEventSource) = definition.rootViewFactory(screenEventSource, state)
+
+    fun suppressOpeningKey(keyCode: Int) {
+        openingKeyCode = keyCode
+    }
 
     override fun renderBackground(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
         if (definition.transparentBackground) {
@@ -21,6 +26,7 @@ class MessageViewScreen<T>(private val parent: Screen?, private val definition: 
     }
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+        if (keyCode == openingKeyCode) return true
         if (super.keyPressed(keyCode, scanCode, modifiers)) return true
 
         // インベントリキーで閉じるのだ～🌱
@@ -41,6 +47,14 @@ class MessageViewScreen<T>(private val parent: Screen?, private val definition: 
         return false
     }
 
+    override fun keyReleased(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+        if (keyCode == openingKeyCode) {
+            openingKeyCode = null
+            return true
+        }
+        return super.keyReleased(keyCode, scanCode, modifiers)
+    }
+
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         if (super.mouseClicked(mouseX, mouseY, button)) return true
 
@@ -55,6 +69,11 @@ class MessageViewScreen<T>(private val parent: Screen?, private val definition: 
 
     override fun onClose() {
         minecraft!!.setScreen(parent)
+    }
+
+    override fun removed() {
+        openingKeyCode = null
+        super.removed()
     }
 
 }

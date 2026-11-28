@@ -1,5 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import miragefairy2024.MessageViewScreenDefinition
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.ClickableViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.FilledRectangleViewRenderer
@@ -18,6 +19,7 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.views.ClickableView
+import miragefairy2024.mod.recipeviewer.views.EmptyView
 import miragefairy2024.mod.recipeviewer.views.FilledRectangleView
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import miragefairy2024.mod.recipeviewer.views.ImageButtonView
@@ -35,6 +37,7 @@ import miragefairy2024.util.text
 import mirrg.kotlin.helium.Slot
 import net.minecraft.SharedConstants
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.client.gui.navigation.ScreenDirection
 import net.minecraft.client.gui.screens.Screen
@@ -59,6 +62,45 @@ class VanillaViewRendererWidgetTest {
     fun initMinecraft() {
         SharedConstants.tryDetectVersion()
         Bootstrap.bootStrap()
+    }
+
+    @Test
+    fun `キーで開いた画面では起動キーを離すまで同じキーがボタンに届かないのだ`() {
+        val minecraft: Minecraft = Mockito.mock(Minecraft::class.java)
+        val soundManager: SoundManager = Mockito.mock(SoundManager::class.java)
+        Mockito.`when`(minecraft.soundManager).thenReturn(soundManager)
+        Mockito.mockStatic(Minecraft::class.java).use { minecraftMock ->
+            minecraftMock.`when`<Minecraft> { Minecraft.getInstance() }.thenReturn(minecraft)
+            val view = ClickableView()
+            val widget = VanillaViewRendererWidget(ClickableViewRenderer, view, IntRectangle(10, 20, 100, 100))
+            val parent: Screen = object : Screen(text { empty() }) {
+                init {
+                    addRenderableWidget(widget)
+                }
+            }
+            val definition = MessageViewScreenDefinition(text { empty() }, { Unit }) { _, _ -> EmptyView() }
+            val screen = MessageViewScreen(parent, definition)
+            var buttonActivations = 0
+            screen.focused = Button.builder(text { empty() }) { buttonActivations++ }.build()
+            parent.focused = widget
+            minecraft.screen = parent
+            view.onClick.register {
+                minecraft.screen = screen
+                true
+            }
+
+            Assertions.assertTrue(parent.keyPressed(GLFW.GLFW_KEY_ENTER, 0, 0))
+            Assertions.assertSame(screen, minecraft.screen)
+            Assertions.assertTrue(screen.keyPressed(GLFW.GLFW_KEY_ENTER, 0, 0))
+            Assertions.assertTrue(screen.keyPressed(GLFW.GLFW_KEY_ENTER, 0, 0))
+            Assertions.assertEquals(0, buttonActivations)
+            Assertions.assertTrue(screen.keyPressed(GLFW.GLFW_KEY_SPACE, 0, 0))
+            Assertions.assertEquals(1, buttonActivations)
+
+            Assertions.assertTrue(screen.keyReleased(GLFW.GLFW_KEY_ENTER, 0, 0))
+            Assertions.assertTrue(screen.keyPressed(GLFW.GLFW_KEY_ENTER, 0, 0))
+            Assertions.assertEquals(2, buttonActivations)
+        }
     }
 
     @Test

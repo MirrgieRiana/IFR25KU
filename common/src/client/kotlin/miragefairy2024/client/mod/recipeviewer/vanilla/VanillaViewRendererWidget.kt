@@ -4,6 +4,7 @@ import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import mirrg.kotlin.helium.Slot
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ComponentPath
 import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractWidget
@@ -45,7 +46,16 @@ class VanillaViewRendererWidget<V : PlaceableView, S>(private val renderer: View
     // クリックを消費しているときは、離すイベントも消費するのだ～🌱
     override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int) = pressedButtons.remove(button)
 
-    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = renderer.keyPressed(view, state, bounds2, keyCode, scanCode, modifiers)
+    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+        val minecraft: Minecraft = Minecraft.getInstance()
+        val previousScreen = minecraft.screen
+        if (!renderer.keyPressed(view, state, bounds2, keyCode, scanCode, modifiers)) return false
+        val screen = minecraft.screen
+        if (screen !== previousScreen && screen is MessageViewScreen<*>) {
+            screen.suppressOpeningKey(keyCode)
+        }
+        return true
+    }
 
     override fun nextFocusPath(event: FocusNavigationEvent): ComponentPath? {
         if (!renderer.isFocusable(view, state)) return null
