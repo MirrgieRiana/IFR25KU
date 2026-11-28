@@ -328,17 +328,25 @@ abstract class VanillaScrollContainerViewWidget(
         if (!isActive) return null
 
         fun createSelfFocusPath(): ComponentPath? {
-            // スクロールの余地がなく、かつ現在位置が初期位置の場合は、移動の操作が不可能なので、自身をフォーカスしないのだ～🌱
+            // 表示位置を変えられない場合は、自身をフォーカス候補から外すのだ～🌱
             if (evaluateMaxScrollOffset() <= 0 && scrollOffsetValue.value == 0.0) return null
             return object : ComponentPath {
                 override fun component() = this@VanillaScrollContainerViewWidget
 
                 override fun applyFocus(focused: Boolean) {
-                    // その経路の適用時に、以前の子の参照を解除するのだ～🌱
+                    // 領域本体を選ぶときに、以前の子の参照を解除するのだ～🌱
                     if (focused) this@VanillaScrollContainerViewWidget.focused = null
                     this@VanillaScrollContainerViewWidget.isFocused = focused
                 }
             }
+        }
+
+        val tabForward = (event as? FocusNavigationEvent.TabNavigation)?.forward()
+        // 順方向では領域本体から子へ進み、逆方向では子の後に領域本体を選ぶのだ～🌱
+        if (tabForward == false && isFocused && focused == null) return null
+        if (tabForward == true && !isFocused) {
+            val path = createSelfFocusPath()
+            if (path != null) return path
         }
 
         // バニラの他コンテナの実装では、InitialFocus 時に最初の要素を選択したりしているから、その代わりなのだ～🌱
@@ -347,15 +355,14 @@ abstract class VanillaScrollContainerViewWidget(
         // super.nextFocusPath() に子の探索を任せるのだ～🌱
         val path = super.nextFocusPath(actualEvent)
 
-        // 子への経路があればそれを、なければ自身をフォーカス先にするのだ～🌱
         if (path == null) {
-            // 既にフォーカスされている場合は、次のフォーカス先に選ばないのだ～🌱
-            if (isFocused) return null
-            // 自身を次のフォーカス先にするのだ～🌱
-            return createSelfFocusPath()
+            return when (tabForward) {
+                true -> null
+                false -> createSelfFocusPath()
+                null -> if (isFocused) null else createSelfFocusPath()
+            }
         }
 
-        // 子を次のフォーカス先にするのだ～🌱
         return object : ComponentPath {
             override fun component() = path.component()
 
