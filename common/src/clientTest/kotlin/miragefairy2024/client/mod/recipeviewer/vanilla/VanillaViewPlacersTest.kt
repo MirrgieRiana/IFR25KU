@@ -99,8 +99,8 @@ private class ClippedSlotView(val slot: Slot) : FixedWidgetView(IntPoint(40, 40)
 private class ClippedSlotTestScreen(menu: AbstractContainerMenu, inventory: Inventory, private val view: ClippedSlotView) : ViewContainerScreen<AbstractContainerMenu>(menu, inventory, text { empty() }) {
     override fun createRootView(screenEventSource: ScreenEventSource) = view
 
-    fun setClip(offsetY: Int) {
-        view.clipBounds = IntRectangle(leftPos + view.slot.x, topPos + view.slot.y + offsetY, 18, 1)
+    fun setClip(offsetX: Int, offsetY: Int) {
+        view.clipBounds = IntRectangle(leftPos + view.slot.x + offsetX, topPos + view.slot.y + offsetY, 1, 1)
     }
 
     fun startQuickCrafting(slots: List<Slot>) {
@@ -253,7 +253,7 @@ class VanillaViewPlacersTest {
     }
 
     @Test
-    fun `個数表示だけが見えるスロットを描画し、ドラッグ配布中に無効になったスロットを除外するのだ`() {
+    fun `上下左右のはみ出しを考慮して描画し、ドラッグ配布中に無効になったスロットを除外するのだ`() {
         GuiTestEnvironment().use {
             val stack = ItemStack(Items.STONE, 16)
             val slot = Slot(SimpleContainer(stack), 0, 8, 8)
@@ -280,24 +280,24 @@ class VanillaViewPlacersTest {
             minecraft.screen = screen
             try {
                 screen.init(minecraft, 100, 100)
-                screen.setClip(18)
-                screen.render(graphics, 0, 0, 0.0F)
+                listOf(IntPoint(-17, 0), IntPoint(32, 0), IntPoint(0, -17), IntPoint(0, 32)).forEach { (x, y) ->
+                    screen.setClip(x, y)
+                    screen.render(graphics, 0, 0, 0.0F)
+                }
                 Mockito.verify(graphics, Mockito.never()).renderItem(Mockito.eq(stack), Mockito.eq(slot.x), Mockito.eq(slot.y), Mockito.anyInt())
 
-                screen.setClip(16)
-                screen.render(graphics, 0, 0, 0.0F)
-                Mockito.verify(graphics).renderItem(Mockito.eq(stack), Mockito.eq(slot.x), Mockito.eq(slot.y), Mockito.anyInt())
-
-                screen.setClip(17)
-                screen.render(graphics, 0, 0, 0.0F)
-                Mockito.verify(graphics, Mockito.times(2)).renderItem(Mockito.eq(stack), Mockito.eq(slot.x), Mockito.eq(slot.y), Mockito.anyInt())
+                listOf(IntPoint(-16, 0), IntPoint(31, 0), IntPoint(0, -16), IntPoint(0, 31)).forEachIndexed { index, (x, y) ->
+                    screen.setClip(x, y)
+                    screen.render(graphics, 0, 0, 0.0F)
+                    Mockito.verify(graphics, Mockito.times(index + 1)).renderItem(Mockito.eq(stack), Mockito.eq(slot.x), Mockito.eq(slot.y), Mockito.anyInt())
+                }
 
                 Mockito.clearInvocations(graphics)
                 menu.carried = ItemStack(Items.STONE, 5)
                 screen.startQuickCrafting(slots)
                 val incompatibleStack = ItemStack(Items.DIRT)
                 slot.set(incompatibleStack)
-                screen.setClip(18)
+                screen.setClip(0, 32)
                 screen.render(graphics, 0, 0, 0.0F)
 
                 Assertions.assertEquals(slots.drop(1).toSet(), screen.quickCraftingTargets())

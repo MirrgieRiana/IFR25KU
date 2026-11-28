@@ -8,6 +8,7 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.contains
+import miragefairy2024.mod.recipeviewer.view.grow
 import miragefairy2024.mod.recipeviewer.view.intersect
 import miragefairy2024.util.Remover
 import net.minecraft.client.Minecraft
@@ -128,9 +129,9 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
             slotScissorEnabled = true
             // ドラッグ配布中は、親の描画処理が配布先と残数も更新するのだ～🌱
             if (!isQuickCrafting) {
-                // アイテムの 16 px に、右と下にはみ出す個数表示とその影を含めるのだ～🌱
-                val slotBounds = IntRectangle(leftPos + slot.x, topPos + slot.y, 18, 18)
-                val visibleBounds = slotBounds.intersect(clipBounds)
+                // スロットから大きくはみ出すアイテムの描画も許容するため、上下左右にアイテム 1 個分の 16 px を足すのだ～🌱
+                val itemBounds = IntRectangle(leftPos + slot.x, topPos + slot.y, 16, 16)
+                val visibleBounds = itemBounds.grow(16).intersect(clipBounds)
                 if (visibleBounds.sizeX == 0 || visibleBounds.sizeY == 0) return
             }
         }
