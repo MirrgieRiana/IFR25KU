@@ -3,9 +3,9 @@ package miragefairy2024.client.util
 import net.minecraft.client.gui.components.WidgetSprites
 import net.minecraft.client.gui.components.events.ContainerEventHandler
 import net.minecraft.client.gui.components.events.GuiEventListener
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 
-fun WidgetSprites(identifier: ResourceLocation): WidgetSprites = WidgetSprites(identifier, identifier)
+fun WidgetSprites(identifier: Identifier): WidgetSprites = WidgetSprites(identifier, identifier)
 
 /**
  * フォーカスされた子をたどり、末端の要素を返すのだ～🌱

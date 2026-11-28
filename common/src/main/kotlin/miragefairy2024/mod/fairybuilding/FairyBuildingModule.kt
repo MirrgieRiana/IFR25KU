@@ -9,9 +9,9 @@ import miragefairy2024.util.enJa
 import miragefairy2024.util.generator
 import miragefairy2024.util.registerChild
 import miragefairy2024.util.toBlockTag
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 
-enum class FairyBuildingModelCard(val identifier: ResourceLocation) {
+enum class FairyBuildingModelCard(val identifier: Identifier) {
     LANTERN(MirageFairy2024.identifier("block/fairy_building/lantern")),
     LANTERN_OFF(MirageFairy2024.identifier("block/fairy_building/lantern_off")),
 }

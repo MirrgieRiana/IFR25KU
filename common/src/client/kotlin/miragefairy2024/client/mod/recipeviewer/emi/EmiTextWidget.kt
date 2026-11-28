@@ -9,7 +9,7 @@ import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.util.toEmiBounds
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 
 class EmiTextWidget(private val offset: IntPoint, private val view: TextView) : Widget() {
 
@@ -18,7 +18,7 @@ class EmiTextWidget(private val offset: IntPoint, private val view: TextView) : 
 
     private val startNanoTime by lazy { System.nanoTime() }
 
-    override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(draw: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, delta: Float) {
         val font = Minecraft.getInstance().font
         val color = view.color.lightModeArgb
         if (view.scroll && font.width(view.text.value) > view.evaluateActualSizeX()) {

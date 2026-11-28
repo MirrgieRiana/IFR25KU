@@ -13,7 +13,7 @@ import mirrg.kotlin.helium.atLeast
 import mirrg.kotlin.helium.atMost
 import mirrg.kotlin.helium.max
 import net.minecraft.client.gui.Font
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.GameRenderer
 import net.minecraft.locale.Language
 import net.minecraft.network.chat.Component
@@ -50,21 +50,21 @@ fun Font.ellipsize(text: FormattedText, maxWidth: Int, ellipsis: FormattedText):
     return Language.getInstance().getVisualOrder(result)
 }
 
-fun GuiGraphics.drawRightText(textRenderer: Font, text: String, rightX: Int, y: Int, color: Int, shadow: Boolean) {
+fun GuiGraphicsExtractor.drawRightText(textRenderer: Font, text: String, rightX: Int, y: Int, color: Int, shadow: Boolean) {
     this.drawString(textRenderer, text, rightX - textRenderer.width(text), y, color, shadow)
 }
 
-fun GuiGraphics.drawRightText(textRenderer: Font, text: Component, rightX: Int, y: Int, color: Int, shadow: Boolean) {
+fun GuiGraphicsExtractor.drawRightText(textRenderer: Font, text: Component, rightX: Int, y: Int, color: Int, shadow: Boolean) {
     val orderedText = text.visualOrderText
     this.drawString(textRenderer, orderedText, rightX - textRenderer.width(orderedText), y, color, shadow)
 }
 
-fun GuiGraphics.drawRightText(textRenderer: Font, text: FormattedCharSequence, rightX: Int, y: Int, color: Int, shadow: Boolean) {
+fun GuiGraphicsExtractor.drawRightText(textRenderer: Font, text: FormattedCharSequence, rightX: Int, y: Int, color: Int, shadow: Boolean) {
     this.drawString(textRenderer, text, rightX - textRenderer.width(text), y, color, shadow)
 }
 
 // net.minecraft.client.gui.components.AbstractWidget#renderScrollingString
-fun GuiGraphics.drawScrollingString(font: Font, text: FormattedCharSequence, centerX: Int, minX: Int, minY: Int, maxX: Int, maxY: Int, color: Int) {
+fun GuiGraphicsExtractor.drawScrollingString(font: Font, text: FormattedCharSequence, centerX: Int, minX: Int, minY: Int, maxX: Int, maxY: Int, color: Int) {
     val textWidth = font.width(text)
     val y = (minY + maxY - 9) / 2 + 1
     val areaWidth = maxX - minX
@@ -84,7 +84,7 @@ fun GuiGraphics.drawScrollingString(font: Font, text: FormattedCharSequence, cen
 }
 
 // net.minecraft.client.gui.components.AbstractWidget#renderScrollingString
-fun GuiGraphics.drawScrollingString(
+fun GuiGraphicsExtractor.drawScrollingString(
     font: Font,
     text: FormattedCharSequence,
     minX: Int,
@@ -130,7 +130,7 @@ fun GuiGraphics.drawScrollingString(
     }
 }
 
-fun GuiGraphics.drawNinePatchImage(bounds: IntRectangle, ninePatchTextureCard: NinePatchTextureCard) {
+fun GuiGraphicsExtractor.drawNinePatchImage(bounds: IntRectangle, ninePatchTextureCard: NinePatchTextureCard) {
 
     val textureId = ninePatchTextureCard.texture
     val repeatX = ninePatchTextureCard.repeatX

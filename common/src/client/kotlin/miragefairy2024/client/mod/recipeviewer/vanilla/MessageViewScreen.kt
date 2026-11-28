@@ -3,14 +3,14 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 import miragefairy2024.MessageViewScreenDefinition
 import miragefairy2024.client.mod.getKeyMapping
 import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.Screen
 
 class MessageViewScreen(private val parent: Screen?, private val definition: MessageViewScreenDefinition) : ViewScreen(definition.title) {
 
     override fun createRootView(screenEventSource: ScreenEventSource) = definition.rootViewFactory(screenEventSource)
 
-    override fun renderBackground(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+    override fun renderBackground(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
         if (definition.transparentBackground) {
             renderTransparentBackground(guiGraphics)
         } else {

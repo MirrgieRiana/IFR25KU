@@ -5,7 +5,7 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import mirrg.kotlin.helium.Slot
 import net.minecraft.client.gui.ComponentPath
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
@@ -25,7 +25,7 @@ class VanillaViewRendererWidget<V : PlaceableView, S>(private val renderer: View
 
     fun getRenderOverflow() = renderer.getRenderOverflow(view, bounds2)
 
-    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = renderer.render(view, state, bounds2, guiGraphics, mouseX, mouseY, isHovered, partialTick)
+    override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) = renderer.render(view, state, bounds2, guiGraphics, mouseX, mouseY, isHovered, partialTick)
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         // 前回の解放が届かなかった場合も、今回の押下で状態を更新するのだ～🌱

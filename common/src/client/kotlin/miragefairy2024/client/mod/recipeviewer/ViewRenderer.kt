@@ -5,7 +5,7 @@ import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.util.SubscribableBuffer
 import miragefairy2024.util.plusAssign
 import mirrg.kotlin.helium.Slot
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 
 interface ViewRenderer<in V : PlaceableView, S> {
     fun createState(view: V): S
@@ -13,7 +13,7 @@ interface ViewRenderer<in V : PlaceableView, S> {
     fun mouseClicked(view: V, state: Slot<S>, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int) = false
     fun keyPressed(view: V, state: Slot<S>, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int, isFocused: Boolean = false) = false
     fun getRenderOverflow(view: V, bounds: IntRectangle) = RenderOverflow.NONE
-    fun render(view: V, state: Slot<S>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) = Unit
+    fun render(view: V, state: Slot<S>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) = Unit
 }
 
 object ViewRendererRegistry {

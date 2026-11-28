@@ -10,7 +10,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation
 import net.minecraft.client.model.geom.builders.LayerDefinition
 import net.minecraft.client.model.geom.builders.MeshDefinition
 import net.minecraft.client.model.geom.builders.PartDefinition
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import java.util.function.Supplier
 
 context(_: ModContext)
@@ -24,7 +24,7 @@ fun initEntityClientModule() {
 }
 
 class EntityModelLayerCard(
-    identifier: ResourceLocation,
+    identifier: Identifier,
     layerName: String,
     private val textureWidth: Int,
     private val textureHeight: Int,

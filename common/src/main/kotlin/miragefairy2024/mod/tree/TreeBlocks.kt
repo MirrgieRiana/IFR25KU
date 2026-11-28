@@ -54,7 +54,7 @@ import miragefairy2024.util.toBlockTag
 import miragefairy2024.util.toItemTag
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.ItemTags
 import net.minecraft.tags.TagKey
@@ -87,7 +87,7 @@ interface TreeCard {
     fun getItemTag(): TagKey<Item>
     fun getBlockSetType(): BlockSetType
     fun getWoodType(): WoodType
-    fun getTreeGrowerName(): ResourceLocation
+    fun getTreeGrowerName(): Identifier
     fun getGiantTree(): ResourceKey<ConfiguredFeature<*, *>>
     fun getSmallTree(): ResourceKey<ConfiguredFeature<*, *>>
 }

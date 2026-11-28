@@ -2,7 +2,7 @@ package miragefairy2024.util
 
 import miragefairy2024.DataGenerationEvents
 import miragefairy2024.ModContext
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider as FabricBlockLootSubProvider // MIGRATION2612 ReplaceImport net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
@@ -69,7 +69,7 @@ fun SequenceLootPoolEntry(vararg children: LootPoolEntryContainer.Builder<*>, in
 
 
 context(_: ModContext)
-fun (() -> Block).registerLootTableGeneration(initializer: (FabricBlockLootTableProvider, HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateBlockLootTable { it, registries ->
+fun (() -> Block).registerLootTableGeneration(initializer: (FabricBlockLootSubProvider, HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateBlockLootTable { it, registries ->
     it.add(this(), initializer(it, registries).setRandomSequence(this().lootTable.location()))
 }
 

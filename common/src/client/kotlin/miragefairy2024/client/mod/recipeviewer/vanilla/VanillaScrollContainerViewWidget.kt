@@ -25,7 +25,7 @@ import mirrg.kotlin.helium.atMost
 import mirrg.kotlin.helium.max
 import mirrg.kotlin.helium.min
 import net.minecraft.client.gui.ComponentPath
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractContainerWidget
 import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.narration.NarratableEntry
@@ -174,7 +174,7 @@ abstract class VanillaScrollContainerViewWidget(
         return super.getChildAt(mouseX, mouseY)
     }
 
-    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+    override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
 
         // 子要素の描画なのだ～🌱
         val xMin = x

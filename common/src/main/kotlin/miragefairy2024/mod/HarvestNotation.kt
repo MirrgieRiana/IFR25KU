@@ -25,7 +25,7 @@ import mirrg.kotlin.java.hydrogen.toOptional
 import net.minecraft.core.RegistryAccess
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.ComponentSerialization
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import java.util.Optional
@@ -56,14 +56,14 @@ class HarvestNotation(val seed: ItemStack, val crops: List<Crop>) {
             ).apply(instance, ::HarvestNotation)
         }
 
-        private val map = mutableMapOf<ResourceLocation, HarvestNotation>()
+        private val map = mutableMapOf<Identifier, HarvestNotation>()
 
-        fun register(id: ResourceLocation, harvestNotation: HarvestNotation) {
+        fun register(id: Identifier, harvestNotation: HarvestNotation) {
             check(id !in map) { "Duplicate registration: $id" }
             map[id] = harvestNotation
         }
 
-        fun getAll(): Map<ResourceLocation, HarvestNotation> = map
+        fun getAll(): Map<Identifier, HarvestNotation> = map
     }
 }
 

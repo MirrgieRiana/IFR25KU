@@ -9,7 +9,7 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
 import mirrg.kotlin.helium.Slot
 import net.minecraft.SharedConstants
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.server.Bootstrap
 import org.junit.jupiter.api.Assertions
@@ -30,7 +30,7 @@ class ViewRendererStateTest {
         Bootstrap.bootStrap()
     }
 
-    private fun checkState(createWidget: (ViewRenderer<StateTestView, Int>, StateTestView, IntRectangle, GuiGraphics) -> RendererWidgetOperations) {
+    private fun checkState(createWidget: (ViewRenderer<StateTestView, Int>, StateTestView, IntRectangle, GuiGraphicsExtractor) -> RendererWidgetOperations) {
         GuiTestEnvironment().use { environment ->
             val initializedViews = mutableListOf<StateTestView>()
             val observedStates = mutableListOf<Slot<Int>>()
@@ -45,7 +45,7 @@ class ViewRendererStateTest {
                     return view.initialValue
                 }
 
-                override fun render(view: StateTestView, state: Slot<Int>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+                override fun render(view: StateTestView, state: Slot<Int>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
                     record(state)
                     state.value += 1
                 }
@@ -133,7 +133,7 @@ class ViewRendererStateTest {
             val renderer: ViewRenderer<StateTestView, Int> = object : ViewRenderer<StateTestView, Int> {
                 override fun createState(view: StateTestView) = view.initialValue
 
-                override fun render(view: StateTestView, state: Slot<Int>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+                override fun render(view: StateTestView, state: Slot<Int>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
                     observedStates += state
                     Assertions.assertEquals(IntRectangle(20, 30, 100, 100), bounds)
                     state.value = 42

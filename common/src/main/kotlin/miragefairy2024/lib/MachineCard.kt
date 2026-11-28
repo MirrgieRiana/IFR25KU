@@ -13,10 +13,10 @@ import miragefairy2024.util.dummyUnitStreamCodec
 import miragefairy2024.util.enJa
 import miragefairy2024.util.register
 import miragefairy2024.util.times
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType as ExtendedMenuType // MIGRATION2612 ReplaceImport net.fabricmc.fabric.api.menu.v1.ExtendedMenuType
 import net.minecraft.core.BlockPos
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.world.SimpleContainer
 import net.minecraft.world.inventory.ContainerLevelAccess
 import net.minecraft.world.inventory.SimpleContainerData
@@ -41,7 +41,7 @@ abstract class MachineCard<B : Block, E : MachineBlockEntity<E>, H : MachineScre
 
     // Specification
 
-    abstract fun createIdentifier(): ResourceLocation
+    abstract fun createIdentifier(): Identifier
     val identifier = createIdentifier()
 
     abstract fun createName(): EnJa
@@ -85,7 +85,7 @@ abstract class MachineCard<B : Block, E : MachineBlockEntity<E>, H : MachineScre
 
     abstract fun createScreenHandler(arguments: MachineScreenHandler.Arguments): H
     val screenHandlerType = Registration(BuiltInRegistries.MENU, identifier) {
-        ExtendedScreenHandlerType({ syncId, playerInventory, _ ->
+        ExtendedMenuType({ syncId, playerInventory, _ ->
             val arguments = MachineScreenHandler.Arguments(
                 syncId,
                 playerInventory,

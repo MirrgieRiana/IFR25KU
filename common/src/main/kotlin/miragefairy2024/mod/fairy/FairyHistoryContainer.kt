@@ -12,7 +12,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.world.entity.Entity
 import java.math.BigInteger
 
@@ -27,21 +27,21 @@ val Entity.fairyHistoryContainer get() = this[FAIRY_HISTORY_CONTAINER_ATTACHMENT
 
 class FairyHistoryContainer {
     companion object {
-        val ENTRY_CODEC: Codec<Pair<ResourceLocation, BigInteger>> = RecordCodecBuilder.create { instance ->
+        val ENTRY_CODEC: Codec<Pair<Identifier, BigInteger>> = RecordCodecBuilder.create { instance ->
             instance.group(
-                ResourceLocation.CODEC.fieldOf("motif").forGetter { it.first },
+                Identifier.CODEC.fieldOf("motif").forGetter { it.first },
                 BIG_INTEGER_CODEC.fieldOf("gained").forGetter { it.second },
             ).apply(instance, ::Pair)
         }
-        val ENTRY_STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, Pair<ResourceLocation, BigInteger>> = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC,
+        val ENTRY_STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, Pair<Identifier, BigInteger>> = StreamCodec.composite(
+            Identifier.STREAM_CODEC,
             { it.first },
             BIG_INTEGER_STREAM_CODEC,
             { it.second },
             ::Pair,
         )
 
-        fun fromEntries(entries: List<Pair<ResourceLocation, BigInteger>>): FairyHistoryContainer {
+        fun fromEntries(entries: List<Pair<Identifier, BigInteger>>): FairyHistoryContainer {
             val fairyHistoryContainer = FairyHistoryContainer()
             entries.forEach { (key, count) ->
                 val motif = motifRegistry[key] ?: return@forEach
@@ -50,8 +50,8 @@ class FairyHistoryContainer {
             return fairyHistoryContainer
         }
 
-        fun toEntries(fairyHistoryContainer: FairyHistoryContainer): List<Pair<ResourceLocation, BigInteger>> {
-            val entries = mutableListOf<Pair<ResourceLocation, BigInteger>>()
+        fun toEntries(fairyHistoryContainer: FairyHistoryContainer): List<Pair<Identifier, BigInteger>> {
+            val entries = mutableListOf<Pair<Identifier, BigInteger>>()
             fairyHistoryContainer.entries.forEach { (motif, count) ->
                 if (count > BigInteger.ZERO) entries += Pair(motif.getIdentifier()!!, count)
             }

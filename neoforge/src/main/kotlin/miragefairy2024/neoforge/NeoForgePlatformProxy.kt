@@ -2,7 +2,7 @@ package miragefairy2024.neoforge
 
 import miragefairy2024.ModifyItemEnchantmentsHandler
 import miragefairy2024.PlatformProxy
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.world.item.Item
 import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.event.enchanting.GetEnchantmentLevelEvent
@@ -18,5 +18,5 @@ class NeoForgePlatformProxy : PlatformProxy {
         // nop
     }
 
-    override fun setFullBlock(blockFamilyProvider: Any, block: ResourceLocation) = throw UnsupportedOperationException()
+    override fun setFullBlock(blockFamilyProvider: Any, block: Identifier) = throw UnsupportedOperationException()
 }

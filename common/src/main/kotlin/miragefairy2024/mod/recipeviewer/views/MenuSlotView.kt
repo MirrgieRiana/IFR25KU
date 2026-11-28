@@ -11,7 +11,7 @@ import miragefairy2024.mod.recipeviewer.view.ViewTexture
 import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
 import mirrg.kotlin.helium.atLeast
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.world.inventory.Slot
 
 /**

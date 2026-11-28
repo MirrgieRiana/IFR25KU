@@ -16,7 +16,7 @@ import miragefairy2024.util.text
 import miragefairy2024.util.toBlockPos
 import miragefairy2024.util.toBox
 import mirrg.kotlin.helium.or
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory as ExtendedMenuProvider // MIGRATION2612 ReplaceImport net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.server.level.ServerLevel
@@ -293,7 +293,7 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
                     val blockEntity = level.getMagicPlantBlockEntity(pos) ?: return@run TraitStacks.EMPTY
                     blockEntity.getTraitStacks() ?: TraitStacks.EMPTY
                 }
-                player.openMenu(object : ExtendedScreenHandlerFactory<Pair<TraitStacks, BlockPos>> {
+                player.openMenu(object : ExtendedMenuProvider<Pair<TraitStacks, BlockPos>> {
                     override fun createMenu(syncId: Int, playerInventory: Inventory, player: Player): AbstractContainerMenu {
                         return TraitListScreenHandler(syncId, playerInventory, ContainerLevelAccess.create(level, player.blockPosition()), traitStacks, pos)
                     }

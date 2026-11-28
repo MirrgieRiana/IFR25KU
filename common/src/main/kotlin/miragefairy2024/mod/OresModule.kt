@@ -48,7 +48,7 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.models.model.TexturedModel
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.TagKey
 import net.minecraft.util.valueproviders.UniformInt
@@ -69,7 +69,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest
 import net.minecraft.world.level.material.MapColor
 import java.util.function.Predicate
 
-enum class BaseStoneType(val target: () -> RuleTest, val baseStoneTexture: ResourceLocation, val mineableTag: TagKey<Block>, val needsToolTag: TagKey<Block>?) {
+enum class BaseStoneType(val target: () -> RuleTest, val baseStoneTexture: Identifier, val mineableTag: TagKey<Block>, val needsToolTag: TagKey<Block>?) {
     STONE({ TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES) }, ResourceLocation("minecraft", "block/stone"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
     DEEPSLATE({ TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES) }, ResourceLocation("minecraft", "block/deepslate"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),
     SANDSTONE({ BlockMatchTest(Blocks.SANDSTONE) }, ResourceLocation("minecraft", "block/sandstone_top"), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL),

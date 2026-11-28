@@ -4,11 +4,11 @@ import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import mirrg.kotlin.helium.Slot
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 
 object ImageViewRenderer : ViewRenderer<ImageView, Unit> {
     override fun createState(view: ImageView) = Unit
-    override fun render(view: ImageView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: ImageView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         graphics.blit(
             view.texture.id,
             bounds.x,

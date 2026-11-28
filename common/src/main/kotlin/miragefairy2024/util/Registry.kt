@@ -9,7 +9,7 @@ import net.minecraft.core.Holder
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.tags.TagKey
 import kotlin.jvm.optionals.getOrElse
 
@@ -17,7 +17,7 @@ object RegistryEvents {
     val registrations = mutableListOf<Registration<*, *>>()
 }
 
-class Registration<T : Any, U : T>(val registry: Registry<T>, val identifier: ResourceLocation, val creator: suspend () -> U) : () -> U {
+class Registration<T : Any, U : T>(val registry: Registry<T>, val identifier: Identifier, val creator: suspend () -> U) : () -> U {
 
     private val value = CompletableDeferred<U>()
     private val holder = CompletableDeferred<Holder<T>>()

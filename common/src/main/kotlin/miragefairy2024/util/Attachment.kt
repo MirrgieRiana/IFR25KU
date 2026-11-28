@@ -3,7 +3,7 @@ package miragefairy2024.util
 import miragefairy2024.ModContext
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents as ServerEntityLevelChangeEvents // MIGRATION2612 ReplaceImport net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 
 operator fun <T> AttachmentTarget.get(type: AttachmentType<T>) = AttachmentDelegate(this, type)
@@ -57,7 +57,7 @@ fun AttachmentType<*>.register() {
                 AttachmentDelegate(handler.player, this).sync()
             }
         }
-        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register { player, _, _ ->
+        ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register { player, _, _ ->
             AttachmentDelegate(player, this).sync()
         }
     }

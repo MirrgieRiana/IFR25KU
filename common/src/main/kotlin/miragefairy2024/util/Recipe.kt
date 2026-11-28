@@ -11,7 +11,7 @@ import mirrg.kotlin.gson.hydrogen.jsonObject
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents
 import net.fabricmc.fabric.api.registry.FuelRegistry
 import net.minecraft.advancements.critereon.EnchantmentPredicate
-import net.minecraft.advancements.critereon.ItemEnchantmentsPredicate
+import net.minecraft.advancements.critereon.ItemEnchantmentsPredicate as EnchantmentsPredicate // MIGRATION2612 ReplaceImport net.minecraft.core.component.predicates.EnchantmentsPredicate
 import net.minecraft.advancements.critereon.ItemPredicate
 import net.minecraft.advancements.critereon.ItemSubPredicates
 import net.minecraft.advancements.critereon.LocationPredicate
@@ -29,7 +29,7 @@ import net.minecraft.data.recipes.ShapelessRecipeBuilder
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder
 import net.minecraft.data.recipes.SpecialRecipeBuilder
 import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.tags.TagKey
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.item.Item
@@ -71,7 +71,7 @@ fun <T : RecipeBuilder> T.group(item: Item) = this.also { it.group(recipeGroupRe
 
 class RecipeGenerationSettings<T> {
     val listeners = mutableListOf<(T) -> Unit>()
-    val idModifiers = mutableListOf<(ResourceLocation) -> ResourceLocation>()
+    val idModifiers = mutableListOf<(Identifier) -> Identifier>()
     var recipeCategory = RecipeCategory.MISC
     var noGroup = false
 }
@@ -315,7 +315,7 @@ fun (() -> Item).registerExtraOreDrop(
     tableBuilder.apply2 {
         withPool(LootPool(AlternativeLootPoolEntry {
             otherwise(EmptyLootPoolEntry {
-                `when`(MatchTool.toolMatches(ItemPredicate.Builder.item().withSubPredicate(ItemSubPredicates.ENCHANTMENTS, ItemEnchantmentsPredicate.enchantments(listOf(EnchantmentPredicate(registries[Registries.ENCHANTMENT, Enchantments.SILK_TOUCH], MinMaxBounds.Ints.atLeast(1)))))))
+                `when`(MatchTool.toolMatches(ItemPredicate.Builder.item().withSubPredicate(ItemSubPredicates.ENCHANTMENTS, EnchantmentsPredicate.enchantments(listOf(EnchantmentPredicate(registries[Registries.ENCHANTMENT, Enchantments.SILK_TOUCH], MinMaxBounds.Ints.atLeast(1)))))))
             })
             otherwise(ItemLootPoolEntry(this@registerExtraOreDrop()) {
                 if (chance < 1.0F) `when`(LootItemRandomChanceCondition.randomChance(chance))

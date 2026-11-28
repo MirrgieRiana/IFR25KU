@@ -21,7 +21,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.ItemUtils
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.TooltipFlag
-import net.minecraft.world.item.UseAnim
+import net.minecraft.world.item.UseAnim as ItemUseAnimation // MIGRATION2612 ReplaceImport net.minecraft.world.item.ItemUseAnimation
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.gameevent.GameEvent
 
@@ -53,6 +53,6 @@ class DrinkItem(settings: Properties, private val flaming: Int? = null) : FoodIt
     }
 
     override fun getUseDuration(stack: ItemStack, entity: LivingEntity) = 32
-    override fun getUseAnimation(stack: ItemStack) = UseAnim.DRINK
+    override fun getUseAnimation(stack: ItemStack) = ItemUseAnimation.DRINK
     override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> = ItemUtils.startUsingInstantly(level, user, hand)
 }

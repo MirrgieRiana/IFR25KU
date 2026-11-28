@@ -10,7 +10,7 @@ import mirrg.kotlin.helium.atMost
 import mirrg.kotlin.hydrogen.alphaOfArgb
 import mirrg.kotlin.hydrogen.argbOf
 import net.minecraft.Util
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import org.lwjgl.glfw.GLFW
 import kotlin.math.PI
 import kotlin.math.roundToInt
@@ -29,7 +29,7 @@ abstract class VanillaFlatScrollbarViewWidget(view: FlatScrollbarView, bounds: I
         super.dispose()
     }
 
-    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+    override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
         fun getScrollbarColor(now: Long): Int {
             val color = view.scrollbarColor
             val endTime = fadeEndTime
@@ -59,7 +59,7 @@ abstract class VanillaFlatScrollbarViewWidget(view: FlatScrollbarView, bounds: I
         }
     }
 
-    protected abstract fun renderImpl(guiGraphics: GuiGraphics, start: Int, length: Int, color: Int)
+    protected abstract fun renderImpl(guiGraphics: GuiGraphicsExtractor, start: Int, length: Int, color: Int)
 
 }
 
@@ -82,7 +82,7 @@ class VanillaXFlatScrollbarViewWidget(view: XFlatScrollbarView, bounds: IntRecta
     // 横方向の入力がない場合は、縦方向のホイール入力で横スクロールするのだ～🌱
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
 
-    override fun renderImpl(guiGraphics: GuiGraphics, start: Int, length: Int, color: Int) {
+    override fun renderImpl(guiGraphics: GuiGraphicsExtractor, start: Int, length: Int, color: Int) {
         guiGraphics.fill(x + start, y, x + start + length, y + height, color)
     }
 
@@ -105,7 +105,7 @@ class VanillaYFlatScrollbarViewWidget(view: YFlatScrollbarView, bounds: IntRecta
     override fun getDragAmount(dragX: Double, dragY: Double) = dragY
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
 
-    override fun renderImpl(guiGraphics: GuiGraphics, start: Int, length: Int, color: Int) {
+    override fun renderImpl(guiGraphics: GuiGraphicsExtractor, start: Int, length: Int, color: Int) {
         guiGraphics.fill(x, y + start, x + width, y + start + length, color)
     }
 

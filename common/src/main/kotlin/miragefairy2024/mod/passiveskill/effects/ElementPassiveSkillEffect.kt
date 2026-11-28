@@ -26,7 +26,7 @@ import miragefairy2024.util.times
 import miragefairy2024.util.toDamageTypeTag
 import mirrg.kotlin.hydrogen.formatAs
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.tags.DamageTypeTags
 import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.damagesource.DamageTypes
@@ -36,7 +36,7 @@ object ElementPassiveSkillEffect : AbstractPassiveSkillEffect<ElementPassiveSkil
     class Value(val attackMap: Map<Element, Double>, val defenceMap: Map<Element, Double>)
 
     interface Element {
-        val identifier: ResourceLocation
+        val identifier: Identifier
         val text: Component
         fun test(damageSource: DamageSource): Boolean
     }

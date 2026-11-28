@@ -10,10 +10,10 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.util.Remover
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.toasts.Toast
-import net.minecraft.client.gui.components.toasts.ToastComponent
+import net.minecraft.client.gui.components.toasts.ToastComponent as ToastManager // MIGRATION2612 ReplaceImport net.minecraft.client.gui.components.toasts.ToastManager
 
 /** View を Screen なしで表示するトーストなのだ～🌱 */
 class ViewToast(rootView: View) : Toast {
@@ -61,7 +61,7 @@ class ViewToast(rootView: View) : Toast {
     override fun width() = size.x
     override fun height() = size.y
 
-    override fun render(guiGraphics: GuiGraphics, toastComponent: ToastComponent, timeSinceLastVisible: Long): Toast.Visibility {
+    override fun render(guiGraphics: GuiGraphicsExtractor, toastComponent: ToastManager, timeSinceLastVisible: Long): Toast.Visibility {
         viewAdapter.beforeRender()
         val partialTick = Minecraft.getInstance().timer.getGameTimeDeltaPartialTick(true)
         widgetSlots.forEach {

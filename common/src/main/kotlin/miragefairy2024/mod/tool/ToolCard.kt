@@ -58,7 +58,7 @@ import mirrg.kotlin.helium.toUpperCamelCase
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.data.models.model.ModelTemplates
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.ItemTags
 import net.minecraft.tags.TagKey
@@ -97,7 +97,7 @@ class ToolCard(
     private val name: EnJa,
     private val poemList: PoemList,
     private val configuration: ToolConfiguration,
-    private val advancementCreator: (ToolCard.(ResourceLocation) -> AdvancementCard)? = null,
+    private val advancementCreator: (ToolCard.(Identifier) -> AdvancementCard)? = null,
     private val initializer: context(ModContext) ToolCard.() -> Unit = {},
 ) {
     @Suppress("unused", "MemberVisibilityCanBePrivate")
@@ -598,7 +598,7 @@ private fun ToolCard(
     path: String,
     name: EnJa,
     configuration: ToolConfiguration,
-    advancementCreator: (ToolCard.(ResourceLocation) -> AdvancementCard)? = null,
+    advancementCreator: (ToolCard.(Identifier) -> AdvancementCard)? = null,
     initializer: context(ModContext) ToolCard.() -> Unit = {},
 ) = ToolCard(path, name, PoemList(null), configuration, advancementCreator, initializer)
 

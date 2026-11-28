@@ -2,7 +2,7 @@ package miragefairy2024
 
 import com.google.gson.JsonElement
 import miragefairy2024.util.ResourceLocation
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider as FabricBlockLootSubProvider // MIGRATION2612 ReplaceImport net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider
 import net.minecraft.advancements.AdvancementHolder
 import net.minecraft.core.HolderLookup
@@ -12,7 +12,7 @@ import net.minecraft.data.models.BlockModelGenerators
 import net.minecraft.data.models.ItemModelGenerators
 import net.minecraft.data.recipes.RecipeOutput
 import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.level.storage.loot.LootTable
 import java.util.function.Consumer
@@ -29,7 +29,7 @@ object DataGenerationEvents {
 
     val onGenerateBlockModel = InitializationEventRegistry<(BlockModelGenerators) -> Unit>()
     val onGenerateItemModel = InitializationEventRegistry<(ItemModelGenerators) -> Unit>()
-    val onGenerateBlockLootTable = InitializationEventRegistry<(FabricBlockLootTableProvider, HolderLookup.Provider) -> Unit>()
+    val onGenerateBlockLootTable = InitializationEventRegistry<(FabricBlockLootSubProvider, HolderLookup.Provider) -> Unit>()
     val onGenerateChestLootTable = InitializationEventRegistry<((ResourceKey<LootTable>, LootTable.Builder) -> Unit, HolderLookup.Provider) -> Unit>()
     val onGenerateArchaeologyLootTable = InitializationEventRegistry<((ResourceKey<LootTable>, LootTable.Builder) -> Unit, HolderLookup.Provider) -> Unit>()
     val onGenerateEntityLootTable = InitializationEventRegistry<((EntityType<*>, LootTable.Builder) -> Unit, HolderLookup.Provider) -> Unit>()
@@ -37,8 +37,8 @@ object DataGenerationEvents {
     val onGenerateRecipe = InitializationEventRegistry<(RecipeOutput) -> Unit>()
     val onGenerateEnglishTranslation = InitializationEventRegistry<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
     val onGenerateJapaneseTranslation = InitializationEventRegistry<(FabricLanguageProvider.TranslationBuilder) -> Unit>()
-    val onGenerateSound = InitializationEventRegistry<((path: String, subtitle: String?, sounds: List<ResourceLocation>) -> Unit) -> Unit>()
-    val onGenerateParticles = InitializationEventRegistry<((identifier: ResourceLocation, jsonElement: JsonElement) -> Unit) -> Unit>()
+    val onGenerateSound = InitializationEventRegistry<((path: String, subtitle: String?, sounds: List<Identifier>) -> Unit) -> Unit>()
+    val onGenerateParticles = InitializationEventRegistry<((identifier: Identifier, jsonElement: JsonElement) -> Unit) -> Unit>()
     val onGenerateAdvancement = InitializationEventRegistry<suspend (HolderLookup.Provider, Consumer<AdvancementHolder>) -> Unit>()
     val onGenerateDataMap = InitializationEventRegistry<(DataMapConsumer, HolderLookup.Provider) -> Unit>()
 
@@ -48,7 +48,7 @@ object DataGenerationEvents {
 }
 
 interface DataMapConsumer {
-    fun <T> accept(registry: ResourceKey<Registry<T>>, type: ResourceLocation, target: ResourceKey<T>, data: JsonElement)
+    fun <T> accept(registry: ResourceKey<Registry<T>>, type: Identifier, target: ResourceKey<T>, data: JsonElement)
 }
 
 object MirageFairy2024 {

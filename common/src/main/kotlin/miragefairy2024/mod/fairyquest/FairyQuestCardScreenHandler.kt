@@ -45,10 +45,10 @@ import miragefairy2024.util.set
 import miragefairy2024.util.size
 import miragefairy2024.util.text
 import miragefairy2024.util.toItemStacks
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType as ExtendedMenuType // MIGRATION2612 ReplaceImport net.fabricmc.fabric.api.menu.v1.ExtendedMenuType
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.SimpleContainer
@@ -61,9 +61,9 @@ import net.minecraft.world.inventory.Slot
 import net.minecraft.world.item.ItemStack
 
 val fairyQuestCardScreenHandlerType = Registration(BuiltInRegistries.MENU, MirageFairy2024.identifier("fairy_quest_card")) {
-    ExtendedScreenHandlerType({ syncId, playerInventory, buf ->
+    ExtendedMenuType({ syncId, playerInventory, buf ->
         FairyQuestCardScreenHandler(syncId, playerInventory, fairyQuestRecipeRegistry.get(buf)!!, ContainerLevelAccess.NULL)
-    }, ResourceLocation.STREAM_CODEC)
+    }, Identifier.STREAM_CODEC)
 }
 
 context(_: ModContext)
