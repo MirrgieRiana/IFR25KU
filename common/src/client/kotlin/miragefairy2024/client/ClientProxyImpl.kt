@@ -118,7 +118,7 @@ class ClientProxyImpl : ClientProxy<Screen> {
         Minecraft.getInstance().setScreen(screen)
     }
 
-    override fun createMessageViewScreen(parent: Screen?, definition: MessageViewScreenDefinition): Screen {
+    override fun <T> createMessageViewScreen(parent: Screen?, definition: MessageViewScreenDefinition<T>): Screen {
         return MessageViewScreen(parent, definition)
     }
 

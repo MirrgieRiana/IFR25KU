@@ -95,7 +95,7 @@ class TraitEncyclopediaPageScreenContentTest {
     @Test
     fun `名前とアイコンを固定した幅160のカード内で本文だけを折り返してスクロールするのだ`() {
         val proxy = TraitEncyclopediaRenderingProxy()
-        val view = TraitEncyclopediaPageScreenContent(trait)
+        val view = TraitEncyclopediaPageScreenContent(trait, TraitEncyclopediaPageScreenContent.State())
         view.view.initSizeCalculation(proxy, { 400 }, { 240 })
 
         Assertions.assertEquals(IntPoint(400, 240), view.view.evaluateActualSize())
@@ -129,7 +129,7 @@ class TraitEncyclopediaPageScreenContentTest {
 
     @Test
     fun `再初期化するとカードとスクロール領域とボタンを画面の寸法に合わせるのだ`() {
-        val view = TraitEncyclopediaPageScreenContent(trait)
+        val view = TraitEncyclopediaPageScreenContent(trait, TraitEncyclopediaPageScreenContent.State())
         listOf(IntPoint(400, 240), IntPoint(320, 180)).forEach { size ->
             view.view.initSizeCalculation(TraitEncyclopediaRenderingProxy(), { size.x }, { size.y })
             val placements = view.place()
@@ -143,7 +143,7 @@ class TraitEncyclopediaPageScreenContentTest {
 
     @Test
     fun `二つのボタンがゲーム復帰と親画面復帰を別々に通知するのだ`() {
-        val view = TraitEncyclopediaPageScreenContent(trait)
+        val view = TraitEncyclopediaPageScreenContent(trait, TraitEncyclopediaPageScreenContent.State())
         val events = mutableListOf<String>()
         view.onBackToGame.register {
             events += "game"

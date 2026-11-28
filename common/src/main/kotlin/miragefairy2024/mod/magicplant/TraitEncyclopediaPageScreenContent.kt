@@ -47,8 +47,8 @@ fun initTraitEncyclopediaPageScreen() {
 private fun Trait.openTraitEncyclopediaPageScreen() {
     fun <S : Any> openScreen(proxy: ClientProxy<S>) {
         val parent = proxy.getCurrentScreen()
-        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(this.getName()) {
-            TraitEncyclopediaPageScreenContent(this).also { view ->
+        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(this.getName(), { TraitEncyclopediaPageScreenContent.State() }) { _, state ->
+            TraitEncyclopediaPageScreenContent(this, state).also { view ->
                 view.onBackToGame.register {
                     proxy.setCurrentScreen(null)
                     true
@@ -63,7 +63,9 @@ private fun Trait.openTraitEncyclopediaPageScreen() {
     openScreen(clientProxy!!)
 }
 
-class TraitEncyclopediaPageScreenContent(trait: Trait) {
+class TraitEncyclopediaPageScreenContent(trait: Trait, state: State) {
+
+    class State
 
     val onBackToGame = EventRegistry<() -> Boolean>()
     val onBack = EventRegistry<() -> Boolean>()

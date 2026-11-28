@@ -63,7 +63,9 @@ private val BUTTON_14_BACKGROUND = LayeredImageButtonView.Sprites(
     MirageFairy2024.identifier("button_14/background_focused"),
 )
 
-abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Component, screenEventSource: ScreenEventSource) {
+abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Component, screenEventSource: ScreenEventSource, state: State) {
+
+    class State
 
     protected abstract val enabledPassiveSkillEffectFilters: ObservableValue<Map<Identifier, PassiveSkillEffectFilter<*>>>
     protected abstract val enableGlobalFairyHighlight: ObservableValue<Boolean>
