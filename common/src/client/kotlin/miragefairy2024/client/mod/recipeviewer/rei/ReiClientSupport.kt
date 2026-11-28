@@ -54,6 +54,8 @@ fun hasClientRei(): Boolean {
 
 context(_: ModContext)
 fun initReiClientSupport() {
+    ReiContainerWidget.initKeyboardFocus()
+
     RecipeViewerEvents.informationEntries.subscribe { informationEntry ->
         ReiClientEvents.onRegisterDisplays { _ ->
             BuiltinClientPlugin.getInstance().registerInformation(

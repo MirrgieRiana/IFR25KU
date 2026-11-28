@@ -54,6 +54,8 @@ fun hasClientEmi(): Boolean {
 
 context(_: ModContext)
 fun initEmiClientSupport() {
+    EmiContainerWidget.initKeyboardFocus()
+
     EmiClientEvents.onRegister { register ->
         EmiClientEvents.onRegisterDefaultComparison.fire { it(register) } // 先に登録しないとEmiIngredientで妖精の種類がマージされてしまう
         EmiClientEvents.onRegisterGeneral.fire { it(register) }
