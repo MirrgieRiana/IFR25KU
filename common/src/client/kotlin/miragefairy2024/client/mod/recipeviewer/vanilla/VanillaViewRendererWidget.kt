@@ -26,7 +26,7 @@ class VanillaViewRendererWidget<V : PlaceableView, S>(private val renderer: View
     fun getRenderOverflow() = renderer.getRenderOverflow(view, bounds2)
 
     override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
-        renderer.render(view, state, bounds2, guiGraphics, mouseX, mouseY, isHovered, partialTick, isFocused = isActive && isFocused)
+        renderer.render(view, state, bounds2, guiGraphics, mouseX, mouseY, isHovered, partialTick, isActive && isFocused)
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {

@@ -36,7 +36,7 @@ class GhostRecipeItemViewRendererTest {
             Mockito.mockStatic(Screen::class.java).use { screen ->
                 screen.`when`<Boolean> { Screen.hasControlDown() }.thenReturn(true)
                 val graphics: GuiGraphicsExtractor = Mockito.mock(GuiGraphicsExtractor::class.java)
-                GhostRecipeItemViewRenderer.render(view, Slot(time), IntRectangle(10, 20, 16, 16), graphics, 0, 0, false, 0.0F, isFocused = false)
+                GhostRecipeItemViewRenderer.render(view, Slot(time), IntRectangle(10, 20, 16, 16), graphics, 0, 0, false, 0.0F, false)
                 Mockito.verify(graphics).renderFakeItem(Mockito.same(expected), Mockito.eq(10), Mockito.eq(20))
             }
         }
@@ -56,7 +56,7 @@ class GhostRecipeItemViewRendererTest {
                 val bounds = IntRectangle(10, 20, 16, 16)
                 val state = Slot(GhostRecipeItemViewRenderer.createState(view))
 
-                GhostRecipeItemViewRenderer.render(view, state, bounds, graphics, 0, 0, false, 0.0F, isFocused = false)
+                GhostRecipeItemViewRenderer.render(view, state, bounds, graphics, 0, 0, false, 0.0F, false)
 
                 val inOrder: InOrder = Mockito.inOrder(graphics)
                 inOrder.verify(graphics).fill(10, 20, 26, 36, 0x20FF0000)
@@ -67,7 +67,7 @@ class GhostRecipeItemViewRendererTest {
 
                 Mockito.clearInvocations(graphics)
                 view.showOverlay = false
-                GhostRecipeItemViewRenderer.render(view, state, bounds, graphics, 0, 0, false, 0.0F, isFocused = false)
+                GhostRecipeItemViewRenderer.render(view, state, bounds, graphics, 0, 0, false, 0.0F, false)
                 inOrder.verify(graphics).renderFakeItem(itemStack, 10, 20)
                 inOrder.verify(graphics).fill(RenderType.guiGhostRecipeOverlay(), 10, 20, 26, 36, 0x60FFFFFF)
                 inOrder.verify(graphics).renderItemDecorations(Mockito.isNull(), Mockito.eq(itemStack), Mockito.eq(10), Mockito.eq(20))
@@ -90,13 +90,13 @@ class GhostRecipeItemViewRendererTest {
                 val bounds = IntRectangle(10, 20, 16, 16)
                 val state = Slot(GhostRecipeItemViewRenderer.createState(view))
 
-                GhostRecipeItemViewRenderer.render(view, state, bounds, graphics, 0, 0, false, 0.0F, isFocused = false)
+                GhostRecipeItemViewRenderer.render(view, state, bounds, graphics, 0, 0, false, 0.0F, false)
                 Mockito.verify(graphics).fill(10, 20, 26, 36, 0x2000FF00)
                 Mockito.verifyNoMoreInteractions(graphics)
 
                 Mockito.clearInvocations(graphics)
                 view.showOverlay = false
-                GhostRecipeItemViewRenderer.render(view, state, bounds, graphics, 0, 0, false, 0.0F, isFocused = false)
+                GhostRecipeItemViewRenderer.render(view, state, bounds, graphics, 0, 0, false, 0.0F, false)
                 Mockito.verifyNoInteractions(graphics)
             }
         }
@@ -145,9 +145,9 @@ class GhostRecipeItemViewRendererTest {
                 Assertions.assertEquals(0.0, secondState.value)
                 secondState.value = 30.0
 
-                GhostRecipeItemViewRenderer.render(view, firstState, bounds, graphics, 0, 0, false, 0.0F, isFocused = false)
-                GhostRecipeItemViewRenderer.render(view, secondState, bounds, graphics, 0, 0, false, 0.0F, isFocused = false)
-                GhostRecipeItemViewRenderer.render(view, firstState, bounds, graphics, 0, 0, false, 0.0F, isFocused = false)
+                GhostRecipeItemViewRenderer.render(view, firstState, bounds, graphics, 0, 0, false, 0.0F, false)
+                GhostRecipeItemViewRenderer.render(view, secondState, bounds, graphics, 0, 0, false, 0.0F, false)
+                GhostRecipeItemViewRenderer.render(view, firstState, bounds, graphics, 0, 0, false, 0.0F, false)
 
                 val inOrder: InOrder = Mockito.inOrder(graphics)
                 inOrder.verify(graphics).renderFakeItem(first, 10, 20)
@@ -175,7 +175,7 @@ class GhostRecipeItemViewRendererTest {
                 environment.render = { outerGraphics, mouseX, mouseY, partialTick ->
                     outerGraphics.enableScissor(10, 20, 50, 60)
                     try {
-                        GhostRecipeItemViewRenderer.render(view, state, bounds, graphics, mouseX, mouseY, true, partialTick, isFocused = false)
+                        GhostRecipeItemViewRenderer.render(view, state, bounds, graphics, mouseX, mouseY, true, partialTick, false)
                         Assertions.assertTrue(environment.tooltips.isEmpty())
                     } finally {
                         outerGraphics.disableScissor()
@@ -212,7 +212,7 @@ class GhostRecipeItemViewRendererTest {
                     val graphics: GuiGraphicsExtractor = Mockito.mock(GuiGraphicsExtractor::class.java)
                     val state = Slot(GhostRecipeItemViewRenderer.createState(view))
                     environment.render = { _, mouseX, mouseY, partialTick ->
-                        GhostRecipeItemViewRenderer.render(view, state, IntRectangle(10, 20, 16, 16), graphics, mouseX, mouseY, isHovered, partialTick, isFocused = false)
+                        GhostRecipeItemViewRenderer.render(view, state, IntRectangle(10, 20, 16, 16), graphics, mouseX, mouseY, isHovered, partialTick, false)
                     }
 
                     environment.screen.renderWithTooltip(environment.graphics, 15, 25, 0.0F)
