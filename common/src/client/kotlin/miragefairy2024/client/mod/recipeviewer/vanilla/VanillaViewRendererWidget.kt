@@ -45,13 +45,7 @@ class VanillaViewRendererWidget<V : PlaceableView, S>(private val renderer: View
     // クリックを消費しているときは、離すイベントも消費するのだ～🌱
     override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int) = pressedButtons.remove(button)
 
-    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-        return if (isActive && isFocused) {
-            renderer.keyPressedWhenFocused(view, state, bounds2, keyCode, scanCode, modifiers)
-        } else {
-            renderer.keyPressed(view, state, bounds2, keyCode, scanCode, modifiers)
-        }
-    }
+    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = renderer.keyPressed(view, state, bounds2, keyCode, scanCode, modifiers)
 
     override fun nextFocusPath(event: FocusNavigationEvent): ComponentPath? {
         if (!renderer.isFocusable(view, state)) return null

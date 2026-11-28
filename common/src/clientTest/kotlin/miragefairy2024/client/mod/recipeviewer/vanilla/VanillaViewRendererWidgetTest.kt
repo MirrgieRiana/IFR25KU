@@ -29,12 +29,15 @@ import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.mod.recipeviewer.views.createView
+import miragefairy2024.util.empty
 import miragefairy2024.util.register
+import miragefairy2024.util.text
 import mirrg.kotlin.helium.Slot
 import net.minecraft.SharedConstants
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.client.gui.navigation.ScreenDirection
+import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.resources.sounds.SoundInstance
 import net.minecraft.client.sounds.SoundManager
 import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
@@ -115,35 +118,27 @@ class VanillaViewRendererWidgetTest {
         Mockito.`when`(minecraft.soundManager).thenReturn(soundManager)
         Mockito.mockStatic(Minecraft::class.java).use { minecraftMock ->
             minecraftMock.`when`<Minecraft> { Minecraft.getInstance() }.thenReturn(minecraft)
-            Assertions.assertFalse(widget.keyPressed(GLFW.GLFW_KEY_ENTER, 0, 0))
-            widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true))!!.applyFocus(true)
-            widget.active = false
-            Assertions.assertFalse(widget.keyPressed(GLFW.GLFW_KEY_ENTER, 0, 0))
-            widget.active = true
-            Assertions.assertFalse(widget.keyPressed(GLFW.GLFW_KEY_TAB, 0, 0))
+            val screen = object : Screen(text { empty() }) {
+                init {
+                    addRenderableWidget(widget)
+                }
+            }
+            Assertions.assertFalse(screen.keyPressed(GLFW.GLFW_KEY_ENTER, 0, 0))
+            screen.focused = widget
+            Assertions.assertFalse(screen.keyPressed(GLFW.GLFW_KEY_F, 0, 0))
             Assertions.assertEquals(0, listenerCalls)
 
-            Assertions.assertFalse(widget.keyPressed(GLFW.GLFW_KEY_ENTER, 0, 0))
+            Assertions.assertFalse(screen.keyPressed(GLFW.GLFW_KEY_ENTER, 0, 0))
             Assertions.assertEquals(1, listenerCalls)
             Mockito.verifyNoInteractions(soundManager)
 
             consumeClick = true
             listOf(GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER, GLFW.GLFW_KEY_SPACE).forEach { keyCode ->
-                Assertions.assertTrue(widget.keyPressed(keyCode, 0, 0))
+                Assertions.assertTrue(screen.keyPressed(keyCode, 0, 0))
             }
             Assertions.assertEquals(4, listenerCalls)
             Mockito.verify(soundManager, Mockito.times(3)).play(Mockito.any(SoundInstance::class.java))
         }
-    }
-
-    @Test
-    fun `選択キーは渡されたレンダラーに委譲するのだ`() {
-        val renderer: ViewRenderer<ClickableView, Unit> = object : ViewRenderer<ClickableView, Unit> by ClickableViewRenderer {
-            override fun keyPressedWhenFocused(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int) = keyCode == GLFW.GLFW_KEY_ENTER
-        }
-        val widget = VanillaViewRendererWidget(renderer, ClickableView(), IntRectangle(10, 20, 100, 100))
-        widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true))!!.applyFocus(true)
-        Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_ENTER, 0, 0))
     }
 
     @Test
