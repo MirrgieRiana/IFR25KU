@@ -25,7 +25,6 @@ import mirrg.kotlin.helium.atMost
 import mirrg.kotlin.helium.max
 import mirrg.kotlin.helium.min
 import net.minecraft.client.gui.ComponentPath
-import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractContainerWidget
 import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.narration.NarratableEntry
@@ -37,6 +36,7 @@ import net.minecraft.client.gui.screens.Screen
 import org.lwjgl.glfw.GLFW
 import java.util.Optional
 import kotlin.math.roundToInt
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor
 
 /** 子 Widget の描画・入力・フォーカス・読み上げを中継するスクロール領域なのだ～🌱 */
 abstract class VanillaScrollContainerViewWidget(
@@ -341,40 +341,76 @@ abstract class VanillaScrollContainerViewWidget(
             }
         }
 
-        val tabForward = (event as? FocusNavigationEvent.TabNavigation)?.forward()
-        // 順方向では領域本体から子へ進み、逆方向では子の後に領域本体を選ぶのだ～🌱
-        if (tabForward == false && isFocused && focused == null) return null
-        if (tabForward == true && !isFocused) {
-            val path = createSelfFocusPath()
-            if (path != null) return path
-        }
+        fun createChildFocusPath(path: ComponentPath): ComponentPath {
+            return object : ComponentPath {
+                override fun component() = path.component()
 
-        // バニラの他コンテナの実装では、InitialFocus 時に最初の要素を選択したりしているから、その代わりなのだ～🌱
-        val actualEvent = if (event is FocusNavigationEvent.InitialFocus) FocusNavigationEvent.TabNavigation(true) else event
-
-        // super.nextFocusPath() に子の探索を任せるのだ～🌱
-        val path = super.nextFocusPath(actualEvent)
-
-        if (path == null) {
-            return when (tabForward) {
-                true -> null
-                false -> createSelfFocusPath()
-                null -> if (isFocused) null else createSelfFocusPath()
+                override fun applyFocus(focused: Boolean) {
+                    path.applyFocus(focused)
+                    // 子のフォーカスが変わったら、適宜それを収めるようにスクロールするのだ～🌱
+                    if (focused) {
+                        val actualFocused = this@VanillaScrollContainerViewWidget.focused?.getActualFocused { true } ?: return
+                        val rectangle = actualFocused.rectangle
+                        if (rectangle.width() <= 0 || rectangle.height() <= 0) return
+                        updateScroll(scrollOffsetValue.value + getScrollOffsetDeltaOnFocus(rectangle))
+                    }
+                }
             }
         }
 
-        return object : ComponentPath {
-            override fun component() = path.component()
+        when (event) {
+            is FocusNavigationEvent.InitialFocus -> {
+                // GUI を開いた直後に自動的にフォーカスを行う際のイベントなのだ～🌱
 
-            override fun applyFocus(focused: Boolean) {
-                path.applyFocus(focused)
-                // 子のフォーカスが変わったら、適宜それを収めるようにスクロールするのだ～🌱
-                if (focused) {
-                    val actualFocused = this@VanillaScrollContainerViewWidget.focused?.getActualFocused { true } ?: return
-                    val rectangle = actualFocused.rectangle
-                    if (rectangle.width() <= 0 || rectangle.height() <= 0) return
-                    updateScroll(scrollOffsetValue.value + getScrollOffsetDeltaOnFocus(rectangle))
+                // バニラの他コンテナの実装では InitialFocus 時に最初の要素を選択したりしているから、その代用として Tab 扱いで子を検索するのだ～🌱
+                val path = super.nextFocusPath(FocusNavigationEvent.TabNavigation(true))
+                if (path != null) return createChildFocusPath(path)
+
+                // フォーカス可能な子要素がない場合でも、勝手にスクロール領域本体をフォーカスしないのだ～🌱
+                return null
+            }
+
+            is FocusNavigationEvent.TabNavigation -> {
+                val forward = event.forward()
+                if (forward) {
+                    // 順方向の Tab 移動なのだ～🌱
+
+                    // 領域本体がまだフォーカスされていなければ、まず、領域本体のフォーカスを試みるのだ～🌱
+                    if (!isFocused) {
+                        val path = createSelfFocusPath()
+                        if (path != null) return path
+                    }
+
+                    // フォーカス可能な子がいれば、それにするのだ～🌱
+                    val path = super.nextFocusPath(event)
+                    if (path != null) return createChildFocusPath(path)
+
+                    // フォーカスできるものがもう何も残ってないのだ～🌱
+                    return null
+                } else {
+                    // 逆方向の Tab 移動なのだ～🌱
+
+                    // 既に領域本体がフォーカスされている場合は、何もフォーカスしないのだ～🌱
+                    if (isFocused && focused == null) return null
+
+                    // フォーカス可能な子がいれば、それにするのだ～🌱
+                    val path = super.nextFocusPath(event)
+                    if (path != null) return createChildFocusPath(path)
+
+                    // フォーカス可能な子がいなかったので、領域本体のフォーカスを試みるのだ～🌱
+                    return createSelfFocusPath()
                 }
+            }
+
+            else -> {
+                // Tab じゃないフォーカスの移動なのだ～🌱
+
+                // フォーカス可能な子がいれば、それにするのだ～🌱
+                val path = super.nextFocusPath(event)
+                if (path != null) return createChildFocusPath(path)
+
+                // フォーカス可能な子がいなければ、領域本体がフォーカスを持っていないときのみ、領域本体のフォーカスを試みるのだ～🌱
+                return if (!isFocused) createSelfFocusPath() else null
             }
         }
     }
