@@ -368,6 +368,56 @@ class VanillaScrollContainerViewWidgetTest {
     }
 
     @Test
+    fun `初期フォーカスでは子を選び候補がなければ領域本体を選ばないのだ`() {
+        GuiTestEnvironment().use {
+            val view = YScrollContainerView()
+            view += YListView().also {
+                it += YSpaceView(120)
+                it += ScrollContainerTestView(IntPoint(20, 20))
+            }
+            view.initSizeCalculation(Mockito.mock(RenderingProxy::class.java), { 100 }, { 60 })
+            val context: VanillaViewPlacerContext = Mockito.mock(VanillaViewPlacerContext::class.java)
+            Mockito.`when`(context.origin).thenReturn(IntPoint.ZERO)
+            val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
+            registry.register { childContext, _: ScrollContainerTestView, bounds ->
+                val child = object : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {
+                    override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+                    override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+                }
+                val remover = childContext.addRenderable(WidgetRegistration(child, true) { RenderOverflow.UNBOUNDED })
+                object : ViewController {
+                    override fun setOffset(offset: IntPoint) = child.setPosition(offset.x, offset.y)
+                    override fun detach() = remover.remove()
+                }
+            }
+            val widget = VanillaYScrollContainerViewWidget(view, IntRectangle(10, 20, 100, 60), context, registry)
+            val child = widget.children().single()
+            val screen = object : Screen(text { empty() }) {
+                override fun children() = listOf(widget)
+                fun focusScrollContainerInitially() = setInitialFocus(widget)
+            }
+
+            try {
+                child.active = false
+                screen.focusScrollContainerInitially()
+                Assertions.assertNull(screen.focused)
+                Assertions.assertFalse(widget.isFocused)
+
+                child.active = true
+                screen.focusScrollContainerInitially()
+                Assertions.assertSame(widget, screen.focused)
+                Assertions.assertSame(child, widget.focused)
+                Assertions.assertTrue(child.isFocused)
+                Assertions.assertEquals(80.0, view.scrollOffsetY.value)
+            } finally {
+                screen.clearFocus()
+                widget.dispose()
+                widget.detach()
+            }
+        }
+    }
+
+    @Test
     fun `Tab の両方向で子と領域本体に止まり子が収まる分だけスクロールするのだ`() {
         GuiTestEnvironment().use {
             val view = YScrollContainerView()
