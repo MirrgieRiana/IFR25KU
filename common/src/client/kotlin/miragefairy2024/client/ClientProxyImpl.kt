@@ -102,9 +102,9 @@ class ClientProxyImpl : ClientProxy<Screen> {
         BlockEntityRenderers.register(blockEntityType, ::RenderingProxyBlockEntityRenderer)
     }
 
-    override fun <T, State> registerViewScreen(menuType: MenuType<T>) where T : AbstractContainerMenu, T : ViewProviderMenu<State> {
+    override fun <M, T> registerViewScreen(menuType: MenuType<M>) where M : AbstractContainerMenu, M : ViewProviderMenu<T> {
         MenuScreens.register(menuType) { menu, playerInventory, title ->
-            object : ViewContainerScreen<T>(menu, playerInventory, title) {
+            object : ViewContainerScreen<M>(menu, playerInventory, title) {
                 private val state = menu.createScreenState()
 
                 override fun createRootView(screenEventSource: ScreenEventSource) = menu.createRootView(title, playerInventoryTitle, screenEventSource, state)
