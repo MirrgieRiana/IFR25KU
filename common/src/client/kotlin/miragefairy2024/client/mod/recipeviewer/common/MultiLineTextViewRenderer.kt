@@ -14,7 +14,7 @@ object MultiLineTextViewRenderer : ViewRenderer<MultiLineTextView, Unit> {
 
     override fun getRenderOverflow(view: MultiLineTextView, bounds: IntRectangle) = RenderOverflow.UNBOUNDED
 
-    override fun render(view: MultiLineTextView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: MultiLineTextView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float, isFocused: Boolean) {
         val font = Minecraft.getInstance().font
         val color = view.color.lightModeArgb
         view.lines.evaluate().forEachIndexed { index, line ->

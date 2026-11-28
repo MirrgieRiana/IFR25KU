@@ -14,7 +14,7 @@ import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION
 object ProgressViewRenderer : ViewRenderer<ProgressView, Unit> {
     override fun createState(view: ProgressView) = Unit
 
-    override fun render(view: ProgressView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: ProgressView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float, isFocused: Boolean) {
         fun blit(texture: ViewTexture, x: Int, y: Int, source: IntRectangle) {
             graphics.blit(
                 texture.id,

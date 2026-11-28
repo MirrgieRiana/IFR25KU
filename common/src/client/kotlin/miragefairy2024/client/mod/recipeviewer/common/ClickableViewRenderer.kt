@@ -32,7 +32,7 @@ object ClickableViewRenderer : ViewRenderer<ClickableView, Unit> {
         return false
     }
 
-    override fun render(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float, isFocused: Boolean) {
         val color = view.hoverOverlayColor
         if (isHovered && color.alphaOfArgb != 0) {
             graphics.fill(
@@ -44,11 +44,9 @@ object ClickableViewRenderer : ViewRenderer<ClickableView, Unit> {
                 color,
             )
         }
-    }
-
-    override fun renderFocus(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor) {
-        if (bounds.sizeX <= 0 || bounds.sizeY <= 0) return
-        graphics.renderOutline(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, 0xFFFFFFFF.toInt())
+        if (isFocused && bounds.sizeX > 0 && bounds.sizeY > 0) {
+            graphics.renderOutline(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, 0xFFFFFFFF.toInt())
+        }
     }
 
 }

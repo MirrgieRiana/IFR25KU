@@ -32,7 +32,7 @@ class ItemViewRendererTest {
             val view = ItemView(itemStack)
             val bounds = IntRectangle(10, 20, 16, 16)
 
-            ItemViewRenderer.render(view, Slot(Unit), bounds, graphics, 0, 0, false, 0.0F)
+            ItemViewRenderer.render(view, Slot(Unit), bounds, graphics, 0, 0, false, 0.0F, isFocused = false)
             val inOrder: InOrder = Mockito.inOrder(graphics)
             inOrder.verify(graphics).renderFakeItem(itemStack, 10, 20)
             inOrder.verify(graphics).renderItemDecorations(Mockito.isNull(), Mockito.eq(itemStack), Mockito.eq(10), Mockito.eq(20))
@@ -40,7 +40,7 @@ class ItemViewRendererTest {
 
             Mockito.clearInvocations(graphics)
             view.showDecorations = false
-            ItemViewRenderer.render(view, Slot(Unit), bounds, graphics, 0, 0, false, 0.0F)
+            ItemViewRenderer.render(view, Slot(Unit), bounds, graphics, 0, 0, false, 0.0F, isFocused = false)
             Mockito.verify(graphics).renderFakeItem(itemStack, 10, 20)
             Mockito.verifyNoMoreInteractions(graphics)
         }

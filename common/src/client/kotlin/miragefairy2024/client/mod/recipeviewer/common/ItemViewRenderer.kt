@@ -13,7 +13,7 @@ object ItemViewRenderer : ViewRenderer<ItemView, Unit> {
 
     override fun getRenderOverflow(view: ItemView, bounds: IntRectangle) = RenderOverflow.UNBOUNDED
 
-    override fun render(view: ItemView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: ItemView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float, isFocused: Boolean) {
         graphics.renderFakeItem(view.itemStack, bounds.x, bounds.y)
         if (view.showDecorations) graphics.renderItemDecorations(Minecraft.getInstance().font, view.itemStack, bounds.x, bounds.y)
     }
