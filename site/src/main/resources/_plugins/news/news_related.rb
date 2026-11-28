@@ -64,7 +64,6 @@ module News
 
     private
 
-    # 記事1件分のカードを組み立てるのだ～🌱
     # サムネイルを持たない記事には、OG 画像の生成が敷くのと同じ背景を出すのだ～🌱
     def render_card(site, post)
       teaser = post.data.dig("header", "teaser") || DEFAULT_TEASER

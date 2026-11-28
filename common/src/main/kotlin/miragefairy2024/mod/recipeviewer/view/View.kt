@@ -51,7 +51,6 @@ interface View {
     fun evaluateActualSizeY(): Int
 
     /**
-     * この View を指定された位置に配置するのだ～🌱
      * [miragefairy2024.mod.recipeviewer.view.View.initSizeCalculation] の後に呼び出さなければならないのだ～🌱
      * 同じ View に再び呼び出す前に、前回の配置に対して [miragefairy2024.mod.recipeviewer.view.ViewController.dispose] を呼び出さなければならないのだ～🌱
      * 前回の配置は [miragefairy2024.mod.recipeviewer.view.ViewController.detach] で解除するか、画面側で破棄しなければならないのだ～🌱

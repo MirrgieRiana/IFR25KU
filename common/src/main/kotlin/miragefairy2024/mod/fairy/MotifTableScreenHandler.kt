@@ -83,17 +83,19 @@ fun initMotifTableScreenHandler() {
     motifTableScreenHandlerType.registerViewScreen()
 }
 
-class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifChance>) : AbstractContainerMenu(motifTableScreenHandlerType(), syncId), ViewProviderMenu<Unit> {
+class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifChance>) : AbstractContainerMenu(motifTableScreenHandlerType(), syncId), ViewProviderMenu<MotifTableScreenContent.State> {
 
-    override fun createScreenState() = Unit
+    override fun createScreenState() = MotifTableScreenContent.State()
 
-    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource, state: Unit) = MotifTableScreenContent(chanceTable).view
+    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource, state: MotifTableScreenContent.State) = MotifTableScreenContent(chanceTable, state).view
 
     override fun stillValid(player: Player) = true
     override fun quickMoveStack(player: Player, slot: Int) = EMPTY_ITEM_STACK
 }
 
-private class MotifTableScreenContent(chanceTable: List<CondensedMotifChance>) {
+class MotifTableScreenContent(chanceTable: List<CondensedMotifChance>, state: State) {
+
+    class State
 
     val view = View {
         // 外枠

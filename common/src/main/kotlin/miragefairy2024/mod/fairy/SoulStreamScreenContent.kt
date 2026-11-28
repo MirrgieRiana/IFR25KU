@@ -63,7 +63,9 @@ private val BUTTON_14_BACKGROUND = LayeredImageButtonView.Sprites(
     MirageFairy2024.identifier("button_14/background_focused"),
 )
 
-abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Component, screenEventSource: ScreenEventSource) {
+abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Component, screenEventSource: ScreenEventSource, state: State) {
+
+    class State
 
     protected abstract val enabledPassiveSkillEffectFilters: ObservableValue<Map<Identifier, PassiveSkillEffectFilter<*>>>
     protected abstract val enableGlobalFairyHighlight: ObservableValue<Boolean>
@@ -197,6 +199,7 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                             view += scrollView
                             val scrollbarView = YFlatScrollbarView().configure {
                                 view.scrollbarColor = 0xA0FFFFFF.toInt()
+                                view.keyboardFocusable = false
                             }
                             view += scrollbarView
                             connectScrollbar(scrollView.view, scrollbarView.view)
@@ -244,6 +247,7 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                         view += scrollView
                         val scrollbarView = YInventoryScrollbarView().configure {
                             view.scrollStep = scrollView.view.scrollStep
+                            view.keyboardFocusable = false
                         }
                         view += scrollbarView
                         connectScrollbar(scrollView.view, scrollbarView.view)
@@ -376,6 +380,7 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                             view += scrollView
                             val scrollbarView = YFlatScrollbarView().configure {
                                 view.scrollbarColor = 0xA0FFFFFF.toInt()
+                                view.keyboardFocusable = false
                             }
                             view += AlignView().configure {
                                 view.alignmentX = Alignment.END

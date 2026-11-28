@@ -14,10 +14,7 @@ import mirrg.kotlin.helium.atLeast
 import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.world.inventory.Slot
 
-/**
- * メニューのスロットを置くViewなのだ～🌱
- * この View は [net.minecraft.world.inventory.Slot] の配置を管理し、中身の描画と操作はバニラの画面が行うのだ～🌱
- */
+/** この View は [net.minecraft.world.inventory.Slot] の配置を管理し、中身の描画と操作はバニラの画面が行うのだ～🌱 */
 class MenuSlotView(val slot: Slot) : AbstractView(), PlaceableView {
     var margin = IntPoint(1, 1)
     override val sizingX = Sizing.WRAP

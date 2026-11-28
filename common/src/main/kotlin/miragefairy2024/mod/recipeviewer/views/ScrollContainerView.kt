@@ -65,7 +65,6 @@ abstract class ScrollContainerView : WrapperView(), PlaceableView {
 
 }
 
-/** 子 View を X 軸方向へスクロールするのだ～🌱 */
 class XScrollContainerView : ScrollContainerView() {
 
     val scrollOffsetX = ObservableValue(0.0)
@@ -85,7 +84,6 @@ class XScrollContainerView : ScrollContainerView() {
 
 }
 
-/** 子 View を Y 軸方向へスクロールするのだ～🌱 */
 class YScrollContainerView : ScrollContainerView() {
 
     val scrollOffsetY = ObservableValue(0.0)
@@ -106,7 +104,7 @@ class YScrollContainerView : ScrollContainerView() {
 }
 
 /**
- * X 軸の領域とバーを接続し、その間のコンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
+ * コンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
  * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
  */
 fun connectScrollbar(scrollView: XScrollContainerView, scrollbarView: ScrollbarView): Remover {
@@ -114,7 +112,7 @@ fun connectScrollbar(scrollView: XScrollContainerView, scrollbarView: ScrollbarV
 }
 
 /**
- * Y 軸の領域とバーを接続し、その間のコンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
+ * コンテンツ座標の指定位置と領域の寸法を共有するのだ～🌱
  * 解除した両側は、解除時の位置からそれぞれ操作できるのだ～🌱
  */
 fun connectScrollbar(scrollView: YScrollContainerView, scrollbarView: ScrollbarView): Remover {

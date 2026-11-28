@@ -45,8 +45,8 @@ class TooltipViewerScreenTest {
 
     @Test
     fun `画面を開くと検索欄が空でスクロール位置は先頭になるのだ`() {
-        fun withViews(definition: MessageViewScreenDefinition, block: (TextFieldView, YScrollContainerView) -> Unit) {
-            val view = definition.rootViewFactory(ScreenEventSource())
+        fun <T> withViews(definition: MessageViewScreenDefinition<T>, block: (TextFieldView, YScrollContainerView) -> Unit) {
+            val view = definition.rootViewFactory(ScreenEventSource(), definition.createScreenState())
             view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
             val textFields = mutableListOf<TextFieldView>()
             val scrollViews = mutableListOf<YScrollContainerView>()
@@ -67,9 +67,9 @@ class TooltipViewerScreenTest {
         @Suppress("UNCHECKED_CAST")
         val delegate: ClientProxy<Any> = Mockito.mock(ClientProxy::class.java) as ClientProxy<Any>
         val screen = Any()
-        val definitions = mutableListOf<MessageViewScreenDefinition>()
+        val definitions = mutableListOf<MessageViewScreenDefinition<*>>()
         val proxy: ClientProxy<Any> = object : ClientProxy<Any> by delegate {
-            override fun createMessageViewScreen(parent: Any?, definition: MessageViewScreenDefinition): Any {
+            override fun <T> createMessageViewScreen(parent: Any?, definition: MessageViewScreenDefinition<T>): Any {
                 Assertions.assertNull(parent)
                 definitions += definition
                 return screen

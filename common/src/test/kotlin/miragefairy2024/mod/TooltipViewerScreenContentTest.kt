@@ -75,7 +75,7 @@ class TooltipViewerScreenContentTest {
     fun `空のアイテムを除外しスロットとツールチップを同じ順序で配置するのだ`() {
         val first: ItemStack = ItemStack(Items.STONE, 64)
         val second: ItemStack = ItemStack(Items.DIRT, 12)
-        val view = TooltipViewerScreenContent(listOf(ItemStack.EMPTY, first, ItemStack.EMPTY, second)) {
+        val view = TooltipViewerScreenContent(listOf(ItemStack.EMPTY, first, ItemStack.EMPTY, second), TooltipViewerScreenContent.State()) {
             listOf(text { it.count.toString()() })
         }
         view.view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
@@ -95,7 +95,7 @@ class TooltipViewerScreenContentTest {
 
     @Test
     fun `フィルタを変更すると入力欄を維持しながら行と間隔を更新するのだ`() {
-        val view = TooltipViewerScreenContent(listOf(ItemStack(Items.STONE))) {
+        val view = TooltipViewerScreenContent(listOf(ItemStack(Items.STONE)), TooltipViewerScreenContent.State()) {
             listOf("title", "first", "second", "third").map { text { it() } }
         }
         view.view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
@@ -140,7 +140,7 @@ class TooltipViewerScreenContentTest {
 
     @Test
     fun `絞り込み後に範囲内の位置を保ち短くなった一覧を表示領域に戻すのだ`() {
-        val view = TooltipViewerScreenContent(listOf(ItemStack(Items.STONE))) {
+        val view = TooltipViewerScreenContent(listOf(ItemStack(Items.STONE)), TooltipViewerScreenContent.State()) {
             listOf(text { "title"() }, text { "long".repeat(500)() }, text { "mid".repeat(300)() })
         }
         view.view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
@@ -170,7 +170,7 @@ class TooltipViewerScreenContentTest {
 
     @Test
     fun `ゼロ文字の行にも通常の文字行と同じ高さを割り当てるのだ`() {
-        val view = TooltipViewerScreenContent(listOf(ItemStack(Items.STONE))) {
+        val view = TooltipViewerScreenContent(listOf(ItemStack(Items.STONE)), TooltipViewerScreenContent.State()) {
             listOf(text { "title"() }, text { empty() }, text { "tail"() })
         }
         view.view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
@@ -190,7 +190,7 @@ class TooltipViewerScreenContentTest {
 
     @Test
     fun `長文を背景の内側で折り返し画面の高さを超えた内容をスクロールするのだ`() {
-        val view = TooltipViewerScreenContent(listOf(ItemStack(Items.STONE))) {
+        val view = TooltipViewerScreenContent(listOf(ItemStack(Items.STONE)), TooltipViewerScreenContent.State()) {
             listOf(text { "title"() }, text { "long".repeat(200)() })
         }
         listOf(IntPoint(400, 240), IntPoint(320, 180)).forEach { size ->
@@ -221,7 +221,7 @@ class TooltipViewerScreenContentTest {
 
     @Test
     fun `アイテムがなくても検索欄と固定幅のパネルを配置するのだ`() {
-        val view = TooltipViewerScreenContent(emptyList()) { throw AssertionError("No item tooltip should be requested") }
+        val view = TooltipViewerScreenContent(emptyList(), TooltipViewerScreenContent.State()) { throw AssertionError("No item tooltip should be requested") }
         view.view.initSizeCalculation(TOOLTIP_VIEWER_RENDERING_PROXY, { 400 }, { 240 })
         val placements = mutableListOf<Pair<PlaceableView, IntRectangle>>()
         val controller = view.place(placements)
