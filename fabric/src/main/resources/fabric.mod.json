@@ -72,7 +72,8 @@
     "java": ">=17",
     "fabric-api": "*",
     "fabric-language-kotlin": ">=1.13.7+kotlin.2.2.21",
-    "architectury": ">=13.0.8"
+    "architectury": ">=13.0.8",
+    "terrablender": "*"
   },
   "suggests": {
     "another-mod": "*"
