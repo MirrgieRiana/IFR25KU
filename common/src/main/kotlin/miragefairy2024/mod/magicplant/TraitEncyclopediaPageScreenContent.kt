@@ -65,7 +65,9 @@ private fun Trait.openTraitEncyclopediaPageScreen() {
 
 class TraitEncyclopediaPageScreenContent(trait: Trait, state: State) {
 
-    class State
+    class State {
+        var scrollOffset = 0.0
+    }
 
     val onBackToGame = EventRegistry<() -> Boolean>()
     val onBack = EventRegistry<() -> Boolean>()
@@ -113,6 +115,10 @@ class TraitEncyclopediaPageScreenContent(trait: Trait, state: State) {
                             view.sizingX = Sizing.FILL
                             view.sizingY = Sizing.FILL
                             val scrollView = YScrollContainerView().configure {
+                                view.scrollOffsetY.value = state.scrollOffset
+                                view.scrollOffsetY.register { _, offset ->
+                                    state.scrollOffset = offset
+                                }
                                 view += MultiLineTextView().configure {
                                     view.text.value = trait.text
                                     view.shadow = false

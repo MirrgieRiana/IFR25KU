@@ -65,7 +65,11 @@ private val BUTTON_14_BACKGROUND = LayeredImageButtonView.Sprites(
 
 abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Component, screenEventSource: ScreenEventSource, state: State) {
 
-    class State
+    class State {
+        var filterScrollOffset = 0.0
+        var storageScrollOffset = 0.0
+        var effectScrollOffset = 0.0
+    }
 
     protected abstract val enabledPassiveSkillEffectFilters: ObservableValue<Map<Identifier, PassiveSkillEffectFilter<*>>>
     protected abstract val enableGlobalFairyHighlight: ObservableValue<Boolean>
@@ -141,6 +145,10 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                             view.sizingY = Sizing.FILL
 
                             val scrollView = YScrollContainerView().configure {
+                                view.scrollOffsetY.value = state.filterScrollOffset
+                                view.scrollOffsetY.register { _, offset ->
+                                    state.filterScrollOffset = offset
+                                }
                                 position.weight = 1.0
                                 // 長すぎるテキストで UI を壊さないためなのだ～🌱
                                 position.ignoreLayoutX = true
@@ -237,6 +245,10 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                         position.weight = 1.0
 
                         val scrollView = YScrollContainerView().configure {
+                            view.scrollOffsetY.value = state.storageScrollOffset
+                            view.scrollOffsetY.register { _, offset ->
+                                state.storageScrollOffset = offset
+                            }
                             view.scrollStep = SlotType.NORMAL.viewTexture.size.y
                             view += YListView().configure {
                                 (9 * 3 + 9 + 9 until menu.slots.size).chunked(9).forEach { indices ->
@@ -375,6 +387,10 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                             var effectList = collectEffectList()
                             val effectListDynamicView = DynamicView(createEffectListView(effectList))
                             val scrollView = YScrollContainerView().configure {
+                                view.scrollOffsetY.value = state.effectScrollOffset
+                                view.scrollOffsetY.register { _, offset ->
+                                    state.effectScrollOffset = offset
+                                }
                                 view += effectListDynamicView
                             }
                             view += scrollView

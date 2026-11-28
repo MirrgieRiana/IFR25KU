@@ -216,7 +216,9 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
 
 class FairyQuestCardScreenContent(menu: FairyQuestCardScreenHandler, title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource, state: State) {
 
-    class State
+    class State {
+        var messageScrollOffset = 0.0
+    }
 
     val view = run {
         val playerInventoryWidth = 9
@@ -259,6 +261,10 @@ class FairyQuestCardScreenContent(menu: FairyQuestCardScreenHandler, title: Comp
                             view.sizingX = Sizing.FILL
                             view.sizingY = Sizing.FILL
                             val scrollView = YScrollContainerView().configure {
+                                view.scrollOffsetY.value = state.messageScrollOffset
+                                view.scrollOffsetY.register { _, offset ->
+                                    state.messageScrollOffset = offset
+                                }
                                 position.weight = 1.0
                                 view += StackView().configure {
                                     view.sizingX = Sizing.FILL

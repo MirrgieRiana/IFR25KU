@@ -100,7 +100,11 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
 
 class TraitListScreenContent(menu: TraitListScreenHandler, title: Component, state: State) {
 
-    class State
+    class State {
+        var selectedTrait: Trait? = null
+        var listScrollOffset = 0.0
+        var poemScrollOffset = 0.0
+    }
 
     val view = run {
         val level: Level = menu.playerInventory.player.level()
@@ -179,6 +183,10 @@ class TraitListScreenContent(menu: TraitListScreenHandler, title: Component, sta
                         view.sizingY = Sizing.FILL
 
                         val scrollView = YScrollContainerView().configure {
+                            view.scrollOffsetY.value = state.poemScrollOffset
+                            view.scrollOffsetY.register { _, offset ->
+                                state.poemScrollOffset = offset
+                            }
                             view += MultiLineTextView().configure {
                                 view.text.value = trait.text
                                 view.shadow = false
@@ -218,7 +226,8 @@ class TraitListScreenContent(menu: TraitListScreenHandler, title: Component, sta
 
                     val traitStackList = menu.traitStacks.traitStackList
 
-                    val cardContentDynamicView = DynamicView(if (traitStackList.isNotEmpty()) createTraitCardView(traitStackList.first()) else EmptyView())
+                    val selectedTraitStack = traitStackList.firstOrNull { it.trait == state.selectedTrait } ?: traitStackList.firstOrNull()
+                    val cardContentDynamicView = DynamicView(if (selectedTraitStack != null) createTraitCardView(selectedTraitStack) else EmptyView())
 
                     // GUI名
                     view += MultiLineTextView().configure {
@@ -252,6 +261,10 @@ class TraitListScreenContent(menu: TraitListScreenHandler, title: Component, sta
                             view.sizingY = Sizing.FILL
 
                             val scrollView = YScrollContainerView().configure {
+                                view.scrollOffsetY.value = state.listScrollOffset
+                                view.scrollOffsetY.register { _, offset ->
+                                    state.listScrollOffset = offset
+                                }
                                 position.weight = 1.0
 
                                 view += YListView().configure {
@@ -277,6 +290,8 @@ class TraitListScreenContent(menu: TraitListScreenHandler, title: Component, sta
                                             }
                                             view.shadow = false
                                         }.onClick {
+                                            state.selectedTrait = trait
+                                            state.poemScrollOffset = 0.0
                                             cardContentDynamicView.content.value = createTraitCardView(traitStack)
                                             true
                                         }

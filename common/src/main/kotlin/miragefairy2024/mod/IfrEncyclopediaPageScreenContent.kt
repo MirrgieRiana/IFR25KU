@@ -65,7 +65,9 @@ private fun IfrEncyclopediaEntryCard.openIfrEncyclopediaPageScreen() {
 
 private class IfrEncyclopediaPageScreenContent(card: IfrEncyclopediaEntryCard, state: State) {
 
-    class State
+    class State {
+        var scrollOffset = 0.0
+    }
 
     val onBackToGame = EventRegistry<() -> Boolean>()
     val onBack = EventRegistry<() -> Boolean>()
@@ -120,6 +122,10 @@ private class IfrEncyclopediaPageScreenContent(card: IfrEncyclopediaEntryCard, s
                             view.sizingX = Sizing.FILL
                             view.sizingY = Sizing.FILL
                             val scrollView = YScrollContainerView().configure {
+                                view.scrollOffsetY.value = state.scrollOffset
+                                view.scrollOffsetY.register { _, offset ->
+                                    state.scrollOffset = offset
+                                }
                                 view += MultiLineTextView().configure {
                                     view.text.value = text { card.textTranslation() }
                                     view.color = IFR_ENCYCLOPEDIA_TEXT_COLOR

@@ -55,7 +55,10 @@ fun openTooltipViewerScreen() {
 
 class TooltipViewerScreenContent(itemStacks: List<ItemStack>, state: State, tooltipProvider: (ItemStack) -> List<Component>) {
 
-    class State
+    class State {
+        var filter = ""
+        var scrollOffset = 0.0
+    }
 
     val view = View {
 
@@ -118,7 +121,7 @@ class TooltipViewerScreenContent(itemStacks: List<ItemStack>, state: State, tool
         }
 
         // YListView は配置時に各行の位置を確定するため、行の高さの変化を後続行の位置に反映するには一覧全体の再配置が必要なのだ～🌱
-        val contentDynamicView = DynamicView(createContentView(""))
+        val contentDynamicView = DynamicView(createContentView(state.filter))
 
         view += AlignView().configure {
             view.alignmentX = Alignment.CENTER
@@ -135,6 +138,7 @@ class TooltipViewerScreenContent(itemStacks: List<ItemStack>, state: State, tool
 
                     // 検索欄
                     val textField = TextFieldView().configure {
+                        view.text.value = state.filter
                         view.hint = text { TOOLTIP_VIEWER_EXAMPLE_KEY_TRANSLATION("0,1,2") }
                     }
                     view += textField
@@ -147,6 +151,10 @@ class TooltipViewerScreenContent(itemStacks: List<ItemStack>, state: State, tool
                         view.sizingX = Sizing.FILL
                         view.sizingY = Sizing.FILL
                         val scrollView = YScrollContainerView().configure {
+                            view.scrollOffsetY.value = state.scrollOffset
+                            view.scrollOffsetY.register { _, offset ->
+                                state.scrollOffset = offset
+                            }
                             position.weight = 1.0
                             view += contentDynamicView
                         }
@@ -158,6 +166,7 @@ class TooltipViewerScreenContent(itemStacks: List<ItemStack>, state: State, tool
                         connectScrollbar(scrollView.view, scrollbarView.view)
 
                         textField.view.text.register { _, newValue ->
+                            state.filter = newValue
                             contentDynamicView.content.value = createContentView(newValue)
                             scrollView.view.updateScrollBounds()
                             scrollView.view.clampScrollOffset()

@@ -63,7 +63,9 @@ fun FairyQuestRecipe.openMessageScreen() {
 
 class FairyQuestMessageScreenContent(fairyQuestTitle: Component, fairyQuestMessage: Component, fairyQuestClient: Component, state: State) {
 
-    class State
+    class State {
+        var scrollOffset = 0.0
+    }
 
     val onBackToGame = EventRegistry<() -> Boolean>()
     val onBack = EventRegistry<() -> Boolean>()
@@ -80,6 +82,10 @@ class FairyQuestMessageScreenContent(fairyQuestTitle: Component, fairyQuestMessa
                 position.weight = 1.0
                 view.sizingY = Sizing.FILL
                 val scrollView = YScrollContainerView().configure {
+                    view.scrollOffsetY.value = state.scrollOffset
+                    view.scrollOffsetY.register { _, offset ->
+                        state.scrollOffset = offset
+                    }
                     view.sizingX = Sizing.WRAP
 
                     view += StackView().configure {

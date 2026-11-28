@@ -95,7 +95,9 @@ class MotifTableScreenHandler(syncId: Int, val chanceTable: List<CondensedMotifC
 
 class MotifTableScreenContent(chanceTable: List<CondensedMotifChance>, state: State) {
 
-    class State
+    class State {
+        var scrollOffset = 0.0
+    }
 
     val view = View {
         // 外枠
@@ -108,6 +110,10 @@ class MotifTableScreenContent(chanceTable: List<CondensedMotifChance>, state: St
                 view.sizingY = Sizing.FILL
                 // スクロールパネル
                 val scrollView = YScrollContainerView().configure {
+                    view.scrollOffsetY.value = state.scrollOffset
+                    view.scrollOffsetY.register { _, offset ->
+                        state.scrollOffset = offset
+                    }
                     view.sizingX = Sizing.WRAP
 
                     // スロットパネル
