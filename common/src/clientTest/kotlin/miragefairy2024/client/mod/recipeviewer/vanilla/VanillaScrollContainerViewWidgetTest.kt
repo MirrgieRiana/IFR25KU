@@ -24,6 +24,7 @@ import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
+import net.minecraft.client.gui.screens.Screen
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.lwjgl.glfw.GLFW
@@ -396,14 +397,18 @@ class VanillaScrollContainerViewWidgetTest {
                 }
             }
             val widget = VanillaYScrollContainerViewWidget(view, IntRectangle(10, 20, 100, 70), context, registry)
+            val screen = object : Screen(text { empty() }) {
+                override fun children() = listOf(widget)
+            }
             try {
                 val next = FocusNavigationEvent.TabNavigation(true)
                 val previous = FocusNavigationEvent.TabNavigation(false)
 
                 fun moveFocus(event: FocusNavigationEvent.TabNavigation) {
-                    val path = checkNotNull(widget.nextFocusPath(event))
-                    widget.currentFocusPath?.applyFocus(false)
+                    val path = checkNotNull(screen.nextFocusPath(event))
+                    screen.clearFocus()
                     path.applyFocus(true)
+                    Assertions.assertSame(widget, screen.focused)
                     Assertions.assertTrue(widget.isFocused)
                 }
 
@@ -422,8 +427,8 @@ class VanillaScrollContainerViewWidgetTest {
                 Assertions.assertSame(children[0], widget.focused)
                 Assertions.assertTrue(children[0].isFocused)
                 Assertions.assertEquals(listOf(20, 50), children.map { it.y })
-                Assertions.assertNull(widget.nextFocusPath(previous))
-                widget.currentFocusPath?.applyFocus(false)
+                Assertions.assertNull(screen.nextFocusPath(previous))
+                screen.clearFocus()
 
                 moveFocus(next)
                 Assertions.assertSame(children[0], widget.focused)
@@ -431,8 +436,8 @@ class VanillaScrollContainerViewWidgetTest {
                 Assertions.assertSame(children[1], widget.focused)
                 moveFocus(next)
                 Assertions.assertNull(widget.focused)
-                Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_UP, 0, 0))
-                Assertions.assertNull(widget.nextFocusPath(next))
+                Assertions.assertTrue(screen.keyPressed(GLFW.GLFW_KEY_UP, 0, 0))
+                Assertions.assertNull(screen.nextFocusPath(next))
             } finally {
                 widget.dispose()
                 widget.detach()
