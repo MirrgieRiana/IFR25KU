@@ -1,5 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer.rei
 
+import me.shedaniel.math.Point
 import me.shedaniel.rei.api.client.gui.widgets.Widget
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.ViewController
@@ -79,8 +80,13 @@ class ReiContainerWidget : Widget() {
 
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+        val mouse: Point = Widget.mouse()
         return widgets.toList().any {
-            it.keyPressed(keyCode, scanCode, modifiers)
+            if (it.containsMouse(mouse)) {
+                it.keyPressed(keyCode, scanCode, modifiers)
+            } else {
+                false
+            }
         }
     }
 
