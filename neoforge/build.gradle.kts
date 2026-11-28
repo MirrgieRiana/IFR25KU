@@ -123,7 +123,7 @@ dependencies {
 
     modRuntimeOnly("mezz.jei:jei-1.21.1-neoforge:${libs.versions.jei.get()}")
 
-    modCompileOnly("dev.emi:emi-neoforge:${libs.versions.emi.get()}")
+    modCompileOnly("dev.emi:emi-neoforge:${libs.versions.emi.get()}:api")
     modRuntimeOnly("dev.emi:emi-neoforge:${libs.versions.emi.get()}")
 
     modCompileOnly("curse.maven:jade-324717:${libs.versions.jadeCurseForgeNeoForge.get()}")

@@ -190,7 +190,7 @@ dependencies {
 
     modImplementation("com.github.glitchfiend:TerraBlender-fabric:${libs.versions.terraBlenderFabric.get()}")
 
-    modCompileOnly("dev.emi:emi-fabric:${libs.versions.emi.get()}")
+    modCompileOnly("dev.emi:emi-fabric:${libs.versions.emi.get()}:api")
     modRuntimeOnly("dev.emi:emi-fabric:${libs.versions.emi.get()}")
 
 }

@@ -10,8 +10,6 @@ import dev.emi.emi.api.stack.EmiIngredient
 import dev.emi.emi.api.stack.EmiStack
 import dev.emi.emi.api.widget.Widget
 import dev.emi.emi.api.widget.WidgetHolder
-import dev.emi.emi.screen.RecipeScreen
-import dev.emi.emi.screen.WidgetGroup
 import miragefairy2024.ModContext
 import miragefairy2024.ReusableInitializationEventRegistry
 import miragefairy2024.client.mod.recipeviewer.renderingProxy
@@ -153,9 +151,7 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
     override fun getDisplayHeight() = 1 + sizeCache.y + 1
     override fun addWidgets(widgets: WidgetHolder) {
         val widgets2 = mutableListOf<Widget>()
-        val group = widgets as? WidgetGroup
-        val screen = if (group?.recipe === this) Minecraft.getInstance().screen as? RecipeScreen else null
-        val containerWidget = EmiContainerWidget(screen, if (group != null) IntPoint(group.x, group.y) else IntPoint(0, 0))
+        val containerWidget = EmiContainerWidget()
         val view = support.card.createView(recipeEntry)
         view.initSizeCalculation(renderingProxy, { EmiClientSupport.MAX_SIZE.x - 5 - 5 }, { EmiClientSupport.MAX_SIZE.y - 5 - 5 })
         view.attachTo(IntPoint(1, 1)) { view2, bounds ->
@@ -165,9 +161,6 @@ class SupportedEmiRecipe<R>(val support: EmiClientSupport<R>, val recipeEntry: R
         widgets.add(containerWidget)
         widgets2.forEach {
             widgets.add(it)
-        }
-        if (screen != null && containerWidget.getKeyboardTargets().isNotEmpty()) {
-            registerEmiRecipeKeyboard(screen, containerWidget)
         }
     }
 }

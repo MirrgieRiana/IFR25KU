@@ -120,7 +120,7 @@ dependencies {
 
     modImplementation("com.github.glitchfiend:TerraBlender-fabric:${libs.versions.terraBlenderFabric.get()}")
 
-    modCompileOnly("dev.emi:emi-fabric:${libs.versions.emi.get()}")
+    modCompileOnly("dev.emi:emi-fabric:${libs.versions.emi.get()}:api")
 
     // テスト専用なのだ～🌱
     "clientTestImplementation"("org.mockito:mockito-core:${libs.versions.mockito.get()}")

@@ -117,7 +117,7 @@ class ViewRendererStateTest {
     @Test
     fun `EMIの描画と入力で状態を共有し配置と再生成ごとに分離するのだ`() {
         checkState { renderer, view, bounds, graphics ->
-            val widget = EmiViewRendererWidget(renderer, view, bounds, null)
+            val widget = EmiViewRendererWidget(renderer, view, bounds)
             RendererWidgetOperations(
                 { widget.render(graphics, 30, 40, 0.0F) },
                 { widget.mouseClicked(30, 40, 0) },

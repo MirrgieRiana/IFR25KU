@@ -104,7 +104,7 @@ fun initEmiViewPlacers() {
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView, S> f(entry: ViewRendererRegistry.Entry<V, S>) {
             EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { context, view, bounds ->
-                context.containerWidget place EmiViewRendererWidget(entry.viewRenderer, view, bounds, context.containerWidget)
+                context.containerWidget place EmiViewRendererWidget(entry.viewRenderer, view, bounds)
             }
         }
         f(entry)
