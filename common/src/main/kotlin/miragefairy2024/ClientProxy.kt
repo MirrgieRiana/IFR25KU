@@ -39,7 +39,7 @@ interface ClientProxy<S : Any> {
     fun <M, T> registerViewScreen(menuType: MenuType<M>) where M : AbstractContainerMenu, M : ViewProviderMenu<T>
     fun getCurrentScreen(): S?
     fun setCurrentScreen(screen: S?)
-    fun createMessageViewScreen(parent: S?, definition: MessageViewScreenDefinition): S
+    fun <T> createMessageViewScreen(parent: S?, definition: MessageViewScreenDefinition<T>): S
 
     /**
      * [rootView] をトーストに表示するのだ～🌱
@@ -77,7 +77,7 @@ interface RenderingProxyBlockEntity {
     fun render(renderingProxy: RenderingProxy, tickDelta: Float, light: Int, overlay: Int) = Unit
 }
 
-class MessageViewScreenDefinition(val title: Component, val rootViewFactory: (ScreenEventSource) -> View) {
+class MessageViewScreenDefinition<T>(val title: Component, val createScreenState: () -> T, val rootViewFactory: (ScreenEventSource, T) -> View) {
 
     /** false にすると、設定画面の背景になるのだ～🌱 */
     var transparentBackground = true

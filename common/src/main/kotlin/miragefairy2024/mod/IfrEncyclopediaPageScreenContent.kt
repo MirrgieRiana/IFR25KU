@@ -47,8 +47,7 @@ private fun IfrEncyclopediaEntryCard.openIfrEncyclopediaPageScreen() {
     fun <S : Any> openScreen(proxy: ClientProxy<S>) {
         val parent = proxy.getCurrentScreen()
         val title = text { this@openIfrEncyclopediaPageScreen.titleTranslation() }
-        val state = IfrEncyclopediaPageScreenContent.State()
-        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(title) {
+        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(title, { IfrEncyclopediaPageScreenContent.State() }) { _, state ->
             IfrEncyclopediaPageScreenContent(this, state).also { view ->
                 view.onBackToGame.register {
                     proxy.setCurrentScreen(null)
