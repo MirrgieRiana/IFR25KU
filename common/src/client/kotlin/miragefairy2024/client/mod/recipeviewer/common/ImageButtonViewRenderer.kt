@@ -28,7 +28,7 @@ object ImageButtonViewRenderer : ViewRenderer<ImageButtonView, Unit> {
         return false
     }
 
-    override fun render(view: ImageButtonView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: ImageButtonView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float, isFocused: Boolean) {
         if (!view.enabled.value) {
             drawTexture(bounds, graphics, view.disabledTexture ?: view.texture!!)
         } else if (isHovered) {

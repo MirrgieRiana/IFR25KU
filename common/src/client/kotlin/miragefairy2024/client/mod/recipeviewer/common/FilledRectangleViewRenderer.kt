@@ -12,7 +12,7 @@ import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION
 
 object FilledRectangleViewRenderer : ViewRenderer<FilledRectangleView, Unit> {
     override fun createState(view: FilledRectangleView) = Unit
-    override fun render(view: FilledRectangleView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: FilledRectangleView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float, isFocused: Boolean) {
         graphics.fill(bounds.x1, bounds.y1, bounds.x2, bounds.y2, view.color.value)
     }
 }

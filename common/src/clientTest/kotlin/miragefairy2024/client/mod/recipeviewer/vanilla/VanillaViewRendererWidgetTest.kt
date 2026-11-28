@@ -103,6 +103,29 @@ class VanillaViewRendererWidgetTest {
     }
 
     @Test
+    fun `ホバー表示が透明でもフォーカス中はクリック領域を白枠で囲むのだ`() {
+        GuiTestEnvironment().use { environment ->
+            val view = ClickableView().also { it.hoverOverlayColor = 0 }
+            val bounds = IntRectangle(10, 20, 100, 50)
+            val widget = VanillaViewRendererWidget(ClickableViewRenderer, view, bounds)
+
+            widget.render(environment.graphics, 30, 40, 0F)
+            Assertions.assertTrue(widget.isHovered)
+            Assertions.assertTrue(environment.outlines.isEmpty())
+
+            val path = checkNotNull(widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true)))
+            path.applyFocus(true)
+            widget.render(environment.graphics, 30, 40, 0F)
+            Assertions.assertEquals(listOf(GuiTestEnvironment.Outline(bounds, 0xFFFFFFFF.toInt())), environment.outlines)
+
+            environment.outlines.clear()
+            path.applyFocus(false)
+            widget.render(environment.graphics, 30, 40, 0F)
+            Assertions.assertTrue(environment.outlines.isEmpty())
+        }
+    }
+
+    @Test
     fun `フォーカス中のクリック可能な View はボタンと同じキーで操作できるのだ`() {
         val view = ClickableView()
         val widget = VanillaViewRendererWidget(ClickableViewRenderer, view, IntRectangle(10, 20, 100, 100))

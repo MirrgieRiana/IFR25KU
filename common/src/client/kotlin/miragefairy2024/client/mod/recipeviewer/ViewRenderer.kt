@@ -13,7 +13,7 @@ interface ViewRenderer<in V : PlaceableView, S> {
     fun mouseClicked(view: V, state: Slot<S>, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int) = false
     fun keyPressed(view: V, state: Slot<S>, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int) = false
     fun getRenderOverflow(view: V, bounds: IntRectangle) = RenderOverflow.NONE
-    fun render(view: V, state: Slot<S>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) = Unit
+    fun render(view: V, state: Slot<S>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float, isFocused: Boolean) = Unit
 }
 
 object ViewRendererRegistry {

@@ -45,7 +45,7 @@ class ViewRendererStateTest {
                     return view.initialValue
                 }
 
-                override fun render(view: StateTestView, state: Slot<Int>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+                override fun render(view: StateTestView, state: Slot<Int>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float, isFocused: Boolean) {
                     record(state)
                     state.value += 1
                 }
@@ -133,7 +133,7 @@ class ViewRendererStateTest {
             val renderer: ViewRenderer<StateTestView, Int> = object : ViewRenderer<StateTestView, Int> {
                 override fun createState(view: StateTestView) = view.initialValue
 
-                override fun render(view: StateTestView, state: Slot<Int>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+                override fun render(view: StateTestView, state: Slot<Int>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float, isFocused: Boolean) {
                     observedStates += state
                     Assertions.assertEquals(IntRectangle(20, 30, 100, 100), bounds)
                     state.value = 42

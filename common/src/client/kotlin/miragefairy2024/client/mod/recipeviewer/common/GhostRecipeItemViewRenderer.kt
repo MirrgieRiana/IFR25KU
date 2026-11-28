@@ -19,7 +19,7 @@ object GhostRecipeItemViewRenderer : ViewRenderer<GhostRecipeItemView, Double> {
 
     override fun getRenderOverflow(view: GhostRecipeItemView, bounds: IntRectangle) = RenderOverflow.UNBOUNDED
 
-    override fun render(view: GhostRecipeItemView, state: Slot<Double>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: GhostRecipeItemView, state: Slot<Double>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float, isFocused: Boolean) {
         val minecraft: Minecraft = Minecraft.getInstance()
         if (!Screen.hasControlDown()) state.value += minecraft.timer.realtimeDeltaTicks
 

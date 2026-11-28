@@ -10,7 +10,7 @@ import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION
 object NinePatchImageViewRenderer : ViewRenderer<NinePatchImageView, Unit> {
     override fun createState(view: NinePatchImageView) = Unit
 
-    override fun render(view: NinePatchImageView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: NinePatchImageView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float, isFocused: Boolean) {
         graphics.drawNinePatchImage(bounds, view.ninePatchTextureCard)
     }
 }

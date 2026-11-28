@@ -8,7 +8,7 @@ import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION
 
 object ImageViewRenderer : ViewRenderer<ImageView, Unit> {
     override fun createState(view: ImageView) = Unit
-    override fun render(view: ImageView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: ImageView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float, isFocused: Boolean) {
         graphics.blit(
             view.texture.id,
             bounds.x,

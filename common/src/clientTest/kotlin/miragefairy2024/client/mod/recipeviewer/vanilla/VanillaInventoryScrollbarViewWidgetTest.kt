@@ -20,6 +20,12 @@ private val THUMB_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_s
 private val DISABLED_THUMB_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_scroller_disabled.png")
 
 private class ScrollbarGraphics(val draws: MutableList<GuiTestEnvironment.TexturedDraw>) : GuiGraphicsExtractor(Minecraft.getInstance(), null) {
+    val outlines = mutableListOf<GuiTestEnvironment.Outline>()
+
+    override fun renderOutline(x: Int, y: Int, width: Int, height: Int, color: Int) {
+        Assertions.assertTrue(pose().clear())
+        outlines += GuiTestEnvironment.Outline(IntRectangle(x, y, width, height), color)
+    }
 
     fun assertBackgroundOnly(background: IntRectangle) {
         Assertions.assertEquals(listOf(BACKGROUND_TEXTURE), draws.map { it.texture })
@@ -85,33 +91,36 @@ class VanillaInventoryScrollbarViewWidgetTest {
                 view.viewportLength = 100
                 val mouseX = if (horizontal) 23.0 else 12.0
                 val mouseY = if (horizontal) 22.0 else 33.0
-                fun assertScrollbar(position: Int) {
+                fun assertScrollbar(position: Int, focused: Boolean) {
                     graphics.draws.clear()
+                    graphics.outlines.clear()
                     widget.render(graphics, mouseX.toInt(), mouseY.toInt(), 0F)
                     val thumb = if (horizontal) IntRectangle(11 + position, 21, 31, 16) else IntRectangle(11, 21 + position, 16, 31)
                     graphics.assertBackgroundAndThumb(bounds, thumb, THUMB_TEXTURE)
+                    val expectedOutlines = if (focused) listOf(GuiTestEnvironment.Outline(bounds, 0xFFFFFFFF.toInt())) else emptyList()
+                    Assertions.assertEquals(expectedOutlines, graphics.outlines)
                 }
 
-                assertScrollbar(0)
+                assertScrollbar(0, false)
                 Assertions.assertTrue(widget.mouseScrolled(mouseX, mouseY, 0.0, -1.0))
                 Assertions.assertEquals(15.0, scrollOffset.value)
-                assertScrollbar(5)
+                assertScrollbar(5, false)
 
                 widget.isFocused = true
                 Assertions.assertTrue(widget.keyPressed(if (horizontal) GLFW.GLFW_KEY_RIGHT else GLFW.GLFW_KEY_DOWN, 0, 0))
                 Assertions.assertEquals(30.0, scrollOffset.value)
-                assertScrollbar(10)
+                assertScrollbar(10, true)
 
                 Assertions.assertTrue(widget.mouseClicked(mouseX, mouseY, 0))
                 val dragX = if (horizontal) 67.0 else 0.0
                 val dragY = if (horizontal) 0.0 else 67.0
                 Assertions.assertTrue(widget.mouseDragged(mouseX + dragX, mouseY + dragY, 0, dragX, dragY))
                 Assertions.assertEquals(200.0, scrollOffset.value)
-                assertScrollbar(67)
+                assertScrollbar(67, true)
                 Assertions.assertTrue(widget.mouseReleased(mouseX + dragX, mouseY + dragY, 0))
 
                 scrollOffset.value = 100.0
-                assertScrollbar(34)
+                assertScrollbar(34, true)
                 widget.dispose()
             }
         }

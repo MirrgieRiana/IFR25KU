@@ -49,7 +49,7 @@ object FuelViewRenderer : ViewRenderer<FuelView, Unit> {
     val TEXTURE = MirageFairy2024.identifier("textures/gui/sprites/fuel.png")
     override fun createState(view: FuelView) = Unit
     override fun getRenderOverflow(view: FuelView, bounds: IntRectangle) = RenderOverflow(1, 0, 1, 0)
-    override fun render(view: FuelView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: FuelView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float, isFocused: Boolean) {
         val fuelMax = 20 * 10
         val fuel = fuelMax - (System.currentTimeMillis() / 50) % fuelMax - 1
         val fuelRate = fuel.toDouble() / fuelMax.toDouble()
@@ -83,7 +83,7 @@ object BlueFuelViewRenderer : ViewRenderer<BlueFuelView, Unit> {
     val TEXTURE = MirageFairy2024.identifier("textures/gui/sprites/blue_fuel.png")
     override fun createState(view: BlueFuelView) = Unit
     override fun getRenderOverflow(view: BlueFuelView, bounds: IntRectangle) = RenderOverflow(1, 0, 1, 0)
-    override fun render(view: BlueFuelView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: BlueFuelView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float, isFocused: Boolean) {
         val fuelMax = 20 * 10
         val fuel = fuelMax - (System.currentTimeMillis() / 50) % fuelMax - 1
         val fuelRate = fuel.toDouble() / fuelMax.toDouble()
@@ -116,7 +116,7 @@ object BlueFuelViewRenderer : ViewRenderer<BlueFuelView, Unit> {
 object TexturedArrowViewRenderer : ViewRenderer<TexturedArrowView, Unit> {
     override fun createState(view: TexturedArrowView) = Unit
 
-    override fun render(view: TexturedArrowView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: TexturedArrowView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float, isFocused: Boolean) {
         val rate = view.durationMilliSeconds?.let {
             (System.nanoTime() / 1_000_000 floorMod it).toDouble() / it.toDouble()
         } ?: 1.0

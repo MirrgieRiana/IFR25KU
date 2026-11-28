@@ -9,6 +9,7 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.atLeast
 import net.minecraft.client.gui.ComponentPath
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.narration.NarratableEntry
 import net.minecraft.client.gui.narration.NarratedElementType
@@ -67,6 +68,21 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
             maxThumbPosition.toDouble() * scrollRatio
         }
     }
+
+
+    // 描画なのだ～🌱
+
+    final override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
+        renderScrollbar(guiGraphics)
+        if (isActive && isFocused && !view.isAttachment && width > 0 && height > 0) {
+            val range = evaluateScrollRange()
+            if (range.start < range.endInclusive) {
+                guiGraphics.renderOutline(x, y, width, height, 0xFFFFFFFF.toInt())
+            }
+        }
+    }
+
+    protected abstract fun renderScrollbar(guiGraphics: GuiGraphicsExtractor)
 
 
     // スクロール操作なのだ～🌱

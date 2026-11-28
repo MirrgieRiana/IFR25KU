@@ -25,7 +25,7 @@ class NinePatchImageViewRendererTest {
 
         val draw = GuiTestEnvironment().use { environment ->
             environment.withTexturedDraws { draws ->
-                NinePatchImageViewRenderer.render(view, Slot(Unit), bounds, environment.graphics, 0, 0, false, 0.0F)
+                NinePatchImageViewRenderer.render(view, Slot(Unit), bounds, environment.graphics, 0, 0, false, 0.0F, false)
                 Assertions.assertEquals(1, draws.size)
                 draws.single()
             }

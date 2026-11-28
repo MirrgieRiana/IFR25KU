@@ -58,7 +58,7 @@ class VanillaXInventoryScrollbarViewWidget(view: XInventoryScrollbarView, bounds
     // 横方向の入力がない場合は、縦方向のホイール入力で横スクロールするのだ～🌱
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = if (scrollX != 0.0) scrollX else scrollY
 
-    override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
+    override fun renderScrollbar(guiGraphics: GuiGraphicsExtractor) {
         if (scrollbarThickness < 2 || scrollbarLength < 2) return
         val pose: PoseStack = guiGraphics.pose()
         pose.stack {
@@ -87,7 +87,7 @@ class VanillaYInventoryScrollbarViewWidget(view: YInventoryScrollbarView, bounds
     override fun getDragAmount(dragX: Double, dragY: Double) = dragY
     override fun getScrollAmount(scrollX: Double, scrollY: Double) = scrollY
 
-    override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
+    override fun renderScrollbar(guiGraphics: GuiGraphicsExtractor) {
         if (scrollbarThickness < 2 || scrollbarLength < 2) return
         renderVerticalScrollbar(guiGraphics, x, y)
     }

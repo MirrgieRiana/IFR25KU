@@ -15,6 +15,37 @@ import org.lwjgl.glfw.GLFW
 
 class VanillaFlatScrollbarViewWidgetTest {
     @Test
+    fun `縦横のフラットバーはつまみが透明でもフォーカス枠を描きスクロール範囲がなくなると枠を消すのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            GuiTestEnvironment().use { environment ->
+                val bounds = if (horizontal) IntRectangle(10, 20, 100, 7) else IntRectangle(10, 20, 7, 100)
+                val (view, widget) = if (horizontal) {
+                    val view = XFlatScrollbarView()
+                    Pair(view, VanillaXFlatScrollbarViewWidget(view, bounds))
+                } else {
+                    val view = YFlatScrollbarView()
+                    Pair(view, VanillaYFlatScrollbarViewWidget(view, bounds))
+                }
+                try {
+                    view.contentLength = 300
+                    view.viewportLength = 100
+                    val path = checkNotNull(widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true)))
+                    path.applyFocus(true)
+                    widget.render(environment.graphics, 0, 0, 0F)
+                    Assertions.assertEquals(listOf(GuiTestEnvironment.Outline(bounds, 0xFFFFFFFF.toInt())), environment.outlines)
+
+                    environment.outlines.clear()
+                    view.contentLength = view.viewportLength
+                    widget.render(environment.graphics, 0, 0, 0F)
+                    Assertions.assertTrue(environment.outlines.isEmpty())
+                } finally {
+                    widget.dispose()
+                }
+            }
+        }
+    }
+
+    @Test
     fun `View の指定位置を直接読み操作結果と再配置後の位置を保持するのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use { environment ->
@@ -204,6 +235,7 @@ class VanillaFlatScrollbarViewWidgetTest {
                         assertColor(1500L, view.scrollbarColor)
                         assertColor(1875L, 0x50FFFFFF)
                         assertColor(2250L, 0x00FFFFFF)
+                        Mockito.verify(graphics).renderOutline(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, 0xFFFFFFFF.toInt())
 
                         Assertions.assertFalse(widget.mouseScrolled(12.0, 22.0, 0.0, -1.0))
                         assertColor(2750L, view.scrollbarColor)
@@ -230,6 +262,8 @@ class VanillaFlatScrollbarViewWidgetTest {
                 Assertions.assertFalse(widget.mouseClicked(10.0, 20.0, 0))
                 Assertions.assertFalse(widget.hasMouseCapture(0))
                 widget.isFocused = true
+                widget.render(environment.graphics, 10, 20, 0F)
+                Assertions.assertTrue(environment.outlines.isEmpty())
                 Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
                 Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
                 widget.dispose()

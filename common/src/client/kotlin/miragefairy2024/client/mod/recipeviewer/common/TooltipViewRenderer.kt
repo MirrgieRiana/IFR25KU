@@ -9,7 +9,7 @@ import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION
 
 object TooltipViewRenderer : ViewRenderer<TooltipView, Unit> {
     override fun createState(view: TooltipView) = Unit
-    override fun render(view: TooltipView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: TooltipView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float, isFocused: Boolean) {
         if (isHovered) {
             val tooltip = view.tooltipProvider(mouseX, mouseY)
             if (tooltip.isNotEmpty()) {
