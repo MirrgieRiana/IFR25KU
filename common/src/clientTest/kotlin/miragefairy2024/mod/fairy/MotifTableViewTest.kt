@@ -70,7 +70,7 @@ class MotifTableViewTest {
             CondensedMotifChance(second, Chance(0.875, CondensedItem(1.0, motif))),
         ))
         val size = IntPoint(400, 240)
-        val view = menu.createRootView(text { "title"() }, text { "inventory"() }, ScreenEventSource())
+        val view = menu.createRootView(text { "title"() }, text { "inventory"() }, ScreenEventSource(), menu.createScreenState())
         view.initSizeCalculation(MOTIF_TABLE_RENDERING_PROXY, { size.x }, { size.y })
         val uiSize = view.evaluateActualSize()
         Assertions.assertEquals(IntPoint(334, size.y), uiSize)
@@ -123,7 +123,7 @@ class MotifTableViewTest {
         val motif: Motif = Mockito.mock(Motif::class.java)
         val menu = MotifTableScreenHandler(0, List(20) { CondensedMotifChance(itemStack, Chance(0.05, CondensedItem(1.0, motif))) })
         listOf(IntPoint(400, 240), IntPoint(640, 360)).forEach { size ->
-            val view = menu.createRootView(text { "title"() }, text { "inventory"() }, ScreenEventSource())
+            val view = menu.createRootView(text { "title"() }, text { "inventory"() }, ScreenEventSource(), menu.createScreenState())
             view.initSizeCalculation(MOTIF_TABLE_RENDERING_PROXY, { size.x }, { size.y })
             val uiSize = view.evaluateActualSize()
             Assertions.assertEquals(IntPoint(334, size.y), uiSize)
