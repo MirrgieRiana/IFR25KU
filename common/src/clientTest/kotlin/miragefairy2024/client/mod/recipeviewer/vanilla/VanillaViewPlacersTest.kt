@@ -1,5 +1,6 @@
 package miragefairy2024.client.mod.recipeviewer.vanilla
 
+import com.mojang.blaze3d.vertex.PoseStack
 import miragefairy2024.MessageViewScreenDefinition
 import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.SlotPositionSetter
@@ -68,6 +69,10 @@ import net.minecraft.network.chat.Style
 import net.minecraft.server.Bootstrap
 import net.minecraft.util.FormattedCharSequence
 import net.minecraft.world.Container
+import net.minecraft.world.SimpleContainer
+import net.minecraft.world.entity.player.Inventory
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.inventory.Slot
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -76,6 +81,8 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.lwjgl.glfw.GLFW
+import org.mockito.ArgumentCaptor
+import org.mockito.InOrder
 import org.mockito.Mockito
 import kotlin.math.roundToInt
 
@@ -83,6 +90,25 @@ private class PlacerTestView : FixedWidgetView(IntPoint(100, 100)) {
     var renders = 0
     var disposals = 0
     var detaches = 0
+}
+
+private class ClippedSlotView(val slot: Slot) : FixedWidgetView(IntPoint(40, 40)) {
+    var clipBounds = IntRectangle.ZERO
+}
+
+private class ClippedSlotTestScreen(menu: AbstractContainerMenu, inventory: Inventory, private val view: ClippedSlotView) : ViewContainerScreen<AbstractContainerMenu>(menu, inventory, text { empty() }) {
+    override fun createRootView(screenEventSource: ScreenEventSource) = view
+
+    fun setClip(offsetX: Int, offsetY: Int) {
+        view.clipBounds = IntRectangle(leftPos + view.slot.x + offsetX, topPos + view.slot.y + offsetY, 1, 1)
+    }
+
+    fun startQuickCrafting(slots: List<Slot>) {
+        isQuickCrafting = true
+        quickCraftSlots.addAll(slots)
+    }
+
+    fun quickCraftingTargets() = quickCraftSlots.toSet()
 }
 
 private val PLACER_RENDERING_PROXY: RenderingProxy = object : RenderingProxy {
@@ -105,6 +131,13 @@ class VanillaViewPlacersTest {
         ViewRendererRegistry.register(TooltipBackgroundView::class.java, TooltipBackgroundViewRenderer)
         ViewRendererRegistry.register(ItemView::class.java, ItemViewRenderer)
         ViewRendererRegistry.register(MultiLineTextView::class.java, MultiLineTextViewRenderer)
+        VANILLA_VIEW_PLACER_REGISTRY.register { context, view: ClippedSlotView, _ ->
+            val remover = context.registerMenuSlotPlacement(view.slot.index) { view.clipBounds }
+            object : ViewController {
+                override fun setOffset(offset: IntPoint) = Unit
+                override fun detach() = remover.remove()
+            }
+        }
         VANILLA_VIEW_PLACER_REGISTRY.register { context, view: PlacerTestView, bounds ->
             val widget: AbstractWidget = object : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {
                 override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
@@ -213,6 +246,69 @@ class VanillaViewPlacersTest {
                 Assertions.assertEquals("0,2", resizedSearch.value)
                 Assertions.assertEquals(setOf("first", "third"), measuredLines)
                 Assertions.assertEquals(offset, contentOffset(resizedViewport))
+            } finally {
+                screen.removed()
+            }
+        }
+    }
+
+    @Test
+    fun `上下左右のはみ出しを考慮して描画し、ドラッグ配布中に無効になったスロットを除外するのだ`() {
+        GuiTestEnvironment().use {
+            val stack = ItemStack(Items.STONE, 16)
+            val slot = Slot(SimpleContainer(stack), 0, 8, 8)
+            val view = ClippedSlotView(slot)
+            val slots = listOf(slot, Slot(SimpleContainer(1), 0, 24, 8), Slot(SimpleContainer(1), 0, 8, 24))
+            val menu: AbstractContainerMenu = object : AbstractContainerMenu(null, 0) {
+                init {
+                    slots.forEach {
+                        addSlot(it)
+                    }
+                }
+
+                override fun quickMoveStack(player: Player, index: Int) = ItemStack.EMPTY
+                override fun stillValid(player: Player) = true
+            }
+            val inventory = Inventory(Mockito.mock(Player::class.java))
+            val screen: ClippedSlotTestScreen = ClippedSlotTestScreen(menu, inventory, view)
+            val graphics: GuiGraphicsExtractor = Mockito.mock(GuiGraphicsExtractor::class.java)
+            Mockito.`when`(graphics.pose()).thenReturn(PoseStack())
+
+            val minecraft: Minecraft = Minecraft.getInstance()
+            Mockito.`when`(minecraft.lastInputType).thenReturn(InputType.MOUSE)
+            Mockito.`when`(minecraft.narrator).thenReturn(Mockito.mock(GameNarrator::class.java))
+            minecraft.screen = screen
+            try {
+                screen.init(minecraft, 100, 100)
+                listOf(IntPoint(-17, 0), IntPoint(32, 0), IntPoint(0, -17), IntPoint(0, 32)).forEach { (x, y) ->
+                    screen.setClip(x, y)
+                    screen.render(graphics, 0, 0, 0.0F)
+                }
+                Mockito.verify(graphics, Mockito.never()).renderItem(Mockito.eq(stack), Mockito.eq(slot.x), Mockito.eq(slot.y), Mockito.anyInt())
+
+                listOf(IntPoint(-16, 0), IntPoint(31, 0), IntPoint(0, -16), IntPoint(0, 31)).forEachIndexed { index, (x, y) ->
+                    screen.setClip(x, y)
+                    screen.render(graphics, 0, 0, 0.0F)
+                    Mockito.verify(graphics, Mockito.times(index + 1)).renderItem(Mockito.eq(stack), Mockito.eq(slot.x), Mockito.eq(slot.y), Mockito.anyInt())
+                }
+
+                Mockito.clearInvocations(graphics)
+                menu.carried = ItemStack(Items.STONE, 5)
+                screen.startQuickCrafting(slots)
+                val incompatibleStack = ItemStack(Items.DIRT)
+                slot.set(incompatibleStack)
+                screen.setClip(0, 32)
+                screen.render(graphics, 0, 0, 0.0F)
+
+                Assertions.assertEquals(slots.drop(1).toSet(), screen.quickCraftingTargets())
+                val (x, y, width, height) = view.clipBounds
+                val remainingStack: ArgumentCaptor<ItemStack> = ArgumentCaptor.forClass(ItemStack::class.java)
+                val drawing: InOrder = Mockito.inOrder(graphics)
+                drawing.verify(graphics).enableScissor(x, y, x + width, y + height)
+                drawing.verify(graphics).renderItem(Mockito.eq(incompatibleStack), Mockito.eq(slot.x), Mockito.eq(slot.y), Mockito.anyInt())
+                drawing.verify(graphics).disableScissor()
+                drawing.verify(graphics).renderItem(remainingStack.capture(), Mockito.anyInt(), Mockito.anyInt())
+                Assertions.assertEquals(1, remainingStack.value.count)
             } finally {
                 screen.removed()
             }

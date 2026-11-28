@@ -8,6 +8,8 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.contains
+import miragefairy2024.mod.recipeviewer.view.grow
+import miragefairy2024.mod.recipeviewer.view.intersect
 import miragefairy2024.util.Remover
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
@@ -125,6 +127,13 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
             val (x, y, sizeX, sizeY) = clipBounds
             guiGraphics.enableScissor(x, y, x + sizeX, y + sizeY)
             slotScissorEnabled = true
+            // ドラッグ配布中は、親の描画処理が配布先と残数も更新するのだ～🌱
+            if (!isQuickCrafting) {
+                // スロットから大きくはみ出すアイテムの描画も許容するため、上下左右にアイテム 1 個分の 16 px を足すのだ～🌱
+                val itemBounds = IntRectangle(leftPos + slot.x, topPos + slot.y, 16, 16)
+                val visibleBounds = itemBounds.grow(16).intersect(clipBounds)
+                if (visibleBounds.sizeX == 0 || visibleBounds.sizeY == 0) return
+            }
         }
         // 親クラスが直後に描くハイライトにもこのスロットのクリップを適用するために、クリップの着脱を変なタイミングにしているのだ～🌱
         super.renderSlot(guiGraphics, slot)
