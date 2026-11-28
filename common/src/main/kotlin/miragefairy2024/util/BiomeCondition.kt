@@ -3,6 +3,7 @@ package miragefairy2024.util
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import miragefairy2024.migration.location__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.common.guiAlwaysTranslation
 import net.minecraft.core.Holder
 import net.minecraft.core.registries.Registries
@@ -52,7 +53,7 @@ sealed class BiomeCondition {
         }
 
         override fun test(biome: Holder<Biome>) = biome isIn biomeKey
-        override fun getDisplayName() = text { translate(biomeKey.location().toLanguageKey("biome")) }
+        override fun getDisplayName() = text { translate(biomeKey.location__MIGRATION2612_ReplaceMethod().toLanguageKey("biome")) }
     }
 
     class BiomeTag(val biomeTag: TagKey<Biome>) : BiomeCondition() {

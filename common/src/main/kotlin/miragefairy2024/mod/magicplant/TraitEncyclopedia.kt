@@ -3,6 +3,7 @@ package miragefairy2024.mod.magicplant
 import com.mojang.serialization.Codec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.migration.location__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.Emoji
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.common.guiFullScreenTranslation
@@ -77,7 +78,7 @@ object TraitEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<Trai
 
     override fun createRecipeEntries(registryAccess: RegistryAccess): Iterable<RecipeEntry<Trait>> {
         return traitRegistry.sortedEntrySet.map { (id, trait) ->
-            RecipeEntry(registryAccess, id.location(), trait, true)
+            RecipeEntry(registryAccess, id.location__MIGRATION2612_ReplaceMethod(), trait, true)
         }
     }
 

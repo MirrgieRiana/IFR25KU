@@ -1,5 +1,6 @@
 package miragefairy2024.util
 
+import miragefairy2024.migration.location__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.levelgen.Noises
 import net.minecraft.world.level.levelgen.synth.NormalNoise
@@ -21,7 +22,7 @@ val SURFACE_NOISE_STANDARD_DEVIATIONS = mapOf(
 )
 
 private fun getStandardDeviation(noiseKey: ResourceKey<NormalNoise.NoiseParameters>): Double {
-    return SURFACE_NOISE_STANDARD_DEVIATIONS[noiseKey] ?: throw IllegalArgumentException("Standard deviation is not measured: ${noiseKey.location()}")
+    return SURFACE_NOISE_STANDARD_DEVIATIONS[noiseKey] ?: throw IllegalArgumentException("Standard deviation is not measured: ${noiseKey.location__MIGRATION2612_ReplaceMethod()}")
 }
 
 /**

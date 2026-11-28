@@ -2,6 +2,7 @@ package miragefairy2024.mod.materials
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.migration.noCollission__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.biome.RETROSPECTIVE_CITY_BUILDING_BLOCK_TAG
 import miragefairy2024.mod.biome.RETROSPECTIVE_CITY_FLOOR_BLOCK_TAG
@@ -893,7 +894,7 @@ open class BlockMaterialCard(
         ) {
             override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties()
                 .replaceable()
-                .noCollission()
+                .noCollission__MIGRATION2612_ReplaceMethod()
                 .offsetType(BlockBehaviour.OffsetType.XZ)
                 .ignitedByLava()
                 .pushReaction(PushReaction.DESTROY)
@@ -939,7 +940,7 @@ open class BlockMaterialCard(
         ) {
             override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties()
                 .replaceable()
-                .noCollission()
+                .noCollission__MIGRATION2612_ReplaceMethod()
                 .offsetType(BlockBehaviour.OffsetType.XZ)
                 .ignitedByLava()
                 .pushReaction(PushReaction.DESTROY)
@@ -973,7 +974,7 @@ open class BlockMaterialCard(
         ) {
             override fun createBlockProperties(): BlockBehaviour.Properties = super.createBlockProperties()
                 .replaceable()
-                .noCollission()
+                .noCollission__MIGRATION2612_ReplaceMethod()
                 .offsetType(BlockBehaviour.OffsetType.XZ)
                 .ignitedByLava()
                 .pushReaction(PushReaction.DESTROY)

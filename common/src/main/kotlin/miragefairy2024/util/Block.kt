@@ -3,6 +3,7 @@ package miragefairy2024.util
 import miragefairy2024.DataGenerationEvents
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
+import miragefairy2024.migration.get__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.platformProxy
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry
 import net.minecraft.core.registries.BuiltInRegistries
@@ -20,7 +21,7 @@ import net.minecraft.world.level.block.state.properties.Property
 /** レジストリに登録する前に呼び出すことはできません。 */
 fun Block.getIdentifier() = BuiltInRegistries.BLOCK.getKey(this)
 
-fun Identifier.toBlock() = BuiltInRegistries.BLOCK.get(this)
+fun Identifier.toBlock() = BuiltInRegistries.BLOCK.get__MIGRATION2612_ReplaceMethod(this)
 
 context(_: ModContext)
 fun (() -> Block).registerFlammable(burn: Int, spread: Int) = ModEvents.onInitialize {

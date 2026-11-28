@@ -3,6 +3,7 @@ package miragefairy2024.mod.magicplant
 import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.migration.noCollission__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.HarvestNotation
 import miragefairy2024.mod.PoemList
 import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
@@ -40,7 +41,7 @@ import net.minecraft.world.level.material.PushReaction
 @Suppress("LeakingThis") // ブートストラップ問題のため解決不可能なので妥協する
 abstract class MagicPlantCard<B : MagicPlantBlock> {
     companion object {
-        fun createCommonSettings(): BlockBehaviour.Properties = BlockBehaviour.Properties.of().noCollission().randomTicks().pushReaction(PushReaction.DESTROY)
+        fun createCommonSettings(): BlockBehaviour.Properties = BlockBehaviour.Properties.of().noCollission__MIGRATION2612_ReplaceMethod().randomTicks().pushReaction(PushReaction.DESTROY)
     }
 
     abstract fun getBlockPath(): String

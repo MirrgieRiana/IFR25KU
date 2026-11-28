@@ -5,6 +5,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.lib.PlacedItemFeature
+import miragefairy2024.migration.location__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
+import miragefairy2024.migration.registryOrThrow__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.biome.FAIRY_BIOME_TAG
 import miragefairy2024.mod.biome.OldGrowthAmberForestBiomeCard
 import miragefairy2024.mod.biome.RetrospectiveCityBiomeCard
@@ -161,12 +163,12 @@ object DebrisRecipeViewerCategoryCard : RecipeViewerCategoryCard<DebrisCard>() {
             }
             view += when (condition) {
                 is BiomeCondition.Always -> label
-                is BiomeCondition.BiomeKey -> label.tooltip(text { translate(condition.biomeKey.location().toLanguageKey("biome")) })
+                is BiomeCondition.BiomeKey -> label.tooltip(text { translate(condition.biomeKey.location__MIGRATION2612_ReplaceMethod().toLanguageKey("biome")) })
                 is BiomeCondition.BiomeTag -> {
-                    val biomes = recipeEntry.registryAccess.registryOrThrow(Registries.BIOME)[condition.biomeTag].toList()
+                    val biomes = recipeEntry.registryAccess.registryOrThrow__MIGRATION2612_ReplaceMethod(Registries.BIOME)[condition.biomeTag].toList()
                     val lines = mutableListOf<Component>()
-                    lines += biomes.sortedBy { it.unwrapKey().get().location() }.take(10).map {
-                        text { translate(it.unwrapKey().get().location().toLanguageKey("biome")) }
+                    lines += biomes.sortedBy { it.unwrapKey().get().location__MIGRATION2612_ReplaceMethod() }.take(10).map {
+                        text { translate(it.unwrapKey().get().location__MIGRATION2612_ReplaceMethod().toLanguageKey("biome")) }
                     }
                     if (biomes.size > 10) lines += text { "..."() } // TODO 完全なリストGUI
                     label.tooltip(lines)

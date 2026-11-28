@@ -1,6 +1,7 @@
 package miragefairy2024.mod.fairy
 
 import miragefairy2024.MirageFairy2024
+import miragefairy2024.migration.location__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.AttachmentChangedEvent
 import miragefairy2024.mod.common.SlotType
 import miragefairy2024.mod.passiveskill.PassiveSkillEffect
@@ -167,7 +168,7 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                                         view.alignmentX = Alignment.CENTER
                                         view.shadow = false
                                     }
-                                    passiveSkillEffectRegistry.entrySet().sortedBy { it.key.location() }.forEach { (_, effect) ->
+                                    passiveSkillEffectRegistry.entrySet().sortedBy { it.key.location__MIGRATION2612_ReplaceMethod() }.forEach { (_, effect) ->
                                         fun <T : Any> f(effect: PassiveSkillEffect<T>) {
                                             val samples = motifRegistry.entrySet()
                                                 .flatMap { it.value.passiveSkillSpecifications }

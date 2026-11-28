@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
+import miragefairy2024.migration.location__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.SURFACE_NOISE_STANDARD_DEVIATIONS
 import miragefairy2024.util.enJa
@@ -118,7 +119,7 @@ fun initBiomeModule() {
             val standardDeviation = sqrt(squaredSum / count.toDouble())
             run {
                 val body = listOf(
-                    "noise=${noiseKey.location()}",
+                    "noise=${noiseKey.location__MIGRATION2612_ReplaceMethod()}",
                     "standardDeviation=${standardDeviation formatAs "%.6f"}",
                     "count=$count",
                     "constant=$constantStandardDeviation",
@@ -128,7 +129,7 @@ fun initBiomeModule() {
             }
             run {
                 val body = listOf(
-                    "noise=${noiseKey.location()}",
+                    "noise=${noiseKey.location__MIGRATION2612_ReplaceMethod()}",
                     "standardDeviation=$standardDeviation",
                     "count=$count",
                     "constant=$constantStandardDeviation",

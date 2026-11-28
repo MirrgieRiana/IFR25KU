@@ -2,6 +2,7 @@ package miragefairy2024.util
 
 import miragefairy2024.DataGenerationEvents
 import miragefairy2024.ModContext
+import miragefairy2024.migration.location__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider as FabricBlockLootSubProvider // MIGRATION2612 ReplaceImport net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.Registries
@@ -70,7 +71,7 @@ fun SequenceLootPoolEntry(vararg children: LootPoolEntryContainer.Builder<*>, in
 
 context(_: ModContext)
 fun (() -> Block).registerLootTableGeneration(initializer: (FabricBlockLootSubProvider, HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateBlockLootTable { it, registries ->
-    it.add(this(), initializer(it, registries).setRandomSequence(this().lootTable.location()))
+    it.add(this(), initializer(it, registries).setRandomSequence(this().lootTable.location__MIGRATION2612_ReplaceMethod()))
 }
 
 context(_: ModContext)
@@ -80,22 +81,22 @@ fun (() -> Block).registerDefaultLootTableGeneration() = this.registerLootTableG
 
 context(_: ModContext)
 fun registerChestLootTableGeneration(lootTableId: ResourceKey<LootTable>, initializer: (HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateChestLootTable { it, registries ->
-    it(lootTableId, initializer(registries).setRandomSequence(lootTableId.location()))
+    it(lootTableId, initializer(registries).setRandomSequence(lootTableId.location__MIGRATION2612_ReplaceMethod()))
 }
 
 context(_: ModContext)
 fun registerArchaeologyLootTableGeneration(lootTableId: ResourceKey<LootTable>, initializer: (HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateArchaeologyLootTable { it, registries ->
-    it(lootTableId, initializer(registries).setRandomSequence(lootTableId.location()))
+    it(lootTableId, initializer(registries).setRandomSequence(lootTableId.location__MIGRATION2612_ReplaceMethod()))
 }
 
 context(_: ModContext)
 fun (() -> EntityType<*>).registerLootTableGeneration(initializer: (HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateEntityLootTable { it, registries ->
-    it(this(), initializer(registries).setRandomSequence(this().defaultLootTable.location()))
+    it(this(), initializer(registries).setRandomSequence(this().defaultLootTable.location__MIGRATION2612_ReplaceMethod()))
 }
 
 context(_: ModContext)
 fun registerAdvancementRewardLootTableGeneration(lootTableId: ResourceKey<LootTable>, initializer: (HolderLookup.Provider) -> LootTable.Builder) = DataGenerationEvents.onGenerateAdvancementRewardLootTable { it, registries ->
-    it(lootTableId, initializer(registries).setRandomSequence(lootTableId.location()))
+    it(lootTableId, initializer(registries).setRandomSequence(lootTableId.location__MIGRATION2612_ReplaceMethod()))
 }
 
 enum class FortuneEffect {

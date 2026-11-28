@@ -4,6 +4,7 @@ import kotlinx.coroutines.CompletableDeferred
 import miragefairy2024.DataGenerationEvents
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.migration.location__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.materials.MaterialCard
 import net.minecraft.advancements.Advancement
 import net.minecraft.advancements.AdvancementHolder
@@ -117,7 +118,7 @@ class AdvancementCard(
         fun visit(structure: ResourceKey<Structure>): (HolderLookup.Provider) -> Pair<String, Criterion<*>> {
             return { registries ->
                 Pair(
-                    "visit_${structure.location().path}",
+                    "visit_${structure.location__MIGRATION2612_ReplaceMethod().path}",
                     PlayerTrigger.TriggerInstance.located(
                         LocationPredicate.Builder.inStructure(
                             registries.lookupOrThrow(Registries.STRUCTURE).getOrThrow(structure)
@@ -131,7 +132,7 @@ class AdvancementCard(
         fun visit(biome: ResourceKey<Biome>): (HolderLookup.Provider) -> Pair<String, Criterion<*>> {
             return { registries ->
                 Pair(
-                    biome.location().path,
+                    biome.location__MIGRATION2612_ReplaceMethod().path,
                     PlayerTrigger.TriggerInstance.located(
                         LocationPredicate.Builder.inBiome(
                             registries.lookupOrThrow(Registries.BIOME).getOrThrow(biome)

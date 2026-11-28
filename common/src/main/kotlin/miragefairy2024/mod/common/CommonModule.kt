@@ -7,6 +7,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
 import miragefairy2024.ModifyItemEnchantmentsHandler
+import miragefairy2024.migration.location__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.fairy.MotifCard
 import miragefairy2024.mod.fairy.createFairyItemStack
 import miragefairy2024.mod.materials.MaterialCard
@@ -103,7 +104,7 @@ fun initCommonModule() {
         val lines = mutableListOf<List<String>>()
         level.registryAccess()[Registries.BIOME].listElements().forEach { biome ->
             lines += listOf(
-                text { translate(biome.key().location().toLanguageKey("biome")) }.string,
+                text { translate(biome.key().location__MIGRATION2612_ReplaceMethod().toLanguageKey("biome")) }.string,
                 "${biome.humidityCategory}",
                 "${biome.temperatureCategory}",
             )
@@ -116,7 +117,7 @@ fun initCommonModule() {
     }
     registerServerDebugItem("dump_biome_features", Blocks.SPRUCE_SAPLING.toTextureSource(), 0xFFFF00FF.toInt()) { level, player, _, _ ->
         fun Level.getBiomes() = this.registryAccess()[Registries.BIOME].listElements().toList()
-        fun Holder<*>.getId() = this.unwrapKey().getOrNull()?.location()?.string
+        fun Holder<*>.getId() = this.unwrapKey().getOrNull()?.location__MIGRATION2612_ReplaceMethod()?.string
         fun Holder<Biome>.getPlacedFeatureSets() = this.value().generationSettings.features()
 
         // PlacedFeatureの単純リスト

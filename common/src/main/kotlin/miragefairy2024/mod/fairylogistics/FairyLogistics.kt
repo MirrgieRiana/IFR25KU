@@ -5,6 +5,7 @@ import miragefairy2024.lib.HorizontalFacingMachineBlock
 import miragefairy2024.lib.MachineBlockEntity
 import miragefairy2024.lib.MachineCard
 import miragefairy2024.lib.MachineScreenHandler
+import miragefairy2024.migration.noCollission__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.util.BlockStateVariant
 import miragefairy2024.util.BlockStateVariantEntry
@@ -39,7 +40,7 @@ abstract class FairyLogisticsCard<B : FairyLogisticsBlock, E : FairyLogisticsBlo
 
     // Block
 
-    override fun createBlockSettings(): BlockBehaviour.Properties = BlockBehaviour.Properties.of().noCollission().strength(1.0F).pushReaction(PushReaction.DESTROY)
+    override fun createBlockSettings(): BlockBehaviour.Properties = BlockBehaviour.Properties.of().noCollission__MIGRATION2612_ReplaceMethod().strength(1.0F).pushReaction(PushReaction.DESTROY)
 
     context(_: ModContext)
     override fun init() {

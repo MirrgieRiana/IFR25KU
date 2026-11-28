@@ -1,6 +1,7 @@
 package miragefairy2024.mod.magicplant
 
 import miragefairy2024.MirageFairy2024
+import miragefairy2024.migration.get__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.minecraft.core.Registry
@@ -39,5 +40,5 @@ abstract class TraitEffectKey<T : Any> {
 // util
 
 fun TraitEffectKey<*>.getIdentifier() = traitEffectKeyRegistry.getKey(this)!!
-fun Identifier.toTraitEffectKey() = traitEffectKeyRegistry.get(this)
+fun Identifier.toTraitEffectKey() = traitEffectKeyRegistry.get__MIGRATION2612_ReplaceMethod(this)
 val TraitEffectKey<*>.style: Style get() = Style.EMPTY.withColor(this.color)

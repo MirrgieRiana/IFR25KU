@@ -1,5 +1,6 @@
 package miragefairy2024.mod.passiveskill.effects
 
+import miragefairy2024.migration.location__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.Emoji
 import miragefairy2024.mod.invoke
 import miragefairy2024.mod.passiveskill.PassiveSkillContext
@@ -23,7 +24,7 @@ object StatusEffectPassiveSkillEffect : AbstractPassiveSkillEffect<StatusEffectP
 
     override fun getText(value: Value) = getTexts(value).join(text { ","() })
     override fun getTexts(value: Value): List<Component> {
-        return value.map.entries.sortedBy { (it.key as? Holder.Reference<*>)?.key()?.location() }.map { (statusEffect, entry) ->
+        return value.map.entries.sortedBy { (it.key as? Holder.Reference<*>)?.key()?.location__MIGRATION2612_ReplaceMethod() }.map { (statusEffect, entry) ->
             text { Emoji.POTION() + " "() + statusEffect.value().displayName + if (entry.level >= 2) " "() + entry.level.toRomanText() else empty() }
         }
     }
@@ -56,7 +57,7 @@ object StatusEffectPassiveSkillEffect : AbstractPassiveSkillEffect<StatusEffectP
             .map { statusEffect ->
                 PassiveSkillEffectFilter(
                     this,
-                    identifier * "/" * statusEffect.key().location().pathString,
+                    identifier * "/" * statusEffect.key().location__MIGRATION2612_ReplaceMethod().pathString,
                     text { Emoji.POTION() + " "() + statusEffect.value().displayName }
                 ) { statusEffect in it.map.keys }
             }

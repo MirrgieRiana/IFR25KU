@@ -4,6 +4,8 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.migration.location__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
+import miragefairy2024.migration.registryOrThrow__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.materials.MIRAGE_FLOUR_TAG
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.view.Alignment
@@ -61,7 +63,7 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
             .map {
                 val prefix = when (val condition = it.biomeCondition) {
                     is BiomeCondition.Always -> "1_always"
-                    is BiomeCondition.BiomeKey -> "2_biome/" + condition.biomeKey.location().pathString
+                    is BiomeCondition.BiomeKey -> "2_biome/" + condition.biomeKey.location__MIGRATION2612_ReplaceMethod().pathString
                     is BiomeCondition.BiomeTag -> "3_biome_tag/" + condition.biomeTag.location().pathString
                 }
                 val syntheticIdentifier = "$prefix/" * it.motif.getIdentifier()!!
@@ -86,12 +88,12 @@ object CommonMotifRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Comm
             }
             view += when (condition) {
                 is BiomeCondition.Always -> label
-                is BiomeCondition.BiomeKey -> label.tooltip(text { translate(condition.biomeKey.location().toLanguageKey("biome")) })
+                is BiomeCondition.BiomeKey -> label.tooltip(text { translate(condition.biomeKey.location__MIGRATION2612_ReplaceMethod().toLanguageKey("biome")) })
                 is BiomeCondition.BiomeTag -> {
-                    val biomes = recipeEntry.registryAccess.registryOrThrow(Registries.BIOME)[condition.biomeTag].toList()
+                    val biomes = recipeEntry.registryAccess.registryOrThrow__MIGRATION2612_ReplaceMethod(Registries.BIOME)[condition.biomeTag].toList()
                     val lines = mutableListOf<Component>()
-                    lines += biomes.sortedBy { it.unwrapKey().get().location() }.take(10).map {
-                        text { translate(it.unwrapKey().get().location().toLanguageKey("biome")) }
+                    lines += biomes.sortedBy { it.unwrapKey().get().location__MIGRATION2612_ReplaceMethod() }.take(10).map {
+                        text { translate(it.unwrapKey().get().location__MIGRATION2612_ReplaceMethod().toLanguageKey("biome")) }
                     }
                     if (biomes.size > 10) lines += text { "..."() } // TODO 完全なリストGUI
                     label.tooltip(lines)

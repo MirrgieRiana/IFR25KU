@@ -3,6 +3,7 @@ package miragefairy2024.mod.fairy
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.clientProxy
+import miragefairy2024.migration.get__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.NinePatchTextureCard
 import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
@@ -65,7 +66,7 @@ val MOTIF_TABLE_STREAM_CODEC = object : StreamCodec<RegistryFriendlyByteBuf, Lis
             val motifId = `object`.readUtf()
             val rate = `object`.readDouble()
             val count = `object`.readDouble()
-            chanceTable += CondensedMotifChance(showingItemStack, Chance(rate, CondensedItem(count, motifRegistry.get(motifId.toIdentifier())!!)))
+            chanceTable += CondensedMotifChance(showingItemStack, Chance(rate, CondensedItem(count, motifRegistry.get__MIGRATION2612_ReplaceMethod(motifId.toIdentifier())!!)))
         }
         return chanceTable
     }

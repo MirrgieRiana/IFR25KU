@@ -19,6 +19,12 @@
 import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 ```
 
+### メソッド変更マーカー
+
+単純なメソッド改名では、呼び出し名の末尾に `__MIGRATION2612_ReplaceMethod` を付け、移行用の拡張関数を経由します。
+拡張関数には `/* MIGRATION2612 ReplaceMethod <移行先の式> */` を、呼び出し側の import には行末に `// MIGRATION2612 RemoveImport` を付けます。
+比較元のソースは、移行用の拡張関数のファイルとマーカー付きの import 行を除き、呼び出し名の接尾辞を取り除くと復元できます。
+
 ## ソースコードの入手
 
 ### `genSources` タスク - Minecraft のソースコードの jar を生成する

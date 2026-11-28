@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.migration.noCollission__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.common.mirageFairy2024ItemGroupCard
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.particle.ParticleTypeCard
@@ -91,7 +92,7 @@ object DepositedSulfurCard {
             BlockBehaviour.Properties.of()
                 .mapColor(MapColor.COLOR_YELLOW)
                 .replaceable()
-                .noCollission()
+                .noCollission__MIGRATION2612_ReplaceMethod()
                 .requiresCorrectToolForDrops()
                 .strength(0.2F)
                 .sound(SoundType.STONE)
@@ -108,7 +109,7 @@ object SolfataraCard {
             BlockBehaviour.Properties.of()
                 .mapColor(MapColor.COLOR_YELLOW)
                 .replaceable()
-                .noCollission()
+                .noCollission__MIGRATION2612_ReplaceMethod()
                 .noOcclusion()
                 .requiresCorrectToolForDrops()
                 .strength(0.2F)

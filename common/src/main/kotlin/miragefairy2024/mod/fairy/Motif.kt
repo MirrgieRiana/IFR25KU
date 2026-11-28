@@ -3,6 +3,7 @@ package miragefairy2024.mod.fairy
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
+import miragefairy2024.migration.get__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.Emoji
 import miragefairy2024.mod.FairyStatueFountainBlock
 import miragefairy2024.mod.FoodIngredientCategoryCard
@@ -87,7 +88,7 @@ val motifRegistryKey: ResourceKey<Registry<Motif>> = ResourceKey.createRegistryK
 val motifRegistry: Registry<Motif> = FabricRegistryBuilder.createSimple(motifRegistryKey).attribute(RegistryAttribute.SYNCED).buildAndRegister()
 
 fun Motif.getIdentifier() = motifRegistry.getKey(this)
-fun Identifier.toFairyMotif() = motifRegistry.get(this)
+fun Identifier.toFairyMotif() = motifRegistry.get__MIGRATION2612_ReplaceMethod(this)
 
 interface Motif {
     val displayName: Component
