@@ -12,6 +12,7 @@ import mirrg.kotlin.helium.Slot
 import mirrg.kotlin.hydrogen.alphaOfArgb
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
+import net.minecraft.client.gui.navigation.CommonInputs
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.resources.sounds.SimpleSoundInstance
 import net.minecraft.sounds.SoundEvents
@@ -23,13 +24,12 @@ object ClickableViewRenderer : ViewRenderer<ClickableView, Unit> {
 
     override fun mouseClicked(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int): Boolean {
         if (button != 0) return false
-        view.onClick.fire {
-            if (it()) {
-                Minecraft.getInstance().soundManager.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F))
-                return true
-            }
-        }
-        return false
+        return activate(view)
+    }
+
+    override fun keyPressed(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+        if (!CommonInputs.selected(keyCode)) return false
+        return activate(view)
     }
 
     override fun render(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float, isFocused: Boolean) {
@@ -47,6 +47,16 @@ object ClickableViewRenderer : ViewRenderer<ClickableView, Unit> {
         if (isFocused && bounds.sizeX > 0 && bounds.sizeY > 0) {
             graphics.renderOutline(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, 0xFFFFFFFF.toInt())
         }
+    }
+
+    private fun activate(view: ClickableView): Boolean {
+        view.onClick.fire {
+            if (it()) {
+                Minecraft.getInstance().soundManager.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F))
+                return true
+            }
+        }
+        return false
     }
 
 }

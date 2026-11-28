@@ -74,7 +74,7 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
 
     final override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
         renderScrollbar(guiGraphics)
-        if (isActive && isFocused && view.keyboardFocusable && width > 0 && height > 0) {
+        if (isActive && isFocused && !view.isAttachment && width > 0 && height > 0) {
             val range = evaluateScrollRange()
             if (range.start < range.endInclusive) {
                 guiGraphics.renderOutline(x, y, width, height, 0xFFFFFFFF.toInt())
@@ -179,7 +179,7 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
 
     override fun nextFocusPath(event: FocusNavigationEvent): ComponentPath? {
 
-        if (!isActive || !view.keyboardFocusable) return null
+        if (!isActive || view.isAttachment) return null
 
         val range = evaluateScrollRange()
         if (range.start < range.endInclusive && !isFocused) {

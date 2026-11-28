@@ -151,7 +151,7 @@ class MotifTableScreenContent(chanceTable: List<CondensedMotifChance>, state: St
                 }
                 view += scrollView
                 val scrollbarView = YInventoryScrollbarView().configure {
-                    view.keyboardFocusable = false
+                    view.isAttachment = true
                 }
                 view += scrollbarView
                 connectScrollbar(scrollView.view, scrollbarView.view)

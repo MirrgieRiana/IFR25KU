@@ -29,10 +29,17 @@ import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.mod.recipeviewer.views.createView
+import miragefairy2024.util.empty
+import miragefairy2024.util.register
+import miragefairy2024.util.text
 import mirrg.kotlin.helium.Slot
 import net.minecraft.SharedConstants
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.client.gui.navigation.ScreenDirection
+import net.minecraft.client.gui.screens.Screen
+import net.minecraft.client.resources.sounds.SoundInstance
+import net.minecraft.client.sounds.SoundManager
 import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.server.Bootstrap
 import net.minecraft.world.item.ItemStack
@@ -40,6 +47,8 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.lwjgl.glfw.GLFW
+import org.mockito.Mockito
 
 private class RendererTestView : FixedWidgetView(IntPoint(100, 100))
 
@@ -113,6 +122,45 @@ class VanillaViewRendererWidgetTest {
             path.applyFocus(false)
             widget.render(environment.graphics, 30, 40, 0F)
             Assertions.assertTrue(environment.outlines.isEmpty())
+        }
+    }
+
+    @Test
+    fun `フォーカス中のクリック可能な View はボタンと同じキーで操作できるのだ`() {
+        val view = ClickableView()
+        val widget = VanillaViewRendererWidget(ClickableViewRenderer, view, IntRectangle(10, 20, 100, 100))
+        var listenerCalls = 0
+        var consumeClick = false
+        view.onClick.register {
+            listenerCalls++
+            consumeClick
+        }
+
+        val minecraft = Mockito.mock(Minecraft::class.java)
+        val soundManager = Mockito.mock(SoundManager::class.java)
+        Mockito.`when`(minecraft.soundManager).thenReturn(soundManager)
+        Mockito.mockStatic(Minecraft::class.java).use { minecraftMock ->
+            minecraftMock.`when`<Minecraft> { Minecraft.getInstance() }.thenReturn(minecraft)
+            val screen = object : Screen(text { empty() }) {
+                init {
+                    addRenderableWidget(widget)
+                }
+            }
+            Assertions.assertFalse(screen.keyPressed(GLFW.GLFW_KEY_ENTER, 0, 0))
+            screen.focused = widget
+            Assertions.assertFalse(screen.keyPressed(GLFW.GLFW_KEY_F, 0, 0))
+            Assertions.assertEquals(0, listenerCalls)
+
+            Assertions.assertFalse(screen.keyPressed(GLFW.GLFW_KEY_ENTER, 0, 0))
+            Assertions.assertEquals(1, listenerCalls)
+            Mockito.verifyNoInteractions(soundManager)
+
+            consumeClick = true
+            listOf(GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER, GLFW.GLFW_KEY_SPACE).forEach { keyCode ->
+                Assertions.assertTrue(screen.keyPressed(keyCode, 0, 0))
+            }
+            Assertions.assertEquals(4, listenerCalls)
+            Mockito.verify(soundManager, Mockito.times(3)).play(Mockito.any(SoundInstance::class.java))
         }
     }
 
