@@ -32,7 +32,7 @@ internal class GuiTestEnvironment : AutoCloseable {
     val renderSystem: MockedStatic<RenderSystem> = Mockito.mockStatic(RenderSystem::class.java)
     val events = mutableListOf<String>()
     val fills = mutableListOf<IntRectangle>()
-    val outlines = mutableListOf<IntRectangle>()
+    val outlines = mutableListOf<Outline>()
     val tooltips = mutableListOf<List<FormattedCharSequence>>()
     var render: (GuiGraphicsExtractor, Int, Int, Float) -> Unit = { _, _, _, _ -> }
 
@@ -50,7 +50,7 @@ internal class GuiTestEnvironment : AutoCloseable {
         }
 
         override fun renderOutline(x: Int, y: Int, width: Int, height: Int, color: Int) {
-            outlines += IntRectangle(x, y, width, height)
+            outlines += Outline(IntRectangle(x, y, width, height), color)
         }
 
         override fun drawString(font: Font?, text: FormattedCharSequence, x: Int, y: Int, color: Int, dropShadow: Boolean): Int {
@@ -72,6 +72,8 @@ internal class GuiTestEnvironment : AutoCloseable {
         minecraft.screen = screen
         minecraftMock.`when`<Minecraft> { Minecraft.getInstance() }.thenReturn(minecraft)
     }
+
+    data class Outline(val bounds: IntRectangle, val color: Int)
 
     data class TexturedVertex(val x: Float, val y: Float, val u: Float, val v: Float)
 
