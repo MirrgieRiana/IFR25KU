@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
 import net.minecraft.tags.BlockTags
 import net.minecraft.world.level.biome.Biome
 import net.minecraft.world.level.block.Blocks
-import net.minecraft.world.level.block.FarmBlock
+import net.minecraft.world.level.block.FarmBlock as FarmlandBlock // MIGRATION2612 ReplaceImport net.minecraft.world.level.block.FarmlandBlock
 
 enum class TraitConditionCard(
     path: String,
@@ -40,7 +40,7 @@ enum class TraitConditionCard(
         "floor_moisture", Emoji.FLOOR_MOISTURE, "Floor Moisture", "湿った地面",
         a@{
             val blockState = it.level.getBlockState(it.blockPos.below())
-            if (blockState isIn Blocks.FARMLAND) return@a 0.5 + 0.5 * (blockState[FarmBlock.MOISTURE] / 7.0)
+            if (blockState isIn Blocks.FARMLAND) return@a 0.5 + 0.5 * (blockState[FarmlandBlock.MOISTURE] / 7.0)
             if (blockState isIn BlockTags.DIRT) return@a 0.5
             if (blockState isIn BlockTags.SAND) return@a 0.25
             0.0

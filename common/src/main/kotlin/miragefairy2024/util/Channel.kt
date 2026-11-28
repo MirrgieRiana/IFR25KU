@@ -8,12 +8,12 @@ import net.fabricmc.api.EnvType
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.phys.Vec3
 
-abstract class Channel<P>(packetId: ResourceLocation) {
+abstract class Channel<P>(packetId: Identifier) {
     val streamCodec = object : StreamCodec<RegistryFriendlyByteBuf, Payload<P>> {
         override fun encode(`object`: RegistryFriendlyByteBuf, object2: Payload<P>) {
             writeToBuf(`object`, object2.data)

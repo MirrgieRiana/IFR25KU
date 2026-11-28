@@ -9,12 +9,12 @@ import miragefairy2024.mod.recipeviewer.views.ProgressDirection
 import miragefairy2024.mod.recipeviewer.views.ProgressView
 import mirrg.kotlin.helium.Slot
 import mirrg.kotlin.helium.atMost
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 
 object ProgressViewRenderer : ViewRenderer<ProgressView, Unit> {
     override fun createState(view: ProgressView) = Unit
 
-    override fun render(view: ProgressView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: ProgressView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         fun blit(texture: ViewTexture, x: Int, y: Int, source: IntRectangle) {
             graphics.blit(
                 texture.id,

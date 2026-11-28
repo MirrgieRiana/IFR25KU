@@ -51,7 +51,7 @@ import miragefairy2024.util.red
 import miragefairy2024.util.register
 import miragefairy2024.util.text
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.world.entity.player.Player
 
 private val SELECTED_FILTER_TEXT_COLOR = ColorPair(0xFFFFAA00.toInt(), 0xFFFFAA00.toInt())
@@ -65,7 +65,7 @@ private val BUTTON_14_BACKGROUND = LayeredImageButtonView.Sprites(
 
 abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Component, screenEventSource: ScreenEventSource) {
 
-    protected abstract val enabledPassiveSkillEffectFilters: ObservableValue<Map<ResourceLocation, PassiveSkillEffectFilter<*>>>
+    protected abstract val enabledPassiveSkillEffectFilters: ObservableValue<Map<Identifier, PassiveSkillEffectFilter<*>>>
     protected abstract val enableGlobalFairyHighlight: ObservableValue<Boolean>
 
     protected abstract val toggleCollectionEnabledKeyMappingText: Component

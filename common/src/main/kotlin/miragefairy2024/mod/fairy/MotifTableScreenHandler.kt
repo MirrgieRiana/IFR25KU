@@ -37,7 +37,7 @@ import miragefairy2024.util.string
 import miragefairy2024.util.text
 import miragefairy2024.util.toIdentifier
 import mirrg.kotlin.hydrogen.formatAs
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType as ExtendedMenuType // MIGRATION2612 ReplaceImport net.fabricmc.fabric.api.menu.v1.ExtendedMenuType
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.chat.Component
@@ -72,7 +72,7 @@ val MOTIF_TABLE_STREAM_CODEC = object : StreamCodec<RegistryFriendlyByteBuf, Lis
 }
 
 val motifTableScreenHandlerType = Registration(BuiltInRegistries.MENU, MirageFairy2024.identifier("motif_table")) {
-    ExtendedScreenHandlerType({ syncId, playerInventory, buf ->
+    ExtendedMenuType({ syncId, playerInventory, buf ->
         MotifTableScreenHandler(syncId, buf)
     }, MOTIF_TABLE_STREAM_CODEC)
 }

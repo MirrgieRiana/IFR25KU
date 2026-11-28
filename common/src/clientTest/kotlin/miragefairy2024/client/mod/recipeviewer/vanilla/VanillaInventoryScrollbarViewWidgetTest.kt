@@ -8,8 +8,8 @@ import miragefairy2024.mod.recipeviewer.views.InventoryScrollbarView
 import miragefairy2024.mod.recipeviewer.views.XInventoryScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YInventoryScrollbarView
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.lwjgl.glfw.GLFW
@@ -19,7 +19,7 @@ private val BACKGROUND_TEXTURE = MirageFairy2024.identifier("textures/gui/invent
 private val THUMB_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_scroller.png")
 private val DISABLED_THUMB_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_scroller_disabled.png")
 
-private class ScrollbarGraphics(val draws: MutableList<GuiTestEnvironment.TexturedDraw>) : GuiGraphics(Minecraft.getInstance(), null) {
+private class ScrollbarGraphics(val draws: MutableList<GuiTestEnvironment.TexturedDraw>) : GuiGraphicsExtractor(Minecraft.getInstance(), null) {
 
     fun assertBackgroundOnly(background: IntRectangle) {
         Assertions.assertEquals(listOf(BACKGROUND_TEXTURE), draws.map { it.texture })
@@ -27,7 +27,7 @@ private class ScrollbarGraphics(val draws: MutableList<GuiTestEnvironment.Textur
         Assertions.assertTrue(pose().clear())
     }
 
-    fun assertBackgroundAndThumb(background: IntRectangle, thumb: IntRectangle, thumbTexture: ResourceLocation) {
+    fun assertBackgroundAndThumb(background: IntRectangle, thumb: IntRectangle, thumbTexture: Identifier) {
         Assertions.assertEquals(listOf(BACKGROUND_TEXTURE, thumbTexture), draws.map { it.texture })
         assertPaintedBounds(background, draws[0])
         assertPaintedBounds(thumb, draws[1])

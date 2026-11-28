@@ -6,14 +6,14 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.ItemView
 import mirrg.kotlin.helium.Slot
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 
 object ItemViewRenderer : ViewRenderer<ItemView, Unit> {
     override fun createState(view: ItemView) = Unit
 
     override fun getRenderOverflow(view: ItemView, bounds: IntRectangle) = RenderOverflow.UNBOUNDED
 
-    override fun render(view: ItemView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: ItemView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         graphics.renderFakeItem(view.itemStack, bounds.x, bounds.y)
         if (view.showDecorations) graphics.renderItemDecorations(Minecraft.getInstance().font, view.itemStack, bounds.x, bounds.y)
     }

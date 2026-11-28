@@ -9,7 +9,7 @@ import miragefairy2024.mod.recipeviewer.views.GhostRecipeItemView
 import miragefairy2024.util.isNotEmpty
 import mirrg.kotlin.helium.Slot
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.world.item.ItemStack
@@ -19,7 +19,7 @@ object GhostRecipeItemViewRenderer : ViewRenderer<GhostRecipeItemView, Double> {
 
     override fun getRenderOverflow(view: GhostRecipeItemView, bounds: IntRectangle) = RenderOverflow.UNBOUNDED
 
-    override fun render(view: GhostRecipeItemView, state: Slot<Double>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: GhostRecipeItemView, state: Slot<Double>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val minecraft: Minecraft = Minecraft.getInstance()
         if (!Screen.hasControlDown()) state.value += minecraft.timer.realtimeDeltaTicks
 

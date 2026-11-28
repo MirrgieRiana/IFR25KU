@@ -9,7 +9,7 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.data.BlockFamily
 import net.minecraft.data.models.model.TexturedModel
 import net.minecraft.data.recipes.RecipeProvider
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.tags.TagKey
 import net.minecraft.world.flag.FeatureFlagSet
 import net.minecraft.world.flag.FeatureFlags
@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.state.properties.Property
 /** レジストリに登録する前に呼び出すことはできません。 */
 fun Block.getIdentifier() = BuiltInRegistries.BLOCK.getKey(this)
 
-fun ResourceLocation.toBlock() = BuiltInRegistries.BLOCK.get(this)
+fun Identifier.toBlock() = BuiltInRegistries.BLOCK.get(this)
 
 context(_: ModContext)
 fun (() -> Block).registerFlammable(burn: Int, spread: Int) = ModEvents.onInitialize {

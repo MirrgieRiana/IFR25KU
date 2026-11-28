@@ -9,7 +9,7 @@ import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.mod.recipeviewer.views.TextView
 import miragefairy2024.util.toReiRectangle
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.events.GuiEventListener
 
 class ReiTextWidget(private val offset: IntPoint, private val view: TextView) : WidgetWithBounds() {
@@ -21,7 +21,7 @@ class ReiTextWidget(private val offset: IntPoint, private val view: TextView) : 
 
     private val startNanoTime by lazy { System.nanoTime() }
 
-    override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+    override fun render(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
         val color = if (REIRuntime.getInstance().isDarkThemeEnabled) view.color.darkModeArgb else view.color.lightModeArgb
         if (view.scroll && font.width(view.text.value) > view.evaluateActualSizeX()) {
             guiGraphics.drawScrollingString(

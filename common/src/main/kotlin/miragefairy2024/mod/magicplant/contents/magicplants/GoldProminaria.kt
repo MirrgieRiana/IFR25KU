@@ -10,7 +10,7 @@ import miragefairy2024.util.AdvancementCardType
 import miragefairy2024.util.EnJa
 import miragefairy2024.util.createItemStack
 import miragefairy2024.util.getOr
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
@@ -64,7 +64,7 @@ object GoldProminariaCard : AbstractProminariaCard<GoldProminariaBlock>() {
         TraitCard.PAVEMENT_FLOWERS.trait to 0.05, // アスファルトに咲く花
     )
 
-    override fun createAdvancement(identifier: ResourceLocation) = AdvancementCard(
+    override fun createAdvancement(identifier: Identifier) = AdvancementCard(
         identifier = identifier,
         context = AdvancementCard.Sub { ProminariaCard.advancement!!.await() },
         icon = { iconItem().createItemStack() },

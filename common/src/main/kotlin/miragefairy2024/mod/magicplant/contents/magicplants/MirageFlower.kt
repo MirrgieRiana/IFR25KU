@@ -35,7 +35,7 @@ import miragefairy2024.util.surface
 import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.block.SoundType
@@ -107,7 +107,7 @@ object MirageFlowerCard : AbstractMirageFlowerCard<MirageFlowerBlock>() {
 
     private val FAIRY_RING_FEATURE = FairyRingFeature(FairyRingFeatureConfig.CODEC)
 
-    override fun createAdvancement(identifier: ResourceLocation) = AdvancementCard(
+    override fun createAdvancement(identifier: Identifier) = AdvancementCard(
         identifier = identifier,
         context = AdvancementCard.Sub { rootAdvancement.await() },
         icon = { iconItem().createItemStack() },

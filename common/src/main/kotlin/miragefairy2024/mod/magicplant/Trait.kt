@@ -19,7 +19,7 @@ import net.minecraft.network.chat.Style
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.world.level.Level
 
 // api
@@ -62,7 +62,7 @@ fun Trait.enJa(enName: String, jaName: String) {
 // util
 
 fun Trait.getIdentifier() = traitRegistry.getKey(this)!!
-fun ResourceLocation.toTrait() = traitRegistry.get(this)
+fun Identifier.toTrait() = traitRegistry.get(this)
 
 fun Trait.getTranslationKey(): String = this.getIdentifier().toLanguageKey("${MirageFairy2024.MOD_ID}.trait")
 fun Trait.getName() = run { text { translate(this@run.getTranslationKey()) } }

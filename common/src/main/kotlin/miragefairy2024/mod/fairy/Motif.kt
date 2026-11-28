@@ -66,7 +66,7 @@ import net.minecraft.core.Holder
 import net.minecraft.core.Registry
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.ItemTags
 import net.minecraft.tags.TagKey
@@ -87,7 +87,7 @@ val motifRegistryKey: ResourceKey<Registry<Motif>> = ResourceKey.createRegistryK
 val motifRegistry: Registry<Motif> = FabricRegistryBuilder.createSimple(motifRegistryKey).attribute(RegistryAttribute.SYNCED).buildAndRegister()
 
 fun Motif.getIdentifier() = motifRegistry.getKey(this)
-fun ResourceLocation.toFairyMotif() = motifRegistry.get(this)
+fun Identifier.toFairyMotif() = motifRegistry.get(this)
 
 interface Motif {
     val displayName: Component

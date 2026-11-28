@@ -24,7 +24,7 @@ import miragefairy2024.util.square
 import miragefairy2024.util.surface
 import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
@@ -96,7 +96,7 @@ object PhantomFlowerCard : AbstractMirageFlowerCard<PhantomFlowerBlock>() {
         TraitCard.FLOWER_OF_THE_END.trait to 0.05, // 終焉の花
     )
 
-    override fun createAdvancement(identifier: ResourceLocation) = AdvancementCard(
+    override fun createAdvancement(identifier: Identifier) = AdvancementCard(
         identifier = identifier,
         context = AdvancementCard.Sub { FairyForestBiomeCard.advancement!!.await() },
         icon = { iconItem().createItemStack() },

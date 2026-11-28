@@ -10,7 +10,7 @@ import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.contains
 import miragefairy2024.util.Remover
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.client.gui.narration.NarratableEntry
@@ -100,7 +100,7 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
 
     private var slotScissorEnabled = false
 
-    override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+    override fun render(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
         viewAdapter.beforeRender()
         try {
             super.render(guiGraphics, mouseX, mouseY, partialTick)
@@ -117,7 +117,7 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
         return placement.clipBounds()
     }
 
-    override fun renderSlot(guiGraphics: GuiGraphics, slot: Slot) {
+    override fun renderSlot(guiGraphics: GuiGraphicsExtractor, slot: Slot) {
         // 前のスロットの描画の終了処理なのだ～🌱
         disableSlotScissor(guiGraphics)
         val clipBounds = getSlotClipBounds(slot)
@@ -130,7 +130,7 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
         super.renderSlot(guiGraphics, slot)
     }
 
-    private fun disableSlotScissor(guiGraphics: GuiGraphics) {
+    private fun disableSlotScissor(guiGraphics: GuiGraphicsExtractor) {
         if (!slotScissorEnabled) return
         slotScissorEnabled = false
         guiGraphics.disableScissor()
@@ -187,10 +187,10 @@ abstract class ViewContainerScreen<T : AbstractContainerMenu>(menu: T, playerInv
     }
 
     /** 枠の絵はViewのツリーが描くのだ～🌱 */
-    override fun renderBg(guiGraphics: GuiGraphics, partialTick: Float, mouseX: Int, mouseY: Int) = Unit
+    override fun renderBg(guiGraphics: GuiGraphicsExtractor, partialTick: Float, mouseX: Int, mouseY: Int) = Unit
 
     /** 題名とインベントリの名前もViewのツリーが描くのだ～🌱 */
-    override fun renderLabels(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int) {
+    override fun renderLabels(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int) {
         // 最後のスロットのレンダリングの終了処理はここで受けるのだ～🌱
         disableSlotScissor(guiGraphics)
     }

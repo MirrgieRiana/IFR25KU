@@ -11,7 +11,7 @@ import miragefairy2024.util.register
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Holder
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.world.level.levelgen.Heightmap
 import net.minecraft.world.level.levelgen.WorldGenerationContext
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider
@@ -42,7 +42,7 @@ object UnlimitedJigsawCard {
 class UnlimitedJigsawStructure(
     config: StructureSettings,
     private val startPool: Holder<StructureTemplatePool>,
-    private val startJigsawName: Optional<ResourceLocation> = Optional.empty(),
+    private val startJigsawName: Optional<Identifier> = Optional.empty(),
     private val size: Int,
     private val startHeight: HeightProvider,
     private val useExpansionHack: Boolean,
@@ -57,7 +57,7 @@ class UnlimitedJigsawStructure(
             instance.group(
                 settingsCodec(instance),
                 StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter { it.startPool },
-                ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name").forGetter { it.startJigsawName },
+                Identifier.CODEC.optionalFieldOf("start_jigsaw_name").forGetter { it.startJigsawName },
                 Codec.intRange(0, 256).fieldOf("size").forGetter { it.size },
                 HeightProvider.CODEC.fieldOf("start_height").forGetter { it.startHeight },
                 Codec.BOOL.fieldOf("use_expansion_hack").forGetter { it.useExpansionHack },

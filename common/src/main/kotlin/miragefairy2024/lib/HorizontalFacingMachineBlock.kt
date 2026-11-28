@@ -3,7 +3,7 @@ package miragefairy2024.lib
 import miragefairy2024.util.checkType
 import miragefairy2024.util.getOrNull
 import miragefairy2024.util.isNotIn
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory as ExtendedMenuProvider // MIGRATION2612 ReplaceImport net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.server.level.ServerPlayer
@@ -83,7 +83,7 @@ abstract class HorizontalFacingMachineBlock(private val card: MachineCard<*, *, 
     protected fun openMenu(level: Level, pos: BlockPos, player: Player) {
         if (level.isClientSide) return
         val blockEntity = card.blockEntityAccessor.castOrNull(level.getBlockEntity(pos)) ?: return
-        player.openMenu(object : ExtendedScreenHandlerFactory<Unit> {
+        player.openMenu(object : ExtendedMenuProvider<Unit> {
             override fun createMenu(syncId: Int, playerInventory: Inventory, player: Player) = blockEntity.createMenu(syncId, playerInventory, player)
             override fun getDisplayName() = blockEntity.displayName
             override fun getScreenOpeningData(player: ServerPlayer) = Unit

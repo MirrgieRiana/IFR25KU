@@ -41,7 +41,7 @@ import mirrg.kotlin.helium.join
 import net.minecraft.commands.Commands
 import net.minecraft.core.Holder
 import net.minecraft.core.registries.Registries
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.biome.Biome
@@ -63,7 +63,7 @@ val rootAdvancement = AdvancementCard(
     type = AdvancementCardType.SILENT,
 )
 
-enum class SlotType(texture: ResourceLocation, size: IntPoint, val margin: IntPoint) {
+enum class SlotType(texture: Identifier, size: IntPoint, val margin: IntPoint) {
     NORMAL(MirageFairy2024.identifier("textures/gui/slot.png"), IntPoint(18, 18), IntPoint(1, 1)),
     FAIRY(MirageFairy2024.identifier("textures/gui/fairy_slot.png"), IntPoint(18, 18), IntPoint(1, 1)),
     ;

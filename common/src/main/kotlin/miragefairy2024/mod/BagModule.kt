@@ -54,8 +54,8 @@ import miragefairy2024.util.set
 import miragefairy2024.util.text
 import miragefairy2024.util.toItemTag
 import mirrg.kotlin.helium.castOrNull
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory as ExtendedMenuProvider // MIGRATION2612 ReplaceImport net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType as ExtendedMenuType // MIGRATION2612 ReplaceImport net.fabricmc.fabric.api.menu.v1.ExtendedMenuType
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
@@ -107,7 +107,7 @@ enum class BagCard(
 
     companion object {
         val screenHandlerType = Registration(BuiltInRegistries.MENU, MirageFairy2024.identifier("bag")) {
-            ExtendedScreenHandlerType({ syncId, playerInventory, buf ->
+            ExtendedMenuType({ syncId, playerInventory, buf ->
                 createBagScreenHandler(syncId, playerInventory, buf)
             }, ByteBufCodecs.INT)
         }
@@ -245,7 +245,7 @@ class BagItem(val card: BagCard, settings: Properties) : Item(settings) {
         } else {
             -1
         }
-        user.openMenu(object : ExtendedScreenHandlerFactory<Int> {
+        user.openMenu(object : ExtendedMenuProvider<Int> {
             override fun createMenu(syncId: Int, playerInventory: Inventory, player: Player): AbstractContainerMenu {
                 return createBagScreenHandler(syncId, playerInventory, slotIndex)
             }

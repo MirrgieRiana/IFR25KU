@@ -32,7 +32,7 @@ import net.minecraft.data.recipes.RecipeOutput
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.util.RandomSource
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -45,7 +45,7 @@ import net.minecraft.world.level.Level
 
 abstract class SimpleMachineRecipeCard<R : SimpleMachineRecipe> {
 
-    abstract val identifier: ResourceLocation
+    abstract val identifier: Identifier
 
     abstract fun getIcon(): ItemStack
 
@@ -270,7 +270,7 @@ class SimpleMachineRecipeJsonBuilder<R : SimpleMachineRecipe>(
     override fun group(string: String?) = this.also { this.group = string ?: "" }
     override fun getResult(): Item = outputs.first().item
 
-    override fun save(recipeOutput: RecipeOutput, recipeId: ResourceLocation) {
+    override fun save(recipeOutput: RecipeOutput, recipeId: Identifier) {
         check(criteria.isNotEmpty()) { "No way of obtaining recipe $recipeId" }
         val advancementBuilder = recipeOutput.advancement()
             .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId))

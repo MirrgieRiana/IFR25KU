@@ -24,7 +24,7 @@ import miragefairy2024.util.yellow
 import mirrg.kotlin.helium.Single
 import mirrg.kotlin.helium.cmp
 import mirrg.kotlin.hydrogen.formatAs
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory as ExtendedMenuProvider // MIGRATION2612 ReplaceImport net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundEvents
@@ -38,7 +38,7 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
-import net.minecraft.world.item.UseAnim
+import net.minecraft.world.item.UseAnim as ItemUseAnimation // MIGRATION2612 ReplaceImport net.minecraft.world.item.ItemUseAnimation
 import net.minecraft.world.level.Level
 import java.math.BigInteger
 import java.math.RoundingMode
@@ -63,7 +63,7 @@ class RandomFairySummoningItem(val appearanceRateBonus: Double, settings: Proper
         tooltipComponents += text { MIRAGE_FLOUR_DESCRIPTION_SNEAKING_USE_TRANSLATION().yellow }
     }
 
-    override fun getUseAnimation(stack: ItemStack) = UseAnim.BOW
+    override fun getUseAnimation(stack: ItemStack) = ItemUseAnimation.BOW
     override fun getUseDuration(stack: ItemStack, entity: LivingEntity) = 72000 // 1時間
 
     override fun use(level: Level, user: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> {
@@ -83,7 +83,7 @@ class RandomFairySummoningItem(val appearanceRateBonus: Double, settings: Proper
                 .map { CondensedMotifChance(it.item.item.createFairyItemStack(), it) }
                 .sortedWith(CondensedMotifChanceComparator.reversed())
 
-            user.openMenu(object : ExtendedScreenHandlerFactory<List<CondensedMotifChance>> {
+            user.openMenu(object : ExtendedMenuProvider<List<CondensedMotifChance>> {
                 override fun createMenu(syncId: Int, playerInventory: Inventory, player: Player) = MotifTableScreenHandler(syncId, chanceTable)
                 override fun getDisplayName() = itemStack.hoverName
                 override fun getScreenOpeningData(player: ServerPlayer) = chanceTable

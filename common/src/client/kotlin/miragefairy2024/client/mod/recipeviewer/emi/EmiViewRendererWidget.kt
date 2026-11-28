@@ -6,7 +6,7 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.util.toEmiBounds
 import mirrg.kotlin.helium.Slot
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 
 class EmiViewRendererWidget<V : PlaceableView, S>(private val renderer: ViewRenderer<V, S>, private val view: V, private val bounds2: IntRectangle) : Widget() {
     private val state = Slot(renderer.createState(view))
@@ -14,5 +14,5 @@ class EmiViewRendererWidget<V : PlaceableView, S>(private val renderer: ViewRend
     override fun getBounds() = boundsCache
     override fun mouseClicked(mouseX: Int, mouseY: Int, button: Int) = renderer.mouseClicked(view, state, bounds2, mouseX, mouseY, button)
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = renderer.keyPressed(view, state, bounds2, keyCode, scanCode, modifiers)
-    override fun render(draw: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) = renderer.render(view, state, bounds2, draw, mouseX, mouseY, bounds.contains(mouseX, mouseY), delta)
+    override fun render(draw: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, delta: Float) = renderer.render(view, state, bounds2, draw, mouseX, mouseY, bounds.contains(mouseX, mouseY), delta)
 }

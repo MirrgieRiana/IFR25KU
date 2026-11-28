@@ -52,7 +52,7 @@ import miragefairy2024.util.toIngredientStack
 import mirrg.kotlin.helium.join
 import net.minecraft.core.RegistryAccess
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.world.item.ItemStack
 
 class IfrEncyclopediaEntryCard(
@@ -227,7 +227,7 @@ object IfrEncyclopediaRecipeViewerCategoryCard : RecipeViewerCategoryCard<IfrEnc
     override fun getName() = EnJa("IFR Encyclopedia", "IFR図鑑")
     override fun getIcon() = MaterialCard.FAIRY_PLASTIC.item().createItemStack()
 
-    override fun getRecipeCodec(registryAccess: RegistryAccess): Codec<IfrEncyclopediaEntryCard> = ResourceLocation.CODEC.xmap(
+    override fun getRecipeCodec(registryAccess: RegistryAccess): Codec<IfrEncyclopediaEntryCard> = Identifier.CODEC.xmap(
         { identifier -> IfrEncyclopediaEntryCard.entries.first { it.identifier == identifier } },
         { it.identifier },
     )

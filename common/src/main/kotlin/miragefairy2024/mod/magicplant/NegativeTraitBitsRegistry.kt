@@ -14,8 +14,8 @@ import miragefairy2024.util.invoke
 import miragefairy2024.util.string
 import miragefairy2024.util.success
 import miragefairy2024.util.text
-import net.minecraft.commands.arguments.ResourceLocationArgument
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.commands.arguments.ResourceLocationArgument as IdentifierArgument // MIGRATION2612 ReplaceImport net.minecraft.commands.arguments.IdentifierArgument
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 
 object NegativeTraitBitsRegistry {
     private val map: MutableMap<Trait, Int?> = mutableMapOf()
@@ -49,7 +49,7 @@ fun initNegativeTraitBits() {
                     .then(
                         ClientCommandRegistrationEvent.literal("negative")
                             .then(
-                                ClientCommandRegistrationEvent.argument("trait", ResourceLocationArgument.id())
+                                ClientCommandRegistrationEvent.argument("trait", IdentifierArgument.id())
                                     .suggests { _, builder ->
                                         traitRegistry.keySet().forEach {
                                             builder.suggest(it.string)
@@ -57,7 +57,7 @@ fun initNegativeTraitBits() {
                                         builder.buildFuture()
                                     }
                                     .executesThrowable { context ->
-                                        val id = context.getArgument("trait", ResourceLocation::class.java)
+                                        val id = context.getArgument("trait", Identifier::class.java)
                                         val trait = traitRegistry.get(id) ?: failure(text { UNKNOWN_TRAIT_TRANSLATION(id.string) })
                                         NegativeTraitBitsRegistry.set(trait, null)
                                         clientProxy!!.getClientPlayer()!!.sendSystemMessage(text { SUCCESS_TRANSLATION(trait.getName(), "ALL") })
@@ -72,7 +72,7 @@ fun initNegativeTraitBits() {
                                                 builder.buildFuture()
                                             }
                                             .executesThrowable { context ->
-                                                val id = context.getArgument("trait", ResourceLocation::class.java)
+                                                val id = context.getArgument("trait", Identifier::class.java)
                                                 val trait = traitRegistry.get(id) ?: failure(text { UNKNOWN_TRAIT_TRANSLATION(id.string) })
                                                 val rawBits = context.getArgument("bits", String::class.java)
                                                 if (!rawBits.matches("""^[01_]{1,32}$""".toRegex())) failure(text { INVALID_BITS_FORMAT_TRANSLATION("$rawBits") })

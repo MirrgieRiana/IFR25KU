@@ -5,11 +5,11 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.TooltipView
 import mirrg.kotlin.helium.Slot
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 
 object TooltipViewRenderer : ViewRenderer<TooltipView, Unit> {
     override fun createState(view: TooltipView) = Unit
-    override fun render(view: TooltipView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: TooltipView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         if (isHovered) {
             val tooltip = view.tooltipProvider(mouseX, mouseY)
             if (tooltip.isNotEmpty()) {

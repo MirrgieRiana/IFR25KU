@@ -6,7 +6,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.chat.Component
 import net.minecraft.network.codec.StreamCodec
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
@@ -15,7 +15,7 @@ interface PassiveSkillProvider {
     fun getPassiveSkill(itemStack: ItemStack): PassiveSkill?
 }
 
-class PassiveSkill(val providerId: ResourceLocation, val motif: Motif?, val rare: Double, val count: Double, val specifications: List<PassiveSkillSpecification<*>>)
+class PassiveSkill(val providerId: Identifier, val motif: Motif?, val rare: Double, val count: Double, val specifications: List<PassiveSkillSpecification<*>>)
 
 class PassiveSkillSpecification<T : Any>(val conditions: List<PassiveSkillCondition>, val effect: PassiveSkillEffect<T>, val valueProvider: (mana: Double) -> T)
 
@@ -40,4 +40,4 @@ interface PassiveSkillEffect<T : Any> {
 
 class PassiveSkillContext(val level: Level, val blockPos: BlockPos, val player: Player)
 
-class PassiveSkillEffectFilter<T : Any>(val effect: PassiveSkillEffect<T>, val identifier: ResourceLocation, val text: Component, val predicate: (T) -> Boolean)
+class PassiveSkillEffectFilter<T : Any>(val effect: PassiveSkillEffect<T>, val identifier: Identifier, val text: Component, val predicate: (T) -> Boolean)

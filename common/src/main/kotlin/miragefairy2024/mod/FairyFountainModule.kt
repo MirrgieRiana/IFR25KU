@@ -44,7 +44,7 @@ import miragefairy2024.util.times
 import miragefairy2024.util.weightedRandom
 import miragefairy2024.util.withHorizontalRotation
 import mirrg.kotlin.helium.Single
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory as ExtendedMenuProvider // MIGRATION2612 ReplaceImport net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider
 import net.minecraft.core.BlockPos
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.server.level.ServerPlayer
@@ -223,7 +223,7 @@ class FairyStatueFountainBlock(settings: Properties) : SimpleHorizontalFacingBlo
                 )
             }
 
-            player.openMenu(object : ExtendedScreenHandlerFactory<List<CondensedMotifChance>> {
+            player.openMenu(object : ExtendedMenuProvider<List<CondensedMotifChance>> {
                 override fun createMenu(syncId: Int, playerInventory: Inventory, player: Player) = MotifTableScreenHandler(syncId, chanceTable)
                 override fun getDisplayName() = name
                 override fun getScreenOpeningData(player: ServerPlayer) = chanceTable

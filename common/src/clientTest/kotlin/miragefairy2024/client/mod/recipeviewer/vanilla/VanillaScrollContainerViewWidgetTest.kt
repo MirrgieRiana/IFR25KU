@@ -20,7 +20,7 @@ import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.util.empty
 import miragefairy2024.util.register
 import miragefairy2024.util.text
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
@@ -131,7 +131,7 @@ class VanillaScrollContainerViewWidgetTest {
                 var releasedInput: Triple<Double, Double, Int>? = null
                 registry.register { childContext, _: ScrollContainerTestView, bounds ->
                     child = object : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {
-                        override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+                        override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
                         override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
                         override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int) = button == 0 && isMouseOver(mouseX, mouseY)
                         override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
@@ -197,7 +197,7 @@ class VanillaScrollContainerViewWidgetTest {
             registry.register { childContext, _: ScrollContainerTestView, bounds ->
                 val index = children.size
                 val child = object : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {
-                    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+                    override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
                         renderedChildren += index
                     }
 
@@ -262,7 +262,7 @@ class VanillaScrollContainerViewWidgetTest {
             registry.register { childContext, _: ScrollContainerTestView, bounds ->
                 val index = children.size
                 val child = object : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {
-                    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+                    override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
                         renderedChildren += index
                     }
 
@@ -379,7 +379,7 @@ class VanillaScrollContainerViewWidgetTest {
             val children = mutableListOf<AbstractWidget>()
             registry.register { childContext, _: ScrollContainerTestView, bounds ->
                 val child: AbstractWidget = object : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {
-                    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+                    override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
                     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
                 }
                 children += child

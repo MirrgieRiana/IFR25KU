@@ -24,7 +24,7 @@ import miragefairy2024.util.surface
 import miragefairy2024.util.times
 import miragefairy2024.util.unaryPlus
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.block.SoundType
@@ -82,7 +82,7 @@ object SarraceniaCard : AbstractVeropedaCard<SarraceniaBlock>() {
         TraitCard.CARNIVOROUS_PLANT.trait to 0.05, // 食虫植物
     )
 
-    override fun createAdvancement(identifier: ResourceLocation) = AdvancementCard(
+    override fun createAdvancement(identifier: Identifier) = AdvancementCard(
         identifier = identifier,
         context = AdvancementCard.Sub { VeropedaCard.advancement!!.await() },
         icon = { iconItem().createItemStack() },

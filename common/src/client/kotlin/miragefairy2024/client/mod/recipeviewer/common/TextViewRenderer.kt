@@ -8,7 +8,7 @@ import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.views.TextView
 import mirrg.kotlin.helium.Slot
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 
 object TextViewRenderer : ViewRenderer<TextView, Unit> {
 
@@ -18,7 +18,7 @@ object TextViewRenderer : ViewRenderer<TextView, Unit> {
 
     override fun getRenderOverflow(view: TextView, bounds: IntRectangle) = RenderOverflow.UNBOUNDED
 
-    override fun render(view: TextView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: TextView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         val font = Minecraft.getInstance().font
         val color = view.color.lightModeArgb
         if (view.scroll && font.width(view.text.value) > view.evaluateActualSizeX()) {

@@ -7,7 +7,7 @@ import miragefairy2024.mod.recipeviewer.views.ImageButtonView
 import miragefairy2024.util.fire
 import mirrg.kotlin.helium.Slot
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.resources.sounds.SimpleSoundInstance
 import net.minecraft.sounds.SoundEvents
 
@@ -28,7 +28,7 @@ object ImageButtonViewRenderer : ViewRenderer<ImageButtonView, Unit> {
         return false
     }
 
-    override fun render(view: ImageButtonView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
+    override fun render(view: ImageButtonView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) {
         if (!view.enabled.value) {
             drawTexture(bounds, graphics, view.disabledTexture ?: view.texture!!)
         } else if (isHovered) {
@@ -38,7 +38,7 @@ object ImageButtonViewRenderer : ViewRenderer<ImageButtonView, Unit> {
         }
     }
 
-    private fun drawTexture(bounds: IntRectangle, graphics: GuiGraphics, texture: ViewTexture) {
+    private fun drawTexture(bounds: IntRectangle, graphics: GuiGraphicsExtractor, texture: ViewTexture) {
         graphics.blit(
             texture.id,
             bounds.x,

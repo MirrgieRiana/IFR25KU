@@ -10,8 +10,8 @@ import mirrg.kotlin.helium.join
 import mirrg.kotlin.helium.or
 import net.minecraft.core.Direction
 import net.minecraft.data.models.BlockModelGenerators
-import net.minecraft.data.models.blockstates.BlockStateGenerator
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.data.models.blockstates.BlockStateGenerator as BlockModelDefinitionGenerator // MIGRATION2612 ReplaceImport net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerator
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.properties.Property
 
@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.state.properties.Property
 
 context(_: ModContext)
 fun (() -> Block).registerBlockStateGeneration(creator: () -> JsonElement) = DataGenerationEvents.onGenerateBlockModel {
-    it.blockStateOutput.accept(object : BlockStateGenerator {
+    it.blockStateOutput.accept(object : BlockModelDefinitionGenerator {
         override fun get() = creator()
         override fun getBlock() = this@registerBlockStateGeneration()
     })
@@ -69,7 +69,7 @@ enum class BlockStateVariantRotation(val degrees: Int) {
 
 class BlockStateVariant(
     private val parent: BlockStateVariant? = null,
-    private val model: ResourceLocation? = null,
+    private val model: Identifier? = null,
     private val x: BlockStateVariantRotation? = null,
     private val y: BlockStateVariantRotation? = null,
     private val uvlock: Boolean? = null,
@@ -83,7 +83,7 @@ class BlockStateVariant(
 }
 
 fun BlockStateVariant.with(
-    model: ResourceLocation? = null,
+    model: Identifier? = null,
     x: BlockStateVariantRotation? = null,
     y: BlockStateVariantRotation? = null,
     uvlock: Boolean? = null,
@@ -123,10 +123,10 @@ fun propertiesOf(vararg properties: PropertyEntry<*>) = listOf(*properties)
 object VariantsBlockStateGenerationRegistrationScope
 
 context(_: VariantsBlockStateGenerationRegistrationScope)
-fun normal(model: ResourceLocation) = listOf(propertiesOf() with BlockStateVariant(model = model))
+fun normal(model: Identifier) = listOf(propertiesOf() with BlockStateVariant(model = model))
 
 context(_: VariantsBlockStateGenerationRegistrationScope)
-fun <T : Comparable<T>> List<BlockStateVariantEntry>.with(property: Property<T>, modelFunction: (ResourceLocation, PropertyEntry<T>) -> ResourceLocation): List<BlockStateVariantEntry> {
+fun <T : Comparable<T>> List<BlockStateVariantEntry>.with(property: Property<T>, modelFunction: (Identifier, PropertyEntry<T>) -> Identifier): List<BlockStateVariantEntry> {
     return property.possibleValues.flatMap { value ->
         this.map { (properties, variant) ->
             val entry = property with value

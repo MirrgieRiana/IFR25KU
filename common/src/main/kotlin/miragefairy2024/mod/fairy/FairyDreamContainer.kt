@@ -28,11 +28,11 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType
 import net.minecraft.commands.Commands
-import net.minecraft.commands.arguments.ResourceLocationArgument
+import net.minecraft.commands.arguments.ResourceLocationArgument as IdentifierArgument // MIGRATION2612 ReplaceImport net.minecraft.commands.arguments.IdentifierArgument
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.item.Items
@@ -86,7 +86,7 @@ fun initFairyDreamContainer() {
                                     }
                             )
                             .then(
-                                Commands.argument("motif", ResourceLocationArgument.id())
+                                Commands.argument("motif", IdentifierArgument.id())
                                     .suggests { _, builder ->
                                         motifRegistry.keySet().forEach {
                                             builder.suggest(it.string)
@@ -96,7 +96,7 @@ fun initFairyDreamContainer() {
                                     .executesThrowable { context ->
                                         val player = context.source.playerOrException
                                         if (!player.isAlive) throw deadPlayerCommandExceptionType.create(player.displayName)
-                                        val id = context.getArgument("motif", ResourceLocation::class.java)
+                                        val id = context.getArgument("motif", Identifier::class.java)
                                         val motif = motifRegistry.get(id) ?: failure(text { UNKNOWN_MOTIF_TRANSLATION(id.string) })
                                         val count = player.fairyDreamContainer.getOrCreate().gain(player, setOf(motif))
                                         if (count == 1) {
@@ -122,7 +122,7 @@ fun initFairyDreamContainer() {
                                     }
                             )
                             .then(
-                                Commands.argument("motif", ResourceLocationArgument.id())
+                                Commands.argument("motif", IdentifierArgument.id())
                                     .suggests { _, builder ->
                                         motifRegistry.keySet().forEach {
                                             builder.suggest(it.string)
@@ -132,7 +132,7 @@ fun initFairyDreamContainer() {
                                     .executesThrowable { context ->
                                         val player = context.source.playerOrException
                                         if (!player.isAlive) throw deadPlayerCommandExceptionType.create(player.displayName)
-                                        val id = context.getArgument("motif", ResourceLocation::class.java)
+                                        val id = context.getArgument("motif", Identifier::class.java)
                                         val motif = motifRegistry.get(id) ?: failure(text { UNKNOWN_MOTIF_TRANSLATION(id.string) })
                                         val have = player.fairyDreamContainer.getOrCreate()[motif]
                                         if (have) {
@@ -152,21 +152,21 @@ fun initFairyDreamContainer() {
 
 class FairyDreamContainer {
     companion object {
-        val ENTRY_CODEC: Codec<Pair<ResourceLocation, Boolean>> = RecordCodecBuilder.create { instance ->
+        val ENTRY_CODEC: Codec<Pair<Identifier, Boolean>> = RecordCodecBuilder.create { instance ->
             instance.group(
-                ResourceLocation.CODEC.fieldOf("motif").forGetter { it.first },
+                Identifier.CODEC.fieldOf("motif").forGetter { it.first },
                 Codec.LONG.xmap({ it > 0 }, { if (it) 1 else 0 }).fieldOf("gained").forGetter { it.second },
             ).apply(instance, ::Pair)
         }
-        val ENTRY_STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, Pair<ResourceLocation, Boolean>> = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC,
+        val ENTRY_STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, Pair<Identifier, Boolean>> = StreamCodec.composite(
+            Identifier.STREAM_CODEC,
             { it.first },
             ByteBufCodecs.VAR_LONG.map({ it > 0 }, { if (it) 1 else 0 }),
             { it.second },
             ::Pair,
         )
 
-        fun fromEntries(entries: List<Pair<ResourceLocation, Boolean>>): FairyDreamContainer {
+        fun fromEntries(entries: List<Pair<Identifier, Boolean>>): FairyDreamContainer {
             val fairyDreamContainer = FairyDreamContainer()
             entries.forEach { (key, value) ->
                 val motif = motifRegistry[key] ?: return@forEach
@@ -175,8 +175,8 @@ class FairyDreamContainer {
             return fairyDreamContainer
         }
 
-        fun toEntries(fairyDreamContainer: FairyDreamContainer): List<Pair<ResourceLocation, Boolean>> {
-            val entries = mutableListOf<Pair<ResourceLocation, Boolean>>()
+        fun toEntries(fairyDreamContainer: FairyDreamContainer): List<Pair<Identifier, Boolean>> {
+            val entries = mutableListOf<Pair<Identifier, Boolean>>()
             fairyDreamContainer.entries.forEach { motif ->
                 entries += Pair(motif.getIdentifier()!!, true)
             }

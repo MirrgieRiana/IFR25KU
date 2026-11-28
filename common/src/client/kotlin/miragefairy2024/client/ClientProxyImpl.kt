@@ -31,7 +31,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers
 import net.minecraft.client.resources.model.ModelResourceLocation
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.FormattedText
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.util.FormattedCharSequence
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.inventory.AbstractContainerMenu
@@ -152,7 +152,7 @@ class RenderingProxyBlockEntityRenderer<T>(
                 Minecraft.getInstance().itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, light, overlay, matrices, vertexConsumers, blockEntity.level, 0)
             }
 
-            override fun renderCutoutBlock(identifier: ResourceLocation, variant: String?, red: Float, green: Float, blue: Float, light: Int, overlay: Int) {
+            override fun renderCutoutBlock(identifier: Identifier, variant: String?, red: Float, green: Float, blue: Float, light: Int, overlay: Int) {
                 val vertexConsumer = vertexConsumers.getBuffer(RenderType.cutout())
                 val bakedModel = if (variant != null) {
                     Minecraft.getInstance().modelManager.getModel(ModelResourceLocation(identifier, variant))

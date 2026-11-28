@@ -47,7 +47,7 @@ import miragefairy2024.util.registerViewScreen
 import miragefairy2024.util.style
 import miragefairy2024.util.text
 import mirrg.kotlin.hydrogen.formatAs
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType as ExtendedMenuType // MIGRATION2612 ReplaceImport net.fabricmc.fabric.api.menu.v1.ExtendedMenuType
 import net.minecraft.core.BlockPos
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.RegistryFriendlyByteBuf
@@ -61,7 +61,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 
 val traitListScreenHandlerType = Registration(BuiltInRegistries.MENU, MirageFairy2024.identifier("trait_list")) {
-    ExtendedScreenHandlerType({ syncId, playerInventory, buf ->
+    ExtendedMenuType({ syncId, playerInventory, buf ->
         TraitListScreenHandler(syncId, playerInventory, ContainerLevelAccess.NULL, buf.first, buf.second)
     }, TraitListScreenHandler.STREAM_CODEC)
 }

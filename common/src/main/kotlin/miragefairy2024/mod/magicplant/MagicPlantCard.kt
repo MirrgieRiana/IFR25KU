@@ -29,7 +29,7 @@ import miragefairy2024.util.registerGeneratedModelGeneration
 import miragefairy2024.util.registerItemGroup
 import net.minecraft.core.BlockPos
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
 import net.minecraft.tags.BlockTags
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.state.BlockBehaviour
@@ -64,14 +64,14 @@ abstract class MagicPlantCard<B : MagicPlantBlock> {
     abstract val poem: EnJa
     abstract val classification: EnJa
 
-    abstract val family: ResourceLocation
+    abstract val family: Identifier
     open val defaultTraitBits: Map<Trait, Int> = mapOf()
     open val randomTraitChances: Map<Trait, Double> = mapOf()
 
     open val baseGrowth = 0.03
     abstract val drops: List<() -> HarvestNotation.Crop>
 
-    open fun createAdvancement(identifier: ResourceLocation): AdvancementCard? = null
+    open fun createAdvancement(identifier: Identifier): AdvancementCard? = null
     val advancement = createAdvancement(blockIdentifier)
 
     context(_: ModContext)
