@@ -45,8 +45,9 @@ fun initFairyQuestMessageScreen() {
 fun FairyQuestRecipe.openMessageScreen() {
     fun <S : Any> openScreen(proxy: ClientProxy<S>) {
         val parent = proxy.getCurrentScreen()
+        val state = FairyQuestMessageScreenContent.State()
         proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(this.title) {
-            FairyQuestMessageScreenContent(this.title, this.message, this.client).also { view ->
+            FairyQuestMessageScreenContent(this.title, this.message, this.client, state).also { view ->
                 view.onBackToGame.register {
                     proxy.setCurrentScreen(null)
                     true
@@ -61,7 +62,7 @@ fun FairyQuestRecipe.openMessageScreen() {
     openScreen(clientProxy!!)
 }
 
-class FairyQuestMessageScreenContent(fairyQuestTitle: Component, fairyQuestMessage: Component, fairyQuestClient: Component) {
+class FairyQuestMessageScreenContent(fairyQuestTitle: Component, fairyQuestMessage: Component, fairyQuestClient: Component, state: State) {
 
     class State
 

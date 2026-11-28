@@ -40,10 +40,11 @@ import net.minecraft.world.item.ItemStack
 
 fun openTooltipViewerScreen() {
     fun <S : Any> openScreen(proxy: ClientProxy<S>) {
+        val state = TooltipViewerScreenContent.State()
         val definition = MessageViewScreenDefinition(text { TOOLTIP_VIEWER_KEY_TRANSLATION() }) {
             val player = proxy.getClientPlayer()
             val itemStacks = if (player != null) (0 until 9).map { player.inventory[it] } else emptyList()
-            TooltipViewerScreenContent(itemStacks, proxy::getItemTooltip).view
+            TooltipViewerScreenContent(itemStacks, state, proxy::getItemTooltip).view
         }.also {
             it.additionalCloseKey = KeyMappingType.OPEN_TOOLTIP_VIEWER
             it.closeOnOutsideClick = false
@@ -53,7 +54,7 @@ fun openTooltipViewerScreen() {
     openScreen(clientProxy!!)
 }
 
-class TooltipViewerScreenContent(itemStacks: List<ItemStack>, tooltipProvider: (ItemStack) -> List<Component>) {
+class TooltipViewerScreenContent(itemStacks: List<ItemStack>, state: State, tooltipProvider: (ItemStack) -> List<Component>) {
 
     class State
 

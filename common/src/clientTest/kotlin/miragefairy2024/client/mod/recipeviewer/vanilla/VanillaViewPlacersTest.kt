@@ -174,8 +174,9 @@ class VanillaViewPlacersTest {
             }
         }
         val lines = listOf("first", "second", "third")
+        val state = TooltipViewerScreenContent.State()
         val definition = MessageViewScreenDefinition(Component.empty()) {
-            val root = TooltipViewerScreenContent(List(5) { ItemStack(Items.STONE) }) { lines.map { Component.literal(it) } }.view
+            val root = TooltipViewerScreenContent(List(5) { ItemStack(Items.STONE) }, state) { lines.map { Component.literal(it) } }.view
             object : View by root {
                 override fun initSizeCalculation(renderingProxy: RenderingProxy, regionSizeXProvider: () -> Int, regionSizeYProvider: () -> Int) {
                     root.initSizeCalculation(testRenderingProxy, regionSizeXProvider, regionSizeYProvider)
