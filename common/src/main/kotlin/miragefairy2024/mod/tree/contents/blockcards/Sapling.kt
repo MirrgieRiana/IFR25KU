@@ -1,6 +1,7 @@
 package miragefairy2024.mod.tree.contents.blockcards
 
 import miragefairy2024.ModContext
+import miragefairy2024.migration.noCollission__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.tree.TreeBlockCard
 import miragefairy2024.mod.tree.TreeBlockConfiguration
 import miragefairy2024.util.getIdentifier
@@ -22,7 +23,7 @@ import net.minecraft.world.level.material.PushReaction
 class TreeSaplingBlockCard(configuration: TreeBlockConfiguration) : TreeBlockCard(configuration) {
     override fun createSettings(): BlockBehaviour.Properties = super.createSettings()
         .mapColor(MapColor.PLANT)
-        .noCollission()
+        .noCollission__MIGRATION2612_ReplaceMethod()
         .randomTicks()
         .instabreak()
         .sound(SoundType.GRASS)

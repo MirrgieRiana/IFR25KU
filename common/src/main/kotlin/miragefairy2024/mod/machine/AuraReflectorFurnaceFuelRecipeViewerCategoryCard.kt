@@ -1,6 +1,7 @@
 package miragefairy2024.mod.machine
 
 import miragefairy2024.MirageFairy2024
+import miragefairy2024.migration.location__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.materials.MaterialCard
 import miragefairy2024.mod.recipeviewer.RecipeViewerCategoryCard
 import miragefairy2024.mod.recipeviewer.toSecondsTextAsTicks
@@ -32,7 +33,7 @@ object AuraReflectorFurnaceFuelRecipeViewerCategoryCard : RecipeViewerCategoryCa
 
     override fun createRecipeEntries(registryAccess: RegistryAccess): Iterable<RecipeEntry<AuraReflectorFurnaceFuel>> {
         return AuraReflectorFurnaceRecipe.FUELS.map { (_, recipe) ->
-            RecipeEntry(registryAccess, recipe.fuel.location(), recipe, true)
+            RecipeEntry(registryAccess, recipe.fuel.location__MIGRATION2612_ReplaceMethod(), recipe, true)
         }
     }
 

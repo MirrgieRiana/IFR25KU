@@ -1,6 +1,7 @@
 package miragefairy2024.mod.materials.contents
 
 import com.mojang.serialization.MapCodec
+import miragefairy2024.migration.moveTo__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.util.get
 import miragefairy2024.util.getLevel
 import miragefairy2024.util.randomBoolean
@@ -40,7 +41,7 @@ class EggBlock(settings: Properties) : FallingBlock(settings) {
         repeat(count) {
             val chicken = EntityType.CHICKEN.create(level) ?: return@repeat
             chicken.setAge(-24000)
-            chicken.moveTo(x, y, z, level.random.nextFloat() * 360.0F, 0.0F)
+            chicken.moveTo__MIGRATION2612_ReplaceMethod(x, y, z, level.random.nextFloat() * 360.0F, 0.0F)
             if (!chicken.fudgePositionAfterSizeChange(ZERO_SIZED_DIMENSIONS)) return@repeat
             level.addFreshEntity(chicken)
         }

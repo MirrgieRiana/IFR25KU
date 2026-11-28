@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.migration.get__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.common.CommandEvents
 import miragefairy2024.mod.common.deadPlayerCommandExceptionType
 import miragefairy2024.util.executesThrowable
@@ -97,7 +98,7 @@ fun initFairyDreamContainer() {
                                         val player = context.source.playerOrException
                                         if (!player.isAlive) throw deadPlayerCommandExceptionType.create(player.displayName)
                                         val id = context.getArgument("motif", Identifier::class.java)
-                                        val motif = motifRegistry.get(id) ?: failure(text { UNKNOWN_MOTIF_TRANSLATION(id.string) })
+                                        val motif = motifRegistry.get__MIGRATION2612_ReplaceMethod(id) ?: failure(text { UNKNOWN_MOTIF_TRANSLATION(id.string) })
                                         val count = player.fairyDreamContainer.getOrCreate().gain(player, setOf(motif))
                                         if (count == 1) {
                                             context.source.sendSuccess({ text { GIVE_ONE_SUCCESS_TRANSLATION(motif.displayName) } }, true)
@@ -133,7 +134,7 @@ fun initFairyDreamContainer() {
                                         val player = context.source.playerOrException
                                         if (!player.isAlive) throw deadPlayerCommandExceptionType.create(player.displayName)
                                         val id = context.getArgument("motif", Identifier::class.java)
-                                        val motif = motifRegistry.get(id) ?: failure(text { UNKNOWN_MOTIF_TRANSLATION(id.string) })
+                                        val motif = motifRegistry.get__MIGRATION2612_ReplaceMethod(id) ?: failure(text { UNKNOWN_MOTIF_TRANSLATION(id.string) })
                                         val have = player.fairyDreamContainer.getOrCreate()[motif]
                                         if (have) {
                                             player.fairyDreamContainer.mutate { it[motif] = false }

@@ -1,6 +1,7 @@
 package miragefairy2024.mod.passiveskill.effects
 
 import miragefairy2024.MirageFairy2024
+import miragefairy2024.migration.location__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.Emoji
 import miragefairy2024.mod.invoke
 import miragefairy2024.mod.passiveskill.PassiveSkillContext
@@ -28,7 +29,7 @@ object EntityAttributePassiveSkillEffect : AbstractPassiveSkillEffect<EntityAttr
 
     override fun getText(value: Value) = getTexts(value).join(text { ","() })
     override fun getTexts(value: Value): List<Component> {
-        return value.map.entries.sortedBy { (it.key as? Holder.Reference<*>)?.key()?.location() }.map { (attribute, value) ->
+        return value.map.entries.sortedBy { (it.key as? Holder.Reference<*>)?.key()?.location__MIGRATION2612_ReplaceMethod() }.map { (attribute, value) ->
             text { Emoji.HUMAN() + " "() + translate(attribute.value().descriptionId) + " ${FORMATTERS.getOrElse(attribute) { defaultFormatter }(value)}"() }
         }
     }
@@ -78,7 +79,7 @@ object EntityAttributePassiveSkillEffect : AbstractPassiveSkillEffect<EntityAttr
             .map { attribute ->
                 PassiveSkillEffectFilter(
                     this,
-                    identifier * "/" * attribute.key().location().pathString,
+                    identifier * "/" * attribute.key().location__MIGRATION2612_ReplaceMethod().pathString,
                     text { Emoji.HUMAN() + " "() + translate(attribute.value().descriptionId) },
                 ) { value -> attribute in value.map.keys.map { it as? Holder.Reference } }
             }

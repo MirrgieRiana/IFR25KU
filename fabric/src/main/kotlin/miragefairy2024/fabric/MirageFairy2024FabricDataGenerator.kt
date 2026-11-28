@@ -8,6 +8,7 @@ import miragefairy2024.DataMapConsumer
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.Modules
+import miragefairy2024.migration.location__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mixins.api.TagBuilderApi
 import miragefairy2024.platformProxy
 import miragefairy2024.util.TagGenerator
@@ -322,8 +323,8 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                             override fun <T> accept(registry: ResourceKey<Registry<T>>, type: Identifier, target: ResourceKey<T>, data: JsonElement) {
                                 val typeMap = registryMap.getOrPut(registry) { mutableMapOf() }
                                 val targetMap = typeMap.getOrPut(type) { mutableMapOf() }
-                                if (target.location() in targetMap) throw IllegalArgumentException("Duplicate data map entry for ${target.location()} in registry ${registry.location()}")
-                                targetMap[target.location()] = data
+                                if (target.location__MIGRATION2612_ReplaceMethod() in targetMap) throw IllegalArgumentException("Duplicate data map entry for ${target.location__MIGRATION2612_ReplaceMethod()} in registry ${registry.location__MIGRATION2612_ReplaceMethod()}")
+                                targetMap[target.location__MIGRATION2612_ReplaceMethod()] = data
                             }
                         }, registries)
                     }
@@ -333,7 +334,7 @@ object MirageFairy2024FabricDataGenerator : DataGeneratorEntrypoint {
                             val jsonElement = jsonObject(
                                 "values" to targetMap.mapKeys { it.key.string }.jsonObject,
                             )
-                            val registryPath = (if (registry.location().namespace == "minecraft") "" else "${registry.location().namespace}/") + registry.location().path
+                            val registryPath = (if (registry.location__MIGRATION2612_ReplaceMethod().namespace == "minecraft") "" else "${registry.location__MIGRATION2612_ReplaceMethod().namespace}/") + registry.location__MIGRATION2612_ReplaceMethod().path
                             futures += DataProvider.saveStable(writer, jsonElement, pathResolver.json("$registryPath/" * type))
                         }
                     }

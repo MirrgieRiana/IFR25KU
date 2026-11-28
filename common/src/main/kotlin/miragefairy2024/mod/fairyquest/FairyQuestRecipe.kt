@@ -6,6 +6,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.lib.PlacedItemFeature
+import miragefairy2024.migration.get__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
+import miragefairy2024.migration.location__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.common.guiFullScreenTranslation
 import miragefairy2024.mod.materials.BlockMaterialCard
 import miragefairy2024.mod.materials.MaterialCard
@@ -495,7 +497,7 @@ class FairyQuestCardFeature(codec: Codec<NoneFeatureConfiguration>) : PlacedItem
         }
         val recipeId = table.weightedRandom(context.random()) ?: return null // 有効なレシピが一つもない
 
-        return FairyQuestCardCard.item().createItemStack().also { it.setFairyQuestRecipe(fairyQuestRecipeRegistry.get(recipeId)!!) }
+        return FairyQuestCardCard.item().createItemStack().also { it.setFairyQuestRecipe(fairyQuestRecipeRegistry.get__MIGRATION2612_ReplaceMethod(recipeId)!!) }
     }
 }
 
@@ -511,7 +513,7 @@ class SetFairyQuestRecipeLootFunction(conditions: List<LootItemCondition>, priva
     override fun getType() = SET_FAIRY_QUEST_RECIPE_LOOT_FUNCTION_TYPE
 
     override fun run(stack: ItemStack, context: LootContext): ItemStack {
-        stack.setFairyQuestRecipe(fairyQuestRecipeRegistry.get(recipeId)!!)
+        stack.setFairyQuestRecipe(fairyQuestRecipeRegistry.get__MIGRATION2612_ReplaceMethod(recipeId)!!)
         return stack
     }
 }
@@ -535,7 +537,7 @@ object FairyQuestRecipeRecipeViewerCategoryCard : RecipeViewerCategoryCard<Fairy
 
     override fun createRecipeEntries(registryAccess: RegistryAccess): Iterable<RecipeEntry<FairyQuestRecipe>> {
         return fairyQuestRecipeRegistry.entrySet().map { (id, recipe) ->
-            RecipeEntry(registryAccess, id.location(), recipe, true)
+            RecipeEntry(registryAccess, id.location__MIGRATION2612_ReplaceMethod(), recipe, true)
         }
     }
 

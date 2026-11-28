@@ -3,6 +3,8 @@ package miragefairy2024.util
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import miragefairy2024.ModContext
+import miragefairy2024.migration.getHolder__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
+import miragefairy2024.migration.location__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import mirrg.kotlin.helium.or
 import mirrg.kotlin.java.hydrogen.orNull
 import net.minecraft.core.Holder
@@ -47,11 +49,11 @@ fun Registration<*, *>.register() {
 }
 
 
-val <T> Registry<T>.sortedEntrySet: List<Map.Entry<ResourceKey<T>, T>> get() = this.entrySet().sortedBy { it.key.location() }
+val <T> Registry<T>.sortedEntrySet: List<Map.Entry<ResourceKey<T>, T>> get() = this.entrySet().sortedBy { it.key.location__MIGRATION2612_ReplaceMethod() }
 
 fun <T : Any> Registry<T>.getResourceKeyOrNull(value: T): ResourceKey<T>? = this.getResourceKey(value).orNull
 
-fun <T : Any> Registry<T>.getHolderOrNull(key: ResourceKey<T>): Holder.Reference<T>? = this.getHolder(key).orNull
+fun <T : Any> Registry<T>.getHolderOrNull(key: ResourceKey<T>): Holder.Reference<T>? = this.getHolder__MIGRATION2612_ReplaceMethod(key).orNull
 
 fun <T : Any> Registry<T>.getHolderOfOrNull(value: T) = this.getResourceKeyOrNull(value).or { return null }.let { this.getHolderOrNull(it) }
 

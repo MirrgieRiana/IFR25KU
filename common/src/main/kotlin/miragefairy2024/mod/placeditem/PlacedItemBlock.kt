@@ -5,6 +5,7 @@ import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.RenderingProxy
 import miragefairy2024.RenderingProxyBlockEntity
+import miragefairy2024.migration.noCollission__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.util.BlockEntityType
 import miragefairy2024.util.EMPTY_ITEM_STACK
 import miragefairy2024.util.Registration
@@ -55,7 +56,7 @@ import net.minecraft.world.phys.shapes.VoxelShape
 
 object PlacedItemCard {
     val identifier = MirageFairy2024.identifier("placed_item")
-    val block = Registration(BuiltInRegistries.BLOCK, identifier) { PlacedItemBlock(BlockBehaviour.Properties.of().noCollission().strength(0.2F).pushReaction(PushReaction.DESTROY)) }
+    val block = Registration(BuiltInRegistries.BLOCK, identifier) { PlacedItemBlock(BlockBehaviour.Properties.of().noCollission__MIGRATION2612_ReplaceMethod().strength(0.2F).pushReaction(PushReaction.DESTROY)) }
     val blockEntityType = Registration(BuiltInRegistries.BLOCK_ENTITY_TYPE, identifier) { BlockEntityType(::PlacedItemBlockEntity, setOf(block.await())) }
 }
 

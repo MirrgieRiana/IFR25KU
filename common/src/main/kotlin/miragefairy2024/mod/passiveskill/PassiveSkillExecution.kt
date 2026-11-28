@@ -3,6 +3,7 @@ package miragefairy2024.mod.passiveskill
 import com.mojang.serialization.Codec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.migration.get__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.fairy.SoulStream
 import miragefairy2024.mod.fairy.contains
 import miragefairy2024.mod.fairy.soulStream
@@ -221,7 +222,7 @@ class PassiveSkillResult() {
                 val value = PassiveSkillResult()
                 val size = buffer.readVarInt()
                 repeat(size) { _ ->
-                    val passiveSkillEffect = passiveSkillEffectRegistry.get(Identifier.STREAM_CODEC.decode(buffer))!!
+                    val passiveSkillEffect = passiveSkillEffectRegistry.get__MIGRATION2612_ReplaceMethod(Identifier.STREAM_CODEC.decode(buffer))!!
                     fun <T : Any> f(passiveSkillEffect: PassiveSkillEffect<T>) {
                         val it = passiveSkillEffect.streamCodec().decode(buffer)
                         value.map[passiveSkillEffect] = it

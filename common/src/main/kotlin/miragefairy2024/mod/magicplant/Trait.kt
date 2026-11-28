@@ -3,6 +3,7 @@ package miragefairy2024.mod.magicplant
 import com.mojang.serialization.Codec
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.migration.get__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.util.en
 import miragefairy2024.util.ja
 import miragefairy2024.util.text
@@ -62,7 +63,7 @@ fun Trait.enJa(enName: String, jaName: String) {
 // util
 
 fun Trait.getIdentifier() = traitRegistry.getKey(this)!!
-fun Identifier.toTrait() = traitRegistry.get(this)
+fun Identifier.toTrait() = traitRegistry.get__MIGRATION2612_ReplaceMethod(this)
 
 fun Trait.getTranslationKey(): String = this.getIdentifier().toLanguageKey("${MirageFairy2024.MOD_ID}.trait")
 fun Trait.getName() = run { text { translate(this@run.getTranslationKey()) } }

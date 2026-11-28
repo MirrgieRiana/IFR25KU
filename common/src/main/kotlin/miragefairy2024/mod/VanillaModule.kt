@@ -3,6 +3,8 @@ package miragefairy2024.mod
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.ModEvents
+import miragefairy2024.migration.location__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
+import miragefairy2024.migration.registryOrThrow__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.common.CustomizedRemainderRegistry
 import miragefairy2024.mod.materials.Material
 import miragefairy2024.mod.materials.Shape
@@ -111,13 +113,13 @@ fun initVanillaModule() {
 
 
     registerClientDebugItem("dump_biome_tags", Items.STRING.toTextureSource(), 0xFF00FF00.toInt()) { level, player, _, _ ->
-        val tags = level.registryAccess().registryOrThrow(Registries.BIOME).tagNames.toList()
+        val tags = level.registryAccess().registryOrThrow__MIGRATION2612_ReplaceMethod(Registries.BIOME).tagNames.toList()
         val sb = StringBuilder()
         tags.sortedBy { it.location() }.forEach { tag ->
             sb.append("${tag.location()}\n")
-            val biomes = level.registryAccess().registryOrThrow(Registries.BIOME)[tag].toList()
-            biomes.sortedBy { it.unwrapKey().get().location() }.forEach { biome ->
-                sb.append("  ${biome.unwrapKey().get().location().string}\n")
+            val biomes = level.registryAccess().registryOrThrow__MIGRATION2612_ReplaceMethod(Registries.BIOME)[tag].toList()
+            biomes.sortedBy { it.unwrapKey().get().location__MIGRATION2612_ReplaceMethod() }.forEach { biome ->
+                sb.append("  ${biome.unwrapKey().get().location__MIGRATION2612_ReplaceMethod().string}\n")
             }
         }
         writeAction(player, "dump_biome_tags.txt", sb.toString())

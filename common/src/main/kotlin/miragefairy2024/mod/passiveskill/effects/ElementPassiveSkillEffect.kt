@@ -2,6 +2,7 @@ package miragefairy2024.mod.passiveskill.effects
 
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.migration.location__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mixins.api.DamageCallback
 import miragefairy2024.mod.Emoji
 import miragefairy2024.mod.invoke
@@ -155,9 +156,9 @@ object ElementPassiveSkillEffect : AbstractPassiveSkillEffect<ElementPassiveSkil
             damage
         }
 
-        SPINE_DAMAGE_TYPE_TAG.generator.registerChild(DamageTypes.CACTUS.location())
-        SPINE_DAMAGE_TYPE_TAG.generator.registerChild(DamageTypes.SWEET_BERRY_BUSH.location())
-        SPINE_DAMAGE_TYPE_TAG.generator.registerChild(DamageTypes.STING.location())
-        SPINE_DAMAGE_TYPE_TAG.generator.registerChild(DamageTypes.THORNS.location())
+        SPINE_DAMAGE_TYPE_TAG.generator.registerChild(DamageTypes.CACTUS.location__MIGRATION2612_ReplaceMethod())
+        SPINE_DAMAGE_TYPE_TAG.generator.registerChild(DamageTypes.SWEET_BERRY_BUSH.location__MIGRATION2612_ReplaceMethod())
+        SPINE_DAMAGE_TYPE_TAG.generator.registerChild(DamageTypes.STING.location__MIGRATION2612_ReplaceMethod())
+        SPINE_DAMAGE_TYPE_TAG.generator.registerChild(DamageTypes.THORNS.location__MIGRATION2612_ReplaceMethod())
     }
 }

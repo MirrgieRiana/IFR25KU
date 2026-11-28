@@ -3,6 +3,9 @@ package miragefairy2024.mod
 import miragefairy2024.DataGenerationEvents
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
+import miragefairy2024.migration.get__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
+import miragefairy2024.migration.readResourceLocation__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
+import miragefairy2024.migration.writeResourceLocation__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.util.Channel
 import miragefairy2024.util.Registration
 import miragefairy2024.util.Translation
@@ -38,7 +41,7 @@ enum class SoundEventCard(val path: String, en: String, ja: String, soundPaths: 
 
 object SoundEventChannel : Channel<SoundEventPacket>(MirageFairy2024.identifier("sound")) {
     override fun writeToBuf(buf: RegistryFriendlyByteBuf, packet: SoundEventPacket) {
-        buf.writeResourceLocation(BuiltInRegistries.SOUND_EVENT.getKey(packet.soundEvent)!!)
+        buf.writeResourceLocation__MIGRATION2612_ReplaceMethod(BuiltInRegistries.SOUND_EVENT.getKey(packet.soundEvent)!!)
         buf.writeBlockPos(packet.pos)
         buf.writeUtf(packet.category.name)
         buf.writeFloat(packet.volume)
@@ -47,7 +50,7 @@ object SoundEventChannel : Channel<SoundEventPacket>(MirageFairy2024.identifier(
     }
 
     override fun readFromBuf(buf: RegistryFriendlyByteBuf): SoundEventPacket {
-        val soundEvent = BuiltInRegistries.SOUND_EVENT.get(buf.readResourceLocation())!!
+        val soundEvent = BuiltInRegistries.SOUND_EVENT.get__MIGRATION2612_ReplaceMethod(buf.readResourceLocation__MIGRATION2612_ReplaceMethod())!!
         val pos = buf.readBlockPos()
         val category = buf.readUtf().let { name -> SoundSource.entries.first { it.name == name } }
         val volume = buf.readFloat()

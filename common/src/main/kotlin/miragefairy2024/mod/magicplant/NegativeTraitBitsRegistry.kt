@@ -5,6 +5,7 @@ import dev.architectury.event.events.client.ClientCommandRegistrationEvent
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.clientProxy
+import miragefairy2024.migration.get__MIGRATION2612_ReplaceMethod // MIGRATION2612 RemoveImport
 import miragefairy2024.mod.common.CommandEvents
 import miragefairy2024.util.Translation
 import miragefairy2024.util.enJa
@@ -58,7 +59,7 @@ fun initNegativeTraitBits() {
                                     }
                                     .executesThrowable { context ->
                                         val id = context.getArgument("trait", Identifier::class.java)
-                                        val trait = traitRegistry.get(id) ?: failure(text { UNKNOWN_TRAIT_TRANSLATION(id.string) })
+                                        val trait = traitRegistry.get__MIGRATION2612_ReplaceMethod(id) ?: failure(text { UNKNOWN_TRAIT_TRANSLATION(id.string) })
                                         NegativeTraitBitsRegistry.set(trait, null)
                                         clientProxy!!.getClientPlayer()!!.sendSystemMessage(text { SUCCESS_TRANSLATION(trait.getName(), "ALL") })
                                         success()
@@ -73,7 +74,7 @@ fun initNegativeTraitBits() {
                                             }
                                             .executesThrowable { context ->
                                                 val id = context.getArgument("trait", Identifier::class.java)
-                                                val trait = traitRegistry.get(id) ?: failure(text { UNKNOWN_TRAIT_TRANSLATION(id.string) })
+                                                val trait = traitRegistry.get__MIGRATION2612_ReplaceMethod(id) ?: failure(text { UNKNOWN_TRAIT_TRANSLATION(id.string) })
                                                 val rawBits = context.getArgument("bits", String::class.java)
                                                 if (!rawBits.matches("""^[01_]{1,32}$""".toRegex())) failure(text { INVALID_BITS_FORMAT_TRANSLATION("$rawBits") })
                                                 val mask = rawBits.replace("_", "").fold(0) { acc, c -> (acc shl 1) or (c - '0') }
