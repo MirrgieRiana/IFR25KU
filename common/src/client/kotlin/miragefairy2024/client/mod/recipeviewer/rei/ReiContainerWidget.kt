@@ -1,5 +1,10 @@
 package miragefairy2024.client.mod.recipeviewer.rei
 
+import dev.architectury.event.CompoundEventResult
+import dev.architectury.event.EventResult
+import dev.architectury.event.events.client.ClientGuiEvent
+import dev.architectury.event.events.client.ClientScreenInputEvent
+import me.shedaniel.rei.api.client.gui.widgets.Slot
 import me.shedaniel.rei.api.client.gui.widgets.Widget
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.ViewController
@@ -7,10 +12,35 @@ import miragefairy2024.util.EventRegistry
 import miragefairy2024.util.Remover
 import miragefairy2024.util.fire
 import miragefairy2024.util.removeOn
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 
 // me.shedaniel.rei.impl.client.gui.widget.MergedWidget
 class ReiContainerWidget : Widget() {
+
+    companion object {
+        private var focusedContainer: ReiContainerWidget? = null
+
+        fun initKeyboardFocus() {
+            ClientGuiEvent.SET_SCREEN.register {
+                clearFocus()
+                CompoundEventResult.pass()
+            }
+            ClientGuiEvent.INIT_PRE.register { _, _ ->
+                clearFocus()
+                EventResult.pass()
+            }
+            ClientScreenInputEvent.MOUSE_CLICKED_PRE.register { _, _, _, _, _ ->
+                clearFocus()
+                EventResult.pass()
+            }
+        }
+
+        private fun clearFocus() {
+            focusedContainer?.setFocused(null)
+            focusedContainer = null
+        }
+    }
 
     private class WidgetSlot(val widget: Widget)
 
@@ -25,6 +55,7 @@ class ReiContainerWidget : Widget() {
         return Remover {
             widgetSlots -= widgetSlot
             widgets = widgetSlots.map { it.widget }
+            if (focusedContainer === this && focused === widget && widgets.none { it === widget }) clearFocus()
         }
     }
 
@@ -38,13 +69,16 @@ class ReiContainerWidget : Widget() {
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        return widgets.toList().any {
-            if (it.containsMouse(mouseX, mouseY)) {
-                it.mouseClicked(mouseX, mouseY, button)
-            } else {
-                false
-            }
+        val screen = Minecraft.getInstance().screen
+        val clicked = widgetSlots.toList().firstOrNull {
+            it.widget.containsMouse(mouseX, mouseY) && it.widget.mouseClicked(mouseX, mouseY, button)
+        } ?: return false
+        if (Minecraft.getInstance().screen === screen && clicked in widgetSlots) {
+            clearFocus()
+            setFocused(clicked.widget)
+            focusedContainer = this
         }
+        return true
     }
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, dragX: Double, dragY: Double): Boolean {
@@ -79,21 +113,19 @@ class ReiContainerWidget : Widget() {
 
 
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-        return widgets.toList().any {
-            it.keyPressed(keyCode, scanCode, modifiers)
+        val focused = focused
+        if (focused?.keyPressed(keyCode, scanCode, modifiers) == true) return true
+        return widgets.any {
+            it is Slot && it !== focused && it.keyPressed(keyCode, scanCode, modifiers)
         }
     }
 
     override fun keyReleased(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-        return widgets.toList().any {
-            it.keyReleased(keyCode, scanCode, modifiers)
-        }
+        return focused?.keyReleased(keyCode, scanCode, modifiers) == true
     }
 
     override fun charTyped(codePoint: Char, modifiers: Int): Boolean {
-        return widgets.toList().any {
-            it.charTyped(codePoint, modifiers)
-        }
+        return focused?.charTyped(codePoint, modifiers) == true
     }
 
 
