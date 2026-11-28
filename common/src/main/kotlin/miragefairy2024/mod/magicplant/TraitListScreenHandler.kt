@@ -75,7 +75,7 @@ fun initTraitListScreenHandler() {
     traitListScreenTranslation.enJa()
 }
 
-class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val context: ContainerLevelAccess, val traitStacks: TraitStacks, val blockPos: BlockPos) : AbstractContainerMenu(traitListScreenHandlerType(), syncId), ViewProviderMenu {
+class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val context: ContainerLevelAccess, val traitStacks: TraitStacks, val blockPos: BlockPos) : AbstractContainerMenu(traitListScreenHandlerType(), syncId), ViewProviderMenu<TraitListScreenContent.State> {
     companion object {
         val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, Pair<TraitStacks, BlockPos>> = StreamCodec.composite(
             TraitStacks.STREAM_CODEC,
@@ -89,11 +89,19 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
     override fun stillValid(player: Player) = true
     override fun quickMoveStack(player: Player, slot: Int): ItemStack = slots[slot].item
 
-    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource) = TraitListScreenContent(this, title).view
+    override fun createScreenState() = TraitListScreenContent.State()
+
+    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource, state: TraitListScreenContent.State) = TraitListScreenContent(this, title, state).view
 
 }
 
-private class TraitListScreenContent(menu: TraitListScreenHandler, title: Component) {
+class TraitListScreenContent(menu: TraitListScreenHandler, title: Component, state: State) {
+
+    class State {
+        var selectedTrait: Trait? = null
+        var listScrollOffset = 0.0
+        var poemScrollOffset = 0.0
+    }
 
     val view = run {
         val level: Level = menu.playerInventory.player.level()
@@ -172,6 +180,10 @@ private class TraitListScreenContent(menu: TraitListScreenHandler, title: Compon
                         view.sizingY = Sizing.FILL
 
                         val scrollView = YScrollContainerView().configure {
+                            view.scrollOffsetY.value = state.poemScrollOffset
+                            view.scrollOffsetY.register { _, offset ->
+                                state.poemScrollOffset = offset
+                            }
                             view += MultiLineTextView().configure {
                                 view.text.value = trait.text
                                 view.shadow = false
@@ -203,7 +215,8 @@ private class TraitListScreenContent(menu: TraitListScreenHandler, title: Compon
 
                     val traitStackList = menu.traitStacks.traitStackList
 
-                    val cardContentDynamicView = DynamicView(if (traitStackList.isNotEmpty()) createTraitCardView(traitStackList.first()) else EmptyView())
+                    val selectedTraitStack = traitStackList.firstOrNull { it.trait == state.selectedTrait } ?: traitStackList.firstOrNull()
+                    val cardContentDynamicView = DynamicView(if (selectedTraitStack != null) createTraitCardView(selectedTraitStack) else EmptyView())
 
                     // GUI名
                     view += MultiLineTextView().configure {
@@ -237,6 +250,10 @@ private class TraitListScreenContent(menu: TraitListScreenHandler, title: Compon
                             view.sizingY = Sizing.FILL
 
                             val scrollView = YScrollContainerView().configure {
+                                view.scrollOffsetY.value = state.listScrollOffset
+                                view.scrollOffsetY.register { _, offset ->
+                                    state.listScrollOffset = offset
+                                }
                                 position.weight = 1.0
 
                                 view += YListView().configure {
@@ -262,6 +279,8 @@ private class TraitListScreenContent(menu: TraitListScreenHandler, title: Compon
                                             }
                                             view.shadow = false
                                         }.onClick {
+                                            state.selectedTrait = trait
+                                            state.poemScrollOffset = 0.0
                                             cardContentDynamicView.content.value = createTraitCardView(traitStack)
                                             true
                                         }

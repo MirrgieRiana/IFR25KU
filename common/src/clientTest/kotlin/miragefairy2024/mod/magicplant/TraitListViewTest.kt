@@ -81,7 +81,8 @@ class TraitListViewTest {
         val level: Level = Mockito.mock(Level::class.java)
         Mockito.`when`(player.level()).thenReturn(level)
         val menu = TraitListScreenHandler(0, Inventory(player), ContainerLevelAccess.NULL, traitStacks, BlockPos.ZERO)
-        val rootView = menu.createRootView(text { "Traits"() }, text { "Inventory"() }, ScreenEventSource())
+        val state = menu.createScreenState()
+        val rootView = menu.createRootView(text { "Traits"() }, text { "Inventory"() }, ScreenEventSource(), state)
         val proxy: RenderingProxy = object : RenderingProxy {
             override fun calculateTextWidth(text: FormattedText) = text.string.length * 6
             override fun calculateTextWidth(text: FormattedCharSequence) = throw UnsupportedOperationException()
@@ -142,10 +143,28 @@ class TraitListViewTest {
             Assertions.assertSame(listScrollView, placements.keys.filterIsInstance<YScrollContainerView>().first())
             Assertions.assertEquals(30.0, listScrollView.scrollOffsetY.value)
             Assertions.assertEquals(30.0, listScrollbarView.scrollOffset.value)
+            val updatedBodyScrollView = placements.keys.filterIsInstance<YScrollContainerView>().last()
+            updatedBodyScrollView.scrollOffsetY.value = 15.0
             Mockito.verify(level, Mockito.times(3)).getBlockEntity(BlockPos.ZERO)
         } finally {
             controller.dispose()
             controller.detach()
+        }
+
+        val recreatedRootView = menu.createRootView(text { "Traits"() }, text { "Inventory"() }, ScreenEventSource(), state)
+        recreatedRootView.initSizeCalculation(proxy, { 400 }, { 240 })
+        val recreatedController = recreatedRootView.attachTo(IntPoint.ZERO, ::place)
+        try {
+            val (bodyScrollView, listScrollView) = placements.keys.filterIsInstance<YScrollContainerView>()
+            val (bodyScrollbarView, listScrollbarView) = placements.keys.filterIsInstance<YFlatScrollbarView>()
+            Assertions.assertEquals(traitStacks.traitStackList[1].trait.texture, placements.keys.filterIsInstance<ImageView>().single().texture.id)
+            Assertions.assertEquals(15.0, bodyScrollView.scrollOffsetY.value)
+            Assertions.assertEquals(15.0, bodyScrollbarView.scrollOffset.value)
+            Assertions.assertEquals(30.0, listScrollView.scrollOffsetY.value)
+            Assertions.assertEquals(30.0, listScrollbarView.scrollOffset.value)
+        } finally {
+            recreatedController.dispose()
+            recreatedController.detach()
         }
     }
 }

@@ -133,8 +133,10 @@ fun initSoulStreamClientModule() {
 
 class SoulStreamScreen(handler: SoulStreamScreenHandler, playerInventory: Inventory, title: Component) : ViewContainerScreen<SoulStreamScreenHandler>(handler, playerInventory, title) {
 
+    private val state = SoulStreamScreenContent.State()
+
     override fun createRootView(screenEventSource: ScreenEventSource): View {
-        return object : SoulStreamScreenContent(menu, title, screenEventSource) {
+        return object : SoulStreamScreenContent(menu, title, screenEventSource, state) {
 
             override val enabledPassiveSkillEffectFilters = miragefairy2024.client.mod.fairy.enabledPassiveSkillEffectFilters
             override val enableGlobalFairyHighlight = miragefairy2024.client.mod.fairy.enableGlobalFairyHighlight

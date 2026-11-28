@@ -9,6 +9,6 @@ import net.minecraft.world.inventory.MenuType
 
 /** 汎用の View 画面をクライアント初期化時に登録するのだ～🌱 */
 context(_: ModContext)
-fun <T> (() -> MenuType<T>).registerViewScreen() where T : AbstractContainerMenu, T : ViewProviderMenu = ModEvents.onClientInit {
+fun <T, State> (() -> MenuType<T>).registerViewScreen() where T : AbstractContainerMenu, T : ViewProviderMenu<State> = ModEvents.onClientInit {
     clientProxy!!.registerViewScreen(this())
 }
