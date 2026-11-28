@@ -203,8 +203,6 @@ fun breakBlock(itemStack: ItemStack, level: Level, blockPos: BlockPos, player: S
 val isInMagicMining: ThreadLocal<Boolean> = ThreadLocal.withInitial { false }
 
 /**
- * 魔法効果としてブロックを壊します。
- *
  * [breakBlock]とは以下の点で異なります。
  * - 近接武器の採掘不能特性を無視します。
  * - 専用のツールが必要なブロックを、ツールの種類にかかわらず回収可能です。

@@ -30,11 +30,6 @@ class OutputSlot(inventory: Container, index: Int, x: Int, y: Int) : Slot(invent
 
 // Merge
 
-/**
- * @param completed 移動が完了したかどうか
- * @param movementTimes アイテムの移動を行った回数
- * @param movedItemCount 移動されたアイテムの個数
- */
 class MergeResult(val completed: Boolean, val movementTimes: Int, val movedItemCount: Int) {
     companion object {
         val UP_TO_DATE = MergeResult(true, 0, 0)

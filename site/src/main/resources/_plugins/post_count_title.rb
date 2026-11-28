@@ -20,7 +20,6 @@
 
 module PostCountTitle
 
-  # タイトルへ記事の個数を足すジェネレーターなのだ～🌱
   # タグごとの記事一覧ページを追加するジェネレーターよりも後に走る必要があるため、優先度を下げるのだ～🌱
   class PostCountTitleGenerator < Jekyll::Generator
     safe true

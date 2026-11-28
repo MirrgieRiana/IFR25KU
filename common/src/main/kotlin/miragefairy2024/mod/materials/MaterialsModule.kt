@@ -1734,10 +1734,8 @@ enum class Shape(val path: String, val title: EnJa) {
     SHARD("shards", EnJa("Shards", "欠片")),
     STORAGE_BLOCKS("storage_blocks", EnJa("Storage Blocks", "貯蔵ブロック")),
 
-    /** 原石 */
     RAW_MATERIAL("raw_materials", EnJa("Raw Materials", "原石")),
 
-    /** ブロック */
     STORAGE_BLOCK("storage_blocks", EnJa("Blocks", "ブロック")),
 }
 

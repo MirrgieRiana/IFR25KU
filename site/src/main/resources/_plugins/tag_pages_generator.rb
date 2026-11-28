@@ -20,7 +20,7 @@
 module TagPages
 
   # タグ1個分の記事一覧ページなのだ～🌱
-  # 実体のファイルを持たず、ビルド時にメモリ上で組み立てるのだ～🌱
+  # ビルド時にメモリ上で組み立てるのだ～🌱
   class TagPage < Jekyll::PageWithoutAFile
     def initialize(site, tag)
       super(site, site.source, "tag", "#{tag}.html")
