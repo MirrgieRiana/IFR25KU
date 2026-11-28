@@ -20,6 +20,12 @@ private val THUMB_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_s
 private val DISABLED_THUMB_TEXTURE = MirageFairy2024.identifier("textures/gui/inventory_scrollbar_scroller_disabled.png")
 
 private class ScrollbarGraphics(val draws: MutableList<GuiTestEnvironment.TexturedDraw>) : GuiGraphicsExtractor(Minecraft.getInstance(), null) {
+    val outlines = mutableListOf<IntRectangle>()
+
+    override fun renderOutline(x: Int, y: Int, width: Int, height: Int, color: Int) {
+        Assertions.assertTrue(pose().clear())
+        outlines += IntRectangle(x, y, width, height)
+    }
 
     fun assertBackgroundOnly(background: IntRectangle) {
         Assertions.assertEquals(listOf(BACKGROUND_TEXTURE), draws.map { it.texture })
@@ -87,9 +93,11 @@ class VanillaInventoryScrollbarViewWidgetTest {
                 val mouseY = if (horizontal) 22.0 else 33.0
                 fun assertScrollbar(position: Int) {
                     graphics.draws.clear()
+                    graphics.outlines.clear()
                     widget.render(graphics, mouseX.toInt(), mouseY.toInt(), 0F)
                     val thumb = if (horizontal) IntRectangle(11 + position, 21, 31, 16) else IntRectangle(11, 21 + position, 16, 31)
                     graphics.assertBackgroundAndThumb(bounds, thumb, THUMB_TEXTURE)
+                    Assertions.assertEquals(if (widget.isFocused) listOf(bounds) else emptyList(), graphics.outlines)
                 }
 
                 assertScrollbar(0)

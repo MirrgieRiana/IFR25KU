@@ -14,6 +14,7 @@ interface ViewRenderer<in V : PlaceableView, S> {
     fun keyPressed(view: V, state: Slot<S>, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int) = false
     fun getRenderOverflow(view: V, bounds: IntRectangle) = RenderOverflow.NONE
     fun render(view: V, state: Slot<S>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) = Unit
+    fun renderFocus(view: V, state: Slot<S>, bounds: IntRectangle, graphics: GuiGraphicsExtractor) = Unit
 }
 
 object ViewRendererRegistry {

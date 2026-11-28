@@ -31,6 +31,7 @@ import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.mod.recipeviewer.views.createView
 import mirrg.kotlin.helium.Slot
 import net.minecraft.SharedConstants
+import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.client.gui.navigation.ScreenDirection
 import net.minecraft.resources.ResourceLocation as Identifier // MIGRATION2612 ReplaceImport net.minecraft.resources.Identifier
@@ -40,6 +41,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.mockito.Mockito
 
 private class RendererTestView : FixedWidgetView(IntPoint(100, 100))
 
@@ -91,6 +93,22 @@ class VanillaViewRendererWidgetTest {
         Assertions.assertNull(buttonWidget.nextFocusPath(event))
         view.enabled.value = true
         Assertions.assertNotNull(buttonWidget.nextFocusPath(event))
+    }
+
+    @Test
+    fun `ホバー表示が透明でもフォーカス中はクリック領域を白枠で囲むのだ`() {
+        val view = ClickableView().also { it.hoverOverlayColor = 0 }
+        val widget = VanillaViewRendererWidget(ClickableViewRenderer, view, IntRectangle(10, 20, 100, 50))
+        val graphics = Mockito.mock(GuiGraphicsExtractor::class.java)
+
+        widget.render(graphics, 0, 0, 0F)
+        val path = checkNotNull(widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true)))
+        path.applyFocus(true)
+        widget.render(graphics, 0, 0, 0F)
+        path.applyFocus(false)
+        widget.render(graphics, 0, 0, 0F)
+
+        Mockito.verify(graphics).renderOutline(10, 20, 100, 50, 0xFFFFFFFF.toInt())
     }
 
     @Test

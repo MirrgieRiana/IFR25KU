@@ -32,6 +32,7 @@ internal class GuiTestEnvironment : AutoCloseable {
     val renderSystem: MockedStatic<RenderSystem> = Mockito.mockStatic(RenderSystem::class.java)
     val events = mutableListOf<String>()
     val fills = mutableListOf<IntRectangle>()
+    val outlines = mutableListOf<IntRectangle>()
     val tooltips = mutableListOf<List<FormattedCharSequence>>()
     var render: (GuiGraphicsExtractor, Int, Int, Float) -> Unit = { _, _, _, _ -> }
 
@@ -46,6 +47,10 @@ internal class GuiTestEnvironment : AutoCloseable {
         override fun fill(minX: Int, minY: Int, maxX: Int, maxY: Int, color: Int) {
             fills += IntRectangle(minX, minY, maxX - minX, maxY - minY)
             events += "fill"
+        }
+
+        override fun renderOutline(x: Int, y: Int, width: Int, height: Int, color: Int) {
+            outlines += IntRectangle(x, y, width, height)
         }
 
         override fun drawString(font: Font?, text: FormattedCharSequence, x: Int, y: Int, color: Int, dropShadow: Boolean): Int {

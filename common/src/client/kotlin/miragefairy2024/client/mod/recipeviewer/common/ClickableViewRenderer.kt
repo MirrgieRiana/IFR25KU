@@ -46,4 +46,9 @@ object ClickableViewRenderer : ViewRenderer<ClickableView, Unit> {
         }
     }
 
+    override fun renderFocus(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphicsExtractor) {
+        if (bounds.sizeX <= 0 || bounds.sizeY <= 0) return
+        graphics.renderOutline(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, 0xFFFFFFFF.toInt())
+    }
+
 }

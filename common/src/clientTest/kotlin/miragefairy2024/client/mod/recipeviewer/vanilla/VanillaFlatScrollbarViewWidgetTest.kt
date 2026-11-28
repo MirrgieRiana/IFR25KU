@@ -15,6 +15,32 @@ import org.lwjgl.glfw.GLFW
 
 class VanillaFlatScrollbarViewWidgetTest {
     @Test
+    fun `縦横のフラットバーは透明でもフォーカス枠を描くのだ`() {
+        listOf(false, true).forEach { horizontal ->
+            GuiTestEnvironment().use { environment ->
+                val view = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
+                view.contentLength = 300
+                view.viewportLength = 100
+                val bounds = if (horizontal) IntRectangle(10, 20, 100, 7) else IntRectangle(10, 20, 7, 100)
+                val widget = if (horizontal) VanillaXFlatScrollbarViewWidget(view as XFlatScrollbarView, bounds) else VanillaYFlatScrollbarViewWidget(view as YFlatScrollbarView, bounds)
+                try {
+                    val path = checkNotNull(widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true)))
+                    path.applyFocus(true)
+                    widget.render(environment.graphics, 0, 0, 0F)
+                    Assertions.assertEquals(listOf(bounds), environment.outlines)
+
+                    environment.outlines.clear()
+                    view.contentLength = view.viewportLength
+                    widget.render(environment.graphics, 0, 0, 0F)
+                    Assertions.assertTrue(environment.outlines.isEmpty())
+                } finally {
+                    widget.dispose()
+                }
+            }
+        }
+    }
+
+    @Test
     fun `View の指定位置を直接読み操作結果と再配置後の位置を保持するのだ`() {
         listOf(false, true).forEach { horizontal ->
             GuiTestEnvironment().use { environment ->
