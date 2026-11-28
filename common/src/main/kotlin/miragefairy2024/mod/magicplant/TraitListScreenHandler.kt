@@ -3,6 +3,7 @@ package miragefairy2024.mod.magicplant
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.NinePatchTextureCard
+import miragefairy2024.mod.common.guiFullScreenTranslation
 import miragefairy2024.mod.magicplant.contents.getTraitPower
 import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
@@ -35,10 +36,12 @@ import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.onClick
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.mod.recipeviewer.views.tooltip
+import miragefairy2024.mod.recipeviewer.views.wrapClickable
 import miragefairy2024.util.Registration
 import miragefairy2024.util.Translation
 import miragefairy2024.util.darkGray
 import miragefairy2024.util.enJa
+import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
 import miragefairy2024.util.join
 import miragefairy2024.util.plus
@@ -199,7 +202,15 @@ class TraitListScreenContent(menu: TraitListScreenHandler, title: Component, sta
                             view += scrollbarView
                         }
                         connectScrollbar(scrollView.view, scrollbarView.view)
-                    }
+                    }.wrapClickable {
+                        view.hoverOverlayColor = 0x00000000
+                        view.onClick.register {
+                            onOpenTraitEncyclopediaPageScreen.fire {
+                                if (it(trait)) return@register true
+                            }
+                            false
+                        }
+                    }.tooltip(text { guiFullScreenTranslation() })
 
                 }
             }
