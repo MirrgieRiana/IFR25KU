@@ -42,7 +42,6 @@ interface ClientProxy<S : Any> {
     fun <T> createMessageViewScreen(parent: S?, definition: MessageViewScreenDefinition<T>): S
 
     /**
-     * [rootView] をトーストに表示するのだ～🌱
      * 表示終了時に [miragefairy2024.mod.recipeviewer.view.ViewController.dispose] が呼ばれる保証はないのだ～🌱
      * トーストの寿命を超えて残る購読がある場合は、終了通知に依存せず購読を解除できる View を渡すのだ～🌱
      */

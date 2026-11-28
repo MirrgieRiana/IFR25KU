@@ -92,7 +92,6 @@ module Images
     baseurl.nil? || baseurl.empty? ? source : "#{baseurl.chomp("/")}#{source}"
   end
 
-  # img 要素を組み立てるのだ～🌱
   # paper_figure や news_figure のように、画像を内側に抱える他のタグからも呼ばれるのだ～🌱
   def self.render_img(context, source, alt: "", class_name: nil, aria_hidden: false)
     render_img_with_baseurl(
