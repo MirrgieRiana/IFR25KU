@@ -78,7 +78,12 @@ class VanillaScrollContainerViewWidgetTest {
                 Assertions.assertTrue(firstWidget.mouseScrolled(50.0, 50.0, 0.0, 1.0))
                 Assertions.assertEquals(215.75, scrollOffsetValue.value)
                 Assertions.assertEquals(1, scrollInputs)
-                firstWidget.isFocused = true
+                val previous = FocusNavigationEvent.TabNavigation(false)
+                val focusPath = checkNotNull(firstWidget.nextFocusPath(previous))
+                focusPath.applyFocus(true)
+                Assertions.assertTrue(firstWidget.isFocused)
+                Assertions.assertNull(firstWidget.focused)
+                Assertions.assertNull(firstWidget.nextFocusPath(previous))
                 Assertions.assertTrue(firstWidget.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
                 Assertions.assertEquals(0.0, scrollOffsetValue.value)
                 Assertions.assertEquals(2, scrollInputs)
@@ -362,7 +367,7 @@ class VanillaScrollContainerViewWidgetTest {
     }
 
     @Test
-    fun `範囲外から逆 Tab で子に移ると子が収まる分だけスクロールするのだ`() {
+    fun `Tab の両方向で子と領域本体に止まり子が収まる分だけスクロールするのだ`() {
         GuiTestEnvironment().use {
             val view = YScrollContainerView()
             view += YListView().also {
@@ -392,25 +397,42 @@ class VanillaScrollContainerViewWidgetTest {
             }
             val widget = VanillaYScrollContainerViewWidget(view, IntRectangle(10, 20, 100, 70), context, registry)
             try {
-                widget.isFocused = true
+                val next = FocusNavigationEvent.TabNavigation(true)
+                val previous = FocusNavigationEvent.TabNavigation(false)
+
+                fun moveFocus(event: FocusNavigationEvent.TabNavigation) {
+                    val path = checkNotNull(widget.nextFocusPath(event))
+                    widget.currentFocusPath?.applyFocus(false)
+                    path.applyFocus(true)
+                    Assertions.assertTrue(widget.isFocused)
+                }
+
+                moveFocus(previous)
+                Assertions.assertNull(widget.focused)
                 Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
                 widget.setHeight(100)
                 Assertions.assertEquals(listOf(10, 40), children.map { it.y })
 
-                fun focusPrevious() {
-                    val path = widget.nextFocusPath(FocusNavigationEvent.TabNavigation(false))
-                    Assertions.assertNotNull(path)
-                    widget.currentFocusPath?.applyFocus(false)
-                    path!!.applyFocus(true)
-                }
-
-                focusPrevious()
+                moveFocus(previous)
+                Assertions.assertSame(children[1], widget.focused)
                 Assertions.assertTrue(children[1].isFocused)
                 Assertions.assertEquals(listOf(10, 40), children.map { it.y })
 
-                focusPrevious()
+                moveFocus(previous)
+                Assertions.assertSame(children[0], widget.focused)
                 Assertions.assertTrue(children[0].isFocused)
                 Assertions.assertEquals(listOf(20, 50), children.map { it.y })
+                Assertions.assertNull(widget.nextFocusPath(previous))
+                widget.currentFocusPath?.applyFocus(false)
+
+                moveFocus(next)
+                Assertions.assertSame(children[0], widget.focused)
+                moveFocus(next)
+                Assertions.assertSame(children[1], widget.focused)
+                moveFocus(next)
+                Assertions.assertNull(widget.focused)
+                Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_UP, 0, 0))
+                Assertions.assertNull(widget.nextFocusPath(next))
             } finally {
                 widget.dispose()
                 widget.detach()
