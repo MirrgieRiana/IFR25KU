@@ -163,7 +163,7 @@ abstract class VanillaScrollbarViewWidget<V : ScrollbarView>(
 
     override fun nextFocusPath(event: FocusNavigationEvent): ComponentPath? {
 
-        if (!isActive || !view.keyboardFocusable) return null
+        if (!isActive || view.isAttachment) return null
 
         val range = evaluateScrollRange()
         if (range.start < range.endInclusive && !isFocused) {

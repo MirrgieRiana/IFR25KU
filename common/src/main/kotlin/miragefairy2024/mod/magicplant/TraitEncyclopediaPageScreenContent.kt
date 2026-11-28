@@ -127,7 +127,7 @@ class TraitEncyclopediaPageScreenContent(trait: Trait, state: State) {
                             view += scrollView
                             val scrollbarView = YFlatScrollbarView().configure {
                                 view.scrollbarColor = 0xA0FFFFFF.toInt()
-                                view.keyboardFocusable = false
+                                view.isAttachment = true
                             }
                             view += AlignView().configure {
                                 view.alignmentX = Alignment.END
