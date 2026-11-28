@@ -48,11 +48,6 @@ object KeyboardClickableViewRenderer : ViewRenderer<ClickableView, Unit> by Clic
         if (!isFocused || !CommonInputs.selected(keyCode)) return false
         return activate(view)
     }
-
-    override fun renderFocus(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, graphics: GuiGraphics) {
-        if (bounds.sizeX <= 0 || bounds.sizeY <= 0) return
-        graphics.renderOutline(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, 0xFFFFFFFF.toInt())
-    }
 }
 
 private fun activate(view: ClickableView): Boolean {

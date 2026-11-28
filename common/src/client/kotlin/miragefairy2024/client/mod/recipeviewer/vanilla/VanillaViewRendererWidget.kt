@@ -25,12 +25,7 @@ class VanillaViewRendererWidget<V : PlaceableView, S>(private val renderer: View
 
     fun getRenderOverflow() = renderer.getRenderOverflow(view, bounds2)
 
-    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        renderer.render(view, state, bounds2, guiGraphics, mouseX, mouseY, isHovered, partialTick)
-        if (isActive && isFocused) {
-            renderer.renderFocus(view, state, bounds2, guiGraphics)
-        }
-    }
+    override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) = renderer.render(view, state, bounds2, guiGraphics, mouseX, mouseY, isHovered, partialTick)
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         // 前回の解放が届かなかった場合も、今回の押下で状態を更新するのだ～🌱

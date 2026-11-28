@@ -34,7 +34,6 @@ import miragefairy2024.util.register
 import mirrg.kotlin.helium.Slot
 import net.minecraft.SharedConstants
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.client.gui.navigation.ScreenDirection
 import net.minecraft.client.resources.sounds.SoundInstance
@@ -136,24 +135,6 @@ class VanillaViewRendererWidgetTest {
             Assertions.assertEquals(4, listenerCalls)
             Mockito.verify(soundManager, Mockito.times(3)).play(Mockito.any(SoundInstance::class.java))
         }
-    }
-
-    @Test
-    fun `ホバー表示が透明でもフォーカス枠を描画するのだ`() {
-        val view = ClickableView().also {
-            it.hoverOverlayColor = 0
-        }
-        val widget = VanillaViewRendererWidget(KeyboardClickableViewRenderer, view, IntRectangle(10, 20, 100, 100))
-        val graphics = Mockito.mock(GuiGraphics::class.java)
-        Mockito.`when`(graphics.containsPointInScissor(30, 40)).thenReturn(true)
-
-        widget.render(graphics, 30, 40, 0F)
-        Assertions.assertTrue(widget.isHovered)
-        Mockito.verify(graphics, Mockito.never()).renderOutline(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt())
-
-        widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true))!!.applyFocus(true)
-        widget.render(graphics, 30, 40, 0F)
-        Mockito.verify(graphics).renderOutline(10, 20, 100, 100, 0xFFFFFFFF.toInt())
     }
 
     @Test
