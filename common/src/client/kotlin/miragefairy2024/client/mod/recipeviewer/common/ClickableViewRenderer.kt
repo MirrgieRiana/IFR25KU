@@ -22,6 +22,8 @@ object ClickableViewRenderer : ViewRenderer<ClickableView, Unit> {
 
     override fun isFocusable(view: ClickableView, state: Slot<Unit>) = true
 
+    override fun getNarrationLabel(view: ClickableView) = view.narrationLabel
+
     override fun mouseClicked(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int): Boolean {
         if (button != 0) return false
         return activate(view)

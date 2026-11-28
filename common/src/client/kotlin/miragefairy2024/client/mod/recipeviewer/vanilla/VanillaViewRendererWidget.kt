@@ -3,7 +3,6 @@ package miragefairy2024.client.mod.recipeviewer.vanilla
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
-import miragefairy2024.mod.recipeviewer.views.ClickableView
 import mirrg.kotlin.helium.Slot
 import net.minecraft.client.gui.ComponentPath
 import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
@@ -55,8 +54,7 @@ class VanillaViewRendererWidget<V : PlaceableView, S>(private val renderer: View
     }
 
     override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) {
-        if (view !is ClickableView) return
-        val narrationLabel = view.narrationLabel ?: return
+        val narrationLabel = renderer.getNarrationLabel(view) ?: return
         narrationElementOutput.add(NarratedElementType.TITLE, narrationLabel)
     }
 
