@@ -5,6 +5,7 @@ import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.SlotPositionSetter
 import miragefairy2024.client.mod.recipeviewer.RenderOverflow
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
+import miragefairy2024.client.mod.recipeviewer.common.ClickableViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.ItemViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.MultiLineTextViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.NinePatchImageViewRenderer
@@ -105,6 +106,7 @@ class VanillaViewPlacersTest {
         ViewRendererRegistry.register(NinePatchImageView::class.java, NinePatchImageViewRenderer)
         ViewRendererRegistry.register(TooltipBackgroundView::class.java, TooltipBackgroundViewRenderer)
         ViewRendererRegistry.register(ItemView::class.java, ItemViewRenderer)
+        ViewRendererRegistry.register(ClickableView::class.java, ClickableViewRenderer)
         ViewRendererRegistry.register(MultiLineTextView::class.java, MultiLineTextViewRenderer)
         VANILLA_VIEW_PLACER_REGISTRY.register { context, view: PlacerTestView, bounds ->
             val widget: AbstractWidget = object : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {

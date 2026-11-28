@@ -1,6 +1,7 @@
 package miragefairy2024.client.mod.recipeviewer
 
 import miragefairy2024.ModContext
+import miragefairy2024.client.mod.recipeviewer.common.ClickableViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.FilledRectangleViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.GhostRecipeItemViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.ImageButtonViewRenderer
@@ -17,6 +18,7 @@ import miragefairy2024.client.mod.recipeviewer.rei.initReiClientSupport
 import miragefairy2024.client.mod.recipeviewer.rei.initReiViewPlacers
 import miragefairy2024.client.mod.recipeviewer.vanilla.initVanillaViewPlacers
 import miragefairy2024.mod.recipeviewer.view.RenderingProxy
+import miragefairy2024.mod.recipeviewer.views.ClickableView
 import miragefairy2024.mod.recipeviewer.views.FilledRectangleView
 import miragefairy2024.mod.recipeviewer.views.GhostRecipeItemView
 import miragefairy2024.mod.recipeviewer.views.ImageButtonView
@@ -36,6 +38,7 @@ fun initRecipeViewerClientModule() {
     if (hasClientEmi()) initEmiClientSupport()
     if (hasClientEmi()) initEmiViewPlacers()
     initVanillaViewPlacers()
+    if (hasClientRei() || hasClientEmi()) initRecipeViewKeyboard()
 
     ViewRendererRegistry.register(NinePatchImageView::class.java, NinePatchImageViewRenderer)
     ViewRendererRegistry.register(FilledRectangleView::class.java, FilledRectangleViewRenderer)
@@ -43,6 +46,7 @@ fun initRecipeViewerClientModule() {
     ViewRendererRegistry.register(ImageButtonView::class.java, ImageButtonViewRenderer)
     ViewRendererRegistry.register(ItemView::class.java, ItemViewRenderer)
     ViewRendererRegistry.register(GhostRecipeItemView::class.java, GhostRecipeItemViewRenderer)
+    ViewRendererRegistry.register(ClickableView::class.java, ClickableViewRenderer)
     ViewRendererRegistry.register(ProgressView::class.java, ProgressViewRenderer)
     ViewRendererRegistry.register(MultiLineTextView::class.java, MultiLineTextViewRenderer)
 }

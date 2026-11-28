@@ -1,6 +1,8 @@
 package miragefairy2024.client.mod.recipeviewer.rei
 
+import me.shedaniel.rei.api.client.REIRuntime
 import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds
+import miragefairy2024.client.mod.recipeviewer.RecipeViewKeyboardTarget
 import miragefairy2024.client.mod.recipeviewer.ViewRenderer
 import miragefairy2024.mod.recipeviewer.view.IntRectangle
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
@@ -8,12 +10,23 @@ import miragefairy2024.util.toReiRectangle
 import mirrg.kotlin.helium.Slot
 import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.events.GuiEventListener
+import net.minecraft.client.gui.navigation.ScreenRectangle
 
 class ReiViewRendererWidget<V : PlaceableView, S>(private val renderer: ViewRenderer<V, S>, private val view: V, private val bounds2: IntRectangle) : WidgetWithBounds() {
     private val state = Slot(renderer.createState(view))
     private val boundsCache = bounds2.toReiRectangle()
+    private val screenRectangle = ScreenRectangle(bounds2.x, bounds2.y, bounds2.sizeX, bounds2.sizeY)
+    private val keyboardTarget = if (renderer.supportsKeyboardActivation) {
+        RecipeViewKeyboardTarget(screenRectangle, { renderer.isFocusable(view, state) && REIRuntime.getInstance().searchTextField?.isFocused != true }) { keyCode, scanCode, modifiers ->
+            renderer.keyPressed(view, state, bounds2, keyCode, scanCode, modifiers, true)
+        }
+    } else {
+        null
+    }
+
     override fun getBounds() = boundsCache
-    override fun children() = listOf<GuiEventListener>()
+    override fun getRectangle() = screenRectangle
+    override fun children(): List<GuiEventListener> = listOfNotNull(keyboardTarget)
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int) = renderer.mouseClicked(view, state, bounds2, mouseX.toInt(), mouseY.toInt(), button)
     override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int) = renderer.keyPressed(view, state, bounds2, keyCode, scanCode, modifiers)
     override fun render(context: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, delta: Float) = renderer.render(view, state, bounds2, context, mouseX, mouseY, containsMouse(mouseX, mouseY), delta)

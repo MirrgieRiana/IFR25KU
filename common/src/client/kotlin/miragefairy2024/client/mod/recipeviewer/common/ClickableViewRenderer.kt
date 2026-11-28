@@ -18,12 +18,18 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance
 import net.minecraft.sounds.SoundEvents
 
 object ClickableViewRenderer : ViewRenderer<ClickableView, Unit> {
+    override val supportsKeyboardActivation get() = true
     override fun createState(view: ClickableView) = Unit
 
     override fun isFocusable(view: ClickableView, state: Slot<Unit>) = true
 
     override fun mouseClicked(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int): Boolean {
         if (button != 0) return false
+        return activate(view)
+    }
+
+    override fun keyPressed(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int, isFocused: Boolean): Boolean {
+        if (!isFocused || !CommonInputs.selected(keyCode)) return false
         return activate(view)
     }
 
@@ -41,13 +47,6 @@ object ClickableViewRenderer : ViewRenderer<ClickableView, Unit> {
         }
     }
 
-}
-
-object KeyboardClickableViewRenderer : ViewRenderer<ClickableView, Unit> by ClickableViewRenderer {
-    override fun keyPressed(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int, isFocused: Boolean): Boolean {
-        if (!isFocused || !CommonInputs.selected(keyCode)) return false
-        return activate(view)
-    }
 }
 
 private fun activate(view: ClickableView): Boolean {

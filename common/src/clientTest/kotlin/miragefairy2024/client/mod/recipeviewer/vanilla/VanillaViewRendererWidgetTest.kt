@@ -6,7 +6,6 @@ import miragefairy2024.client.mod.recipeviewer.common.FilledRectangleViewRendere
 import miragefairy2024.client.mod.recipeviewer.common.ImageButtonViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.ImageViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.ItemViewRenderer
-import miragefairy2024.client.mod.recipeviewer.common.KeyboardClickableViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.MultiLineTextViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.NinePatchImageViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.ProgressViewRenderer
@@ -103,7 +102,7 @@ class VanillaViewRendererWidgetTest {
     @Test
     fun `フォーカス中のクリック可能な View はボタンと同じキーで操作できるのだ`() {
         val view = ClickableView()
-        val widget = VanillaViewRendererWidget(KeyboardClickableViewRenderer, view, IntRectangle(10, 20, 100, 100))
+        val widget = VanillaViewRendererWidget(ClickableViewRenderer, view, IntRectangle(10, 20, 100, 100))
         var listenerCalls = 0
         var consumeClick = false
         view.onClick.register {

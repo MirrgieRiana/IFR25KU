@@ -7,7 +7,6 @@ import dev.emi.emi.api.widget.TextureWidget
 import dev.emi.emi.api.widget.TooltipWidget
 import miragefairy2024.ModContext
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
-import miragefairy2024.client.mod.recipeviewer.common.ClickableViewRenderer
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.ViewController
@@ -15,7 +14,6 @@ import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.ArrowView
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
-import miragefairy2024.mod.recipeviewer.views.ClickableView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.InputSlotView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
@@ -103,13 +101,10 @@ fun initEmiViewPlacers() {
             view.tooltipProvider(mouseX, mouseY).map { ClientTooltipComponent.create(it.visualOrderText) }
         }, bounds.x, bounds.y, bounds.sizeX, bounds.sizeY)
     }
-    EMI_VIEW_PLACER_REGISTRY.register { context, view: ClickableView, bounds ->
-        context.containerWidget place EmiViewRendererWidget(ClickableViewRenderer, view, bounds)
-    }
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView, S> f(entry: ViewRendererRegistry.Entry<V, S>) {
             EMI_VIEW_PLACER_REGISTRY.register(entry.viewClass) { context, view, bounds ->
-                context.containerWidget place EmiViewRendererWidget(entry.viewRenderer, view, bounds)
+                context.containerWidget place EmiViewRendererWidget(entry.viewRenderer, view, bounds, context.containerWidget)
             }
         }
         f(entry)

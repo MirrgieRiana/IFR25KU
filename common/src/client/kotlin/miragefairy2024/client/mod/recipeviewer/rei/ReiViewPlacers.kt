@@ -5,7 +5,6 @@ import me.shedaniel.rei.api.client.gui.widgets.Widgets
 import me.shedaniel.rei.api.common.entry.EntryIngredient
 import miragefairy2024.ModContext
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
-import miragefairy2024.client.mod.recipeviewer.common.ClickableViewRenderer
 import miragefairy2024.mod.recipeviewer.view.PlaceableView
 import miragefairy2024.mod.recipeviewer.view.contains
 import miragefairy2024.mod.recipeviewer.view.offset
@@ -14,7 +13,6 @@ import miragefairy2024.mod.recipeviewer.view.size
 import miragefairy2024.mod.recipeviewer.view.sized
 import miragefairy2024.mod.recipeviewer.views.ArrowView
 import miragefairy2024.mod.recipeviewer.views.CatalystSlotView
-import miragefairy2024.mod.recipeviewer.views.ClickableView
 import miragefairy2024.mod.recipeviewer.views.ImageView
 import miragefairy2024.mod.recipeviewer.views.InputSlotView
 import miragefairy2024.mod.recipeviewer.views.OutputSlotView
@@ -91,9 +89,6 @@ fun initReiViewPlacers() {
         widgets place Widgets.createTooltip { mouse ->
             if (bounds.contains(mouse.x, mouse.y)) Tooltip.create(mouse, view.tooltipProvider(mouse.x, mouse.y)) else null
         }
-    }
-    REI_VIEW_PLACER_REGISTRY.register { widgets, view: ClickableView, bounds ->
-        widgets place ReiViewRendererWidget(ClickableViewRenderer, view, bounds)
     }
     ViewRendererRegistry.registry.subscribe { entry ->
         fun <V : PlaceableView, S> f(entry: ViewRendererRegistry.Entry<V, S>) {

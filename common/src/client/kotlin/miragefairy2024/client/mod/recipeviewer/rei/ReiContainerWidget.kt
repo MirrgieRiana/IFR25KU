@@ -8,9 +8,10 @@ import miragefairy2024.util.Remover
 import miragefairy2024.util.fire
 import miragefairy2024.util.removeOn
 import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
+import net.minecraft.client.gui.navigation.ScreenRectangle
 
 // me.shedaniel.rei.impl.client.gui.widget.MergedWidget
-class ReiContainerWidget : Widget() {
+class ReiContainerWidget(private val displayBounds: ScreenRectangle) : Widget() {
 
     private class WidgetSlot(val widget: Widget)
 
@@ -23,12 +24,14 @@ class ReiContainerWidget : Widget() {
         widgetSlots += widgetSlot
         widgets = widgetSlots.map { it.widget }
         return Remover {
+            if (focused === widget) currentFocusPath?.applyFocus(false)
             widgetSlots -= widgetSlot
             widgets = widgetSlots.map { it.widget }
         }
     }
 
     override fun children() = widgets
+    override fun getRectangle() = displayBounds
 
 
     override fun containsMouse(mouseX: Double, mouseY: Double): Boolean {

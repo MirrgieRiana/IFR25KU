@@ -1,7 +1,9 @@
 package miragefairy2024.client.mod.recipeviewer.emi
 
+import dev.emi.emi.api.EmiApi
 import dev.emi.emi.api.widget.Bounds
 import dev.emi.emi.api.widget.Widget
+import dev.emi.emi.screen.RecipeScreen
 import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.util.EventRegistry
@@ -11,13 +13,17 @@ import miragefairy2024.util.removeOn
 import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 
-class EmiContainerWidget : Widget() {
+class EmiContainerWidget(private val screen: RecipeScreen?, val screenOrigin: IntPoint) : Widget() {
 
     private class WidgetSlot(val widget: Widget)
 
     private val widgetSlots = mutableListOf<WidgetSlot>()
     var widgets = listOf<Widget>()
         private set
+
+    fun canFocus(widget: Widget) = screen?.getGroup(this) != null && !EmiApi.isSearchFocused() && widget in widgets
+
+    fun getKeyboardTargets() = widgets.filterIsInstance<EmiViewRendererWidget<*, *>>().mapNotNull { it.keyboardTarget }
 
     fun add(widget: Widget): Remover {
         val widgetSlot = WidgetSlot(widget)

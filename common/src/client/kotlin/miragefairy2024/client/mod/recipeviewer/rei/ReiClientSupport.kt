@@ -29,6 +29,7 @@ import miragefairy2024.util.plus
 import miragefairy2024.util.text
 import miragefairy2024.util.toEntryStack
 import mirrg.kotlin.helium.max
+import net.minecraft.client.gui.navigation.ScreenRectangle
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.inventory.AbstractContainerMenu
@@ -123,7 +124,7 @@ class ReiClientSupport<R> private constructor(val card: RecipeViewerCategoryCard
         override fun getDisplayWidth(display: SupportedDisplay<R>) = 5 + getSize(display.recipeEntry).x + 5
         override fun getDisplayHeight() = 5 + heightCache + 5
         override fun setupDisplay(display: SupportedDisplay<R>, bounds: Rectangle): List<Widget> {
-            val containerWidget = ReiContainerWidget()
+            val containerWidget = ReiContainerWidget(ScreenRectangle(bounds.x, bounds.y, bounds.width, bounds.height))
             val view = card.createView(display.recipeEntry)
             view.initSizeCalculation(renderingProxy, { MAX_SIZE.x - 5 - 5 }, { MAX_SIZE.y - 5 - 5 })
             view.attachTo(IntPoint(bounds.x + 5, bounds.y + 5)) { view2, bounds ->
