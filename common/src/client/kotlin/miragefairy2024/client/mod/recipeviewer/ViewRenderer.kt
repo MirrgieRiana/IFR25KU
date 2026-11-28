@@ -11,7 +11,8 @@ interface ViewRenderer<in V : PlaceableView, S> {
     fun createState(view: V): S
     fun isFocusable(view: V, state: Slot<S>) = false
     fun mouseClicked(view: V, state: Slot<S>, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int) = false
-    fun keyPressed(view: V, state: Slot<S>, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int, isFocused: Boolean) = false
+    fun keyPressed(view: V, state: Slot<S>, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int) = false
+    fun keyPressedWhenFocused(view: V, state: Slot<S>, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int) = keyPressed(view, state, bounds, keyCode, scanCode, modifiers)
     fun getRenderOverflow(view: V, bounds: IntRectangle) = RenderOverflow.NONE
     fun render(view: V, state: Slot<S>, bounds: IntRectangle, graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, isHovered: Boolean, delta: Float) = Unit
 }

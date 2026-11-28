@@ -139,7 +139,7 @@ class VanillaViewRendererWidgetTest {
     @Test
     fun `選択キーは渡されたレンダラーに委譲するのだ`() {
         val renderer: ViewRenderer<ClickableView, Unit> = object : ViewRenderer<ClickableView, Unit> by ClickableViewRenderer {
-            override fun keyPressed(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int, isFocused: Boolean) = isFocused && keyCode == GLFW.GLFW_KEY_ENTER
+            override fun keyPressedWhenFocused(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int) = keyCode == GLFW.GLFW_KEY_ENTER
         }
         val widget = VanillaViewRendererWidget(renderer, ClickableView(), IntRectangle(10, 20, 100, 100))
         widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true))!!.applyFocus(true)

@@ -27,8 +27,8 @@ object ClickableViewRenderer : ViewRenderer<ClickableView, Unit> {
         return activate(view)
     }
 
-    override fun keyPressed(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int, isFocused: Boolean): Boolean {
-        if (!isFocused || !CommonInputs.selected(keyCode)) return false
+    override fun keyPressedWhenFocused(view: ClickableView, state: Slot<Unit>, bounds: IntRectangle, keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+        if (!CommonInputs.selected(keyCode)) return false
         return activate(view)
     }
 
