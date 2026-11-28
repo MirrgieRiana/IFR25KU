@@ -38,7 +38,6 @@ fun initRecipeViewerClientModule() {
     if (hasClientEmi()) initEmiClientSupport()
     if (hasClientEmi()) initEmiViewPlacers()
     initVanillaViewPlacers()
-    if (hasClientRei()) initRecipeViewKeyboard()
 
     ViewRendererRegistry.register(NinePatchImageView::class.java, NinePatchImageViewRenderer)
     ViewRendererRegistry.register(FilledRectangleView::class.java, FilledRectangleViewRenderer)

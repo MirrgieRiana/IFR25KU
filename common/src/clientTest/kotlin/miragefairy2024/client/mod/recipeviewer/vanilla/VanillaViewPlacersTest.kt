@@ -5,7 +5,6 @@ import miragefairy2024.ModContext
 import miragefairy2024.client.mixins.api.SlotPositionSetter
 import miragefairy2024.client.mod.recipeviewer.RenderOverflow
 import miragefairy2024.client.mod.recipeviewer.ViewRendererRegistry
-import miragefairy2024.client.mod.recipeviewer.common.ClickableViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.ItemViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.MultiLineTextViewRenderer
 import miragefairy2024.client.mod.recipeviewer.common.NinePatchImageViewRenderer
@@ -21,7 +20,6 @@ import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.view.ViewController
 import miragefairy2024.mod.recipeviewer.view.register
 import miragefairy2024.mod.recipeviewer.views.Child
-import miragefairy2024.mod.recipeviewer.views.ClickableView
 import miragefairy2024.mod.recipeviewer.views.DynamicView
 import miragefairy2024.mod.recipeviewer.views.EmptyView
 import miragefairy2024.mod.recipeviewer.views.FixedWidgetView
@@ -106,7 +104,6 @@ class VanillaViewPlacersTest {
         ViewRendererRegistry.register(NinePatchImageView::class.java, NinePatchImageViewRenderer)
         ViewRendererRegistry.register(TooltipBackgroundView::class.java, TooltipBackgroundViewRenderer)
         ViewRendererRegistry.register(ItemView::class.java, ItemViewRenderer)
-        ViewRendererRegistry.register(ClickableView::class.java, ClickableViewRenderer)
         ViewRendererRegistry.register(MultiLineTextView::class.java, MultiLineTextViewRenderer)
         VANILLA_VIEW_PLACER_REGISTRY.register { context, view: PlacerTestView, bounds ->
             val widget: AbstractWidget = object : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {
@@ -446,13 +443,13 @@ class VanillaViewPlacersTest {
         }
     }
 
-    private fun createInteractivePlacerContext(widgets: MutableList<AbstractWidget>): VanillaViewPlacerContext {
+    private fun createScrollbarPlacerContext(widgets: MutableList<AbstractWidget>): VanillaViewPlacerContext {
         return object : VanillaViewPlacerContext {
             override val origin = IntPoint(10, 20)
             override val canPlaceMenuSlots = false
             override val screenEventSource = ScreenEventSource()
             override fun addRenderable(registration: WidgetRegistration): Remover {
-                if (!registration.interactive) throw AssertionError("The widget must accept input")
+                if (!registration.interactive) throw AssertionError("Scrollbars must accept input")
                 val widget = registration.widget
                 widgets += widget
                 return Remover { widgets.remove(widget) }
@@ -462,33 +459,10 @@ class VanillaViewPlacersTest {
     }
 
     @Test
-    fun `バニラに配置されたクリック項目はフォーカス中に選択キーを受け取るのだ`() {
-        val widgets = mutableListOf<AbstractWidget>()
-        val context = createInteractivePlacerContext(widgets)
-        val view = ClickableView()
-        var listenerCalls = 0
-        view.onClick.register {
-            listenerCalls++
-            false
-        }
-        val controller = VANILLA_VIEW_PLACER_REGISTRY.place(context, view, IntRectangle(10, 20, 100, 100))
-        try {
-            val widget = widgets.single()
-            Assertions.assertFalse(widget.keyPressed(GLFW.GLFW_KEY_ENTER, 0, 0))
-            Assertions.assertEquals(0, listenerCalls)
-            widget.isFocused = true
-            Assertions.assertFalse(widget.keyPressed(GLFW.GLFW_KEY_ENTER, 0, 0))
-            Assertions.assertEquals(1, listenerCalls)
-        } finally {
-            controller.dispose()
-        }
-    }
-
-    @Test
     fun `本番のバー登録が単体の配置と移動と破棄と解除を中継するのだ`() {
         listOf(false, true).forEach { horizontal ->
             val widgets = mutableListOf<AbstractWidget>()
-            val context = createInteractivePlacerContext(widgets)
+            val context = createScrollbarPlacerContext(widgets)
             val view = if (horizontal) XFlatScrollbarView() else YFlatScrollbarView()
             view.contentLength = 300
             view.viewportLength = 100
@@ -516,7 +490,7 @@ class VanillaViewPlacersTest {
     fun `本番のインベントリ風スクロールバー登録が配置と解除を中継し再配置で位置を保持するのだ`() {
         listOf(false, true).forEach { horizontal ->
             val widgets = mutableListOf<AbstractWidget>()
-            val context = createInteractivePlacerContext(widgets)
+            val context = createScrollbarPlacerContext(widgets)
             val view = if (horizontal) XInventoryScrollbarView() else YInventoryScrollbarView()
             view.contentLength = 300
             view.viewportLength = 100
@@ -702,7 +676,7 @@ class VanillaViewPlacersTest {
 
     @Test
     fun `配置ごとの描画前通知の中継は配置が外れても画面終了まで存続するのだ`() {
-        val context = createInteractivePlacerContext(mutableListOf())
+        val context = createScrollbarPlacerContext(mutableListOf())
         val screenEventSource = context.screenEventSource
 
         fun attachScroll(): ViewController {

@@ -8,7 +8,6 @@ import mirrg.kotlin.helium.Slot
 import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 
 interface ViewRenderer<in V : PlaceableView, S> {
-    val supportsKeyboardActivation get() = false
     fun createState(view: V): S
     fun isFocusable(view: V, state: Slot<S>) = false
     fun mouseClicked(view: V, state: Slot<S>, bounds: IntRectangle, mouseX: Int, mouseY: Int, button: Int) = false
