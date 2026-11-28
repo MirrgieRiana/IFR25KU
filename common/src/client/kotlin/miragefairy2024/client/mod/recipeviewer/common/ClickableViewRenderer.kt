@@ -46,14 +46,14 @@ object ClickableViewRenderer : ViewRenderer<ClickableView, Unit> {
         }
     }
 
-}
-
-private fun activate(view: ClickableView): Boolean {
-    view.onClick.fire {
-        if (it()) {
-            Minecraft.getInstance().soundManager.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F))
-            return true
+    private fun activate(view: ClickableView): Boolean {
+        view.onClick.fire {
+            if (it()) {
+                Minecraft.getInstance().soundManager.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1F))
+                return true
+            }
         }
+        return false
     }
-    return false
+
 }
