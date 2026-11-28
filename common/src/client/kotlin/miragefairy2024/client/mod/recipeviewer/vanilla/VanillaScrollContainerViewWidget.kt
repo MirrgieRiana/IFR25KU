@@ -327,7 +327,9 @@ abstract class VanillaScrollContainerViewWidget(
         // 無効なコンテナなら null を返すのだ～🌱
         if (!isActive) return null
 
-        fun createSelfFocusPath(): ComponentPath {
+        fun createSelfFocusPath(): ComponentPath? {
+            // スクロールの余地がなく、かつ現在位置が初期位置の場合は、移動の操作が不可能なので、自身をフォーカスしないのだ～🌱
+            if (evaluateMaxScrollOffset() <= 0 && scrollOffsetValue.value == 0.0) return null
             return object : ComponentPath {
                 override fun component() = this@VanillaScrollContainerViewWidget
 
@@ -347,8 +349,6 @@ abstract class VanillaScrollContainerViewWidget(
 
         // 子への経路があればそれを、なければ自身をフォーカス先にするのだ～🌱
         if (path == null) {
-            // スクロールの余地がなく、かつ現在位置が初期位置の場合は、移動の操作が不可能なので、自身をフォーカスしないのだ～🌱
-            if (evaluateMaxScrollOffset() <= 0 && scrollOffsetValue.value == 0.0) return null
             // 既にフォーカスされている場合は、次のフォーカス先に選ばないのだ～🌱
             if (isFocused) return null
             // 自身を次のフォーカス先にするのだ～🌱
