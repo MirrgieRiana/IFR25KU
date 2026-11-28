@@ -1,5 +1,6 @@
 package miragefairy2024.migration
 
+import net.minecraft.core.DefaultedRegistry
 import net.minecraft.core.Holder
 import net.minecraft.core.Registry
 import net.minecraft.core.RegistryAccess
@@ -14,7 +15,9 @@ import java.util.Optional
 
 fun ResourceKey<*>.location__MIGRATION2612_ReplaceMethod(): Identifier = /* MIGRATION2612 ReplaceMethod this.identifier() */ this.location()
 
-fun <T : Any> Registry<T>.get__MIGRATION2612_ReplaceMethod(identifier: Identifier?): T? = /* MIGRATION2612 ReplaceMethod this.getValue(identifier) */ this.get(identifier)
+fun <T> Registry<T>.get__MIGRATION2612_ReplaceMethod(identifier: Identifier?): T? = /* MIGRATION2612 ReplaceMethod this.getValue(identifier) */ this.get(identifier)
+
+fun <T> DefaultedRegistry<T>.get__MIGRATION2612_ReplaceMethod(identifier: Identifier?): T & Any = /* MIGRATION2612 ReplaceMethod this.getValue(identifier) */ this.get(identifier)
 
 fun <T : Any> Registry<T>.getHolder__MIGRATION2612_ReplaceMethod(key: ResourceKey<T>): Optional<Holder.Reference<T>> = /* MIGRATION2612 ReplaceMethod this.get(key) */ this.getHolder(key)
 
