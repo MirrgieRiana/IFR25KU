@@ -47,8 +47,8 @@ fun initTraitEncyclopediaPageScreen() {
 private fun Trait.openTraitEncyclopediaPageScreen() {
     fun <S : Any> openScreen(proxy: ClientProxy<S>) {
         val parent = proxy.getCurrentScreen()
-        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(this.getName()) {
-            TraitEncyclopediaPageScreenContent(this).also { view ->
+        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(this.getName(), { TraitEncyclopediaPageScreenContent.State() }) { _, state ->
+            TraitEncyclopediaPageScreenContent(this, state).also { view ->
                 view.onBackToGame.register {
                     proxy.setCurrentScreen(null)
                     true
@@ -63,7 +63,11 @@ private fun Trait.openTraitEncyclopediaPageScreen() {
     openScreen(clientProxy!!)
 }
 
-class TraitEncyclopediaPageScreenContent(trait: Trait) {
+class TraitEncyclopediaPageScreenContent(trait: Trait, state: State) {
+
+    class State {
+        var scrollOffset = 0.0
+    }
 
     val onBackToGame = EventRegistry<() -> Boolean>()
     val onBack = EventRegistry<() -> Boolean>()
@@ -111,6 +115,10 @@ class TraitEncyclopediaPageScreenContent(trait: Trait) {
                             view.sizingX = Sizing.FILL
                             view.sizingY = Sizing.FILL
                             val scrollView = YScrollContainerView().configure {
+                                view.scrollOffsetY.value = state.scrollOffset
+                                view.scrollOffsetY.register { _, offset ->
+                                    state.scrollOffset = offset
+                                }
                                 view += MultiLineTextView().configure {
                                     view.text.value = trait.text
                                     view.shadow = false

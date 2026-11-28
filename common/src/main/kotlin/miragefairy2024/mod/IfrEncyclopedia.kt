@@ -198,10 +198,7 @@ class IfrEncyclopediaEntryCard(
     }
 }
 
-/**
- * 図鑑の文字色なのだ～🌱
- * 背景のテクスチャはダークモードでも替わらないから、暗い側も同じ色にするのだ～🌱
- */
+/** 背景のテクスチャはダークモードでも替わらないから、暗い側も同じ色にするのだ～🌱 */
 val IFR_ENCYCLOPEDIA_TEXT_COLOR = ColorPair(0xFF493208.toInt(), 0xFF493208.toInt())
 
 /** 段落の間に挟む縦の隙間なのだ～🌱 */

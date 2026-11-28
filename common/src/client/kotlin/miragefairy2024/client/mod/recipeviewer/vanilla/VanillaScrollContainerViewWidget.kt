@@ -327,15 +327,21 @@ abstract class VanillaScrollContainerViewWidget(
         // 無効なコンテナなら null を返すのだ～🌱
         if (!isActive) return null
 
-        // バニラの他コンテナの実装では、InitialFocus 時に最初の要素を選択したりしているから、その代わりなのだ～🌱
-        val actualEvent = if (event is FocusNavigationEvent.InitialFocus) FocusNavigationEvent.TabNavigation(true) else event
+        fun createSelfFocusPath(): ComponentPath? {
+            // 表示位置を変えられない場合は、自身をフォーカス候補から外すのだ～🌱
+            if (evaluateMaxScrollOffset() <= 0 && scrollOffsetValue.value == 0.0) return null
+            return object : ComponentPath {
+                override fun component() = this@VanillaScrollContainerViewWidget
 
-        // super.nextFocusPath() に子の探索を任せるのだ～🌱
-        val path = super.nextFocusPath(actualEvent)
+                override fun applyFocus(focused: Boolean) {
+                    // 領域本体を選ぶときに、以前の子の参照を解除するのだ～🌱
+                    if (focused) this@VanillaScrollContainerViewWidget.focused = null
+                    this@VanillaScrollContainerViewWidget.isFocused = focused
+                }
+            }
+        }
 
-        // 子への経路があればそれを、なければ自身をフォーカス先にするのだ～🌱
-        if (path != null) {
-            // 子を次のフォーカス先にするのだ～🌱
+        fun createChildFocusPath(path: ComponentPath): ComponentPath {
             return object : ComponentPath {
                 override fun component() = path.component()
 
@@ -350,20 +356,61 @@ abstract class VanillaScrollContainerViewWidget(
                     }
                 }
             }
-        } else {
-            // スクロールの余地がなく、かつ現在位置が初期位置の場合は、移動の操作が不可能なので、自身をフォーカスしないのだ～🌱
-            if (evaluateMaxScrollOffset() <= 0 && scrollOffsetValue.value == 0.0) return null
-            // 既にフォーカスされている場合は、次のフォーカス先に選ばないのだ～🌱
-            if (isFocused) return null
-            // 自身を次のフォーカス先にするのだ～🌱
-            return object : ComponentPath {
-                override fun component() = this@VanillaScrollContainerViewWidget
+        }
 
-                override fun applyFocus(focused: Boolean) {
-                    // その経路の適用時に、以前の子の参照を解除するのだ～🌱
-                    if (focused) this@VanillaScrollContainerViewWidget.focused = null
-                    this@VanillaScrollContainerViewWidget.isFocused = focused
+        when (event) {
+            is FocusNavigationEvent.InitialFocus -> {
+                // GUI を開いた直後に自動的にフォーカスを行う際のイベントなのだ～🌱
+
+                // バニラの他コンテナの実装では InitialFocus 時に最初の要素を選択したりしているから、その代用として Tab 扱いで子を検索するのだ～🌱
+                val path = super.nextFocusPath(FocusNavigationEvent.TabNavigation(true))
+                if (path != null) return createChildFocusPath(path)
+
+                // フォーカス可能な子要素がない場合でも、勝手にスクロール領域本体をフォーカスしないのだ～🌱
+                return null
+            }
+
+            is FocusNavigationEvent.TabNavigation -> {
+                val forward = event.forward()
+                if (forward) {
+                    // 順方向の Tab 移動なのだ～🌱
+
+                    // 領域本体や子要素がまだフォーカスされていないときは、まず、領域本体のフォーカスを試みるのだ～🌱
+                    if (!isFocused) {
+                        val path = createSelfFocusPath()
+                        if (path != null) return path
+                    }
+
+                    // フォーカス可能な子がいれば、それにするのだ～🌱
+                    val path = super.nextFocusPath(event)
+                    if (path != null) return createChildFocusPath(path)
+
+                    // フォーカスできるものがもう何も残ってないのだ～🌱
+                    return null
+                } else {
+                    // 逆方向の Tab 移動なのだ～🌱
+
+                    // 既に領域本体がフォーカスされている場合は、何もフォーカスしないのだ～🌱
+                    if (isFocused && focused == null) return null
+
+                    // フォーカス可能な子がいれば、それにするのだ～🌱
+                    val path = super.nextFocusPath(event)
+                    if (path != null) return createChildFocusPath(path)
+
+                    // フォーカス可能な子がいなかったので、領域本体のフォーカスを試みるのだ～🌱
+                    return createSelfFocusPath()
                 }
+            }
+
+            else -> {
+                // Tab じゃないフォーカスの移動なのだ～🌱
+
+                // フォーカス可能な子がいれば、それにするのだ～🌱
+                val path = super.nextFocusPath(event)
+                if (path != null) return createChildFocusPath(path)
+
+                // フォーカス可能な子がいなければ、領域本体がフォーカスを持っていないときのみ、領域本体のフォーカスを試みるのだ～🌱
+                return if (!isFocused) createSelfFocusPath() else null
             }
         }
     }

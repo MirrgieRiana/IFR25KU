@@ -45,8 +45,8 @@ fun initFairyQuestMessageScreen() {
 fun FairyQuestRecipe.openMessageScreen() {
     fun <S : Any> openScreen(proxy: ClientProxy<S>) {
         val parent = proxy.getCurrentScreen()
-        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(this.title) {
-            FairyQuestMessageScreenContent(this.title, this.message, this.client).also { view ->
+        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(this.title, { FairyQuestMessageScreenContent.State() }) { _, state ->
+            FairyQuestMessageScreenContent(this.title, this.message, this.client, state).also { view ->
                 view.onBackToGame.register {
                     proxy.setCurrentScreen(null)
                     true
@@ -61,7 +61,11 @@ fun FairyQuestRecipe.openMessageScreen() {
     openScreen(clientProxy!!)
 }
 
-class FairyQuestMessageScreenContent(fairyQuestTitle: Component, fairyQuestMessage: Component, fairyQuestClient: Component) {
+class FairyQuestMessageScreenContent(fairyQuestTitle: Component, fairyQuestMessage: Component, fairyQuestClient: Component, state: State) {
+
+    class State {
+        var scrollOffset = 0.0
+    }
 
     val onBackToGame = EventRegistry<() -> Boolean>()
     val onBack = EventRegistry<() -> Boolean>()
@@ -78,6 +82,10 @@ class FairyQuestMessageScreenContent(fairyQuestTitle: Component, fairyQuestMessa
                 position.weight = 1.0
                 view.sizingY = Sizing.FILL
                 val scrollView = YScrollContainerView().configure {
+                    view.scrollOffsetY.value = state.scrollOffset
+                    view.scrollOffsetY.register { _, offset ->
+                        state.scrollOffset = offset
+                    }
                     view.sizingX = Sizing.WRAP
 
                     view += StackView().configure {

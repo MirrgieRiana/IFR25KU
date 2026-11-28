@@ -47,8 +47,8 @@ private fun IfrEncyclopediaEntryCard.openIfrEncyclopediaPageScreen() {
     fun <S : Any> openScreen(proxy: ClientProxy<S>) {
         val parent = proxy.getCurrentScreen()
         val title = text { this@openIfrEncyclopediaPageScreen.titleTranslation() }
-        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(title) {
-            IfrEncyclopediaPageScreenContent(this).also { view ->
+        proxy.setCurrentScreen(proxy.createMessageViewScreen(parent, MessageViewScreenDefinition(title, { IfrEncyclopediaPageScreenContent.State() }) { _, state ->
+            IfrEncyclopediaPageScreenContent(this, state).also { view ->
                 view.onBackToGame.register {
                     proxy.setCurrentScreen(null)
                     true
@@ -63,7 +63,11 @@ private fun IfrEncyclopediaEntryCard.openIfrEncyclopediaPageScreen() {
     openScreen(clientProxy!!)
 }
 
-private class IfrEncyclopediaPageScreenContent(card: IfrEncyclopediaEntryCard) {
+private class IfrEncyclopediaPageScreenContent(card: IfrEncyclopediaEntryCard, state: State) {
+
+    class State {
+        var scrollOffset = 0.0
+    }
 
     val onBackToGame = EventRegistry<() -> Boolean>()
     val onBack = EventRegistry<() -> Boolean>()
@@ -118,6 +122,10 @@ private class IfrEncyclopediaPageScreenContent(card: IfrEncyclopediaEntryCard) {
                             view.sizingX = Sizing.FILL
                             view.sizingY = Sizing.FILL
                             val scrollView = YScrollContainerView().configure {
+                                view.scrollOffsetY.value = state.scrollOffset
+                                view.scrollOffsetY.register { _, offset ->
+                                    state.scrollOffset = offset
+                                }
                                 view += MultiLineTextView().configure {
                                     view.text.value = text { card.textTranslation() }
                                     view.color = IFR_ENCYCLOPEDIA_TEXT_COLOR

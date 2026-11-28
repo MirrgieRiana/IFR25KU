@@ -24,6 +24,7 @@ import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
+import net.minecraft.client.gui.screens.Screen
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.lwjgl.glfw.GLFW
@@ -78,7 +79,12 @@ class VanillaScrollContainerViewWidgetTest {
                 Assertions.assertTrue(firstWidget.mouseScrolled(50.0, 50.0, 0.0, 1.0))
                 Assertions.assertEquals(215.75, scrollOffsetValue.value)
                 Assertions.assertEquals(1, scrollInputs)
-                firstWidget.isFocused = true
+                val previous = FocusNavigationEvent.TabNavigation(false)
+                val focusPath = checkNotNull(firstWidget.nextFocusPath(previous))
+                focusPath.applyFocus(true)
+                Assertions.assertTrue(firstWidget.isFocused)
+                Assertions.assertNull(firstWidget.focused)
+                Assertions.assertNull(firstWidget.nextFocusPath(previous))
                 Assertions.assertTrue(firstWidget.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
                 Assertions.assertEquals(0.0, scrollOffsetValue.value)
                 Assertions.assertEquals(2, scrollInputs)
@@ -362,7 +368,57 @@ class VanillaScrollContainerViewWidgetTest {
     }
 
     @Test
-    fun `範囲外から逆 Tab で子に移ると子が収まる分だけスクロールするのだ`() {
+    fun `初期フォーカスでは子を選び候補がなければ領域本体を選ばないのだ`() {
+        GuiTestEnvironment().use {
+            val view = YScrollContainerView()
+            view += YListView().also {
+                it += YSpaceView(120)
+                it += ScrollContainerTestView(IntPoint(20, 20))
+            }
+            view.initSizeCalculation(Mockito.mock(RenderingProxy::class.java), { 100 }, { 60 })
+            val context: VanillaViewPlacerContext = Mockito.mock(VanillaViewPlacerContext::class.java)
+            Mockito.`when`(context.origin).thenReturn(IntPoint.ZERO)
+            val registry = ViewPlacerRegistry<VanillaViewPlacerContext>()
+            registry.register { childContext, _: ScrollContainerTestView, bounds ->
+                val child = object : AbstractWidget(bounds.x, bounds.y, bounds.sizeX, bounds.sizeY, text { empty() }) {
+                    override fun renderWidget(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) = Unit
+                    override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+                }
+                val remover = childContext.addRenderable(WidgetRegistration(child, true) { RenderOverflow.UNBOUNDED })
+                object : ViewController {
+                    override fun setOffset(offset: IntPoint) = child.setPosition(offset.x, offset.y)
+                    override fun detach() = remover.remove()
+                }
+            }
+            val widget = VanillaYScrollContainerViewWidget(view, IntRectangle(10, 20, 100, 60), context, registry)
+            val child = widget.children().single()
+            val screen = object : Screen(text { empty() }) {
+                override fun children() = listOf(widget)
+                fun focusScrollContainerInitially() = setInitialFocus(widget)
+            }
+
+            try {
+                child.active = false
+                screen.focusScrollContainerInitially()
+                Assertions.assertNull(screen.focused)
+                Assertions.assertFalse(widget.isFocused)
+
+                child.active = true
+                screen.focusScrollContainerInitially()
+                Assertions.assertSame(widget, screen.focused)
+                Assertions.assertSame(child, widget.focused)
+                Assertions.assertTrue(child.isFocused)
+                Assertions.assertEquals(80.0, view.scrollOffsetY.value)
+            } finally {
+                screen.clearFocus()
+                widget.dispose()
+                widget.detach()
+            }
+        }
+    }
+
+    @Test
+    fun `Tab の両方向で子と領域本体に止まり子が収まる分だけスクロールするのだ`() {
         GuiTestEnvironment().use {
             val view = YScrollContainerView()
             view += YListView().also {
@@ -391,26 +447,47 @@ class VanillaScrollContainerViewWidgetTest {
                 }
             }
             val widget = VanillaYScrollContainerViewWidget(view, IntRectangle(10, 20, 100, 70), context, registry)
+            val screen = object : Screen(text { empty() }) {
+                override fun children() = listOf(widget)
+            }
             try {
-                widget.isFocused = true
+                val next = FocusNavigationEvent.TabNavigation(true)
+                val previous = FocusNavigationEvent.TabNavigation(false)
+
+                fun moveFocus(event: FocusNavigationEvent.TabNavigation) {
+                    val path = checkNotNull(screen.nextFocusPath(event))
+                    screen.clearFocus()
+                    path.applyFocus(true)
+                    Assertions.assertSame(widget, screen.focused)
+                    Assertions.assertTrue(widget.isFocused)
+                }
+
+                moveFocus(next)
+                Assertions.assertNull(widget.focused)
                 Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
                 widget.setHeight(100)
                 Assertions.assertEquals(listOf(10, 40), children.map { it.y })
 
-                fun focusPrevious() {
-                    val path = widget.nextFocusPath(FocusNavigationEvent.TabNavigation(false))
-                    Assertions.assertNotNull(path)
-                    widget.currentFocusPath?.applyFocus(false)
-                    path!!.applyFocus(true)
-                }
-
-                focusPrevious()
-                Assertions.assertTrue(children[1].isFocused)
-                Assertions.assertEquals(listOf(10, 40), children.map { it.y })
-
-                focusPrevious()
+                moveFocus(next)
+                Assertions.assertSame(children[0], widget.focused)
                 Assertions.assertTrue(children[0].isFocused)
                 Assertions.assertEquals(listOf(20, 50), children.map { it.y })
+
+                moveFocus(next)
+                Assertions.assertSame(children[1], widget.focused)
+                Assertions.assertTrue(children[1].isFocused)
+                Assertions.assertEquals(listOf(20, 50), children.map { it.y })
+                Assertions.assertNull(screen.nextFocusPath(next))
+                screen.clearFocus()
+
+                moveFocus(previous)
+                Assertions.assertSame(children[1], widget.focused)
+                moveFocus(previous)
+                Assertions.assertSame(children[0], widget.focused)
+                moveFocus(previous)
+                Assertions.assertNull(widget.focused)
+                Assertions.assertTrue(screen.keyPressed(GLFW.GLFW_KEY_UP, 0, 0))
+                Assertions.assertNull(screen.nextFocusPath(previous))
             } finally {
                 widget.dispose()
                 widget.detach()
