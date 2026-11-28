@@ -425,12 +425,14 @@ private const val HOTBAR_SPACE = 4
 
 private const val INVENTORY_NAME_MARGIN_X = 1
 
-open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenHandlerType(), syncId), ViewProviderMenu {
+open class BagScreenHandler(syncId: Int) : AbstractContainerMenu(BagCard.screenHandlerType(), syncId), ViewProviderMenu<Unit> {
     override fun stillValid(player: Player) = false
     override fun quickMoveStack(player: Player, slot: Int) = EMPTY_ITEM_STACK
     open val card: BagCard? = null
 
-    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource) = BagScreenContent(this, title, playerInventoryTitle).view
+    override fun createScreenState() = Unit
+
+    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource, state: Unit) = BagScreenContent(this, title, playerInventoryTitle).view
 
 }
 

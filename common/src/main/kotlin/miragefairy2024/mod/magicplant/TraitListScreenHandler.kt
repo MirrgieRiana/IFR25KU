@@ -75,7 +75,7 @@ fun initTraitListScreenHandler() {
     traitListScreenTranslation.enJa()
 }
 
-class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val context: ContainerLevelAccess, val traitStacks: TraitStacks, val blockPos: BlockPos) : AbstractContainerMenu(traitListScreenHandlerType(), syncId), ViewProviderMenu {
+class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val context: ContainerLevelAccess, val traitStacks: TraitStacks, val blockPos: BlockPos) : AbstractContainerMenu(traitListScreenHandlerType(), syncId), ViewProviderMenu<Unit> {
     companion object {
         val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, Pair<TraitStacks, BlockPos>> = StreamCodec.composite(
             TraitStacks.STREAM_CODEC,
@@ -89,7 +89,9 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
     override fun stillValid(player: Player) = true
     override fun quickMoveStack(player: Player, slot: Int): ItemStack = slots[slot].item
 
-    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource) = TraitListScreenContent(this, title).view
+    override fun createScreenState() = Unit
+
+    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource, state: Unit) = TraitListScreenContent(this, title).view
 
 }
 
