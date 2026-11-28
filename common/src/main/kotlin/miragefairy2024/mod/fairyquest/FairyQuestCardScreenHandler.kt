@@ -72,7 +72,7 @@ fun initFairyQuestCardScreenHandler() {
     fairyQuestCardScreenHandlerType.registerViewScreen()
 }
 
-class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, val recipe: FairyQuestRecipe, val context: ContainerLevelAccess) : AbstractContainerMenu(fairyQuestCardScreenHandlerType(), syncId), ViewProviderMenu<Unit> {
+class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, val recipe: FairyQuestRecipe, val context: ContainerLevelAccess) : AbstractContainerMenu(fairyQuestCardScreenHandlerType(), syncId), ViewProviderMenu<FairyQuestCardScreenContent.State> {
     private val inputInventory = SimpleContainer(4)
     private var processingInventory = SimpleContainer(0)
     private var resultInventory = SimpleContainer(0)
@@ -116,9 +116,9 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
         addDataSlots(propertyDelegate)
     }
 
-    override fun createScreenState() = Unit
+    override fun createScreenState() = FairyQuestCardScreenContent.State()
 
-    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource, state: Unit) = FairyQuestCardScreenContent(this, title, playerInventoryTitle, screenEventSource).view
+    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource, state: FairyQuestCardScreenContent.State) = FairyQuestCardScreenContent(this, title, playerInventoryTitle, screenEventSource).view
 
     override fun stillValid(player: Player) = true
 
@@ -214,7 +214,7 @@ class FairyQuestCardScreenHandler(syncId: Int, val playerInventory: Inventory, v
     }
 }
 
-private class FairyQuestCardScreenContent(menu: FairyQuestCardScreenHandler, title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource) {
+class FairyQuestCardScreenContent(menu: FairyQuestCardScreenHandler, title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource) {
 
     class State
 
