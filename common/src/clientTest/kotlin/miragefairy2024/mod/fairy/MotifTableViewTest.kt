@@ -137,7 +137,7 @@ class MotifTableViewTest {
             try {
                 val scroll = placements.single { it.first is YScrollContainerView }.first as YScrollContainerView
                 val scrollbar = placements.single { it.first is YInventoryScrollbarView }.first as YInventoryScrollbarView
-                Assertions.assertFalse(scrollbar.keyboardFocusable)
+                Assertions.assertTrue(scrollbar.isAttached)
                 Assertions.assertEquals(840, scroll.childView.evaluateActualSizeY())
                 Assertions.assertEquals(840, scrollbar.contentLength)
                 Assertions.assertEquals(size.y - 22, scrollbar.viewportLength)

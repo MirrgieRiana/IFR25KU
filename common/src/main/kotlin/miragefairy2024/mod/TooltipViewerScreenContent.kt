@@ -160,7 +160,7 @@ class TooltipViewerScreenContent(itemStacks: List<ItemStack>, state: State, tool
                         }
                         view += scrollView
                         val scrollbarView = YFlatScrollbarView().configure {
-                            view.keyboardFocusable = false
+                            view.isAttached = true
                         }
                         view += scrollbarView
                         connectScrollbar(scrollView.view, scrollbarView.view)
