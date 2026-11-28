@@ -78,7 +78,12 @@ class VanillaScrollContainerViewWidgetTest {
                 Assertions.assertTrue(firstWidget.mouseScrolled(50.0, 50.0, 0.0, 1.0))
                 Assertions.assertEquals(215.75, scrollOffsetValue.value)
                 Assertions.assertEquals(1, scrollInputs)
-                firstWidget.isFocused = true
+                val previous = FocusNavigationEvent.TabNavigation(false)
+                val focusPath = checkNotNull(firstWidget.nextFocusPath(previous))
+                focusPath.applyFocus(true)
+                Assertions.assertTrue(firstWidget.isFocused)
+                Assertions.assertNull(firstWidget.focused)
+                Assertions.assertNull(firstWidget.nextFocusPath(previous))
                 Assertions.assertTrue(firstWidget.keyPressed(GLFW.GLFW_KEY_HOME, 0, 0))
                 Assertions.assertEquals(0.0, scrollOffsetValue.value)
                 Assertions.assertEquals(2, scrollInputs)
