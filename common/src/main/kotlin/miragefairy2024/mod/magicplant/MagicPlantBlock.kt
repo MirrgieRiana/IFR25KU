@@ -90,6 +90,7 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
     /** 隣接する同種の植物が交配種子を生産するときに参加できるか否か */
     protected abstract fun canCross(level: Level, blockPos: BlockPos, blockState: BlockState): Boolean
 
+    /** あるワールド上の地点における特性の効果を計算する。 */
     protected fun calculateTraitEffects(level: Level, blockPos: BlockPos, blockEntity: MagicPlantBlockEntity?, traitStacks: TraitStacks): MutableTraitEffects {
         val allTraitEffects = MutableTraitEffects()
         traitStacks.traitStackMap.forEach { (trait, traitLevel) ->
@@ -118,6 +119,7 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
     /** このサイズは成長が可能か。 */
     protected abstract fun canGrow(blockState: BlockState): Boolean
 
+    /** 指定のサイズで成長した後のサイズを返す。 */
     protected abstract fun getBlockStateAfterGrowth(blockState: BlockState, amount: Int): BlockState
 
     /** 時間経過や骨粉などによって呼び出される成長と自動収穫などのためのイベントを処理します。 */
@@ -178,6 +180,7 @@ abstract class MagicPlantBlock(private val configuration: MagicPlantCard<*>, set
     /** このサイズは自動収穫が可能か。 */
     protected open fun canAutoPick(blockState: BlockState) = canPick(blockState)
 
+    /** 指定のサイズで収穫した後のサイズを返す。 */
     protected abstract fun getBlockStateAfterPicking(blockState: BlockState): BlockState
 
     /** 確定で戻って来る本来の種子以外の追加種子及び生産物を計算する。 */
