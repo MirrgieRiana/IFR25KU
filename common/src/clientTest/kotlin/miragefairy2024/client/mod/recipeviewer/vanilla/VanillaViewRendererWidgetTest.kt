@@ -30,11 +30,13 @@ import miragefairy2024.mod.recipeviewer.views.TooltipBackgroundView
 import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.mod.recipeviewer.views.createView
 import miragefairy2024.util.empty
+import miragefairy2024.util.invoke
 import miragefairy2024.util.register
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.Slot
 import net.minecraft.SharedConstants
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.narration.ScreenNarrationCollector
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.client.gui.navigation.ScreenDirection
 import net.minecraft.client.gui.screens.Screen
@@ -100,6 +102,27 @@ class VanillaViewRendererWidgetTest {
         Assertions.assertNull(buttonWidget.nextFocusPath(event))
         view.enabled.value = true
         Assertions.assertNotNull(buttonWidget.nextFocusPath(event))
+    }
+
+    @Test
+    fun `フォーカス中のクリック可能な View は設定された名前をナレーションするのだ`() {
+        val view = ClickableView()
+        val widget = VanillaViewRendererWidget(ClickableViewRenderer, view, IntRectangle(10, 20, 100, 100))
+        val focusPath = widget.nextFocusPath(FocusNavigationEvent.TabNavigation(true))
+        Assertions.assertNotNull(focusPath)
+        focusPath!!.applyFocus(true)
+        val collector = ScreenNarrationCollector()
+
+        collector.update {
+            widget.updateNarration(it)
+        }
+        Assertions.assertEquals("", collector.collectNarrationText(true))
+
+        view.narrationLabel = text { "Growth"() }
+        collector.update {
+            widget.updateNarration(it)
+        }
+        Assertions.assertEquals("Growth", collector.collectNarrationText(true))
     }
 
     @Test

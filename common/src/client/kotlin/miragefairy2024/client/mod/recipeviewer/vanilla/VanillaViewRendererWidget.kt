@@ -7,6 +7,7 @@ import mirrg.kotlin.helium.Slot
 import net.minecraft.client.gui.ComponentPath
 import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION2612 ReplaceImport net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractWidget
+import net.minecraft.client.gui.narration.NarratedElementType
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
 import net.minecraft.network.chat.Component
@@ -52,6 +53,9 @@ class VanillaViewRendererWidget<V : PlaceableView, S>(private val renderer: View
         return super.nextFocusPath(event)
     }
 
-    override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) = Unit
+    override fun updateWidgetNarration(narrationElementOutput: NarrationElementOutput) {
+        val narrationLabel = renderer.getNarrationLabel(view) ?: return
+        narrationElementOutput.add(NarratedElementType.TITLE, narrationLabel)
+    }
 
 }

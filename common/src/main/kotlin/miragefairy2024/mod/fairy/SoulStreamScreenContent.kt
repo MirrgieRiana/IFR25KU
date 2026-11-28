@@ -35,9 +35,9 @@ import miragefairy2024.mod.recipeviewer.views.configure
 import miragefairy2024.mod.recipeviewer.views.connectScrollbar
 import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.menuSlotView
-import miragefairy2024.mod.recipeviewer.views.onClick
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.mod.recipeviewer.views.tooltip
+import miragefairy2024.mod.recipeviewer.views.wrapClickable
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.blue
 import miragefairy2024.util.bold
@@ -190,13 +190,16 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                                                             listOf(filter.text)
                                                         }
                                                     }
-                                                }.onClick {
-                                                    if (filter.identifier in enabledPassiveSkillEffectFilters.value) {
-                                                        enabledPassiveSkillEffectFilters.value = enabledPassiveSkillEffectFilters.value - filter.identifier
-                                                    } else {
-                                                        enabledPassiveSkillEffectFilters.value = enabledPassiveSkillEffectFilters.value + (filter.identifier to filter)
+                                                }.wrapClickable {
+                                                    view.narrationLabel = filter.text
+                                                    view.onClick.register {
+                                                        if (filter.identifier in enabledPassiveSkillEffectFilters.value) {
+                                                            enabledPassiveSkillEffectFilters.value = enabledPassiveSkillEffectFilters.value - filter.identifier
+                                                        } else {
+                                                            enabledPassiveSkillEffectFilters.value = enabledPassiveSkillEffectFilters.value + (filter.identifier to filter)
+                                                        }
+                                                        true
                                                     }
-                                                    true
                                                 }
                                             }
                                         }

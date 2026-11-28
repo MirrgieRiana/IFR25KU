@@ -33,7 +33,6 @@ import miragefairy2024.mod.recipeviewer.views.createView
 import miragefairy2024.mod.recipeviewer.views.fixedContentSizeX
 import miragefairy2024.mod.recipeviewer.views.fixedContentSizeY
 import miragefairy2024.mod.recipeviewer.views.margin
-import miragefairy2024.mod.recipeviewer.views.onClick
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.mod.recipeviewer.views.tooltip
 import miragefairy2024.mod.recipeviewer.views.wrapClickable
@@ -289,11 +288,14 @@ class TraitListScreenContent(menu: TraitListScreenHandler, title: Component, sta
                                                 texts.join(" "())
                                             }
                                             view.shadow = false
-                                        }.onClick {
-                                            state.selectedTrait = trait
-                                            state.poemScrollOffset = 0.0
-                                            cardContentDynamicView.content.value = createTraitCardView(traitStack)
-                                            true
+                                        }.wrapClickable {
+                                            view.narrationLabel = trait.getName()
+                                            view.onClick.register {
+                                                state.selectedTrait = trait
+                                                state.poemScrollOffset = 0.0
+                                                cardContentDynamicView.content.value = createTraitCardView(traitStack)
+                                                true
+                                            }
                                         }
 
                                     }
