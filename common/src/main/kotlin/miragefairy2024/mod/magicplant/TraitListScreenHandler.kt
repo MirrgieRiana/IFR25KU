@@ -94,11 +94,11 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
 
     override fun createScreenState() = TraitListScreenContent.State()
 
-    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource, state: TraitListScreenContent.State) = TraitListScreenContent(this, title).view
+    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource, state: TraitListScreenContent.State) = TraitListScreenContent(this, title, state).view
 
 }
 
-class TraitListScreenContent(menu: TraitListScreenHandler, title: Component) {
+class TraitListScreenContent(menu: TraitListScreenHandler, title: Component, state: State) {
 
     class State
 
