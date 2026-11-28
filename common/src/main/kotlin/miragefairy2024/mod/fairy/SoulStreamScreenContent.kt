@@ -199,6 +199,7 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                             view += scrollView
                             val scrollbarView = YFlatScrollbarView().configure {
                                 view.scrollbarColor = 0xA0FFFFFF.toInt()
+                                view.keyboardFocusable = false
                             }
                             view += scrollbarView
                             connectScrollbar(scrollView.view, scrollbarView.view)
@@ -246,6 +247,7 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                         view += scrollView
                         val scrollbarView = YInventoryScrollbarView().configure {
                             view.scrollStep = scrollView.view.scrollStep
+                            view.keyboardFocusable = false
                         }
                         view += scrollbarView
                         connectScrollbar(scrollView.view, scrollbarView.view)
@@ -378,6 +380,7 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                             view += scrollView
                             val scrollbarView = YFlatScrollbarView().configure {
                                 view.scrollbarColor = 0xA0FFFFFF.toInt()
+                                view.keyboardFocusable = false
                             }
                             view += AlignView().configure {
                                 view.alignmentX = Alignment.END
