@@ -17,7 +17,6 @@ import miragefairy2024.mod.recipeviewer.view.IntPoint
 import miragefairy2024.mod.recipeviewer.view.Sizing
 import miragefairy2024.mod.recipeviewer.view.View
 import miragefairy2024.mod.recipeviewer.views.AlignView
-import miragefairy2024.mod.recipeviewer.views.ClickableView
 import miragefairy2024.mod.recipeviewer.views.DynamicView
 import miragefairy2024.mod.recipeviewer.views.FilledRectangleView
 import miragefairy2024.mod.recipeviewer.views.LayeredImageButtonView
@@ -38,6 +37,7 @@ import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.menuSlotView
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.mod.recipeviewer.views.tooltip
+import miragefairy2024.mod.recipeviewer.views.wrapClickable
 import miragefairy2024.util.ObservableValue
 import miragefairy2024.util.blue
 import miragefairy2024.util.bold
@@ -173,26 +173,25 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                                                 .flatMap { it.value.passiveSkillSpecifications }
                                                 .mapNotNull { if (it.effect == effect) effect.castOrNull(it.valueProvider(10.0)) else null }
                                             effect.getFilters(samples).sortedBy { it.identifier }.forEach { filter ->
-                                                view += ClickableView().configure {
-                                                    view.narrationLabel = filter.text
-                                                    view += AlignView().configure {
-                                                        view.sizingY = Sizing.WRAP
+                                                view += AlignView().configure {
+                                                    view.sizingY = Sizing.WRAP
 
-                                                        view += TextView(filter.text).configure {
-                                                            view.shadow = false
-                                                            screenEventSource.onOpened.observe(screenEventSource.onDisposing) {
-                                                                enabledPassiveSkillEffectFilters.observeAndInitialize(screenEventSource.onDisposing) { _, filters ->
-                                                                    view.color = if (filter.identifier in filters) SELECTED_FILTER_TEXT_COLOR else ColorPair.DEFAULT
-                                                                }
-                                                            }
-                                                        }.tooltip { _, _ ->
-                                                            if (filter.identifier in enabledPassiveSkillEffectFilters.value) {
-                                                                listOf(filter.text.gold)
-                                                            } else {
-                                                                listOf(filter.text)
+                                                    view += TextView(filter.text).configure {
+                                                        view.shadow = false
+                                                        screenEventSource.onOpened.observe(screenEventSource.onDisposing) {
+                                                            enabledPassiveSkillEffectFilters.observeAndInitialize(screenEventSource.onDisposing) { _, filters ->
+                                                                view.color = if (filter.identifier in filters) SELECTED_FILTER_TEXT_COLOR else ColorPair.DEFAULT
                                                             }
                                                         }
+                                                    }.tooltip { _, _ ->
+                                                        if (filter.identifier in enabledPassiveSkillEffectFilters.value) {
+                                                            listOf(filter.text.gold)
+                                                        } else {
+                                                            listOf(filter.text)
+                                                        }
                                                     }
+                                                }.wrapClickable {
+                                                    view.narrationLabel = filter.text
                                                     view.onClick.register {
                                                         if (filter.identifier in enabledPassiveSkillEffectFilters.value) {
                                                             enabledPassiveSkillEffectFilters.value = enabledPassiveSkillEffectFilters.value - filter.identifier
