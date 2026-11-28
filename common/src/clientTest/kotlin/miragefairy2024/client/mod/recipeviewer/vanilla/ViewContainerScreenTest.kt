@@ -57,6 +57,7 @@ class ViewContainerScreenTest {
             val inventory = Inventory(Mockito.mock(Player::class.java))
             val screen = object : ViewContainerScreen<AbstractContainerMenu>(menu, inventory, text { empty() }) {
                 override fun createRootView(screenEventSource: ScreenEventSource) = view
+                public override fun renderSlot(guiGraphics: GuiGraphicsExtractor, slot: Slot) = super.renderSlot(guiGraphics, slot)
 
                 fun setClip(offsetX: Int, offsetY: Int, width: Int, height: Int) {
                     view.clipBounds = IntRectangle(leftPos + slot.x + offsetX, topPos + slot.y + offsetY, width, height)
