@@ -3,6 +3,7 @@ package miragefairy2024.mod.magicplant
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.ModContext
 import miragefairy2024.mod.NinePatchTextureCard
+import miragefairy2024.mod.common.guiFullScreenTranslation
 import miragefairy2024.mod.magicplant.contents.getTraitPower
 import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.vanilla.ViewProviderMenu
@@ -35,10 +36,12 @@ import miragefairy2024.mod.recipeviewer.views.margin
 import miragefairy2024.mod.recipeviewer.views.onClick
 import miragefairy2024.mod.recipeviewer.views.plusAssign
 import miragefairy2024.mod.recipeviewer.views.tooltip
+import miragefairy2024.mod.recipeviewer.views.wrapClickable
 import miragefairy2024.util.Registration
 import miragefairy2024.util.Translation
 import miragefairy2024.util.darkGray
 import miragefairy2024.util.enJa
+import miragefairy2024.util.fire
 import miragefairy2024.util.invoke
 import miragefairy2024.util.join
 import miragefairy2024.util.plus
@@ -75,7 +78,7 @@ fun initTraitListScreenHandler() {
     traitListScreenTranslation.enJa()
 }
 
-class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val context: ContainerLevelAccess, val traitStacks: TraitStacks, val blockPos: BlockPos) : AbstractContainerMenu(traitListScreenHandlerType(), syncId), ViewProviderMenu {
+class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val context: ContainerLevelAccess, val traitStacks: TraitStacks, val blockPos: BlockPos) : AbstractContainerMenu(traitListScreenHandlerType(), syncId), ViewProviderMenu<Unit> {
     companion object {
         val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, Pair<TraitStacks, BlockPos>> = StreamCodec.composite(
             TraitStacks.STREAM_CODEC,
@@ -89,7 +92,9 @@ class TraitListScreenHandler(syncId: Int, val playerInventory: Inventory, val co
     override fun stillValid(player: Player) = true
     override fun quickMoveStack(player: Player, slot: Int): ItemStack = slots[slot].item
 
-    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource) = TraitListScreenContent(this, title).view
+    override fun createScreenState() = Unit
+
+    override fun createRootView(title: Component, playerInventoryTitle: Component, screenEventSource: ScreenEventSource, state: Unit) = TraitListScreenContent(this, title).view
 
 }
 
@@ -187,7 +192,15 @@ private class TraitListScreenContent(menu: TraitListScreenHandler, title: Compon
                             view += scrollbarView
                         }
                         connectScrollbar(scrollView.view, scrollbarView.view)
-                    }
+                    }.wrapClickable {
+                        view.hoverOverlayColor = 0x00000000
+                        view.onClick.register {
+                            onOpenTraitEncyclopediaPageScreen.fire {
+                                if (it(trait)) return@register true
+                            }
+                            false
+                        }
+                    }.tooltip(text { guiFullScreenTranslation() })
 
                 }
             }

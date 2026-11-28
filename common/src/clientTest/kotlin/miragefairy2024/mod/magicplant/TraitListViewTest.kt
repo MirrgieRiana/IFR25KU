@@ -4,6 +4,7 @@ import com.mojang.serialization.Lifecycle
 import kotlinx.coroutines.runBlocking
 import miragefairy2024.MirageFairy2024
 import miragefairy2024.client.mod.recipeviewer.common.ClickableViewRenderer
+import miragefairy2024.mod.common.guiFullScreenTranslation
 import miragefairy2024.mod.magicplant.contents.TraitEffectKeyCard
 import miragefairy2024.mod.recipeviewer.vanilla.ScreenEventSource
 import miragefairy2024.mod.recipeviewer.view.IntPoint
@@ -15,9 +16,11 @@ import miragefairy2024.mod.recipeviewer.view.evaluateActualSize
 import miragefairy2024.mod.recipeviewer.view.offset
 import miragefairy2024.mod.recipeviewer.views.ClickableView
 import miragefairy2024.mod.recipeviewer.views.ImageView
+import miragefairy2024.mod.recipeviewer.views.TooltipView
 import miragefairy2024.mod.recipeviewer.views.YFlatScrollbarView
 import miragefairy2024.mod.recipeviewer.views.YScrollContainerView
 import miragefairy2024.util.invoke
+import miragefairy2024.util.register
 import miragefairy2024.util.text
 import mirrg.kotlin.helium.Slot
 import mirrg.kotlin.helium.atLeast
@@ -81,7 +84,7 @@ class TraitListViewTest {
         val level: Level = Mockito.mock(Level::class.java)
         Mockito.`when`(player.level()).thenReturn(level)
         val menu = TraitListScreenHandler(0, Inventory(player), ContainerLevelAccess.NULL, traitStacks, BlockPos.ZERO)
-        val rootView = menu.createRootView(text { "Traits"() }, text { "Inventory"() }, ScreenEventSource())
+        val rootView = menu.createRootView(text { "Traits"() }, text { "Inventory"() }, ScreenEventSource(), menu.createScreenState())
         val proxy: RenderingProxy = object : RenderingProxy {
             override fun calculateTextWidth(text: FormattedText) = text.string.length * 6
             override fun calculateTextWidth(text: FormattedCharSequence) = throw UnsupportedOperationException()
@@ -121,7 +124,7 @@ class TraitListViewTest {
             Assertions.assertEquals(traits[0].texture, placements.keys.filterIsInstance<ImageView>().single().texture.id)
 
             listScrollbarView.scrollOffset.value = 30.0
-            val row = placements.keys.filterIsInstance<ClickableView>()[1]
+            val row = placements.keys.filterIsInstance<ClickableView>().filter { placements.getValue(it).y >= listBounds.y }[1]
             val rowBounds = placements.getValue(row)
             val minecraft: Minecraft = Mockito.mock(Minecraft::class.java)
             val soundManager: SoundManager = Mockito.mock(SoundManager::class.java)
@@ -135,6 +138,27 @@ class TraitListViewTest {
 
                 Assertions.assertTrue(ClickableViewRenderer.mouseClicked(row, Slot(Unit), rowBounds, rowBounds.x, rowBounds.y, 0))
                 Mockito.verify(soundManager).play(Mockito.any(SoundInstance::class.java))
+
+                val selectedBodyScrollView = placements.keys.filterIsInstance<YScrollContainerView>().single { it !== listScrollView }
+                val poemBounds = placements.getValue(selectedBodyScrollView)
+                val poem = placements.keys.filterIsInstance<ClickableView>().single { placements.getValue(it) == poemBounds }
+                val tooltip = placements.keys.filterIsInstance<TooltipView>().single { placements.getValue(it) == poemBounds }
+                Assertions.assertEquals(listOf(text { guiFullScreenTranslation() }), tooltip.tooltipProvider(poemBounds.x, poemBounds.y))
+                val selectedBodyScrollbar = placements.keys.filterIsInstance<YFlatScrollbarView>().single { it !== listScrollbarView }
+                val placedViews = placements.keys.toList()
+                Assertions.assertTrue(placedViews.indexOf(selectedBodyScrollbar) < placedViews.indexOf(poem))
+
+                val openedTraits = mutableListOf<Trait>()
+                val remover = onOpenTraitEncyclopediaPageScreen.register {
+                    openedTraits += it
+                    true
+                }
+                try {
+                    Assertions.assertTrue(ClickableViewRenderer.mouseClicked(poem, Slot(Unit), poemBounds, poemBounds.x, poemBounds.y, 0))
+                    Assertions.assertEquals(listOf(traits[1]), openedTraits)
+                } finally {
+                    remover.remove()
+                }
             }
 
             Assertions.assertEquals(traits[1].texture, placements.keys.filterIsInstance<ImageView>().single().texture.id)
