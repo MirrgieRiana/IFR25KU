@@ -197,6 +197,8 @@ abstract class SoulStreamScreenContent(menu: SoulStreamScreenHandler, title: Com
                                                         enabledPassiveSkillEffectFilters.value = enabledPassiveSkillEffectFilters.value + (filter.identifier to filter)
                                                     }
                                                     true
+                                                }.also {
+                                                    it.view.narrationLabel = filter.text
                                                 }
                                             }
                                         }

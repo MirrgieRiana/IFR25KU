@@ -294,6 +294,8 @@ class TraitListScreenContent(menu: TraitListScreenHandler, title: Component, sta
                                             state.poemScrollOffset = 0.0
                                             cardContentDynamicView.content.value = createTraitCardView(traitStack)
                                             true
+                                        }.also {
+                                            it.view.narrationLabel = trait.getName()
                                         }
 
                                     }
