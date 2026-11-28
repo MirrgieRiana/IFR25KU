@@ -346,29 +346,29 @@ abstract class VanillaScrollContainerViewWidget(
         val path = super.nextFocusPath(actualEvent)
 
         // 子への経路があればそれを、なければ自身をフォーカス先にするのだ～🌱
-        if (path != null) {
-            // 子を次のフォーカス先にするのだ～🌱
-            return object : ComponentPath {
-                override fun component() = path.component()
-
-                override fun applyFocus(focused: Boolean) {
-                    path.applyFocus(focused)
-                    // 子のフォーカスが変わったら、適宜それを収めるようにスクロールするのだ～🌱
-                    if (focused) {
-                        val actualFocused = this@VanillaScrollContainerViewWidget.focused?.getActualFocused { true } ?: return
-                        val rectangle = actualFocused.rectangle
-                        if (rectangle.width() <= 0 || rectangle.height() <= 0) return
-                        updateScroll(scrollOffsetValue.value + getScrollOffsetDeltaOnFocus(rectangle))
-                    }
-                }
-            }
-        } else {
+        if (path == null) {
             // スクロールの余地がなく、かつ現在位置が初期位置の場合は、移動の操作が不可能なので、自身をフォーカスしないのだ～🌱
             if (evaluateMaxScrollOffset() <= 0 && scrollOffsetValue.value == 0.0) return null
             // 既にフォーカスされている場合は、次のフォーカス先に選ばないのだ～🌱
             if (isFocused) return null
             // 自身を次のフォーカス先にするのだ～🌱
             return createSelfFocusPath()
+        }
+
+        // 子を次のフォーカス先にするのだ～🌱
+        return object : ComponentPath {
+            override fun component() = path.component()
+
+            override fun applyFocus(focused: Boolean) {
+                path.applyFocus(focused)
+                // 子のフォーカスが変わったら、適宜それを収めるようにスクロールするのだ～🌱
+                if (focused) {
+                    val actualFocused = this@VanillaScrollContainerViewWidget.focused?.getActualFocused { true } ?: return
+                    val rectangle = actualFocused.rectangle
+                    if (rectangle.width() <= 0 || rectangle.height() <= 0) return
+                    updateScroll(scrollOffsetValue.value + getScrollOffsetDeltaOnFocus(rectangle))
+                }
+            }
         }
     }
 
