@@ -24,6 +24,7 @@ import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor // MIGRATION
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.client.gui.navigation.FocusNavigationEvent
+import net.minecraft.client.gui.screens.Screen
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.lwjgl.glfw.GLFW
@@ -396,16 +397,19 @@ class VanillaScrollContainerViewWidgetTest {
                 }
             }
             val widget = VanillaYScrollContainerViewWidget(view, IntRectangle(10, 20, 100, 70), context, registry)
+            val screen = object : Screen(text { empty() }) {
+                override fun children() = listOf(widget)
+            }
             try {
-                widget.isFocused = true
+                screen.focused = widget
                 Assertions.assertTrue(widget.keyPressed(GLFW.GLFW_KEY_END, 0, 0))
                 widget.setHeight(100)
                 Assertions.assertEquals(listOf(10, 40), children.map { it.y })
 
                 fun focusPrevious() {
-                    val path = widget.nextFocusPath(FocusNavigationEvent.TabNavigation(false))
+                    val path = screen.nextFocusPath(FocusNavigationEvent.TabNavigation(false))
                     Assertions.assertNotNull(path)
-                    widget.currentFocusPath?.applyFocus(false)
+                    screen.clearFocus()
                     path!!.applyFocus(true)
                 }
 
